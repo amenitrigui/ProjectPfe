@@ -6,6 +6,7 @@ const { getDevisDetails,getAllClients } = require('../controllers/UserController
 
 router.post('/register', registerUser);
 router.post('/login', loginUser);
+// router.post('/resetPassword', resetPassword);
 router.post('/select-database', selectDatabase);
 router.get('/get-devis-details/:databaseName/:NUMBL', getDevisDetails);
 

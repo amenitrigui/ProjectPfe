@@ -25,7 +25,7 @@ function SignInPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          
+
           nom: trimmedNom,
           motpasse: trimmedPassword,
         }),
@@ -124,6 +124,15 @@ function SignInPage() {
                 className="text-blue-600 hover:text-blue-700 font-semibold underline"
               >
                 Inscrivez-vous
+              </Link>
+            </p>
+            <span className="m-5"></span>
+            <p clasName="text-gray-600">
+              <Link
+                to="/ResetPassword"
+                className="text-blue-600 hover:text-blue-700 font-semibold underline"
+              >
+                Mot de passe oublié?
               </Link>
             </p>
           </div>

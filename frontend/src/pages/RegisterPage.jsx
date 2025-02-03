@@ -34,7 +34,7 @@ function RegisterPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            codeuser: "02",
+          codeuser: "02",
           nom: trimmedNom,
           email: trimmedEmail,
           motpasse: trimmedPassword,

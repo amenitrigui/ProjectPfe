@@ -2,34 +2,47 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 const Representant = require('../models/representant');
-const User = require ('../models/User')
+const User = require('../models/User')
 const { sequelizeUserERP } = require('../db/config');
 const { Sequelize } = require('sequelize');
 
+// const resetPassword = async (req, res) => {
+//   const { email, motpasse } = req.body;
+//   try {
+//     if(!email) {
+//       return res.status(404).json({message: "le champ email doit être remplis"})
+//     }
 
+
+//   }
+//   catch(err) {
+//     return res.status(500).json({message: 'Erreur lors de réinitialisation de mot de passe'})
+//   }
+// }
 
 const registerUser = async (req, res) => {
-  const { email, motpasse, nom, codeuser } = req.body;  
+  const { email, motpasse, nom, codeuser } = req.body;
 
   try {
-  
+
     if (!email || !motpasse || !nom || !codeuser) {
       return res.status(400).json({ message: 'Tous les champs doivent être remplis.' });
     }
 
-  
+
     const existingUser = await User.findOne({ where: { email } });
 
     if (existingUser) {
       return res.status(400).json({ message: 'Cet email est déjà utilisé.' });
     }
 
-  
-    const hashedPassword = await bcrypt.hash(motpasse, 10);
 
-   
+    const hashedPassword = await bcrypt.hash(motpasse, 10);
+    console.log(hashedPassword);
+
+
     const newUser = await User.create({
-      codeuser,         
+      codeuser,
       email,
       motpasse: hashedPassword,
       nom,
@@ -38,7 +51,7 @@ const registerUser = async (req, res) => {
     res.status(201).json({
       message: 'Utilisateur créé avec succès.',
       user: {
-        codeuser: newUser.codeuser, 
+        codeuser: newUser.codeuser,
         email: newUser.email,
         nom: newUser.nom,
       },
@@ -66,7 +79,12 @@ const loginUser = async (req, res) => {
     }
 
     // Vérification du mot de passe
-    if (user.motpasse !== motpasse) {
+    // comparaison de mot de passe donnée
+    // avec le hash dans la bd
+
+    const isPasswordMatched = bcrypt.compareSync(motpasse, user.motpasse)
+
+    if (!isPasswordMatched) {
       return res.status(401).json({ message: 'Mot de passe incorrect.' });
     }
 
@@ -113,23 +131,23 @@ const loginUser = async (req, res) => {
 const selectDatabase = async (req, res) => {
   const { databaseName } = req.body;
 
- 
+
   if (!databaseName) {
     return res.status(400).json({ message: 'Le nom de la base de données est requis.' });
   }
 
   try {
-   
+
     const authHeader = req.header('Authorization');
     if (!authHeader) {
       return res.status(401).json({ message: 'En-tête Authorization manquant.' });
     }
 
-    
-    const decoded = jwt.verify(authHeader.replace('Bearer ', ''), process.env.JWT_SECRET_KEY);
-    const codeuser = decoded.codeuser; 
 
-   
+    const decoded = jwt.verify(authHeader.replace('Bearer ', ''), process.env.JWT_SECRET_KEY);
+    const codeuser = decoded.codeuser;
+
+
     const dbConnection = new Sequelize(`mysql://root:@127.0.0.1:3306/${databaseName}`, {
       dialect: 'mysql',
       logging: false,
@@ -141,10 +159,10 @@ const selectDatabase = async (req, res) => {
       },
     });
 
-   
+
     await dbConnection.authenticate();
 
-  
+
     const devisList = await dbConnection.query(
       `SELECT YEAR(datebl) AS year, MAX(numbl) AS numbl
        FROM dfp
@@ -162,11 +180,11 @@ const selectDatabase = async (req, res) => {
     //   return res.status(404).json({ message: 'Aucun devis trouvé pour cet utilisateur.' });
     // }
 
-  
+
     res.status(200).json({
       message: `Connecté à la base ${databaseName}`,
       databaseName,
-      devis: devisList, 
+      devis: devisList,
     });
   } catch (error) {
     console.error('Erreur lors de la connexion à la base de données :', error);
@@ -177,7 +195,7 @@ const selectDatabase = async (req, res) => {
 
 
 const getDevisDetails = async (req, res) => {
-  const { databaseName, NUMBL } = req.params; 
+  const { databaseName, NUMBL } = req.params;
 
   if (!databaseName || !NUMBL) {
     return res.status(400).json({ message: 'Le nom de la base de données et le numéro de devis sont requis.' });
@@ -188,9 +206,9 @@ const getDevisDetails = async (req, res) => {
     if (!authHeader) {
       return res.status(401).json({ message: 'En-tête Authorization manquant.' });
     }
- 
+
     const decoded = jwt.verify(authHeader.replace('Bearer ', ''), process.env.JWT_SECRET_KEY);
-    const codeuser = decoded.codeuser; 
+    const codeuser = decoded.codeuser;
     const dbConnection = new Sequelize(`mysql://root:@127.0.0.1:3306/${databaseName}`, {
       dialect: 'mysql',
       logging: false,
@@ -199,7 +217,7 @@ const getDevisDetails = async (req, res) => {
 
     await dbConnection.authenticate();
 
-  
+
     const [devisDetails, ldfpDetails] = await Promise.all([
       dbConnection.query(
         `SELECT dfp.NUMBL, dfp.ADRCLI, dfp.CODECLI, dfp.cp , dfp.MTTC, dfp.MHT, dfp.CODEREP, dfp.RSREP ,dfp.comm ,dfp.RSCLI, dfp.usera, dfp.DATEBL
@@ -225,7 +243,7 @@ const getDevisDetails = async (req, res) => {
       return res.status(404).json({ message: 'Aucun devis trouvé pour ce numéro de devis.' });
     }
 
-   
+
     res.status(200).json({
       message: `Informations du devis ${NUMBL} récupérées avec succès.`,
       databaseName,
@@ -268,7 +286,7 @@ const getLatestDevisByYear = async (req, res) => {
   }
 
   try {
-  
+
     const authHeader = req.header('Authorization');
     if (!authHeader) {
       return res.status(401).json({ message: 'En-tête Authorization manquant.' });
@@ -277,7 +295,7 @@ const getLatestDevisByYear = async (req, res) => {
     const decoded = jwt.verify(authHeader.replace('Bearer ', ''), process.env.JWT_SECRET_KEY);
     const codeuser = decoded.codeuser;
 
-   
+
     const dbConnection = new Sequelize(`mysql://root:@127.0.0.1:3306/${databaseName}`, {
       dialect: 'mysql',
       logging: false,
@@ -286,7 +304,7 @@ const getLatestDevisByYear = async (req, res) => {
 
     await dbConnection.authenticate();
 
-   
+
     const latestDevis = await dbConnection.query(
       `SELECT 
          YEAR(DATEBL) AS year, 
@@ -304,7 +322,7 @@ const getLatestDevisByYear = async (req, res) => {
     //   return res.status(404).json({ message: 'Aucun devis trouvé pour cet utilisateur.' });
     // }
 
- 
+
     const devisDetails = await Promise.all(
       latestDevis.map(async ({ year, numbl }) => {
         const dfpDetails = await dbConnection.query(
@@ -336,7 +354,7 @@ const getLatestDevisByYear = async (req, res) => {
       })
     );
 
-  
+
     res.status(200).json({
       message: 'Derniers devis par année récupérés avec succès.',
       databaseName,
@@ -452,8 +470,8 @@ const getAllSectors = async (req, res) => {
 };
 
 // Exporter la méthode
-module.exports = { 
-  registerUser, 
+module.exports = {
+  registerUser,
   loginUser,
   selectDatabase,
   getDevisDetails,
