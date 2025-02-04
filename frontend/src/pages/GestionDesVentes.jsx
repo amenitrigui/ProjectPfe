@@ -20,6 +20,9 @@ const GestionDesVentes = () => {
 
    const [selectedRsoc, setSelectedRsoc] = useState(null);
   
+   if(!localStorage.getItem('token')){
+    navigate('/SignInPage');
+   }
     useEffect(() => {
       const selectedDatabase = localStorage.getItem("selectedDatabase");
       const societies = localStorage.getItem("societies");

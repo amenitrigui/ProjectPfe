@@ -19,13 +19,6 @@ app.use("/api/devis", devisRoutes);
 app.use("/api/devis", articleRoutes);
 app.use("/api/users", userRoutes);
  
-
-
-
-
- 
-
- 
 app.get("/", async (req, res) => {
   try {
     await sequelize.authenticate();

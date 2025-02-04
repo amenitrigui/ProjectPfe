@@ -6,19 +6,20 @@ const User = require('../models/User')
 const { sequelizeUserERP } = require('../db/config');
 const { Sequelize } = require('sequelize');
 
-// const resetPassword = async (req, res) => {
-//   const { email, motpasse } = req.body;
-//   try {
-//     if(!email) {
-//       return res.status(404).json({message: "le champ email doit être remplis"})
-//     }
+const resetPassword = async (req, res) => {
+  const { email, motpasse } = req.body;
+  try {
+    if(!email) {
+      return res.status(404).json({message: 'Champ email doit être remplis'});
+    }
 
+    const existingUser = await User.findOne({ where : {email}})
+    console.log(existingUser);
 
-//   }
-//   catch(err) {
-//     return res.status(500).json({message: 'Erreur lors de réinitialisation de mot de passe'})
-//   }
-// }
+  }catch(error) {
+    return res.status(500).json({message: 'un erreur est survenu lors de la réinitialisation de mot de passe'})
+  }
+};
 
 const registerUser = async (req, res) => {
   const { email, motpasse, nom, codeuser } = req.body;
@@ -478,4 +479,5 @@ module.exports = {
   getLatestDevisByYear,
   getAllClients,
   getAllSectors,
+  resetPassword
 };

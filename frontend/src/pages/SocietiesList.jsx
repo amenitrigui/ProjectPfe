@@ -38,7 +38,7 @@ const SocietiesList = () => {
           headers: {
             Authorization: `Bearer ${token}`, 
           },
-        }
+        } 
       );
       
       if (response.status === 200) {

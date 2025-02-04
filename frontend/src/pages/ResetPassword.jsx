@@ -1,58 +1,52 @@
 import React from 'react'
-import { useState, useNavigate } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function ResetPassword() {
     const [email, setEmail] = useState("");
-    const [code, setCode] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+    const [trimmedEmail, setTrimmedEmail] = useState("");
+    const [error, setError] = useState("");
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const trimmedEmail = email.trim();
-        const trimmedCode = code.trim();
-        const trimmedPassword = password.trim();
-        const trimmedConfirmPassword = confirmPassword.trim();
 
-        if (!trimmedEmail || !trimmedCode) {
-            setError("Tous les champs sont requises");
+        if (!trimmedEmail) {
+            setError("le champ email est requise");
             return;
         }
 
-        if (trimmedPassword !== trimmedConfirmPassword) {
-            setError("Les mots de passe ne correspondent pas");
-            return;
-        }
+        const userExists = axios.get("");
 
-        try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/register`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    codeuser: "02",
-                    nom: trimmedNom,
-                    email: trimmedEmail,
-                    motpasse: trimmedPassword,
-                }),
-            });
+        //     try {
+        //         const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/register`, {
+        //             method: "POST",
+        //             headers: {
+        //                 "Content-Type": "application/json",
+        //             },
+        //             body: JSON.stringify({
+        //                 codeuser: "02",
+        //                 nom: trimmedNom,
+        //                 email: trimmedEmail,
+        //                 motpasse: trimmedPassword,
+        //             }),
+        //         });
 
-            const data = await response.json();
+        //         const data = await response.json();
 
-            if (response.ok) {
-                localStorage.setItem("token", data.token);
-                localStorage.setItem("user", JSON.stringify(data.user));
-                navigate("/SocietiesList");
-            } else {
-                setError(data.message || "Erreur lors de l'inscription. Veuillez réessayer.");
-            }
-        } catch (error) {
-            console.error("Erreur lors de l'inscription:", error);
-            setError("Une erreur est survenue. Veuillez réessayer.");
-        }
+        //         if (response.ok) {
+        //             localStorage.setItem("token", data.token);
+        //             localStorage.setItem("user", JSON.stringify(data.user));
+        //             navigate("/SocietiesList");
+        //         } else {
+        //             setError(data.message || "Erreur lors de l'inscription. Veuillez réessayer.");
+        //         }
+        //     } catch (error) {
+        //         console.error("Erreur lors de l'inscription:", error);
+        //         setError("Une erreur est survenue. Veuillez réessayer.");
+        //     }
     };
     return (
         <div
@@ -74,32 +68,15 @@ function ResetPassword() {
                 </div>
                 <div className="w-full md:w-1/2 p-8">
                     <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
-                        Inscription
+                        Réinitialiser votre mot de passe
                     </h2>
-                    {error && (
-                        <div className="bg-red-100 text-red-700 p-3 rounded-lg mb-4 text-center">
-                            {error}
-                        </div>
-                    )}
+                    
                     <form onSubmit={handleSubmit}>
+
                         <div className="mb-6">
-                            <label
-                                htmlFor="nom"
-                                className="block text-gray-700 font-semibold mb-2"
-                            >
-                                Nom
-                            </label>
-                            <input
-                                type="text"
-                                id="nom"
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                placeholder="Entrez votre nom"
-                                value={nom}
-                                onChange={(e) => setNom(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <div className="mb-6">
+                            <p className="justify-center">
+                            Saisissez votre numéro de téléphone ou votre adresse électronique et nous vous enverrons les instructions pour réinitialiser votre mot de passe.
+                            </p>
                             <label
                                 htmlFor="email"
                                 className="block text-gray-700 font-semibold mb-2"
@@ -116,62 +93,18 @@ function ResetPassword() {
                                 required
                             />
                         </div>
-                        <div className="mb-6">
-                            <label
-                                htmlFor="password"
-                                className="block text-gray-700 font-semibold mb-2"
-                            >
-                                Mot de passe
-                            </label>
-                            <input
-                                type="password"
-                                id="password"
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                placeholder="Entrez votre mot de passe"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <div className="mb-6">
-                            <label
-                                htmlFor="confirmPassword"
-                                className="block text-gray-700 font-semibold mb-2"
-                            >
-                                Confirmez le mot de passe
-                            </label>
-                            <input
-                                type="password"
-                                id="confirmPassword"
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                placeholder="Confirmez votre mot de passe"
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                required
-                            />
-                        </div>
+
                         <button
                             type="submit"
                             className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105"
                         >
-                            S'inscrire
+                            Continuer
                         </button>
                     </form>
-                    <div className="mt-6 text-center">
-                        <p className="text-gray-600">
-                            Vous avez déjà un compte ?{" "}
-                            <Link
-                                to="/SignInPage"
-                                className="text-blue-600 hover:text-blue-700 font-semibold underline"
-                            >
-                                Connectez-vous
-                            </Link>
-                        </p>
-                    </div>
                 </div>
             </div>
         </div>
     )
 }
 
-export default ResetPassword
+export default ResetPassword;
