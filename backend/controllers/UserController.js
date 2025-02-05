@@ -509,24 +509,34 @@ const sendPasswordResetEmail = async (req, res) => {
     await transporter.sendMail(mailOptions);
 
     // Respond to the client
-    res.status(200).json({ message: "Email de réinitialisation envoyé avec succès"});
+    return res.status(200).json({ message: "Email de réinitialisation envoyé avec succès"});
   } catch (error) {
     console.error("Erreur lors de l'envoi de mail de réinitialisation de mot de passe: ", error);
-    res.status(500).json({ message: 'Error sending password reset email.' });
+    return res.status(500).json({ message: 'Error sending password reset email.' });
   }
 };
 
 const passwordReset = async(req, res) => {
   const { email, password, token } = req.body;
 
+  if(!token) {
+    res.status(401).json({message: "L'utilisateur n'est pas authentifié"});
+  }
+
+  const decodedJWT = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+  if(Date.now() > decodedJWT.exp) {
+    return res.status(401).json({message : "Session expiré, veuillez reconnectez svp"});
+  }
+
   if(!password) {
-    res.status(500).json({message: 'Le mot de passe à utiliser lors de réinitialisation ne peut pas etre vide'});
+    return res.status(500).json({message: 'Le mot de passe à utiliser lors de réinitialisation ne peut pas etre vide'});
   }
 
   try {
     const user = await User.findOne({ where: {email} });
     if(!user) {
-      res.status(404).json({message: "L'utilisateur à rénitialiser son mot de passe n'existe pas"});
+      return res.status(404).json({message: "L'utilisateur à rénitialiser son mot de passe n'existe pas"});
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -534,8 +544,10 @@ const passwordReset = async(req, res) => {
     user.motpasse = hashedPassword;
     await user.save();
 
+    return res.status(200).json({message: "Mot de passe modifié avec succès"});
+
   }catch(error){
-    res.status(500).json({message: 'Un erreur est survenu lors de la réinitialisation de mot de passe'})
+    return res.status(500).json({message: 'Un erreur est survenu lors de la réinitialisation de mot de passe'})
   }
 }
 

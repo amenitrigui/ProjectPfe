@@ -36,7 +36,7 @@ function SignInPage() {
       if (response.ok) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("societies", JSON.stringify(data.societies));
-        localStorage.setItem("user", JSON.stringify(data.user.codeuser));
+        localStorage.setItem("user", JSON.stringify(data.user));
         navigate("/SocietiesList");
       } else {
         setError(data.message || "Erreur de connexion. Veuillez réessayer.");
