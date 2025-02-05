@@ -40,11 +40,10 @@ function App() {
       />
 
       <Routes>
-        <Route path="/" element={<Navigate to="/Home-Page" />} /> 
+        <Route path="/" element={<SignInPage />} /> 
         <Route path="/Devis-Form" element={<DevisForm />} />
         <Route path="/Home-Page" element={<HomePage />} />
         <Route path="/DevisList" element={<DevisList />} />
-        <Route path="/SignInPage" element={<SignInPage />} />
         <Route path="/devis-details/:numbl" element={<DevisDetails />} />
         <Route path="/Dashboard" element={<Dashboard />} />
         <Route path="/SocietiesList" element={<SocietiesList />} />

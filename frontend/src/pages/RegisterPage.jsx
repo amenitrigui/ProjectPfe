@@ -163,7 +163,7 @@ function RegisterPage() {
             <p className="text-gray-600">
               Vous avez déjà un compte ?{" "}
               <Link
-                to="/SignInPage"
+                to="/"
                 className="text-blue-600 hover:text-blue-700 font-semibold underline"
               >
                 Connectez-vous

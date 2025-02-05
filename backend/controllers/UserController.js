@@ -178,10 +178,6 @@ const selectDatabase = async (req, res) => {
     );
 
 
-    // if (devisList.length === 0) {
-    //   return res.status(404).json({ message: 'Aucun devis trouvé pour cet utilisateur.' });
-    // }
-
 
     res.status(200).json({
       message: `Connecté à la base ${databaseName}`,
@@ -415,7 +411,7 @@ const getAllClients = async (req, res) => {
       return res.status(404).json({ message: 'Aucun client trouvé pour cet utilisateur.' });
     }
 
-    res.status(200).json({
+   return res.status(200).json({
       message: 'Liste des clients récupérée avec succès.',
       databaseName,
       clients,
@@ -515,7 +511,7 @@ const sendPasswordResetEmail = async (req, res) => {
      return res.status(200).json({ message: "Email de réinitialisation envoyé avec succès"});
   } catch (error) {
     console.error("Erreur lors de l'envoi de mail de réinitialisation de mot de passe: ", error);
-    res.status(500).json({ message: 'Error sending password reset email.' });
+   return  res.status(500).json({ message: 'Error sending password reset email.' });
   }
 };
 
@@ -523,10 +519,11 @@ const passwordReset = async(req, res) => {
   const { email, password, token } = req.body;
 
   if(!password) {
-    res.status(500).json({message: 'Le mot de passe à utiliser lors de réinitialisation ne peut pas etre vide'});
+   return res.status(500).json({message: 'Le mot de passe à utiliser lors de réinitialisation ne peut pas etre vide'});
   }
 
   try {
+    console.log(email)
     const user = await User.findOne({ where: {email} });
     if(!user) {
      return  res.status(404).json({message: "L'utilisateur à rénitialiser son mot de passe n'existe pas"});
@@ -540,7 +537,7 @@ const passwordReset = async(req, res) => {
     return res.status(200).json({message: 'Mot de passe valide'})
 
   }catch(error){
-    res.status(500).json({message: 'Un erreur est survenu lors de la réinitialisation de mot de passe'})
+   return res.status(500).json({message: 'Un erreur est survenu lors de la réinitialisation de mot de passe'})
   }
 }
 
