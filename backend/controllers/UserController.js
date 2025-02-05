@@ -63,7 +63,6 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   const { nom, motpasse } = req.body;
-  console.log("loginUser");
 
   try {
     // Vérification que tous les champs sont remplis
@@ -74,14 +73,17 @@ const loginUser = async (req, res) => {
     // Recherche de l'utilisateur
     const user = await User.findOne({ where: { nom } });
     if (!user) {
-      return res.status(401).json({ message: 'Utilisateur non trouvé.' });
+      return res.status(400).json({ message: 'Utilisateur non trouvé.' });
     }
 
     // Vérification du mot de passe
     // comparaison de mot de passe donnée
     // avec le hash dans la bd
 
+    console.log(motpasse)
     const isPasswordMatched = bcrypt.compareSync(motpasse, user.motpasse)
+
+    console.log(isPasswordMatched)
 
     if (!isPasswordMatched) {
       return res.status(401).json({ message: 'Mot de passe incorrect.' });
@@ -107,7 +109,7 @@ const loginUser = async (req, res) => {
     );
 
     // Envoi de la réponse
-    res.status(200).json({
+    return res.status(200).json({
       message: 'Connexion réussie.',
       token,
       user: {
@@ -122,7 +124,8 @@ const loginUser = async (req, res) => {
     });
   } catch (error) {
     console.error('Erreur lors de la connexion de l\'utilisateur:', error);
-    res.status(500).json({ message: 'Une erreur est survenue lors de la connexion.' });
+
+    return res.status(500).json({ message: 'Une erreur est survenue lors de la connexion.' });
   }
 };
 
@@ -187,7 +190,7 @@ const selectDatabase = async (req, res) => {
     });
   } catch (error) {
     console.error('Erreur lors de la connexion à la base de données :', error);
-    res.status(500).json({ message: 'Impossible de se connecter à la base de données.' });
+    return res.status(500).json({ message: 'Impossible de se connecter à la base de données.' });
   }
 };
 
@@ -243,7 +246,7 @@ const getDevisDetails = async (req, res) => {
     }
 
 
-    res.status(200).json({
+   return  res.status(200).json({
       message: `Informations du devis ${NUMBL} récupérées avec succès.`,
       databaseName,
       devis: [
@@ -270,7 +273,7 @@ const getDevisDetails = async (req, res) => {
     });
   } catch (error) {
     console.error('Erreur lors de la récupération des détails du devis :', error);
-    res.status(500).json({ message: 'Erreur lors de la récupération des détails du devis.' });
+   return  res.status(500).json({ message: 'Erreur lors de la récupération des détails du devis.' });
   }
 };
 
@@ -361,7 +364,7 @@ const getLatestDevisByYear = async (req, res) => {
     });
   } catch (error) {
     console.error('Erreur lors de la récupération des devis par année :', error);
-    res.status(500).json({ message: 'Erreur lors de la récupération des devis.' });
+    return res.status(500).json({ message: 'Erreur lors de la récupération des devis.' });
   }
 };
 
@@ -453,14 +456,14 @@ const getAllSectors = async (req, res) => {
       return res.status(404).json({ message: 'Aucun secteur trouvé dans cette base de données.' });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       message: 'Liste des secteurs récupérée avec succès.',
       databaseName,
       sectors,
     });
   } catch (error) {
     console.error('Erreur lors de la récupération des secteurs :', error);
-    res.status(500).json({ message: 'Erreur lors de la récupération des secteurs.' });
+    return res.status(500).json({ message: 'Erreur lors de la récupération des secteurs.' });
   }
 };
 
@@ -509,7 +512,7 @@ const sendPasswordResetEmail = async (req, res) => {
     await transporter.sendMail(mailOptions);
 
     // Respond to the client
-    res.status(200).json({ message: "Email de réinitialisation envoyé avec succès"});
+     return res.status(200).json({ message: "Email de réinitialisation envoyé avec succès"});
   } catch (error) {
     console.error("Erreur lors de l'envoi de mail de réinitialisation de mot de passe: ", error);
     res.status(500).json({ message: 'Error sending password reset email.' });
@@ -526,13 +529,15 @@ const passwordReset = async(req, res) => {
   try {
     const user = await User.findOne({ where: {email} });
     if(!user) {
-      res.status(404).json({message: "L'utilisateur à rénitialiser son mot de passe n'existe pas"});
+     return  res.status(404).json({message: "L'utilisateur à rénitialiser son mot de passe n'existe pas"});
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     user.motpasse = hashedPassword;
     await user.save();
+
+    return res.status(200).json({message: 'Mot de passe valide'})
 
   }catch(error){
     res.status(500).json({message: 'Un erreur est survenu lors de la réinitialisation de mot de passe'})

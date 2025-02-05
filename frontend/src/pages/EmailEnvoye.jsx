@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React from 'react'
+import { use } from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,13 +10,15 @@ function EmailEnvoye() {
       const [Nvpassword, setNvpassword] = useState("");
       const navigate = useNavigate();
       const handleSubmit=async(e)=>
+        e.preventEvent();
+      const user = JSON.parse(localStorage.getItem("user"))
       {const trimedpassword=password.trim()
         const trimedNVpassword = password.trim()
         if (trimedpassword==trimedNVpassword)
         {
-          axios.put(`${process.env.REACT_APP_API_URL}/api/users/passwordReset`,{trimedpassword})
+          axios.put(`${process.env.REACT_APP_API_URL}/api/users/passwordReset`,{email:user.email, password: trimedpassword})
           .then (res=>{
-            console.log("c'est bon la meeme")
+            console.log("c'est bon la meme")
 
           }).catch(error =>
           {
