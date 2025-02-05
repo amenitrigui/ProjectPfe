@@ -61,54 +61,51 @@ function EmailEnvoye() {
                         </div>
                     )}
 
-                    {
-                        (
 
-                            <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit}>
 
-                                <div className="mb-6">
-                                    <p className="text-center">
-                                        Saisissez un nouveau mot de passe ci-dessous
-                                        pour modifier votre mot de passe.
-                                    </p>
+                        <div className="mb-6">
+                            <p className="text-center">
+                                Saisissez un nouveau mot de passe ci-dessous
+                                pour modifier votre mot de passe.
+                            </p>
 
-                                    <label
-                                        htmlFor="password"
-                                        className="block text-gray-700 font-semibold mb-2"
-                                    >
+                            <label
+                                htmlFor="password"
+                                className="block text-gray-700 font-semibold mb-2"
+                            >
 
-                                    </label>
-                                    <input
-                                        type="password"
-                                        id="password"
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                        placeholder="nouveau mot passe "
-                                        value={password}
-                                        onChange={(e) => setpassword(e.target.value)}
+                            </label>
+                            <input
+                                type="password"
+                                id="password"
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                placeholder="nouveau mot passe "
+                                value={password}
+                                onChange={(e) => setpassword(e.target.value)}
 
 
-                                    />
-                                    <div className="mt-4"></div>
+                            />
+                            <div className="mt-4"></div>
 
-                                    <input
-                                        type="password"
-                                        id="password"
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                        placeholder="Saisir a nouveau le nouveau mot passe "
-                                        value={Nvpassword}
-                                        onChange={(e) => setNvpassword(e.target.value)}
+                            <input
+                                type="password"
+                                id="password"
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                placeholder="Saisir a nouveau le nouveau mot passe "
+                                value={Nvpassword}
+                                onChange={(e) => setNvpassword(e.target.value)}
 
-                                    />
-                                </div>
+                            />
+                        </div>
 
-                                <button
-                                    type="submit"
-                                    className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105"
-                                >
-                                    Reunisialiser le mot passe
-                                </button>
-                            </form>
-                        )}
+                        <button
+                            type="submit"
+                            className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105"
+                        >
+                            Reunisialiser le mot passe
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

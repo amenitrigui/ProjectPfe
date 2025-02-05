@@ -40,7 +40,7 @@ const getSequelizeConnection = (dbName = "") => {
 const sequelize = getSequelizeConnection();  
 
 
-const sequelizeUserERP = getSequelizeConnection("usererp");
+const sequelizeUserERP = getSequelizeConnection("usererpsole");
 
 
 const testConnections = async () => {

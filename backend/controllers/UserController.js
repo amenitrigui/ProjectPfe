@@ -46,7 +46,7 @@ const registerUser = async (req, res) => {
       nom,
     });
 
-    res.status(201).json({
+    return res.status(201).json({
       message: 'Utilisateur créé avec succès.',
       user: {
         codeuser: newUser.codeuser,
@@ -56,7 +56,7 @@ const registerUser = async (req, res) => {
     });
   } catch (error) {
     console.error('Erreur lors de la création de l\'utilisateur:', error.message || error);
-    res.status(500).json({ message: 'Une erreur est survenue lors de la création de l\'utilisateur.', error: error.message });
+    return res.status(500).json({ message: 'Une erreur est survenue lors de la création de l\'utilisateur.', error: error.message });
   }
 };
 
@@ -107,7 +107,7 @@ const loginUser = async (req, res) => {
     );
 
     // Envoi de la réponse
-    res.status(200).json({
+    return res.status(200).json({
       message: 'Connexion réussie.',
       token,
       user: {
@@ -122,7 +122,7 @@ const loginUser = async (req, res) => {
     });
   } catch (error) {
     console.error('Erreur lors de la connexion de l\'utilisateur:', error);
-    res.status(500).json({ message: 'Une erreur est survenue lors de la connexion.' });
+    return res.status(500).json({ message: 'Une erreur est survenue lors de la connexion.' });
   }
 };
 
@@ -180,14 +180,14 @@ const selectDatabase = async (req, res) => {
     // }
 
 
-    res.status(200).json({
+    return res.status(200).json({
       message: `Connecté à la base ${databaseName}`,
       databaseName,
       devis: devisList,
     });
   } catch (error) {
     console.error('Erreur lors de la connexion à la base de données :', error);
-    res.status(500).json({ message: 'Impossible de se connecter à la base de données.' });
+    return res.status(500).json({ message: 'Impossible de se connecter à la base de données.' });
   }
 };
 
@@ -270,7 +270,7 @@ const getDevisDetails = async (req, res) => {
     });
   } catch (error) {
     console.error('Erreur lors de la récupération des détails du devis :', error);
-    res.status(500).json({ message: 'Erreur lors de la récupération des détails du devis.' });
+    return res.status(500).json({ message: 'Erreur lors de la récupération des détails du devis.' });
   }
 };
 
@@ -354,14 +354,14 @@ const getLatestDevisByYear = async (req, res) => {
     );
 
 
-    res.status(200).json({
+    return res.status(200).json({
       message: 'Derniers devis par année récupérés avec succès.',
       databaseName,
       devis: devisDetails,
     });
   } catch (error) {
     console.error('Erreur lors de la récupération des devis par année :', error);
-    res.status(500).json({ message: 'Erreur lors de la récupération des devis.' });
+    return res.status(500).json({ message: 'Erreur lors de la récupération des devis.' });
   }
 };
 
@@ -412,14 +412,14 @@ const getAllClients = async (req, res) => {
       return res.status(404).json({ message: 'Aucun client trouvé pour cet utilisateur.' });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       message: 'Liste des clients récupérée avec succès.',
       databaseName,
       clients,
     });
   } catch (error) {
     console.error('Erreur lors de la récupération des clients :', error);
-    res.status(500).json({ message: 'Erreur lors de la récupération des clients.' });
+    return res.status(500).json({ message: 'Erreur lors de la récupération des clients.' });
   }
 };
 
@@ -453,14 +453,14 @@ const getAllSectors = async (req, res) => {
       return res.status(404).json({ message: 'Aucun secteur trouvé dans cette base de données.' });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       message: 'Liste des secteurs récupérée avec succès.',
       databaseName,
       sectors,
     });
   } catch (error) {
     console.error('Erreur lors de la récupération des secteurs :', error);
-    res.status(500).json({ message: 'Erreur lors de la récupération des secteurs.' });
+    return res.status(500).json({ message: 'Erreur lors de la récupération des secteurs.' });
   }
 };
 
@@ -520,12 +520,12 @@ const passwordReset = async(req, res) => {
   const { email, password, token } = req.body;
 
   if(!token) {
-    res.status(401).json({message: "L'utilisateur n'est pas authentifié"});
+    return res.status(401).json({message: "L'utilisateur n'est pas authentifié"});
   }
 
   const decodedJWT = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
-  if(Date.now() > decodedJWT.exp) {
+  if(Date.now() > decodedJWT.exp * 1000) {
     return res.status(401).json({message : "Session expiré, veuillez reconnectez svp"});
   }
 
