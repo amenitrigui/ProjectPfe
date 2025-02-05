@@ -53,7 +53,7 @@ function App() {
         <Route path="/GestionDesVentes" element={<GestionDesVentes />} /> 
         <Route path="/RegisterPage" element={<RegisterPage />} /> 
         <Route path="/ResetPassword" element={<ResetPassword />}></Route>
-        <Route path="/EmailEnvoyé" element = {<EmailEnvoye />}></Route>
+        <Route path="/EmailEnvoye" element = {<EmailEnvoye />}></Route>
       </Routes>
     </Router>
   );
