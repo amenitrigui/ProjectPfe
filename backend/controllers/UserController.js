@@ -5,21 +5,18 @@ const Representant = require('../models/representant');
 const User = require('../models/User')
 const { sequelizeUserERP } = require('../db/config');
 const { Sequelize } = require('sequelize');
+const nodeMailer = require('nodemailer');
+const { google } = require('googleapis');
 
-const resetPassword = async (req, res) => {
-  const { email, motpasse } = req.body;
-  try {
-    if(!email) {
-      return res.status(404).json({message: 'Champ email doit être remplis'});
-    }
+const oAuth2Client = new google.auth.OAuth2(
+  process.env.NODEMAILER_CLIENT_ID,
+  process.env.NODEMAILER_CLIENT_SECRET,
+  "https://developers.google.com/oauthplayground"
+);
 
-    const existingUser = await User.findOne({ where : {email}})
-    console.log(existingUser);
-
-  }catch(error) {
-    return res.status(500).json({message: 'un erreur est survenu lors de la réinitialisation de mot de passe'})
-  }
-};
+oAuth2Client.setCredentials({
+  refresh_token: process.env.NODEMAILER_REFRESH_TOKEN
+});
 
 const registerUser = async (req, res) => {
   const { email, motpasse, nom, codeuser } = req.body;
@@ -66,6 +63,7 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   const { nom, motpasse } = req.body;
+  console.log("loginUser");
 
   try {
     // Vérification que tous les champs sont remplis
@@ -367,10 +365,6 @@ const getLatestDevisByYear = async (req, res) => {
   }
 };
 
-
-
-
-
 const getAllClients = async (req, res) => {
   const { databaseName } = req.params;
 
@@ -470,6 +464,59 @@ const getAllSectors = async (req, res) => {
   }
 };
 
+const sendPasswordResetEmail = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: "L'Email est requise." });
+  }
+
+  try {
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur n'existe pas." });
+    }
+
+    // Generate a password reset token (JWT)
+    const resetToken = jwt.sign({ codeuser: user.codeuser }, process.env.JWT_SECRET_KEY, {
+      expiresIn: '1h', // Token expires in 1 hour
+    });
+
+    const accessToken = await oAuth2Client.getAccessToken();
+
+    // Create a transporter using nodemailer
+    const transporter = nodeMailer.createTransport({
+      service: 'gmail',
+      auth: {
+        type: 'OAuth2',
+        user: process.env.NODEMAILER_EMAIL_USER,
+        accessToken: accessToken.token,
+        clientId: process.env.NODEMAILER_CLIENT_ID,
+        clientSecret: process.env.NODEMAILER_CLIENT_SECRET,
+        refreshToken: process.env.NODEMAILER_REFRESH_TOKEN,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.NODEMAILER_EMAIL_USER,
+      to: email,
+      subject: 'Password Reset',
+      text: 'Here is the link to reset your password.',
+    };
+
+    // Send the email
+    await transporter.sendMail(mailOptions);
+
+    // Respond to the client
+    res.status(200).json({ message: "Email de réinitialisation envoyé avec succès"});
+  } catch (error) {
+    console.error("Erreur lors de l'envoi de mail de réinitialisation de mot de passe: ", error);
+    res.status(500).json({ message: 'Error sending password reset email.' });
+  }
+};
+
+
 // Exporter la méthode
 module.exports = {
   registerUser,
@@ -479,5 +526,5 @@ module.exports = {
   getLatestDevisByYear,
   getAllClients,
   getAllSectors,
-  resetPassword
+  sendPasswordResetEmail
 };

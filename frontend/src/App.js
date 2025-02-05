@@ -17,6 +17,7 @@ import ResetPassword from './pages/ResetPassword';
 import GestionCommerciale from './pages/GestionCommerciale';
 import GestionDesVentes from './pages/GestionDesVentes';
 import RegisterPage from './pages/RegisterPage';
+import EmailEnvoye from './pages/EmailEnvoye';
 
 function App() {
   
@@ -52,6 +53,7 @@ function App() {
         <Route path="/GestionDesVentes" element={<GestionDesVentes />} /> 
         <Route path="/RegisterPage" element={<RegisterPage />} /> 
         <Route path="/ResetPassword" element={<ResetPassword />}></Route>
+        <Route path="/EmailEnvoyé" element = {<EmailEnvoye />}></Route>
       </Routes>
     </Router>
   );

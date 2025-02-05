@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const authenticateJWT = require('../authentification/authenticateToken');
-const { registerUser, loginUser, selectDatabase, getLatestDevisByYear,getAllSectors, resetPassword } = require('../controllers/UserController'); // Ajout de getDevisDetails
+const { registerUser, loginUser, selectDatabase, getLatestDevisByYear,getAllSectors, sendPasswordResetEmail } = require('../controllers/UserController');
 const { getDevisDetails,getAllClients } = require('../controllers/UserController');
 
 router.post('/register', registerUser);
 router.post('/login', loginUser);
-router.post('/resetPassword', resetPassword);
+router.post('/passwordResetRequest', sendPasswordResetEmail);
 router.post('/select-database', selectDatabase);
 router.get('/get-devis-details/:databaseName/:NUMBL', getDevisDetails);
 

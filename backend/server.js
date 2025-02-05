@@ -11,8 +11,13 @@ const config = require('./db/config');
 require("dotenv").config();
 const app = express();
 
+const corsOptions = {
+  origin : [process.env.FRONTEND_URL, "http://localhost:3000"],
+  methods: ["GET","POST","PUT","DELETE"],
+  Credentials: true // to allow auth headers as well as cookies
+}
 
-app.use(cors({ origin: [process.env.FRONTEND_URL, "http://localhost:3000"],  methods:["GET","POST", "PUT",  "DELETE", ], }));
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use("/api/devis", devisRoutes);
@@ -31,5 +36,5 @@ app.get("/", async (req, res) => {
 
 const PORT = process.env.PORT || 5000  
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is listening on port ${PORT}`);
 });
