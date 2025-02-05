@@ -502,7 +502,7 @@ const sendPasswordResetEmail = async (req, res) => {
       from: process.env.NODEMAILER_EMAIL_USER,
       to: email,
       subject: 'Password Reset',
-      text: 'Here is the link to reset your password.',
+      text: `Here is the link to reset your password: ${process.env.FRONTEND_URL}/EmailEnvoye`,
     };
 
     // Send the email
@@ -516,6 +516,29 @@ const sendPasswordResetEmail = async (req, res) => {
   }
 };
 
+const passwordReset = async(req, res) => {
+  const { email, password, token } = req.body;
+
+  if(!password) {
+    res.status(500).json({message: 'Le mot de passe à utiliser lors de réinitialisation ne peut pas etre vide'});
+  }
+
+  try {
+    const user = await User.findOne({ where: {email} });
+    if(!user) {
+      res.status(404).json({message: "L'utilisateur à rénitialiser son mot de passe n'existe pas"});
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    user.motpasse = hashedPassword;
+    await user.save();
+
+  }catch(error){
+    res.status(500).json({message: 'Un erreur est survenu lors de la réinitialisation de mot de passe'})
+  }
+}
+
 
 // Exporter la méthode
 module.exports = {
@@ -526,5 +549,6 @@ module.exports = {
   getLatestDevisByYear,
   getAllClients,
   getAllSectors,
-  sendPasswordResetEmail
+  sendPasswordResetEmail,
+  passwordReset
 };
