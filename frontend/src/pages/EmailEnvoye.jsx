@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 function EmailEnvoye() {
    const [password, setpassword] = useState("");
       const [error, setError] = useState("");
-      const [Nvpassword, setNvpassword] = useState(false);
+      const [Nvpassword, setNvpassword] = useState("");
       const navigate = useNavigate();
       const handleSubmit=async(e)=>
       {const trimedpassword=password.trim()
@@ -78,8 +78,8 @@ function EmailEnvoye() {
                                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                                         placeholder="nouveau mot passe " 
                                         value={password}
-                                        onChange={(e) => setNvpassword(e.target.value)}
-                                        required
+                                        onChange={(e) => setpassword(e.target.value)}
+                                      
                                         
                                     />
                                     <div className="mt-4"></div> 
@@ -89,9 +89,9 @@ function EmailEnvoye() {
                                         id="password"
                                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                                         placeholder="Saisir a nouveau le nouveau mot passe "
-                                        value={password}
+                                        value={Nvpassword}
                                         onChange={(e) => setNvpassword(e.target.value)}
-                                        required
+                                      
                                     />
                                 </div>
 
