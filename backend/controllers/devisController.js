@@ -160,7 +160,7 @@ const getAllDevis = async (req, res) => {
 
    
     const result = await dynamicSequelize.query(
-      `SELECT NUMBL, libpv FROM dfp`,
+      `SELECT NUMBL, libpv, datt,CODECLI,ADRCLI,RSCLI,MTTC FROM dfp `,
       { type: QueryTypes.SELECT }
     );
 

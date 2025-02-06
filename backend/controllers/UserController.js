@@ -19,11 +19,11 @@ oAuth2Client.setCredentials({
 });
 
 const registerUser = async (req, res) => {
-  const { email, motpasse, nom, codeuser } = req.body;
+  const { email, motpasse, nom } = req.body;
 
   try {
 
-    if (!email || !motpasse || !nom || !codeuser) {
+    if (!email || !motpasse || !nom ) {
       return res.status(400).json({ message: 'Tous les champs doivent être remplis.' });
     }
 
@@ -40,7 +40,7 @@ const registerUser = async (req, res) => {
 
 
     const newUser = await User.create({
-      codeuser,
+     
       email,
       motpasse: hashedPassword,
       nom,
@@ -141,12 +141,14 @@ const selectDatabase = async (req, res) => {
   try {
 
     const authHeader = req.header('Authorization');
+    console.log(authHeader) // authorisation verifie est ce que kn utilisateur c'est bon authentifie donc acceder ynj yod5ollll selectionne 
     if (!authHeader) {
       return res.status(401).json({ message: 'En-tête Authorization manquant.' });
     }
 
 
     const decoded = jwt.verify(authHeader.replace('Bearer ', ''), process.env.JWT_SECRET_KEY);
+    console.log(decoded) //{ codeuser: '02', iat: 1738828227, exp: 1738914627 }
     const codeuser = decoded.codeuser;
 
 

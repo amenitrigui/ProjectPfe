@@ -3,9 +3,9 @@ const { sequelizeUserERP } = require("../db/config");
 
 const User = sequelizeUserERP.define('User', {
     codeuser: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false,
-        unique: true,
+        autoIncrement: true,
         primaryKey: true,
       },
       nom: {
