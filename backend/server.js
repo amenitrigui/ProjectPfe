@@ -21,7 +21,7 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use("/api/devis", devisRoutes);
-app.use("/api/devis", articleRoutes);
+app.use("/api/article", articleRoutes);
 app.use("/api/users", userRoutes);
  
 app.get("/", async (req, res) => {

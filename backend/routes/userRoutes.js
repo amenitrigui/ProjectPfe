@@ -9,11 +9,11 @@ router.post('/login', loginUser);
 router.post('/passwordResetRequest', sendPasswordResetEmail);
 router.put('/passwordReset', passwordReset);
 router.post('/select-database', selectDatabase);
+// get a single devis details
 router.get('/get-devis-details/:databaseName/:NUMBL', getDevisDetails);
-
+// get latest devis by year
 router.get('/get-devis-details/:databaseName', getLatestDevisByYear);
 router.get('/:databaseName/clients', getAllClients);
-
 router.get('/secteurs/:databaseName', getAllSectors);
 
 

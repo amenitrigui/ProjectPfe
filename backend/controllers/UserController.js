@@ -19,11 +19,11 @@ oAuth2Client.setCredentials({
 });
 
 const registerUser = async (req, res) => {
-  const { email, motpasse, nom, codeuser } = req.body;
+  const { email, motpasse, nom } = req.body;
 
   try {
 
-    if (!email || !motpasse || !nom || !codeuser) {
+    if (!email || !motpasse || !nom) {
       return res.status(400).json({ message: 'Tous les champs doivent être remplis.' });
     }
 
@@ -40,7 +40,6 @@ const registerUser = async (req, res) => {
 
 
     const newUser = await User.create({
-      codeuser,
       email,
       motpasse: hashedPassword,
       nom,
@@ -80,7 +79,7 @@ const loginUser = async (req, res) => {
     // Vérification du mot de passe
     // comparaison de mot de passe donnée
     // avec le hash dans la bd
-
+    console.log(await bcrypt.hash(motpasse, 10));
     const isPasswordMatched = bcrypt.compareSync(motpasse, user.motpasse)
 
     if (!isPasswordMatched) {
