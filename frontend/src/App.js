@@ -44,7 +44,7 @@ function App() {
         <Route path="/Devis-Form" element={<DevisForm />} />
         <Route path="/Home-Page" element={<HomePage />} />
         <Route path="/DevisList" element={<DevisList />} />
-        <Route path="/devis-details/:numbl" element={<DevisDetails />} />
+        <Route path="/dvis-details/e:numbl" element={<DevisDetails />} />
         <Route path="/Dashboard" element={<Dashboard />} />
         <Route path="/SocietiesList" element={<SocietiesList />} />
         <Route path="/recherche" element={<Recherche />} /> 

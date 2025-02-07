@@ -1,213 +1,196 @@
 import React, { useState, useEffect } from "react";
-import { Edit, Eye, Trash2 } from "react-feather";
+import DataTable from "react-data-table-component";
+import axios from "axios";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 
-const DevisList = () => {
+function DevisList() {
   const [devis, setDevis] = useState([]);
   const [filteredDevis, setFilteredDevis] = useState([]);
-  const [filters, setFilters] = useState({
-    NUMBL: "",
-    DATEBL: "",
-    libpv: "",
-    CODECLI: "",
-    ADRCLI: "",
-    RSCLI: "",
-    MTTC: "",
-  });
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
+  const dataBaseName = localStorage.getItem("selectedDatabase");
 
   useEffect(() => {
+    /**
+     * Description
+     * Chargement de liste des devis
+     * @author Ameni
+     * @date 2025-02-06
+     * @returns {filteredDevis / devis}
+     */
     const fetchDevis = async () => {
       try {
         const dbName = localStorage.getItem("selectedDatabase");
-        if (!dbName) {
-          throw new Error("Aucune base de données sélectionnée.");
-        }
+        if (!dbName) throw new Error("Aucune base de données sélectionnée.");
 
-        const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/devis/${dbName}/devis/details`
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/devis/${dbName}/devis`
         );
-
-        if (!response.ok) {
-          throw new Error("Erreur lors de la récupération des devis");
-        }
-
-        const data = await response.json();
-        setDevis(data);
-        setFilteredDevis(data);
-
-        //console.log(response.json());
+        setDevis(response.data.devisList);
+        setFilteredDevis(response.data.devisList);
       } catch (error) {
-        setError(error.message);
+        console.error(error.message);
       }
     };
 
     fetchDevis();
   }, []);
 
-  const handleFilterChange = (key, value) => {
-    setFilters((prev) => ({ ...prev, [key]: value }));
+  /**
+   * Description
+   * Filtrage de contenu de datatable par colonne
+   * @author Bilel
+   * @date 2025-02-06
+   * @returns {filteredDevis}
+   */
+  const handleFilterChange = (e, column) => {
+    const value = e.target.value;
+    filters[column] = value;
+
+    axios.get("http://localhost:5000/api/devis/filterDevis", { params: {filters: filters, databaseName: dataBaseName} })
+    .then(res => {
+      console.log(res.data.data);
+      setFilteredDevis(res.data.data);
+
+    }).catch(error => {
+      console.log(error);
+    })
+
+    // // ? prevFilters : pour qu'on a un tableau de filtres
+    // // ? qui vas être utiliser pour filtre le datatable
+    // // ? par plusieurs colonnes
+    // setFilters((prevFilters) => {
+    //   const newFilters = { ...prevFilters, [column]: value };
+    //   // !problème : tableau de newFilters n'est pas mise à jour convenablement
+    //   const filteredData = devis.filter((chaqueDevis) =>{
+    //     Object.keys(newFilters).every((filter) =>{
+    //       // traduction : le ligne courant(row[key]), est ce qu'il contient(.includes()) la valeur dans le champ de filtres courant(newFilters[key])
+    //       //chaqueDevis[filter]?.toString().toLowerCase().includes(newFilters[filter].toLowerCase())
+    //       console.log(filter);
+
+    //       //return chaqueDevis.filter.toLowerCase().includes(value.toLowerCase());
+    //     })
+    //   });
+    //   // console.log(filteredData);
+    //   setFilteredDevis(filteredData);
+    //   return newFilters;
+    // });
   };
 
-  useEffect(() => {
-    const applyFilters = () => {
-      const filtered = devis.filter((devisItem) => {
-        return (
-          (!filters.NUMBL || devisItem.NUMBL?.includes(filters.NUMBL)) &&
-          (!filters.DATEBL || devisItem.DATEBL?.includes(filters.DATEBL)) &&
-          (!filters.libpv || devisItem.client?.libpv?.includes(filters.libpv)) &&
-          (!filters.CODECLI || devisItem.client?.CODECLI?.includes(filters.CODECLI)) &&
-          (!filters.ADRCLI || devisItem.client?.ADRCLI?.includes(filters.ADRCLI)) &&
-          (!filters.RSCLI || devisItem.client?.RSCLI?.includes(filters.RSCLI)) &&
-          (!filters.MTTC || devisItem.client?.MTTC?.toString().includes(filters.MTTC))
-        );
-      });
-      setFilteredDevis(filtered);
-    };
-    applyFilters();
-  }, [filters, devis]);
+  /**
+   * Description
+   * Filtres pour les barres de recherche
+   * @author Bilel
+   * @date 2025-02-06
+   */
+  const [filters, setFilters] = useState({
+    NUMBL: "",
+    DATT: "",
+    libpv: "",
+    CODECLI: "",
+    ADRCLI: "",
+    RSCLI: "",
+    MTTC: "",
+  });
 
-  const handleView = (NUMBL) => {
-    console.log(`Voir le devis ${NUMBL}`);
-    navigate(`/devis-details/${NUMBL}`);
+  /**
+   * Description
+   * Colonnes de datatable
+   * @author Ameni
+   * @date 2025-02-06
+   */
+  const columns = [
+    { name: "Numéro BL", selector: (row) => row.NUMBL, sortable: true },
+    { name: "Date", selector: (row) => row.datt, sortable: true },
+    { name: "Point de vente", selector: (row) => row.libpv },
+    { name: "Code client", selector: (row) => row.CODECLI },
+    { name: "Adresse", selector: (row) => row.ADRCLI },
+    { name: "RSCLI", selector: (row) => row.RSCLI },
+    { name: "Montant TTC", selector: (row) => row.MTTC },
+  ];
+
+  /**
+   * Description
+   * styles personalisées de datatable
+   * @author Ameni
+   * @date 2025-02-06
+   */
+  const customStyles = {
+    headCells: {
+      style: {
+        fontWeight: "bold",
+        fontSize: "18px",
+        backgroundColor: "#e0f2fe", // Bleu clair
+        color: "#034694",
+        padding: "12px",
+      },
+    },
+    rows: {
+      style: {
+        fontSize: "16px",
+        backgroundColor: "#f8fafc", // Gris très clair
+        "&:hover": {
+          backgroundColor: "#dbeafe", // Bleu clair au survol
+        },
+      },
+    },
+    pagination: {
+      style: {
+        fontSize: "16px",
+        fontWeight: "bold",
+        backgroundColor: "#e0f2fe",
+      },
+    },
   };
-
-  const handleDelete = (id) => {
-    console.log(`Supprimer le devis ${id}`);
-  };
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-lg font-bold text-red-600">{error}</p>
-      </div>
-    );
-  }
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-black font-bold italic text-3xl text-center mb-6">
-        Liste des Devis
-      </h1>
+    <div className="container mx-auto p-6">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6 p-4 bg-white shadow-md rounded-lg">
+        <img
+          src="logicom.jpg"
+          alt="Logicom Logo"
+          className="h-16 w-auto rounded-md shadow-md"
+        />
+        <h1 className="text-4xl font-bold text-blue-700 text-center">
+          📜 Liste des Devis
+        </h1>
+        <div className="flex space-x-4 text-lg font-semibold">
+          <Link to="/Dashboard" className="text-blue-600 hover:underline">
+            Dashboard
+          </Link>
+          <Link to="/" className="text-blue-600 hover:underline">
+            Sign In
+          </Link>
+        </div>
+      </div>
 
-      <div className="overflow-x-auto bg-white rounded-lg shadow-lg border border-gray-200">
-        <table className="min-w-full text-sm">
-          <thead>
-            <tr>
-              {Object.keys(filters).map((key) => (
-                <th key={key} className="px-6 py-2">
-                  <input
-                    type="text"
-                    placeholder="Filtrer..."
-                    value={filters[key]}
-                    onChange={(e) => handleFilterChange(key, e.target.value)}
-                    className="w-full p-2 border rounded-md"
-                  />
-                </th>
-              ))}
-            </tr>
-
-            <tr className="bg-gradient-to-r from-blue-500 via-blue-400 to-blue-600 text-white font-semibold text-lg shadow-md">
-              <th className="px-6 py-4 text-left font-semibold whitespace-nowrap">
-                Numéro BL
-              </th>
-              <th className="px-6 py-4 text-left font-semibold whitespace-nowrap">
-                Date
-              </th>
-              <th className="px-6 py-4 text-left font-semibold whitespace-nowrap">
-                Point de vente
-              </th>
-              <th className="px-6 py-4 text-left font-semibold whitespace-nowrap">
-                Code client
-              </th>
-              <th className="px-6 py-4 text-left font-semibold whitespace-nowrap">
-                Adresse
-              </th>
-              <th className="px-6 py-4 text-left font-semibold whitespace-nowrap">
-                RSCLI
-              </th>
-              <th className="px-6 py-4 text-left font-semibold whitespace-nowrap">
-                Montant TTC
-              </th>
-              <th className="px-6 py-4 text-left font-semibold whitespace-nowrap">
-                Articles
-              </th>
-             
-            </tr>
-          </thead>
-
-          <tbody>
-            {filteredDevis.map((devisItem, index) => (
-              <tr
-                key={index}
-                className={`${
-                  index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                } border-b hover:bg-gray-100 transition-all duration-300`}
-              >
-                <td className="px-6 py-4 text-gray-700 border-b border-gray-300">
-                  {devisItem.NUMBL || "N/A"}
-                </td>
-                <td className="px-6 py-4 text-gray-700 border-b border-gray-300">
-  {devisItem.client?.DATEBL || "N/A"}
-</td>
-
-                <td className="px-6 py-4 text-gray-700 border-b border-gray-300">
-                  {devisItem.client?.libpv || "N/A"}
-                </td>
-                <td className="px-6 py-4 text-gray-700 border-b border-gray-300">
-                  {devisItem.client?.CODECLI || "N/A"}
-                </td>
-                <td className="px-6 py-4 text-gray-700 border-b border-gray-300">
-                  {devisItem.client?.ADRCLI || "N/A"}
-                </td>
-                <td className="px-6 py-4 text-gray-700 border-b border-gray-300">
-                  {devisItem.client?.RSCLI || "N/A"}
-                </td>
-                <td className="px-6 py-4 text-gray-700 border-b border-gray-300">
-                  {devisItem.client?.MTTC || "N/A"} TND
-                </td>
-                <td className="px-6 py-4 text-gray-700 border-b border-gray-300">
-  {devisItem.articles?.length > 0 ? (
-    <table className="min-w-full text-sm">
-      <thead>
-        <tr>
-        <th className="px-4 py-2 text-left">Famille</th>
-          <th className="px-4 py-2 text-left">Code ART</th>
-          <th className="px-4 py-2 text-left">Description</th>
-          <th className="px-4 py-2 text-left">Quantité</th>
-          <th className="px-4 py-2 text-left">Remise</th>
-          <th className="px-4 py-2 text-left">Taux TVA</th>
-        </tr>
-      </thead>
-      <tbody>
-        {devisItem.articles.map((article, i) => (
-          <tr key={i} className="border-b hover:bg-gray-100">
-              <td className="px-4 py-2">{article.famille}</td>
-            <td className="px-4 py-2">{article.CodeART}</td>
-            <td className="px-4 py-2">{article.DesART}</td>
-            <td className="px-4 py-2">{article.QteART}</td>
-            <td className="px-4 py-2">{article.Remise}</td>
-            <td className="px-4 py-2">{article.TauxTVA}</td>
-          </tr>
+      {/* Zone de recherche */}
+      <div className="grid grid-cols-3 gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
+        {Object.keys(filters).map((column, index) => (
+          <input
+            key={index}
+            type="text"
+            onChange={(e) => handleFilterChange(e, column)}
+            placeholder={`🔍 ${columns[index].name}`}
+            className="border p-2 rounded-md shadow-sm focus:ring focus:ring-blue-300"
+          />
         ))}
-      </tbody>
-    </table>
-  ) : (
-    <p>Aucun article</p>
-  )}
-</td>
+      </div>
 
-
-               
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {/* Tableau des devis */}
+      <div className="bg-white p-4 rounded-lg shadow-lg mt-4">
+        <DataTable
+          columns={columns}
+          data={filteredDevis}
+          customStyles={customStyles}
+          selectableRows
+          fixedHeader
+          pagination
+          highlightOnHover
+          striped
+        />
       </div>
     </div>
   );
-};
+}
 
 export default DevisList;
