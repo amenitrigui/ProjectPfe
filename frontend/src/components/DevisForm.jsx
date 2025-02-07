@@ -95,7 +95,7 @@ const DevisForm = () => {
 
   /**
    * Description
-   * @author Bilel
+   * @author Unknown
    * @date 2025-02-06
    * @param {any} selectedDevis
    * @returns {any}
@@ -131,7 +131,7 @@ const DevisForm = () => {
    * @date 2025-02-06
    * @param {any} e
    * @returns {any}
-   * @author Bilel
+   * @author Unknown
    */
 
   const handleSubmit = (e) => {
@@ -200,7 +200,7 @@ const DevisForm = () => {
   /**
    * Description
    * ? useEffect #1
-   * @author Bilel
+   * @author Unknown
    * @date 2025-02-06
    * @param {any} (
    * @returns {any}
@@ -219,7 +219,7 @@ const DevisForm = () => {
 
   /**
    * Description
-   * @author Bilel
+   * @author Unknown
    * @date 2025-02-06
    * @param {any} article
    * @returns {any}
@@ -236,7 +236,7 @@ const DevisForm = () => {
 
   /**
    * Description
-   * @author Bilel
+   * @author Unknown
    * @date 2025-02-06
    * @returns {any}
    */

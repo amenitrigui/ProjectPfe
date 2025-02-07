@@ -16,10 +16,22 @@ const oAuth2Client = new google.auth.OAuth2(
   "https://developers.google.com/oauthplayground"
 );
 
+// * un client de google Oauth2 pour
+// * permettre à nodemailer d'accèder
+// * au compte google pour pouvoir
+// * envoyer un email
 oAuth2Client.setCredentials({
   refresh_token: process.env.NODEMAILER_REFRESH_TOKEN,
 });
 
+/**
+ * Description
+ * Enregistrer un utilisateur dans la bd
+ * @verb POST
+ * @author Unknown
+ * @date 2025-02-07
+ * @returns {status}
+ */
 const registerUser = async (req, res) => {
   const { email, motpasse, nom } = req.body;
 
@@ -65,6 +77,14 @@ const registerUser = async (req, res) => {
   }
 };
 
+/**
+ * Description
+ * Generer un jwt d'accès pour un utilisateur déjà inscrit
+ * @verb POST
+ * @author Unknown
+ * @date 2025-02-07
+ * @returns {status}
+ */
 const loginUser = async (req, res) => {
   const { nom, motpasse } = req.body;
 
@@ -133,6 +153,13 @@ const loginUser = async (req, res) => {
   }
 };
 
+/**
+ * Description
+ * Recupère la liste de devis pour une sociète donnée
+ * @author Unknown
+ * @date 2025-02-07
+ * @returns {status}
+ */
 const selectDatabase = async (req, res) => {
   const { databaseName } = req.body;
 
@@ -143,19 +170,7 @@ const selectDatabase = async (req, res) => {
   }
 
   try {
-    const authHeader = req.header("Authorization");
-    console.log(authHeader); // authorisation verifie est ce que kn utilisateur c'est bon authentifie donc acceder ynj yod5ollll selectionne
-    if (!authHeader) {
-      return res
-        .status(401)
-        .json({ message: "En-tête Authorization manquant." });
-    }
-
-    const decoded = jwt.verify(
-      authHeader.replace("Bearer ", ""),
-      process.env.JWT_SECRET_KEY
-    );
-    console.log(decoded); //{ codeuser: '02', iat: 1738828227, exp: 1738914627 }
+    const decoded = verifyTokenValidity(req);
     const codeuser = decoded.codeuser;
 
     const dbConnection = new Sequelize(
@@ -199,6 +214,13 @@ const selectDatabase = async (req, res) => {
   }
 };
 
+/**
+ * Description
+ * ????
+ * @author Unknown
+ * @date 2025-02-07
+ * @returns {status}
+ */
 const getDevisDetails = async (req, res) => {
   const { databaseName, NUMBL } = req.params;
 
@@ -462,6 +484,13 @@ const getAllClients = async (req, res) => {
   }
 };
 
+/**
+ * Description
+ * ????
+ * @author Unknown
+ * @date 2025-02-07
+ * @returns {any}
+ */
 const getAllSectors = async (req, res) => {
   const { databaseName } = req.params;
 
@@ -510,6 +539,14 @@ const getAllSectors = async (req, res) => {
   }
 };
 
+/**
+ * Description
+ * Envoyer un email de réinitialisation de mot de passe
+ * pour un email donné si un utilisateur ayant cette email existe
+ * @author Mahdi
+ * @date 2025-02-07
+ * @returns {status}
+ */
 const sendPasswordResetEmail = async (req, res) => {
   const { email } = req.body;
   if (!email) {
@@ -575,6 +612,14 @@ const sendPasswordResetEmail = async (req, res) => {
   }
 };
 
+/**
+ * Description
+ * réinitialiser le mot de passe pour un email donné
+ * si un utilisateur ayant cet email existe
+ * @author Mahdi
+ * @date 2025-02-07
+ * @returns {any}
+ */
 const passwordReset = async (req, res) => {
   const { email, password, token } = req.body;
 
