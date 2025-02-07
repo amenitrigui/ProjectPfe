@@ -156,7 +156,7 @@ const Dashboard = () => {
             </li>
             <li>
               <Link
-                to="/clients"
+                to="/ClientList"
                 className="block hover:bg-gray-700 p-2 rounded"
               >
                 Gestion des Clients

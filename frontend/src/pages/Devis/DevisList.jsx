@@ -53,26 +53,6 @@ function DevisList() {
     }).catch(error => {
       console.log(error);
     })
-
-    // // ? prevFilters : pour qu'on a un tableau de filtres
-    // // ? qui vas être utiliser pour filtre le datatable
-    // // ? par plusieurs colonnes
-    // setFilters((prevFilters) => {
-    //   const newFilters = { ...prevFilters, [column]: value };
-    //   // !problème : tableau de newFilters n'est pas mise à jour convenablement
-    //   const filteredData = devis.filter((chaqueDevis) =>{
-    //     Object.keys(newFilters).every((filter) =>{
-    //       // traduction : le ligne courant(row[key]), est ce qu'il contient(.includes()) la valeur dans le champ de filtres courant(newFilters[key])
-    //       //chaqueDevis[filter]?.toString().toLowerCase().includes(newFilters[filter].toLowerCase())
-    //       console.log(filter);
-
-    //       //return chaqueDevis.filter.toLowerCase().includes(value.toLowerCase());
-    //     })
-    //   });
-    //   // console.log(filteredData);
-    //   setFilteredDevis(filteredData);
-    //   return newFilters;
-    // });
   };
 
   /**

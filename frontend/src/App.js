@@ -7,7 +7,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import DevisForm from './components/DevisForm';
 import HomePage from './pages/HomePage';
 import SignInPage from './pages/authentication/SignInPage';
-import DevisList from './pages/DevisList';
+import DevisList from './pages/Devis/DevisList';
 import DevisDetails from './components/DevisDetails';
 import Dashboard from './pages/Dashboard';
 import SocietiesList from './pages/SocietiesList';
@@ -18,6 +18,7 @@ import GestionCommerciale from './pages/GestionCommerciale';
 import GestionDesVentes from './pages/GestionDesVentes';
 import RegisterPage from './pages/authentication/RegisterPage';
 import EmailEnvoye from './pages/authentication/EmailEnvoye';
+import ClientList from './pages/Clients/ClientList';
 
 function App() {
   
@@ -53,6 +54,7 @@ function App() {
         <Route path="/RegisterPage" element={<RegisterPage />} /> 
         <Route path="/ResetPassword" element={<ResetPassword />}></Route>
         <Route path="/EmailEnvoye" element = {<EmailEnvoye />}></Route>
+        <Route path="/ClientList" element={<ClientList />} />
       </Routes>
     </Router>
   );
