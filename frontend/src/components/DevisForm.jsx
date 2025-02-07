@@ -37,53 +37,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useLocation } from "react-router-dom";
 
 const DevisForm = () => {
-  const [formData, setFormData] = useState({
-    NUMBL: "",
-    pointVente: "",
-    DATEBL: new Date().toISOString().split("T")[0],
-
-    CODEREP: "",
-    RSREP: "",
-    adresse: "",
-    cp: "",
-    rsoc: "",
-    email: "",
-    tel1: "",
-    code: "",
-    MTTC: "",
-    numPage: 1,
-    commentaire: "",
-    transport: "",
-    codesec: "",
-    desisec: "",
-    delaiLivraison: "",
-    lignes: [
-      {
-        famille: "",
-        code: "",
-        libelle: "",
-        unite: "",
-        nbrunite: "",
-        prix1: "",
-        Remise: "",
-        tauxtva: "",
-        puttc: "",
-        netHt: "",
-        CONFIG: "",
-      },
-    ],
-    totalHt: "",
-    remiseTotale: "",
-    netHtGlobal: "",
-    taxe: "",
-    timbre: "",
-
-    Av: {
-      impot: "",
-    },
-    aPayer: "",
-  });
-
+  
   const formattedDate = new Date().toLocaleDateString("fr-FR");
 
   const { dbName } = useParams();
@@ -92,53 +46,7 @@ const DevisForm = () => {
   const formRef = useRef(null);
 
   const navigate = useNavigate();
-
-  /**
-   * Description
-   * @author Bilel
-   * @date 2025-02-06
-   * @param {any} selectedDevis
-   * @returns {any}
-   */
-  const handleEditDevis = (selectedDevis) => {
-    setFormData({
-      ...selectedDevis,
-      DATEBL: selectedDevis.DATEBL || new Date().toISOString().split("T")[0],
-      lignes: selectedDevis.lignes || [],
-    });
-  };
-
-  const handlePrint = () => {
-    const printContent = document.getElementById("devis");
-    if (!printContent) {
-      console.error("Aucun contenu à imprimer.");
-      return;
-    }
-
-    const originalContent = document.body.innerHTML;
-    document.body.innerHTML = printContent.outerHTML;
-
-    window.print();
-
-    document.body.innerHTML = originalContent;
-    window.location.reload();
-  };
-
   
-  /**
-   * Description
-   * hide show devis??
-   * @date 2025-02-06
-   * @param {any} e
-   * @returns {any}
-   * @author Bilel
-   */
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setShowDevis(true);
-  };
-
   const [clients, setClients] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [familles, setFamilles] = useState([]);
@@ -194,6 +102,100 @@ const DevisForm = () => {
   const [selectedRsoc, setSelectedRsoc] = useState(null);
   const [message, setMessage] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [formData, setFormData] = useState({
+    NUMBL: "",
+    pointVente: "",
+    DATEBL: new Date().toISOString().split("T")[0],
+
+    CODEREP: "",
+    RSREP: "",
+    adresse: "",
+    cp: "",
+    rsoc: "",
+    email: "",
+    tel1: "",
+    code: "",
+    MTTC: "",
+    numPage: 1,
+    commentaire: "",
+    transport: "",
+    codesec: "",
+    desisec: "",
+    delaiLivraison: "",
+    lignes: [
+      {
+        famille: "",
+        code: "",
+        libelle: "",
+        unite: "",
+        nbrunite: "",
+        prix1: "",
+        Remise: "",
+        tauxtva: "",
+        puttc: "",
+        netHt: "",
+        CONFIG: "",
+      },
+    ],
+    totalHt: "",
+    remiseTotale: "",
+    netHtGlobal: "",
+    taxe: "",
+    timbre: "",
+
+    Av: {
+      impot: "",
+    },
+    aPayer: "",
+  });
+
+
+  /**
+   * Description
+   * @author Bilel
+   * @date 2025-02-06
+   * @param {any} selectedDevis
+   * @returns {any}
+   */
+  const handleEditDevis = (selectedDevis) => {
+    setFormData({
+      ...selectedDevis,
+      DATEBL: selectedDevis.DATEBL || new Date().toISOString().split("T")[0],
+      lignes: selectedDevis.lignes || [],
+    });
+  };
+
+  const handlePrint = () => {
+    const printContent = document.getElementById("devis");
+    if (!printContent) {
+      console.error("Aucun contenu à imprimer.");
+      return;
+    }
+
+    const originalContent = document.body.innerHTML;
+    document.body.innerHTML = printContent.outerHTML;
+
+    window.print();
+
+    document.body.innerHTML = originalContent;
+    window.location.reload();
+  };
+
+  
+  /**
+   * Description
+   * hide show devis??
+   * @date 2025-02-06
+   * @param {any} e
+   * @returns {any}
+   * @author Bilel
+   */
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setShowDevis(true);
+  };
+
 
 
   

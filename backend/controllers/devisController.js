@@ -800,7 +800,8 @@ const getCodeRepAndRsRep = async (req, res) => {
 
 /**
  * Description
- * Filtrer les données par champ
+ * Filtrer les données en permettant
+ * la filtre par plusieurs champs
  * @author Mahdi
  * @date 2025-02-07
  * @param {searchTerm} req
@@ -809,12 +810,9 @@ const getCodeRepAndRsRep = async (req, res) => {
  * @returns {filterDevis}
  */
 const filterDevis = async (req, res) => {
-  const { searchTerm } = req.query;
+  // ? tableau contenant les champs de filtre et leurs valeurs
   const { filters } = req.query;
   const { databaseName } = req.query;
-
-  console.log(filters);
-
   try {
     const dbConnection = new Sequelize(
       `mysql://root:@127.0.0.1:3306/${databaseName}`,
@@ -837,11 +835,14 @@ const filterDevis = async (req, res) => {
         console.log(err);
       });
 
-
+      // ? liste des conditions
+      // ? exemple : ["NUML like :numbl, "libpv like :libpv"...]
       let whereClauses = [];
+      // ? object contenant les noms des paramètres de requete sql avec leurs remplacements
+      // ? exemple : {{numbl: %dv2401%}, {libpv: %kasserine% }}
       let replacements = {};
       
-      // Add conditions only for non-empty filters
+      // ? ajout de chaque condition quand la valeur n'est pas vide
       if (filters.NUMBL) {
         whereClauses.push('NUMBL like :numbl');
         replacements.numbl = `%${filters.NUMBL}%`;
@@ -871,17 +872,16 @@ const filterDevis = async (req, res) => {
         replacements.mttc = `%${filters.MTTC}%`;
       }
       
-      // If there are any filters, join them with "OR" (as per your original query)
+      // ? concatenation de l'opérateur logique après chaque ajout d'un nouvelle condition
       let whereCondition = whereClauses.join(' AND ');
       
-      // If no filters are added, the condition would be an empty string, and we should skip the WHERE clause
+      // ? Si on on a aucune condition on effectue une requete de select * from dfp
       let query = `
         SELECT NUMBL, libpv, datt, CODECLI, ADRCLI, RSCLI, MTTC
         FROM dfp
         ${whereCondition ? 'WHERE ' + whereCondition : ''}
       `;
-      
-      // Execute the query with the dynamically built replacements
+
       const result = await dbConnection.query(query, {
         replacements: replacements,
         type: dbConnection.QueryTypes.SELECT,
