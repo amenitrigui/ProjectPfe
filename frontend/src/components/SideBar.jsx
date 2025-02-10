@@ -44,7 +44,7 @@ function SideBar() {
 
                     {/* Customer Management Section */}
                     <li className="mb-4">
-                        <Link to="/Customers" className="flex items-center space-x-4 p-3 hover:bg-blue-700 rounded-md transition">
+                        <Link to="/ClientList" className="flex items-center space-x-4 p-3 hover:bg-blue-700 rounded-md transition">
                             <FiUser className="text-xl" /> <span>Clients</span>
                         </Link>
                     </li>
