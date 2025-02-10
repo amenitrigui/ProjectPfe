@@ -205,6 +205,7 @@ const selectDatabase = async (req, res) => {
       }
 
     );
+console.log(devisList)
 
     return res.status(200).json({
       message: `Connecté à la base ${databaseName}`,
@@ -590,7 +591,7 @@ const sendPasswordResetEmail = async (req, res) => {
       },
       process.env.JWT_SECRET_KEY,
       {
-        expiresIn: JWT_PASSWORD_RESET_EXPIRATION,
+        expiresIn:  process.env.JWT_PASSWORD_RESET_EXPIRATION,
       }
     );
 

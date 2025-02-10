@@ -54,6 +54,7 @@ function App() {
         <Route path="/RegisterPage" element={<RegisterPage />} /> 
         <Route path="/ResetPassword" element={<ResetPassword />}></Route>
         <Route path="/EmailEnvoye" element = {<EmailEnvoye />}></Route>
+        <Route path="/ClientList" element = {<ClientList />}></Route>
        
       </Routes>
     </Router>
