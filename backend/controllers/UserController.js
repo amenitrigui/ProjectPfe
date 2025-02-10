@@ -126,7 +126,6 @@ const loginUser = async (req, res) => {
         type: sequelizeUserERP.QueryTypes.SELECT,
       }
     );
-
     // Création du token JWT
     const token = jwt.sign(
       { codeuser: user.codeuser },
@@ -262,7 +261,7 @@ const getDevisDetails = async (req, res) => {
     await dbConnection.authenticate();
 
     const [devisDetails, ldfpDetails] = await Promise.all([
-      dbConnection.query(
+      dbConnection.query(x
         `SELECT dfp.NUMBL, dfp.ADRCLI, dfp.CODECLI, dfp.cp , dfp.MTTC, dfp.MHT, dfp.CODEREP, dfp.RSREP ,dfp.comm ,dfp.RSCLI, dfp.usera, dfp.DATEBL
          FROM dfp
          WHERE dfp.NUMBL = :NUMBL AND dfp.usera = :codeuser`,

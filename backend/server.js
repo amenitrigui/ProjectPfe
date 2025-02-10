@@ -28,7 +28,7 @@ app.use("/api/users", userRoutes);
 app.get("/", async (req, res) => {
   try {
     await sequelize.authenticate();// conexion avec la base de donnes
-    console.log("Connexion à la base de données réussie !");
+    console.log(">get server.js: Connexion à la base de données réussie !");
   } catch (error) { 
     console.error("Impossible de se connecter à la base de données:", error);
     res.status(500).send("Impossible de se connecter à la base de données");
