@@ -20,13 +20,14 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(express.json());
+//midelware
 app.use("/api/devis", devisRoutes);
 app.use("/api/article", articleRoutes);
 app.use("/api/users", userRoutes);
  
 app.get("/", async (req, res) => {
   try {
-    await sequelize.authenticate();
+    await sequelize.authenticate();// conexion avec la base de donnes
     console.log("Connexion à la base de données réussie !");
   } catch (error) { 
     console.error("Impossible de se connecter à la base de données:", error);

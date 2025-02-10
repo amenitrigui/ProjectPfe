@@ -40,7 +40,7 @@ const getSequelizeConnection = (dbName = "") => {
 const sequelize = getSequelizeConnection();  
 
 
-const sequelizeUserERP = getSequelizeConnection("usererpsole")
+const sequelizeUserERP = getSequelizeConnection("usererpsole")///le non de la base de donnnes
 const testConnections = async () => {
   try { 
     await sequelize.authenticate();
@@ -66,10 +66,10 @@ const getDatabases = async () => {
     const databases = result.map((db) => db.Database);
 
     if (databases.length === 0) {
-      throw new Error("Aucune base de données disponible.");
+      throw new Error("Aucune base de données disponible.");// xamp mskrrrr
     }
 
-    return databases;
+    return databases;// database =0 il nyapas 
   } catch (error) {
     console.error("Erreur lors de la récupération des bases de données :", error.message);
     return [];

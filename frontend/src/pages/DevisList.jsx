@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import SideBar from "../components/SideBar";
 
 function DevisList() {
   const [devis, setDevis] = useState([]);
@@ -37,7 +38,7 @@ function DevisList() {
 
   const columns = [
     { name: "Numéro BL", selector: (row) => row.NUMBL, sortable: true },
-    { name: "Date", selector: (row) => row.DATT, sortable: true },
+    { name: "Date", selector: (row) => row.datt, sortable: true },
     { name: "Point de vente", selector: (row) => row.libpv },
     { name: "Code client", selector: (row) => row.CODECLI },
     { name: "Adresse", selector: (row) => row.ADRCLI },
@@ -93,7 +94,9 @@ function DevisList() {
   return (
     <div className="container mx-auto p-6">
       {/* Header */}
+ 
       <div className="flex justify-between items-center mb-6 p-4 bg-white shadow-md rounded-lg">
+        
         <img src="logicom.jpg" alt="Logicom Logo" className="h-16 w-auto rounded-md shadow-md" />
         <h1 className="text-4xl font-bold text-blue-700 text-center">📜 Liste des Devis</h1>
         <div className="flex space-x-4 text-lg font-semibold">

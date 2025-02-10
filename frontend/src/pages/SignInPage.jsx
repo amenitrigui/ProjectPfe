@@ -31,7 +31,7 @@ function SignInPage() {
         }),
       });
 
-      const data = await response.json();
+      const data = await response.json();// convertir la reponse de seurveur en objet javascript
 
       if (response.ok) {
         localStorage.setItem("token", data.token);
@@ -39,6 +39,7 @@ function SignInPage() {
         localStorage.setItem("user", JSON.stringify(data.user));
         navigate("/SocietiesList");
       } else {
+    
         setError(data.message || "Erreur de connexion. Veuillez réessayer.");
       }
     } catch (error) {

@@ -34,7 +34,7 @@ function RegisterPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          codeuser: "02",
+          // codeuser: "02",
           nom: trimmedNom,
           email: trimmedEmail,
           motpasse: trimmedPassword,
@@ -44,8 +44,8 @@ function RegisterPage() {
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
+           localStorage.setItem("token", data.token);
+     localStorage.setItem("user", JSON.stringify(data.user));
         navigate("/SocietiesList");
       } else {
         setError(data.message || "Erreur lors de l'inscription. Veuillez réessayer.");
