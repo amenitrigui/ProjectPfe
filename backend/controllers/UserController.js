@@ -10,19 +10,23 @@ const { google } = require("googleapis");
 const handlebars = require("handlebars");
 const fs = require("fs");
 
-// * utilisation de l'api de OAuth2 pour permettre à nodemailer
-// * d'accèder au compte gmail qu'on utilise pour envoyer des demandes
-// * de réinitialisation de mots de passe
+const { getDatabaseConnection, verifyTokenValidity } = require("../common/commonMethods");
+
+// * initialisation de client OAuth2 avec
+// * les paramètres: clientId, clientSecret, redirectUrl
+// * clientId: id de l'application, fourni par google
+// * clientSecret: secret key associé avec le clientId, fourni par google
+// * redirectUrl: rédirection lors de l'accord d'authorisations par l'utilisateur
 const oAuth2Client = new google.auth.OAuth2(
   process.env.NODEMAILER_CLIENT_ID,
   process.env.NODEMAILER_CLIENT_SECRET,
   "https://developers.google.com/oauthplayground"
 );
 
-// * un client de google Oauth2 pour
-// * permettre à nodemailer d'accèder
-// * au compte google pour pouvoir
-// * envoyer un email
+// * initialisation de refresh_token pour qu'on peut s'authentifier avec
+// * gmail et obtenir un token d'accès
+// * access token : utilisé pour faire des requete api vers gmail autorisé par google
+// * refresh token : permet au client OAuth2 de demander un nouveau access token
 oAuth2Client.setCredentials({
   refresh_token: process.env.NODEMAILER_REFRESH_TOKEN,
 });
@@ -176,21 +180,8 @@ const selectDatabase = async (req, res) => {
     const decoded = verifyTokenValidity(req);
     const codeuser = decoded.codeuser;
 
-    const dbConnection = new Sequelize(
-      `mysql://root:@127.0.0.1:3306/${databaseName}`,
-      {
-        dialect: "mysql",
-        logging: console.log,
-        pool: {
-          max: 5,
-          min: 0,
-          acquire: 30000,
-          idle: 10000,
-        },
-      }
-    );
-
-    await dbConnection.authenticate();
+    // ! await keyword is VERY important
+    const dbConnection = await getDatabaseConnection(databaseName);
 
     const devisList = await dbConnection.query(
       
@@ -222,7 +213,7 @@ console.log(devisList)
 
 /**
  * Description
- * ???? this does not belong in here
+ * ! this does not belong in here
  * @author Unknown
  * @date 2025-02-07
  * @returns {status}
@@ -250,19 +241,10 @@ const getDevisDetails = async (req, res) => {
       process.env.JWT_SECRET_KEY
     );
     const codeuser = decoded.codeuser;
-    const dbConnection = new Sequelize(
-      `mysql://root:@127.0.0.1:3306/${databaseName}`,
-      {
-        dialect: "mysql",
-        logging: false,
-        pool: { max: 5, min: 0, acquire: 30000, idle: 10000 },
-      }
-    );
-
-    await dbConnection.authenticate();
+    const dbConnection = getDatabaseConnection(databaseName);
 
     const [devisDetails, ldfpDetails] = await Promise.all([
-      dbConnection.query(x
+      dbConnection.query(
         `SELECT dfp.NUMBL, dfp.ADRCLI, dfp.CODECLI, dfp.cp , dfp.MTTC, dfp.MHT, dfp.CODEREP, dfp.RSREP ,dfp.comm ,dfp.RSCLI, dfp.usera, dfp.DATEBL
          FROM dfp
          WHERE dfp.NUMBL = :NUMBL AND dfp.usera = :codeuser`,
@@ -354,16 +336,7 @@ const getLatestDevisByYear = async (req, res) => {
     );
     const codeuser = decoded.codeuser;
 
-    const dbConnection = new Sequelize(
-      `mysql://root:@127.0.0.1:3306/${databaseName}`,
-      {
-        dialect: "mysql",
-        logging: false,
-        pool: { max: 5, min: 0, acquire: 30000, idle: 10000 },
-      }
-    );
-
-    await dbConnection.authenticate();
+    const dbConnection = getDatabaseConnection(databaseName);
 
     const latestDevis = await dbConnection.query(
       `SELECT 
@@ -433,6 +406,7 @@ const getLatestDevisByYear = async (req, res) => {
 /**
  * Description
  * récupère la liste des clients d'une societé (databaseName)
+ * ! this does not belong in here
  * @author Unknown
  * @date 2025-02-10
  * @param {any} req
@@ -449,29 +423,10 @@ const getAllClients = async (req, res) => {
   }
 
   try {
-    const authHeader = req.header("Authorization");
-    if (!authHeader) {
-      return res
-        .status(401)
-        .json({ message: "En-tête Authorization manquant." });
-    }
-
-    const decoded = jwt.verify(
-      authHeader.replace("Bearer ", ""),
-      process.env.JWT_SECRET_KEY
-    );
+    const decoded = verifyTokenValidity(req, res);
     const codeuser = decoded.codeuser;
 
-    const dbConnection = new Sequelize(
-      `mysql://root:@127.0.0.1:3306/${databaseName}`,
-      {
-        dialect: "mysql",
-        logging: false,
-        pool: { max: 5, min: 0, acquire: 30000, idle: 10000 },
-      }
-    );
-
-    await dbConnection.authenticate();
+    const dbConnection = getDatabaseConnection(databaseName);
 
     // Récupérer tous les clients
     const clients = await dbConnection.query(
@@ -526,16 +481,7 @@ const getAllSectors = async (req, res) => {
   }
 
   try {
-    const dbConnection = new Sequelize(
-      `mysql://root:@127.0.0.1:3306/${databaseName}`,
-      {
-        dialect: "mysql",
-        logging: false,
-        pool: { max: 5, min: 0, acquire: 30000, idle: 10000 },
-      }
-    );
-
-    await dbConnection.authenticate();
+    const dbConnection = getDatabaseConnection(databaseName);
 
     // Récupérer tous les secteurs de la table secteur
     const sectors = await dbConnection.query(
@@ -567,7 +513,7 @@ const getAllSectors = async (req, res) => {
 /**
  * Description
  * Envoyer un email de réinitialisation de mot de passe
- * pour un email donné si un utilisateur ayant cette email existe
+ * pour un email donné si un utilisateur ayant cet email existe
  * @author Mahdi
  * @date 2025-02-07
  * @returns {status}
@@ -660,7 +606,7 @@ const passwordReset = async (req, res) => {
       "Le mot de passe à utiliser lors de réinitialisation ne peut pas etre vide",
     });
   }
-  const decodedJWT = verifyTokenValidity(req);
+  const decodedJWT = verifyTokenValidity(req,res);
 
   try {
     const user = await User.findOne({ where: { email } });
@@ -683,37 +629,6 @@ const passwordReset = async (req, res) => {
     });
   }
 };
-
-/**
- * Description
- * Vérifier la validité d'un jwt
- * @author Mahdi
- * @date 2025-02-07
- * @param {request}
- * @returns {decodedToken}
- */
-function verifyTokenValidity(req) {
-  const authHeader = req.header("Authorization");
-    if (!authHeader) {
-      return res
-        .status(401)
-        .json({ message: "En-tête Authorization manquant." });
-    }
-
-    const decodedJWT = jwt.verify(
-      authHeader.replace("Bearer ", ""),
-      process.env.JWT_SECRET_KEY
-    );
-
-    // ? decodedJWT.exp s'exprime en secondes d'ou *1000 
-    if (Date.now() > decodedJWT.exp * 1000) {
-      return res
-        .status(401)
-        .json({ message: "Session expiré, veuillez reconnectez svp" });
-    }
-
-    return decodedJWT;
-}
 
 // Exporter la méthode
 module.exports = {
