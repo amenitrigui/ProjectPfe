@@ -10,6 +10,9 @@ const { google } = require("googleapis");
 const handlebars = require("handlebars");
 const fs = require("fs");
 
+// * utilisation de l'api de OAuth2 pour permettre à nodemailer
+// * d'accèder au compte gmail qu'on utilise pour envoyer des demandes
+// * de réinitialisation de mots de passe
 const oAuth2Client = new google.auth.OAuth2(
   process.env.NODEMAILER_CLIENT_ID,
   process.env.NODEMAILER_CLIENT_SECRET,
@@ -203,7 +206,6 @@ const selectDatabase = async (req, res) => {
       }
 
     );
-  console.log(devisList)
 
     return res.status(200).json({
       message: `Connecté à la base ${databaseName}`,
@@ -220,7 +222,7 @@ const selectDatabase = async (req, res) => {
 
 /**
  * Description
- * ????
+ * ???? this does not belong in here
  * @author Unknown
  * @date 2025-02-07
  * @returns {status}
@@ -320,6 +322,15 @@ const getDevisDetails = async (req, res) => {
   }
 };
 
+/**
+ * Description
+ * retourne la devis ayant l'année la plus récente avec ses lignes d'articles
+ * @author Unknown
+ * @date 2025-02-10
+ * @param {any} req
+ * @param {any} res
+ * @returns {any}
+ */
 const getLatestDevisByYear = async (req, res) => {
   const { databaseName } = req.params;
 
@@ -367,6 +378,7 @@ const getLatestDevisByYear = async (req, res) => {
       }
     );
 
+    // ? ?????
     // if (latestDevis.length === 0) {
     //   return res.status(404).json({ message: 'Aucun devis trouvé pour cet utilisateur.' });
     // }
@@ -418,6 +430,15 @@ const getLatestDevisByYear = async (req, res) => {
   }
 };
 
+/**
+ * Description
+ * récupère la liste des clients d'une societé (databaseName)
+ * @author Unknown
+ * @date 2025-02-10
+ * @param {any} req
+ * @param {any} res
+ * @returns {clients}
+ */
 const getAllClients = async (req, res) => {
   const { databaseName } = req.params;
 
