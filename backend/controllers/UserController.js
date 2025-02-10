@@ -127,6 +127,7 @@ const loginUser = async (req, res) => {
     // Création du token JWT
     const token = jwt.sign(
       { codeuser: user.codeuser },
+      
       process.env.JWT_SECRET_KEY,
       { expiresIn: process.env.JWT_EXPIRATION }
     );
@@ -190,6 +191,7 @@ const selectDatabase = async (req, res) => {
     await dbConnection.authenticate();
 
     const devisList = await dbConnection.query(
+      
       `SELECT YEAR(datebl) AS year, MAX(numbl) AS numbl
        FROM dfp
        WHERE usera = :codeuser
@@ -199,9 +201,9 @@ const selectDatabase = async (req, res) => {
         replacements: { codeuser },
         type: dbConnection.QueryTypes.SELECT,
       }
-    );
 
-    console.log(devisList);
+    );
+  console.log(devisList)
 
     return res.status(200).json({
       message: `Connecté à la base ${databaseName}`,

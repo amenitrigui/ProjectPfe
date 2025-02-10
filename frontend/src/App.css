@@ -12,6 +12,18 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
+/* Position the logo at the top-right corner */
+.logicom-logo {
+  position: fixed;
+  top: 10px;  /* Adjust to place it lower or higher */
+  right: 10px; /* Adjust to place it further to the right */
+  z-index: 9999; /* Ensure it stays above other content */
+}
+
+.logicom-logo img {
+  width: 100px; /* Adjust size of the logo */
+  height: auto;
+}
 
 .App-header {
   background-color: #282c34;
