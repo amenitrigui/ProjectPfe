@@ -39,7 +39,9 @@ const Dashboard = () => {
         
         if (!token || !selectedDatabase) {
           setError('Token ou base de données non définis.');
-          setLoading(false);
+          navigate("/");
+          
+          // ? setLoading(false);
           return;
         }
 

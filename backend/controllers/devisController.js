@@ -111,8 +111,9 @@ const getClientByRsoc = async (req, res) => {
     await dynamicSequelize.authenticate();
     console.log(`Connecté à la base de données : ${dbName}`);
 
+    // création d'une instance du modèle client
     const Client = defineClientModel(dynamicSequelize);
-
+    
     const client = await Client.findOne({
       where: { rsoc: rsoc },
       attributes: ["code", "rsoc", "adresse", "cp", "email", "tel1"],
@@ -309,6 +310,13 @@ const getDevisWithDetails = async (req, res) => {
   }
 };
 
+/**
+ * Description
+ * Récuperer le nombre de devis d'une socièté donnée (dbName)
+ * @author Unknown
+ * @date 2025-02-08
+ * @returns {status}
+ */
 const getTotalDevis = async (req, res) => {
   const { dbName } = req.params;
 

@@ -177,7 +177,7 @@ const selectDatabase = async (req, res) => {
       `mysql://root:@127.0.0.1:3306/${databaseName}`,
       {
         dialect: "mysql",
-        logging: false,
+        logging: console.log,
         pool: {
           max: 5,
           min: 0,
@@ -200,6 +200,8 @@ const selectDatabase = async (req, res) => {
         type: dbConnection.QueryTypes.SELECT,
       }
     );
+
+    console.log(devisList);
 
     return res.status(200).json({
       message: `Connecté à la base ${databaseName}`,
@@ -675,7 +677,7 @@ function verifyTokenValidity(req) {
         .json({ message: "En-tête Authorization manquant." });
     }
 
-    const decodedToken = jwt.verify(
+    const decodedJWT = jwt.verify(
       authHeader.replace("Bearer ", ""),
       process.env.JWT_SECRET_KEY
     );
@@ -687,7 +689,7 @@ function verifyTokenValidity(req) {
         .json({ message: "Session expiré, veuillez reconnectez svp" });
     }
 
-    return decodedToken;
+    return decodedJWT;
 }
 
 // Exporter la méthode

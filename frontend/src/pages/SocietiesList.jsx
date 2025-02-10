@@ -45,14 +45,16 @@ const SocietiesList = () => {
       );
 
       if (response.status === 200) {
-        const devisList = response.data.devis;
-        console.log("Liste des devis récupérés :", devisList);
+        console.log(response.data);
+        // ! devisList 
+        // const devisList = response.data.devis;
+        // console.log("Liste des devis récupérés :", devisList);
 
-        const selectedNumbl = devisList.map((devis) => devis.numbl);
-        console.log("Tous les numbl récupérés :", selectedNumbl);
+        // const selectedNumbl = devisList.map((devis) => devis.numbl);
+        // console.log("Tous les numbl récupérés :", selectedNumbl);
 
         localStorage.setItem("selectedDatabase", society);
-        localStorage.setItem("selectedNumbl", JSON.stringify(selectedNumbl));
+        // localStorage.setItem("selectedNumbl", JSON.stringify(selectedNumbl));
         localStorage.setItem("selectedRsoc", society.rsoc);
 
         navigate("/Dashboard");

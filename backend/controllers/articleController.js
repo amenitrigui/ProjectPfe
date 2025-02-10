@@ -54,6 +54,7 @@ const getFamilles = async (req, res) => {
     });
   }
 };
+
 const getAllcodearticle = async (req, res) => {
   const { dbName } = req.params;
 
