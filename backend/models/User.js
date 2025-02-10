@@ -1,6 +1,13 @@
 const { DataTypes } = require("sequelize");
 const { sequelizeUserERP } = require("../db/config");
 
+/**
+ * Description
+ * Créer un objet user qui corresond à l'entité utilisateur dans la base de données
+ * @author Bilel
+ * @date 2025-02-06
+ * @returns {user}
+ */
 const User = sequelizeUserERP.define('User', {
     codeuser: {
         type: DataTypes.INTEGER,

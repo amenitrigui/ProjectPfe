@@ -6,18 +6,19 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 
 import DevisForm from './components/DevisForm';
 import HomePage from './pages/HomePage';
-import SignInPage from './pages/SignInPage';
-import DevisList from './pages/DevisList';
+import SignInPage from './pages/authentication/SignInPage';
+import DevisList from './pages/Devis/DevisList';
 import DevisDetails from './components/DevisDetails';
 import Dashboard from './pages/Dashboard';
 import SocietiesList from './pages/SocietiesList';
 import Recherche from './pages/recherche';
-import ResetPassword from './pages/ResetPassword';
+import ResetPassword from './pages/authentication/ResetPassword';
 
 import GestionCommerciale from './pages/GestionCommerciale';
 import GestionDesVentes from './pages/GestionDesVentes';
-import RegisterPage from './pages/RegisterPage';
-import EmailEnvoye from './pages/EmailEnvoye';
+import RegisterPage from './pages/authentication/RegisterPage';
+import EmailEnvoye from './pages/authentication/EmailEnvoye';
+import ClientList from './pages/Clients/ClientList';
 
 function App() {
   
@@ -40,11 +41,11 @@ function App() {
       />
 
       <Routes>
-        <Route path="/" element={<SignInPage />} /> 
+        <Route path="/" element={<SignInPage />} />
         <Route path="/Devis-Form" element={<DevisForm />} />
         <Route path="/Home-Page" element={<HomePage />} />
         <Route path="/DevisList" element={<DevisList />} />
-        <Route path="/devis-details/:numbl" element={<DevisDetails />} />
+        <Route path="/dvis-details/e:numbl" element={<DevisDetails />} />
         <Route path="/Dashboard" element={<Dashboard />} />
         <Route path="/SocietiesList" element={<SocietiesList />} />
         <Route path="/recherche" element={<Recherche />} /> 

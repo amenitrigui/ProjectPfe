@@ -25,42 +25,48 @@ const SocietiesList = () => {
   const handleSelect = async (society) => {
     try {
       const token = localStorage.getItem("token");
-  
+
       if (!token) {
         navigate("/login");
         return;
       }
-  
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/users/select-database`,
-        { databaseName: society },  
+
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/select-database`,
         {
+          method: "POST",
           headers: {
-            Authorization: `Bearer ${token}`, 
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
-        } 
+          body: JSON.stringify({
+            databaseName: society
+          })
+        }
       );
-      
+
       if (response.status === 200) {
-        const devisList = response.data.devis;
-        console.log("Liste des devis récupérés :", devisList);
-  
-        const selectedNumbl = devisList.map((devis) => devis.numbl);
-        console.log("Tous les numbl récupérés :", selectedNumbl);
-  
+        console.log(response.data);
+        // ! devisList 
+        // const devisList = response.data.devis;
+        // console.log("Liste des devis récupérés :", devisList);
+
+        // const selectedNumbl = devisList.map((devis) => devis.numbl);
+        // console.log("Tous les numbl récupérés :", selectedNumbl);
 
         localStorage.setItem("selectedDatabase", society);
-        localStorage.setItem("selectedNumbl", JSON.stringify(selectedNumbl));
-        localStorage.setItem("selectedRsoc", society.rsoc);  
-  
-        navigate("/GestionCommerciale");
+        // localStorage.setItem("selectedNumbl", JSON.stringify(selectedNumbl));
+        localStorage.setItem("selectedRsoc", society.rsoc);
+
+        navigate("/Dashboard");
       }
     } catch (error) {
-      console.error("Erreur lors de la sélection de la base de données:", error);
+      console.error(
+        "Erreur lors de la sélection de la base de données:",
+        error
+      );
       alert("Une erreur est survenue lors de la sélection de la société.");
     }
   };
-  
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-100 via-indigo-600 to-purple-700 flex items-start justify-center p-8">
@@ -102,4 +108,4 @@ const SocietiesList = () => {
   );
 };
 
-export default SocietiesList;  
+export default SocietiesList;

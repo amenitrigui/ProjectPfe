@@ -37,10 +37,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { useLocation } from "react-router-dom";
 
 const DevisForm = () => {
-  
-
-  
-
   const [formData, setFormData] = useState({
     NUMBL: "",
     pointVente: "",
@@ -97,6 +93,13 @@ const DevisForm = () => {
 
   const navigate = useNavigate();
 
+  /**
+   * Description
+   * @author Unknown
+   * @date 2025-02-06
+   * @param {any} selectedDevis
+   * @returns {any}
+   */
   const handleEditDevis = (selectedDevis) => {
     setFormData({
       ...selectedDevis,
@@ -120,6 +123,16 @@ const DevisForm = () => {
     document.body.innerHTML = originalContent;
     window.location.reload();
   };
+
+  
+  /**
+   * Description
+   * hide show devis??
+   * @date 2025-02-06
+   * @param {any} e
+   * @returns {any}
+   * @author Unknown
+   */
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -182,9 +195,18 @@ const DevisForm = () => {
   const [message, setMessage] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  
 
+  
+  /**
+   * Description
+   * ? useEffect #1
+   * @author Unknown
+   * @date 2025-02-06
+   * @param {any} (
+   * @returns {any}
+   */
   useEffect(() => {
+    console.log(location);
     const locationFormData =
       location.state?.formData ||
       JSON.parse(localStorage.getItem("searchResults"))?.[0] ||
@@ -193,8 +215,15 @@ const DevisForm = () => {
     if (locationFormData) {
       setFormData(locationFormData);
     }
-  }, [location.state]);
+  }, [location.pathname]);
 
+  /**
+   * Description
+   * @author Unknown
+   * @date 2025-02-06
+   * @param {any} article
+   * @returns {any}
+   */
   const filteredItems = filteredArticles.filter((article) => {
     const codeMatch = article.code
       .toLowerCase()
@@ -205,6 +234,12 @@ const DevisForm = () => {
     return codeMatch && libelleMatch;
   });
 
+  /**
+   * Description
+   * @author Unknown
+   * @date 2025-02-06
+   * @returns {any}
+   */
   const cancelEditMode = () => {
     setIsEditMode(false);
   };
@@ -221,6 +256,7 @@ const DevisForm = () => {
     setSelectedBoxIndex(index);
     setIsModalOpen(true);
   };
+  // ? UseEffect #2
   useEffect(() => {
     const fetchClients = async () => {
       if (!selectedDatabase) {
@@ -247,6 +283,7 @@ const DevisForm = () => {
     fetchClients();
   }, [selectedDatabase]);
 
+  // ? UseEffect #3
   useEffect(() => {
     const fetchFamilles = async () => {
       if (!selectedDatabase) {
@@ -515,6 +552,7 @@ const DevisForm = () => {
     }
   };
 
+  // ? UseEffect #4
   useEffect(() => {
     console.log("selectedDevis avant requête:", selectedDevis);
     const fetchLibpv = async () => {
@@ -550,6 +588,7 @@ const DevisForm = () => {
     }
   }, [selectedDevis]);
 
+  // ? UseEffect #5
   useEffect(() => {
     console.log("Libpv list mise à jour:", libpvList);
   }, [libpvList]);
@@ -624,6 +663,7 @@ const DevisForm = () => {
     }
   };
 
+  // ? UseEffect #6
   useEffect(() => {
     const selectedDatabase = localStorage.getItem("selectedDatabase");
 
@@ -725,6 +765,7 @@ const DevisForm = () => {
     }
   };
 
+  // ? UseEffect #7
   useEffect(() => {
     const savedLignes = localStorage.getItem("lignesValidees");
     if (savedLignes) {
@@ -756,6 +797,7 @@ const DevisForm = () => {
     fetchDevisDetails(selectedDatabase, cleanedNumbl); // Charger le nouveau devis
   };
 
+  // ? UseEffect #8
   useEffect(() => {
     const selectedDatabase = localStorage.getItem("selectedDatabase");
     const selectedNumbl = localStorage.getItem("selectedDevisNumbl");
@@ -795,6 +837,7 @@ const DevisForm = () => {
     }
   };
 
+  // ? UseEffect #9
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -817,6 +860,7 @@ const DevisForm = () => {
     }
   };
 
+  // ? UseEffect #10
   useEffect(() => {
     const fetchRepresentants = async () => {
       try {
@@ -903,6 +947,7 @@ const DevisForm = () => {
     return totalRemise;
   };
 
+  // ? UseEffect #11
   useEffect(() => {
     const totalRemise = calculateTotalDiscount();
     setFormData({
@@ -1057,7 +1102,6 @@ const DevisForm = () => {
       "Nouveau devis prêt. Les lignes précédentes ont été supprimées."
     );
   };
-
 
   const removedevis = async () => {
     const numbl = localStorage.getItem("selectedDevisNumbl");
@@ -1233,6 +1277,7 @@ const DevisForm = () => {
     }
   };
 
+  // ? UseEffect #12
   useEffect(() => {
     const lignesEnLocalStorage = JSON.parse(
       localStorage.getItem("lignesValidees")
@@ -1371,6 +1416,7 @@ const DevisForm = () => {
       .toFixed(3);
   };
 
+  // ? UseEffect #13
   useEffect(() => {
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -1623,6 +1669,7 @@ const DevisForm = () => {
     }
   };
 
+  // ? UseEffect #14
   useEffect(() => {
     fetchSecteurs();
   }, []);
@@ -2675,16 +2722,15 @@ const DevisForm = () => {
                     </button>
 
                     <button
-  onClick={(e) => {
-    e.preventDefault();
-    handleEdit(index);
-  }}
-  className="text-blue-500 p-2 border rounded-lg hover:bg-blue-100"
-  title="Modifier"
->
-  <PencilIcon className="h-6 w-6" />
-</button>
-
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleEdit(index);
+                      }}
+                      className="text-blue-500 p-2 border rounded-lg hover:bg-blue-100"
+                      title="Modifier"
+                    >
+                      <PencilIcon className="h-6 w-6" />
+                    </button>
 
                     <button
                       onClick={() => handleDelete(index)}
