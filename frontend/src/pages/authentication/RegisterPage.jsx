@@ -46,7 +46,7 @@ function RegisterPage() {
       if (response.ok) {
            localStorage.setItem("token", data.token);
      localStorage.setItem("user", JSON.stringify(data.user));
-        navigate("/SocietiesList");
+        navigate("/");
       } else {
         setError(data.message || "Erreur lors de l'inscription. Veuillez réessayer.");
       }

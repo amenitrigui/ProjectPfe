@@ -38,7 +38,7 @@ function DevisList() {
   /**
    * Description
    * Filtrage de contenu de datatable par colonne
-   * @author Bilel
+   * @author Unknown
    * @date 2025-02-06
    * @returns {filteredDevis}
    */
@@ -59,7 +59,7 @@ function DevisList() {
   /**
    * Description
    * Filtres pour les barres de recherche
-   * @author Bilel
+   * @author Unknown
    * @date 2025-02-06
    */
   const [filters, setFilters] = useState({

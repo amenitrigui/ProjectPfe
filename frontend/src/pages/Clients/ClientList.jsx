@@ -10,8 +10,9 @@ function ClientList() {
   const [clients, setClients] = useState([]);
   const [filteredClient, setFilteredClient] = useState([]);
   const dataBaseName = localStorage.getItem("selectedDatabase");
- 
-  const dbName = localStorage.getItem("selectedDatabase");
+  const token = localStorage.getItem("token");
+  const dbName = localStorage.getItem("selectedDatabase")
+
   useEffect(() => {
     /**
      * Description
@@ -26,7 +27,12 @@ function ClientList() {
         if (!dbName) throw new Error("Aucune base de données sélectionnée.");
 
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/client/${dbName}/ListeClient`
+          `${process.env.REACT_APP_API_URL}/api/client/${dbName}/ListeClient`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
         );
         console.log(response)
   setClients(response.data.result);
@@ -43,7 +49,7 @@ function ClientList() {
   /**
    * Description
    * Filtrage de contenu de datatable par colonne
-   * @author Bilel
+   * @author Unknown
    * @date 2025-02-06
    * @returns {filteredDevis}
    */
@@ -66,7 +72,7 @@ function ClientList() {
   /**
    * Description
    * Filtres pour les barres de recherche
-   * @author Bilel
+   * @author Unknown
    * @date 2025-02-06
    */
   const [filters, setFilters] = useState({
