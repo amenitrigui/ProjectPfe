@@ -229,17 +229,7 @@ const getDevisDetails = async (req, res) => {
   }
 
   try {
-    const authHeader = req.header("Authorization");
-    if (!authHeader) {
-      return res
-        .status(401)
-        .json({ message: "En-tête Authorization manquant." });
-    }
-
-    const decoded = jwt.verify(
-      authHeader.replace("Bearer ", ""),
-      process.env.JWT_SECRET_KEY
-    );
+    const decoded = verifyTokenValidity(req,res);
     const codeuser = decoded.codeuser;
     const dbConnection = getDatabaseConnection(databaseName);
 
@@ -307,6 +297,7 @@ const getDevisDetails = async (req, res) => {
 /**
  * Description
  * retourne la devis ayant l'année la plus récente avec ses lignes d'articles
+ * ! this does not belong in here
  * @author Unknown
  * @date 2025-02-10
  * @param {any} req
@@ -466,7 +457,7 @@ const getAllClients = async (req, res) => {
 
 /**
  * Description
- * ????
+ * ! this does not belong in here
  * @author Unknown
  * @date 2025-02-07
  * @returns {any}
@@ -617,6 +608,7 @@ const passwordReset = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    console.log(hashedPassword);
 
     user.motpasse = hashedPassword;
     await user.save();

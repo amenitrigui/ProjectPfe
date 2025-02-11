@@ -5,7 +5,7 @@ const { sequelizeUserERP } = require("../db/config");
 
 /**
  * Description
- * @author Bilel
+ * @author Unknown
  * @date 2025-02-06
  * @returns {any}
  */
