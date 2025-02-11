@@ -8,9 +8,10 @@ import SideBar from "../../components/SideBar";
 
 function ClientList() {
   const [clients, setClients] = useState([]);
-  const [filteredDevis, setFilteredDevis] = useState([]);
+  const [filteredClient, setFilteredClient] = useState([]);
   const dataBaseName = localStorage.getItem("selectedDatabase");
-
+ 
+  const dbName = localStorage.getItem("selectedDatabase");
   useEffect(() => {
     /**
      * Description
@@ -21,7 +22,7 @@ function ClientList() {
      */
     const fetchDevis = async () => {
       try {
-        const dbName = localStorage.getItem("selectedDatabase");
+        
         if (!dbName) throw new Error("Aucune base de données sélectionnée.");
 
         const response = await axios.get(
@@ -29,6 +30,7 @@ function ClientList() {
         );
         console.log(response)
   setClients(response.data.result);
+  setFilteredClient(response.data.result)
         
       } catch (error) {
         console.error(error.message);
@@ -47,12 +49,14 @@ function ClientList() {
    */
   const handleFilterChange = (e, column) => {
     const value = e.target.value;
-    filters[column] = value;
+    filters[column]=value
+   console.log(filters)
 
-    axios.get("http://localhost:5000/api/client/filterClient", { params: {filters: filters, databaseName: dataBaseName} })
+    axios.get(`http://localhost:5000/api/client/${dbName}/filterClient`, { params: {filters:filters} })
     .then(res => {
-      console.log(res.data.data);
-      setFilteredDevis(res.data.data);
+      console.log(res);
+      
+      setFilteredClient(res.data.data);
 
     }).catch(error => {
       console.log(error);
@@ -159,7 +163,7 @@ function ClientList() {
       <div className="bg-white p-4 rounded-lg shadow-lg mt-4">
         <DataTable
           columns={columns}
-          data={clients}
+          data={filteredClient}
           customStyles={customStyles}
           selectableRows
           fixedHeader
