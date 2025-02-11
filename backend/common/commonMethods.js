@@ -44,7 +44,7 @@ function verifyTokenValidity(req, res) {
  * @param {any} databaseName
  * @returns {any}
  */
-const getDatabaseConnection = async (databaseName) => {
+const getDatabaseConnection = async (databaseName, res) => {
   try {
     console.log("1");
     const dbConnection = new Sequelize(
