@@ -10,13 +10,10 @@ function ClientList() {
   const [clients, setClients] = useState([]);
   const [filteredClient, setFilteredClient] = useState([]);
   const dataBaseName = localStorage.getItem("selectedDatabase");
-<<<<<<< HEAD
   const token = localStorage.getItem("token");
 
-=======
  
   const dbName = localStorage.getItem("selectedDatabase");
->>>>>>> origin/v1.6
   useEffect(() => {
     /**
      * Description
@@ -39,12 +36,8 @@ function ClientList() {
           }
         );
         console.log(response)
-<<<<<<< HEAD
-        setClients(response.data.result);
-=======
   setClients(response.data.result);
   setFilteredClient(response.data.result)
->>>>>>> origin/v1.6
         
       } catch (error) {
         console.error(error.message);
@@ -149,7 +142,7 @@ function ClientList() {
       <div className="flex justify-between items-center mb-6 p-4 bg-white shadow-md rounded-lg">
         
         <img src="logicom.jpg" alt="Logicom Logo" className="h-16 w-auto rounded-md shadow-md" />
-        <h1 className="text-4xl font-bold text-blue-700 text-center">📜 Liste des Devis</h1>
+        <h1 className="text-4xl font-bold text-blue-700 text-center">📜 Liste des clients</h1>
         <div className="flex space-x-4 text-lg font-semibold">
           <Link to="/Dashboard" className="text-blue-600 hover:underline">
             Dashboard

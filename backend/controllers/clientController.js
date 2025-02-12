@@ -4,16 +4,53 @@ const { getSequelizeConnection } = require("../db/config");
 const jwt = require("jsonwebtoken");
 const { getDatabaseConnection, verifyTokenValidity } = require("../common/commonMethods");
 
-const getlisteclient = async (req, res) => {
-  const { dbName } = req.params
+const AjouterClient = async(req, res) => {
+  const dbName = req.params;
+  const {code, rsoc, adresse, cp, email, telephone, desRep} = req.query;
+  const dbConnection = await getDatabaseConnection(dbName, res);
+  const result = await dbConnection.query(`
+    INSERT INTO client (code, rsoc, adresse, cp, email, telephone, desRep) VALUES :code, :rsoc, :adresse, :cp, :email, :telephone, :desRep
+    `, {
+      replacements: {
+        code: code,
+        rsoc: rsoc,
+        adresse: adresse,
+        cp: cp,
+        email: email,
+        telephone: telephone,
+        desRep: desRep
+      },
+      type: dbConnection.QueryTypes.INSERT
+    }
+  )
 
-  const dbConnection = getDatabaseConnection(dbName, res);
-  const resultat = await dbConnection.query(
-    `select code,rsoc,email,cp from client where    `,
+  return res.status(200).json({message: "insertion avec succès"});
+}
+
+/**
+ * Description
+ * Récuperer la liste des clients d'une société donnée
+ * @author Ameni
+ * @date 2025-02-12
+ * @param {any} req
+ * @param {any} res
+ * @returns {any}
+ */
+const getlisteclient = async (req, res) => {
+  const { dbName } = req.params;
+
+  const dbConnection = await getDatabaseConnection(dbName, res);
+  const result = await dbConnection.query(
+    `select code, rsoc, email, cp, adresse from client`,
     {
       type: dbConnection.QueryTypes.SELECT,
     }
   );
+
+  return res.status(200).json({
+    message: "succès de récupération de liste des clients",
+    result
+  })
 };
 
 const getlisteclientsfilter = async (req, res) => {
@@ -67,11 +104,9 @@ const getlisteclientsfilter = async (req, res) => {
   // ? Si on on a aucune condition on effectue une requete de select * from dfp
   let query = `SELECT code, rsoc, email, cp, adresse 
      FROM client 
-    
-        ${whereCondition ? 'WHERE ' + whereCondition : ''}
-      `;
+      ${whereCondition ? 'WHERE ' + whereCondition : ''}`;
 
-  const result = await dbConnection.query(query, {
+  const result = await dbConnection.query(query, { 
     replacements: replacements,
     type: dbConnection.QueryTypes.SELECT,
   });
@@ -88,6 +123,7 @@ const getlisteclientsfilter = async (req, res) => {
 
 module.exports = {
   getlisteclient,
-  getlisteclientsfilter
+  getlisteclientsfilter,
+  AjouterClient
 
 }
