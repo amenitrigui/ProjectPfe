@@ -1,73 +1,31 @@
-const { Sequelize, QueryTypes } = require("sequelize");
 const defineClientModel = require("../models/client");
-const { getSequelizeConnection } = require("../db/config");
 const jwt = require("jsonwebtoken");
 const { getDatabaseConnection, verifyTokenValidity } = require("../common/commonMethods");
 
-const AjouterClient = async(req, res) => {
-  const dbName = req.params;
-  const {code, rsoc, adresse, cp, email, telephone, desRep} = req.query;
-  const dbConnection = await getDatabaseConnection(dbName, res);
-  const result = await dbConnection.query(`
-    INSERT INTO client (code, rsoc, adresse, cp, email, telephone, desRep) VALUES :code, :rsoc, :adresse, :cp, :email, :telephone, :desRep
-    `, {
-      replacements: {
-        code: code,
-        rsoc: rsoc,
-        adresse: adresse,
-        cp: cp,
-        email: email,
-        telephone: telephone,
-        desRep: desRep
-      },
-      type: dbConnection.QueryTypes.INSERT
-    }
-  )
-
-  return res.status(200).json({message: "insertion avec succès"});
-}
-
-/**
- * Description
- * Récuperer la liste des clients d'une société donnée
- * @author Ameni
- * @date 2025-02-12
- * @param {any} req
- * @param {any} res
- * @returns {any}
- */
 const getlisteclient = async (req, res) => {
   const { dbName } = req.params;
+  try{  
+    //const decoded = verifyTokenValidity(req, res);
+  const dbConnection = await getDatabaseConnection(dbName,res);
 
-  const dbConnection = await getDatabaseConnection(dbName, res);
-  const result = await dbConnection.query(
-    `select code, rsoc, email, cp, adresse from client`,
-    {
-      type: dbConnection.QueryTypes.SELECT,
-    }
-  );
-
+  const result = await dbConnection.query(`select * from client`, {
+    type: dbConnection.QueryTypes.SELECT,
+  });
   return res.status(200).json({
-    message: "succès de récupération de liste des clients",
-    result
-  })
+    message: "liste client recupere",
+    result,
+  });}catch(error){
+    return res.status(500).json({message:error})
+  }
 };
+
 
 const getlisteclientsfilter = async (req, res) => {
   const { dbName } = req.params
   const { filters } = req.query
   console.log(filters)
 
-  const dbConnection = new Sequelize(
-    `mysql://root:@127.0.0.1:3306/${dbName}`,
-    {
-      dialect: "mysql",
-      logging: console.log(),
-      pool: { max: 5, min: 0, acquire: 30000, idle: 10000 },
-    }
-  );
-
-  await dbConnection.authenticate();
+  const dbConnection = await getDatabaseConnection(dbName, res);
   // ? liste des conditions
   // ? exemple : ["NUML like :numbl, "libpv like :libpv"...]
   let whereClauses = [];
@@ -119,6 +77,31 @@ const getlisteclientsfilter = async (req, res) => {
 
 
 
+}
+const AjouterClient = async(req, res) => {
+  const { dbName } = req.params
+  const {code, rsoc, adresse, cp, email, telephone, desrep} = req.body;
+  try{
+    
+
+  const dbConnection = await getDatabaseConnection(dbName, res);
+  const Client= defineClientModel(dbConnection)
+  const newClient = await Client.create({ //add + save min base 3ibrt 3ml insert into mn base de donnes 
+    code,
+    email,
+    rsoc,
+    cp,
+    telephone,
+    desrep,
+    adresse
+
+  })
+
+  return res.status(200).json({message: "insertion avec succès"});
+}catch (error)
+{
+  return res.status(500).json({message:error})
+}
 }
 
 module.exports = {

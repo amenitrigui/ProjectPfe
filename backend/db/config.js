@@ -37,10 +37,10 @@ const getSequelizeConnection = (dbName = "") => {
 
 
 
-const sequelize = getSequelizeConnection();  
+const sequelize = getSequelizeConnection();  //conxexion avexc serveur mysql
 
 
-const sequelizeUserERP = getSequelizeConnection("usererpsole")///le non de la base de donnnes
+const sequelizeUserERP = getSequelizeConnection("usererpsole")///connexion specifiquenmrnt le non de la base de donnnes
 const testConnections = async () => {
   try { 
     await sequelize.authenticate();

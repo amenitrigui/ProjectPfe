@@ -5,15 +5,14 @@ import DataTable from "react-data-table-component";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import SideBar from "../../components/SideBar";
+import ClientForm from "../../components/Client/ClientForm";
 
 function ClientList() {
   const [clients, setClients] = useState([]);
   const [filteredClient, setFilteredClient] = useState([]);
   const dataBaseName = localStorage.getItem("selectedDatabase");
-  const token = localStorage.getItem("token");
-
- 
   const dbName = localStorage.getItem("selectedDatabase");
+  const token = localStorage.getItem("token");
   useEffect(() => {
     /**
      * Description
@@ -136,13 +135,15 @@ function ClientList() {
   };
 
   return (
-    <div className="container mx-auto p-6">
-      {/* Header */}
+     <div className="container mx-auto p-6">
+
+      <ClientForm ClientAjoute={setFilteredClient}></ClientForm>
+     {/* Header */}
  
-      <div className="flex justify-between items-center mb-6 p-4 bg-white shadow-md rounded-lg">
+    {/* //   <div className="flex justify-between items-center mb-6 p-4 bg-white shadow-md rounded-lg">
         
         <img src="logicom.jpg" alt="Logicom Logo" className="h-16 w-auto rounded-md shadow-md" />
-        <h1 className="text-4xl font-bold text-blue-700 text-center">📜 Liste des clients</h1>
+        <h1 className="text-4xl font-bold text-blue-700 text-center">📜 Liste des Devis</h1>
         <div className="flex space-x-4 text-lg font-semibold">
           <Link to="/Dashboard" className="text-blue-600 hover:underline">
             Dashboard
@@ -154,6 +155,7 @@ function ClientList() {
       </div>
 
       {/* Zone de recherche */}
+      <br></br>
       <div className="grid grid-cols-3 gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
         {Object.keys(filters).map((column, index) => (
           <input

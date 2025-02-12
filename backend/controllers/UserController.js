@@ -181,8 +181,8 @@ const selectDatabase = async (req, res) => {
     const codeuser = decoded.codeuser;
 
     // ! await keyword is VERY important
-    const dbConnection = await getDatabaseConnection(databaseName);
- 
+    const dbConnection = await getDatabaseConnection(databaseName,res);
+
     const devisList = await dbConnection.query(
       
       `SELECT YEAR(datebl) AS year, MAX(numbl) AS numbl
@@ -231,7 +231,7 @@ const getDevisDetails = async (req, res) => {
   try {
     const decoded = verifyTokenValidity(req,res);
     const codeuser = decoded.codeuser;
-    const dbConnection = getDatabaseConnection(databaseName);
+    const dbConnection = getDatabaseConnection(databaseName,res);
 
     const [devisDetails, ldfpDetails] = await Promise.all([
       dbConnection.query(
@@ -327,7 +327,7 @@ const getLatestDevisByYear = async (req, res) => {
     );
     const codeuser = decoded.codeuser;
 
-    const dbConnection = getDatabaseConnection(databaseName);
+    const dbConnection = getDatabaseConnection(databaseName,res);
 
     const latestDevis = await dbConnection.query(
       `SELECT 
@@ -417,7 +417,7 @@ const getAllClients = async (req, res) => {
     const decoded = verifyTokenValidity(req, res);
     const codeuser = decoded.codeuser;
 
-    const dbConnection = getDatabaseConnection(databaseName);
+    const dbConnection = getDatabaseConnection(databaseName,res);
 
     // Récupérer tous les clients
     const clients = await dbConnection.query(
@@ -472,7 +472,7 @@ const getAllSectors = async (req, res) => {
   }
 
   try {
-    const dbConnection = getDatabaseConnection(databaseName);
+    const dbConnection = getDatabaseConnection(databaseName,res);
 
     // Récupérer tous les secteurs de la table secteur
     const sectors = await dbConnection.query(

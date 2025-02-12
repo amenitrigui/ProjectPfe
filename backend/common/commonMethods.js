@@ -10,7 +10,7 @@ const { Sequelize, QueryTypes } = require("sequelize");
  * @returns {decodedToken}
  */
 function verifyTokenValidity(req, res) {
-  try {
+ 
     const authHeader = req.header("Authorization");
     if (!authHeader) {
       return res
@@ -31,9 +31,7 @@ function verifyTokenValidity(req, res) {
     }
 
     return decodedJWT;
-  } catch (error) {
-    return res.status(401).json({ message: "problème avec token" });
-  }
+  
 }
 
 /**
@@ -46,12 +44,11 @@ function verifyTokenValidity(req, res) {
  */
 const getDatabaseConnection = async (databaseName, res) => {
   try {
-    console.log("1");
     const dbConnection = new Sequelize(
       `mysql://root:@127.0.0.1:3306/${databaseName}`,
       {
         dialect: "mysql",
-        logging: console.log,
+        logging: console.log(),
         pool: {
           max: 5,
           min: 0,
@@ -61,7 +58,6 @@ const getDatabaseConnection = async (databaseName, res) => {
       }
     );
     await dbConnection.authenticate();
-
     return dbConnection;
   } catch (error) {
     return res
