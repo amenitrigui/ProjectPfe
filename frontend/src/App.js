@@ -19,6 +19,7 @@ import GestionDesVentes from './pages/GestionDesVentes';
 import RegisterPage from './pages/authentication/RegisterPage';
 import EmailEnvoye from './pages/authentication/EmailEnvoye';
 import ClientList from './pages/Clients/ClientList';
+import Parent from './test/Parent';
 
 function App() {
   
@@ -55,6 +56,8 @@ function App() {
         <Route path="/ResetPassword" element={<ResetPassword />}></Route>
         <Route path="/EmailEnvoye" element = {<EmailEnvoye />}></Route>
         <Route path="/ClientList" element = {<ClientList />}></Route>
+        <Route path="/Parent" element = {<Parent />}></Route>
+
        
       </Routes>
     </Router>

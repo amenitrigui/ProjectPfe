@@ -1,12 +1,11 @@
-const { Sequelize, QueryTypes } = require("sequelize");
 const defineClientModel = require("../models/client");
-const { getSequelizeConnection } = require("../db/config");
 const jwt = require("jsonwebtoken");
 const { getDatabaseConnection, verifyTokenValidity } = require("../common/commonMethods");
 
 const getlisteclient = async (req, res) => {
   const { dbName } = req.params;
-  const decoded = verifyTokenValidity(req, res);
+  try{  
+    //const decoded = verifyTokenValidity(req, res);
   const dbConnection = await getDatabaseConnection(dbName,res);
 
   const result = await dbConnection.query(`select * from client`, {
@@ -15,7 +14,9 @@ const getlisteclient = async (req, res) => {
   return res.status(200).json({
     message: "liste client recupere",
     result,
-  });
+  });}catch(error){
+    return res.status(500).json({message:error})
+  }
 };
 
 
@@ -24,16 +25,7 @@ const getlisteclientsfilter = async (req, res) => {
   const { filters } = req.query
   console.log(filters)
 
-  const dbConnection = new Sequelize(
-    `mysql://root:@127.0.0.1:3306/${dbName}`,
-    {
-      dialect: "mysql",
-      logging: console.log(),
-      pool: { max: 5, min: 0, acquire: 30000, idle: 10000 },
-    }
-  );
-
-  await dbConnection.authenticate();
+  const dbConnection = await getDatabaseConnection(dbName, res);
   // ? liste des conditions
   // ? exemple : ["NUML like :numbl, "libpv like :libpv"...]
   let whereClauses = [];
@@ -88,9 +80,35 @@ const getlisteclientsfilter = async (req, res) => {
 
 
 }
+const AjouterClient = async(req, res) => {
+  const { dbName } = req.params
+  const {code, rsoc, adresse, cp, email, telephone, desrep} = req.body;
+  try{
+    
+
+  const dbConnection = await getDatabaseConnection(dbName, res);
+  const Client= defineClientModel(dbConnection)
+  const newClient = await Client.create({ //add + save min base 3ibrt 3ml insert into mn base de donnes 
+    code,
+    email,
+    rsoc,
+    cp,
+    telephone,
+    desrep,
+    adresse
+
+  })
+
+  return res.status(200).json({message: "insertion avec succès"});
+}catch (error)
+{
+  return res.status(500).json({message:error})
+}
+}
 
 module.exports = {
   getlisteclient,
-  getlisteclientsfilter
+  getlisteclientsfilter,
+  AjouterClient
 
 }
