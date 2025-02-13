@@ -1,15 +1,27 @@
 import React, { useState } from 'react'
-import Child from './Child'
-import ToolBar from '../components/Common/ToolBar'
+import Test from './Test';
+import Test1 from './Test1';
 function Parent() {
-    const [child,setChild]=useState("intial")
-    console.log(setChild)
+    const [testValue, setTestValue] = useState("");
+    const [objValue, setObjValue] = useState({
+      field1: "",
+      field2: "",
+      field3: ""
+    })
+
+    function updateState() {
+      setObjValue({field1: "value1",field2: "value2", field3: "value3"})
+    }
   return (
     <div>
-    <div>Parent</div>
-    {child}
-    <Child ajout={child} ameni={setChild}></Child>
-    <ToolBar />
+      <Test testValue = {testValue}/>
+      {/* the state updates, the loop only happens once though */}
+      <Test1 setTestValue= {setTestValue}/>
+      {Object.values(objValue).map((value) => {
+        <h1>{value}</h1>
+      })}
+
+      <button onClick={updateState}>Update state</button>
     </div>
   )
 }

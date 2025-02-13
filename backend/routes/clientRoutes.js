@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { getlisteclient,getlisteclientsfilter,AjouterClient } = require('../controllers/clientController');
-router.get("/:dbName/ListeClient",getlisteclient);
+const { getlisteclient,getlisteclientsfilter,AjouterClient, supprimerClient, getClient, updateClient } = require('../controllers/clientController');
+router.get("/:dbName/List",getlisteclient);
 router.get("/:dbName/filterClient",getlisteclientsfilter);
-router.post("/:dbName/AjouterClient",AjouterClient);
+router.get("/:dbName/Get/:code", getClient);
+router.post("/:dbName/Add",AjouterClient);
+router.delete("/:dbName/Delete", supprimerClient);
+router.put("/:dbName/Update", updateClient);
 module.exports = router;

@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { FiHome, FiLogOut, FiShoppingCart, FiUser, FiBox, FiSettings, FiTruck } from 'react-icons/fi';
 
 function SideBar() {
-    console.log("SideBar")
     return (
         <>
             {/* Sidebar Container */}
