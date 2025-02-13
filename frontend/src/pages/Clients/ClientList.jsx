@@ -1,9 +1,6 @@
-
-
 import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import axios from "axios";
-import { Link } from "react-router-dom";
 import SideBar from "../../components/Common/SideBar";
 import ClientForm from "../../components/Client/ClientForm";
 
@@ -13,31 +10,22 @@ function ClientList() {
   const dataBaseName = localStorage.getItem("selectedDatabase");
   const dbName = localStorage.getItem("selectedDatabase");
   const token = localStorage.getItem("token");
+
   useEffect(() => {
-    /**
-     * Description
-     * Chargement de liste des devis
-     * @author Ameni
-     * @date 2025-02-06
-     * @returns {filteredDevis / devis}
-     */
     const fetchDevis = async () => {
       try {
-        
         if (!dbName) throw new Error("Aucune base de données sélectionnée.");
 
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/api/client/${dbName}/ListeClient`,
           {
             headers: {
-              Authorization: `Bearer ${token}`
-            }
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
-        console.log(response)
-  setClients(response.data.result);
-  setFilteredClient(response.data.result)
-        
+        setClients(response.data.result);
+        setFilteredClient(response.data.result);
       } catch (error) {
         console.error(error.message);
       }
@@ -46,72 +34,47 @@ function ClientList() {
     fetchDevis();
   }, []);
 
-  /**
-   * Description
-   * Filtrage de contenu de datatable par colonne
-   * @author Unknown
-   * @date 2025-02-06
-   * @returns {filteredDevis}
-   */
-  const handleFilterChange = (e, column) => {
-    const value = e.target.value;
-    filters[column]=value
-   console.log(filters)
-
-    axios.get(`http://localhost:5000/api/client/${dbName}/filterClient`, { params: {filters:filters} })
-    .then(res => {
-      console.log(res);
-      
-      setFilteredClient(res.data.data);
-
-    }).catch(error => {
-      console.log(error);
-    })
-  };
-
-  /**
-   * Description
-   * Filtres pour les barres de recherche
-   * @author Unknown
-   * @date 2025-02-06
-   */
   const [filters, setFilters] = useState({
     code: "",
     rsoc: "",
     adresse: "",
     cp: "",
     email: "",
-   
   });
 
-  /**
-   * Description
-   * Colonnes de datatable
-   * @author Ameni
-   * @date 2025-02-06
-   */
+  const handleFilterChange = (e, column) => {
+    const value = e.target.value;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [column]: value,
+    }));
+
+    axios
+      .get(`http://localhost:5000/api/client/${dbName}/filterClient`, {
+        params: { filters },
+      })
+      .then((res) => {
+        setFilteredClient(res.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const columns = [
-    { name: "code", selector: (row) => row.code, sortable: true },
-    { name: "raison sociale", selector: (row) => row.rsoc, sortable: true },
-    { name: "adresse", selector: (row) => row.adresse },
-    { name: "Code postale", selector: (row) => row.cp },
-    { name: "email", selector: (row) => row.email },
-    //  { name: "RSCLI", selector: (row) => row.RSCLI },
-    // { name: "Montant TTC", selector: (row) => row.MTTC },
+    { name: "Code", selector: (row) => row.code, sortable: true },
+    { name: "Raison Sociale", selector: (row) => row.rsoc, sortable: true },
+    { name: "Adresse", selector: (row) => row.adresse },
+    { name: "Code Postal", selector: (row) => row.cp },
+    { name: "Email", selector: (row) => row.email },
   ];
 
-  /**
-   * Description
-   * styles personalisées de datatable
-   * @author Ameni
-   * @date 2025-02-06
-   */
   const customStyles = {
     headCells: {
       style: {
         fontWeight: "bold",
         fontSize: "18px",
-        backgroundColor: "#e0f2fe", // Bleu clair
+        backgroundColor: "#e0f2fe",
         color: "#034694",
         padding: "12px",
       },
@@ -119,9 +82,9 @@ function ClientList() {
     rows: {
       style: {
         fontSize: "16px",
-        backgroundColor: "#f8fafc", // Gris très clair
+        backgroundColor: "#f8fafc",
         "&:hover": {
-          backgroundColor: "#dbeafe", // Bleu clair au survol
+          backgroundColor: "#dbeafe",
         },
       },
     },
@@ -135,54 +98,46 @@ function ClientList() {
   };
 
   return (
-     <div className="container mx-auto p-6">
-      <SideBar />
-      <ClientForm ClientAjoute={setFilteredClient}></ClientForm>
-     {/* Header */}
- 
-    {/* //   <div className="flex justify-between items-center mb-6 p-4 bg-white shadow-md rounded-lg">
-        
-        <img src="logicom.jpg" alt="Logicom Logo" className="h-16 w-auto rounded-md shadow-md" />
-        <h1 className="text-4xl font-bold text-blue-700 text-center">📜 Liste des Devis</h1>
-        <div className="flex space-x-4 text-lg font-semibold">
-          <Link to="/Dashboard" className="text-blue-600 hover:underline">
-            Dashboard
-          </Link>
-          <Link to="/" className="text-blue-600 hover:underline">
-            Sign In
-          </Link>
+    
+      <div className="drawer lg:drawer-open">
+        <input id="my-drawer" type="checkbox" className="drawer-toggle" />
+        <div className="drawer-content">
+          {/* Contenu principal */}
+          <div className="container mx-auto p-6">
+            <ClientForm ClientAjoute={setFilteredClient} />
+            <br />
+            <div className="grid grid-cols-3 gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
+              {Object.keys(filters).map((column, index) => (
+                <input
+                  key={index}
+                  type="text"
+                  onChange={(e) => handleFilterChange(e, column)}
+                  placeholder={`🔍 ${columns[index].name}`}
+                  className="border p-2 rounded-md shadow-sm focus:ring focus:ring-blue-300"
+                />
+              ))}
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-lg mt-4">
+              <DataTable
+                columns={columns}
+                data={filteredClient}
+                customStyles={customStyles}
+                selectableRows
+                fixedHeader
+                pagination
+                highlightOnHover
+                striped
+              />
+            </div>
+          </div>
         </div>
+    
+        {/* SideBar ici */}
+        <SideBar />
       </div>
-
-      {/* Zone de recherche */}
-      <br></br>
-      <div className="grid grid-cols-3 gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
-        {Object.keys(filters).map((column, index) => (
-          <input
-            key={index}
-            type="text"
-            onChange={(e) => handleFilterChange(e, column)}
-            placeholder={`🔍 ${columns[index].name}`}
-            className="border p-2 rounded-md shadow-sm focus:ring focus:ring-blue-300"
-          />
-        ))}
-      </div>
-
-      {/* Tableau des devis */}
-      <div className="bg-white p-4 rounded-lg shadow-lg mt-4">
-        <DataTable
-          columns={columns}
-          data={filteredClient}
-          customStyles={customStyles}
-          selectableRows
-          fixedHeader
-          pagination
-          highlightOnHover
-          striped
-        />
-      </div>
-    </div>
-  );
+    );
+    
+  
 }
 
 export default ClientList;
