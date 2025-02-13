@@ -49,8 +49,8 @@ function Dashboard() {
         <div className="drawer-content flex flex-col">
           {/* Bouton pour ouvrir la sidebar */}
           <label htmlFor="my-drawer" className="btn btn-primary drawer-button m-4 w-40">
-  <img src="enter.png" alt="enter Icon" className="w-6 h-6" />
-</label>
+            <img src="enter.png" alt="enter Icon" className="w-6 h-6" />
+          </label>
 
 
           {/* Contenu principal */}
@@ -74,7 +74,7 @@ function Dashboard() {
         </div>
 
         {/* Sidebar */}
-     <SideBar></SideBar>
+        <SideBar></SideBar>
       </div>
     </div>
   );
