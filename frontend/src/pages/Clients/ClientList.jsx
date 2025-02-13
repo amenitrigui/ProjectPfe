@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import axios from "axios";
-import SideBar from "../../components/SideBar";
+
 import ClientForm from "../../components/Client/ClientForm";
+import SideBar from "../../components/Common/SideBar";
 
 function ClientList() {
   const [clients, setClients] = useState([]);
   const [filteredClient, setFilteredClient] = useState([]);
   const dataBaseName = localStorage.getItem("selectedDatabase");
-  const token = localStorage.getItem("token");
   const dbName = localStorage.getItem("selectedDatabase");
+  const token = localStorage.getItem("token");
+
 
   useEffect(() => {
     const fetchDevis = async () => {
@@ -133,7 +135,7 @@ function ClientList() {
         </div>
     
         {/* SideBar ici */}
-        <SideBar />
+       <SideBar></SideBar>
       </div>
     );
     

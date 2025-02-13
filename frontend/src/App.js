@@ -4,11 +4,11 @@ import './App.css';
 import { ToastContainer, toast } from 'react-toastify';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
-import DevisForm from './components/DevisForm';
+import DevisForm from './components/Devis/DevisForm';
 import HomePage from './pages/HomePage';
 import SignInPage from './pages/authentication/SignInPage';
 import DevisList from './pages/Devis/DevisList';
-import DevisDetails from './components/DevisDetails';
+import DevisDetails from './components/Devis/DevisDetails';
 import Dashboard from './pages/Dashboard';
 import SocietiesList from './pages/SocietiesList';
 import Recherche from './pages/recherche';
@@ -57,8 +57,6 @@ function App() {
         <Route path="/EmailEnvoye" element = {<EmailEnvoye />}></Route>
         <Route path="/ClientList" element = {<ClientList />}></Route>
         <Route path="/Parent" element = {<Parent />}></Route>
-
-       
       </Routes>
     </Router>
   );

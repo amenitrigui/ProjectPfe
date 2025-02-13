@@ -62,11 +62,9 @@ const getlisteclientsfilter = async (req, res) => {
   // ? Si on on a aucune condition on effectue une requete de select * from dfp
   let query = `SELECT code, rsoc, email, cp, adresse 
      FROM client 
-    
-        ${whereCondition ? 'WHERE ' + whereCondition : ''}
-      `;
+      ${whereCondition ? 'WHERE ' + whereCondition : ''}`;
 
-  const result = await dbConnection.query(query, {
+  const result = await dbConnection.query(query, { 
     replacements: replacements,
     type: dbConnection.QueryTypes.SELECT,
   });
