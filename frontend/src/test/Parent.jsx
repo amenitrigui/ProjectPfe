@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Child from './Child'
-
+import ToolBar from '../components/Common/ToolBar'
 function Parent() {
     const [child,setChild]=useState("intial")
     console.log(setChild)
@@ -9,6 +9,7 @@ function Parent() {
     <div>Parent</div>
     {child}
     <Child ajout={child} ameni={setChild}></Child>
+    <ToolBar />
     </div>
   )
 }

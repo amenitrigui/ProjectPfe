@@ -57,9 +57,6 @@ function App() {
         <Route path="/EmailEnvoye" element = {<EmailEnvoye />}></Route>
         <Route path="/ClientList" element = {<ClientList />}></Route>
         <Route path="/Parent" element = {<Parent />}></Route>
-
-       
-        <Route path="/Test" element={<Test />} />
       </Routes>
     </Router>
   );

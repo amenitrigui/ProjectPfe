@@ -6,7 +6,8 @@ function SideBar() {
     console.log("SideBar")
     return (
         <>
-            <div className="drawer-side">
+            {/* Sidebar Container */}
+            <div className="drawer-side fixed inset-0 z-50"> {/* Fixed and on top */}
                 <label htmlFor="my-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
                 <ul className="menu bg-blue-800 text-white min-h-full w-80 p-6 space-y-6">
                     {/* Sidebar Header */}
@@ -67,7 +68,7 @@ function SideBar() {
             </div>
 
             {/* Logo placed outside the sidebar */}
-            <div className="logicom-logo absolute bottom-6 right-6">
+            <div className="logicom-logo absolute bottom-6 right-6 z-50">
                 <img src="/logo.png" alt="Logicom Logo" className="w-20 h-auto" />
             </div>
         </>

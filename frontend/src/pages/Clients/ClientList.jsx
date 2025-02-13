@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import SideBar from "../../components/SideBar";
+import SideBar from "../../components/Common/SideBar";
 import ClientForm from "../../components/Client/ClientForm";
 
 function ClientList() {
@@ -136,7 +136,7 @@ function ClientList() {
 
   return (
      <div className="container mx-auto p-6">
-
+      <SideBar />
       <ClientForm ClientAjoute={setFilteredClient}></ClientForm>
      {/* Header */}
  
