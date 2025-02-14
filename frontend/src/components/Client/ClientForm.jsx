@@ -1,48 +1,24 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useEffect } from "react";
 
 function ClientForm(props) {
-  const [code, setCode] = useState("");
-  const [rsoc, setRsoc] = useState("");
-  const [adresse, setAdresse] = useState("");
-  const [cp, setCp] = useState("");
-  const [email, setEmail] = useState("");
-  const [telephone, setTelephone] = useState("");
-  const [desRep, setDesRep] = useState("");
-  const [inforsClient,setInforsClient]=useState({})
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const dbName = localStorage.getItem("selectedDatabase");
+  // * mettre à jour les valeurs
+  // * des champs du formulaire client / devis
+  const handleChange = (e, field) => {
+    props.setClientInfos(prevState => ({
+      ...prevState,
+      [field]: e.target.value,
+    }));
+  }
+  
+  // * useEffect #1 : Si une opération est effectué (insert, update, delete)
+  // * indiqué par la mutation de operationEffectue
+  // * vider les champs text
 
-    try {
-      await fetch(
-        `${process.env.REACT_APP_API_URL}/api/client/${dbName}/AjouterClient`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            code,
-            rsoc,
-            adresse,
-            cp,
-            email,
-            telephone,
-            desrep: desRep,
-          }),
-        }
-      );
-
-      // Récupérer la liste des clients après l'ajout
-      const res = await axios.get(
-        `http://localhost:5000/api/client/${dbName}/ListeClient`
-      );
-      props.ClientAjoute(res.data.data);
+  useEffect(() => {
+    if(props.operationEffectue) {
       
-
-    } catch (error) {
-      console.error("Erreur lors de l'ajout du client :", error);
     }
-  };
+  })
 
   return (
     
@@ -53,14 +29,13 @@ function ClientForm(props) {
         <span>Information Client</span>
       </h3>
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4 items-center">
-        {/* Première colonne */}
+      <form className="grid grid-cols-2 gap-4 items-center">
         <div>
           <label className="block font-medium mb-1">Code Client :</label>
           <input
             type="text"
             className="w-full border border-gray-300 rounded-md p-2"
-            onChange={(e) => setCode(e.target.value)}
+            onChange={(e) => handleChange(e,"code")}
           />
         </div>
 
@@ -69,7 +44,7 @@ function ClientForm(props) {
           <input
             type="text"
             className="w-full border border-gray-300 rounded-md p-2"
-            onChange={(e) => setRsoc(e.target.value)}
+            onChange={(e) => handleChange(e,"rsoc")}
           />
         </div>
 
@@ -78,7 +53,7 @@ function ClientForm(props) {
           <input
             type="text"
             className="w-full border border-gray-300 rounded-md p-2"
-            onChange={(e) => setAdresse(e.target.value)}
+            onChange={(e) => handleChange(e,"adresse")}
           />
         </div>
 
@@ -87,17 +62,16 @@ function ClientForm(props) {
           <input
             type="text"
             className="w-full border border-gray-300 rounded-md p-2"
-            onChange={(e) => setCp(e.target.value)}
+            onChange={(e) => handleChange(e,"cp")}
           />
         </div>
 
-        {/* Deuxième colonne */}
         <div>
           <label className="block font-medium mb-1">Email :</label>
           <input
             type="email"
             className="w-full border border-gray-300 rounded-md p-2"
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => handleChange(e,"email")}
           />
         </div>
 
@@ -106,7 +80,7 @@ function ClientForm(props) {
           <input
             type="text"
             className="w-full border border-gray-300 rounded-md p-2"
-            onChange={(e) => setTelephone(e.target.value)}
+            onChange={(e) => handleChange(e,"telephone")}
           />
         </div>
 
@@ -115,18 +89,8 @@ function ClientForm(props) {
           <input
             type="text"
             className="w-full border border-gray-300 rounded-md p-2"
-            onChange={(e) => setDesRep(e.target.value)}
+            onChange={(e) => handleChange(e,"desrep")}
           />
-        </div>
-
-        {/* Bouton à droite */}
-        <div className="col-span-2 flex justify-end mt-4">
-          <button
-            type="submit"
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-700 transition"
-          >
-            Valider
-          </button>
         </div>
       </form>
     </div>

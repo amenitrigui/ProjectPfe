@@ -5,7 +5,7 @@ function Child(props) {
   return (<div>{
     props.ameni()}
     <div>Child</div>
-    
+      <button type='submit'>submit parent's</button>
     </div>
 
   )
