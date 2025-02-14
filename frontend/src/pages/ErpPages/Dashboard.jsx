@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { FiHome, FiLogOut } from 'react-icons/fi';
 import { Bar, Line, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, PointElement, LineElement, ArcElement } from 'chart.js';
-import SideBar from '../components/Common/SideBar';
+import SideBar from '../../components/Common/SideBar';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, PointElement, LineElement, ArcElement);
 

@@ -4,6 +4,7 @@ import axios from "axios";
 
 import ClientForm from "../../components/Client/ClientForm";
 import SideBar from "../../components/Common/SideBar";
+import ToolBar from "../../components/Common/ToolBar";
 
 function ClientList() {
   const [clients, setClients] = useState([]);
@@ -11,7 +12,7 @@ function ClientList() {
   const dataBaseName = localStorage.getItem("selectedDatabase");
   const dbName = localStorage.getItem("selectedDatabase");
   const token = localStorage.getItem("token");
-
+  const [InformationClientParent,setInformationClientParent]=useState({});// 5 tr 3ndi barha w7id
 
   useEffect(() => {
     const fetchDevis = async () => {
@@ -102,11 +103,13 @@ function ClientList() {
   return (
     
       <div className="drawer lg:drawer-open">
+        
         <input id="my-drawer" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content">
           {/* Contenu principal */}
           <div className="container mx-auto p-6">
-            <ClientForm ClientAjoute={setFilteredClient} />
+          <ToolBar ClientToolBar={InformationClientParent}></ToolBar>{/*les valeurs ili jewni min 3nd client form (seters) kolhom bch narmihim fl state hthom il kol mowjoudin client form  o tool bar (state )wl client liste fiha clientlist et toolbar */ }
+            <ClientForm ClientAjoute={setFilteredClient} SetInfoClientListeForm={setInformationClientParent} />{/*3mmlna hna sett fl client form 5tr les donnes bch n5thouhom mn client form hka 3lh 3mltna setters */ }
             <br />
             <div className="grid grid-cols-3 gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
               {Object.keys(filters).map((column, index) => (

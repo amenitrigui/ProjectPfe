@@ -125,7 +125,7 @@ function ToolBar() {
             <FontAwesomeIcon icon={faArrowRight} className="text-3xl" />
           </button> */}
           {/* Liste de Devis / clients */}
-          <button
+          {/* <button
             type="button"
             onClick={console.log("navigate to /DevisList")}
             className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
@@ -134,9 +134,9 @@ function ToolBar() {
             <span className="ml-2 text-sm font-semibold text-gray-700">
               Liste
             </span>
-          </button>
+          </button> */}
           {/* Naviger vers le dashboard */}
-          <button
+          {/* <button
             type="button"
             onClick={console.log("navigate to dashboard")}
             className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
@@ -145,11 +145,11 @@ function ToolBar() {
             <span className="ml-2 text-sm font-semibold text-gray-700">
               Quitter
             </span>
-          </button>
+          </button> */}
         </>
         <>
             {/*Annuler Mode Insertion */}
-          <button
+          {/* <button
             type="button"
             onClick={console.log("cancel")}
             className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100"
@@ -158,10 +158,10 @@ function ToolBar() {
             <span className="ml-2 text-sm font-semibold text-gray-700">
               Annuler
             </span>
-          </button>
+          </button> */}
           <div className="border-r border-gray-300 h-8"></div>
           {/*Valider Mode Insertion */}
-          <button
+          {/* <button
             type="button"
             onClick={console.log("validateNewMode")}
             className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100"
@@ -170,11 +170,11 @@ function ToolBar() {
             <span className="ml-2 text-sm font-semibold text-gray-700">
               Valider
             </span>
-          </button>
+          </button> */}
         </>
         <>
         {/*Annuler Mode Edition */}
-          <button
+          {/* <button
             type="button"
             onClick={console.log("cancelEditMode")}
             className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100"
@@ -183,10 +183,10 @@ function ToolBar() {
             <span className="ml-2 text-sm font-semibold text-gray-700">
               Annuler
             </span>
-          </button>
+          </button> */}
           <div className="border-r border-gray-300 h-8"></div>
             {/*Valider Mode Edition */}
-          <button
+          {/* <button
             type="button"
             onClick={console.log("handleUpdateDevis")}
             className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100"
@@ -195,7 +195,7 @@ function ToolBar() {
             <span className="ml-2 text-sm font-semibold text-gray-700">
               Valider
             </span>
-          </button>
+          </button> */}
         </>
       </div>
       <div className="flex justify-center space-x-8 flex-grow"></div>

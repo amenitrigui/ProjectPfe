@@ -9,7 +9,7 @@ function ClientForm(props) {
   const [email, setEmail] = useState("");
   const [telephone, setTelephone] = useState("");
   const [desRep, setDesRep] = useState("");
-
+  const [inforsClient,setInforsClient]=useState({})
   const handleSubmit = async (event) => {
     event.preventDefault();
     const dbName = localStorage.getItem("selectedDatabase");
@@ -37,13 +37,17 @@ function ClientForm(props) {
         `http://localhost:5000/api/client/${dbName}/ListeClient`
       );
       props.ClientAjoute(res.data.data);
+      
+
     } catch (error) {
       console.error("Erreur lors de l'ajout du client :", error);
     }
   };
 
   return (
+    
     <div className="p-6 border border-gray-300 rounded-lg shadow-md bg-white">
+      
       <h3 className="text-lg font-bold mb-4 flex items-center space-x-2">
         <span className="text-black">&#x1F464;</span>
         <span>Information Client</span>
