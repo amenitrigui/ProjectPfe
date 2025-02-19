@@ -21,7 +21,9 @@ function ClientForm(props) {
   })
 
   return (
+    
     <div className="p-6 border border-gray-300 rounded-lg shadow-md bg-white">
+      
       <h3 className="text-lg font-bold mb-4 flex items-center space-x-2">
         <span className="text-black">&#x1F464;</span>
         <span>Information Client</span>

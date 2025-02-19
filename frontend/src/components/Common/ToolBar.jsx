@@ -129,7 +129,7 @@ function ToolBar(props) {
           </div>
           <div className="border-r border-gray-300 h-8"></div>
           {/* Naviger vers le dashboard */}
-          <button
+          {/* <button
             type="button"
             className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
           >
@@ -137,7 +137,7 @@ function ToolBar(props) {
             <span className="ml-2 text-sm font-semibold text-gray-700">
               Quitter
             </span>
-          </button>
+          </button> */}
         </>
       </div>
     </nav>
