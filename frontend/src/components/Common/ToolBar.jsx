@@ -66,7 +66,6 @@ function ToolBar(props) {
           <button
             type="button"
             onClick={() => handleAjout()}
-            disabled= {Object.values(props.clientInfos).length != 7}
             className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
           >
             <FontAwesomeIcon

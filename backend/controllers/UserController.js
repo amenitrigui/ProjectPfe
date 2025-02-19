@@ -533,6 +533,7 @@ const sendPasswordResetEmail = async (req, res) => {
     );
 
     const accessToken = await oAuth2Client.getAccessToken();
+console.log("Access Token:", accessToken);
 
     const transporter = nodeMailer.createTransport({
       service: "gmail",
@@ -542,7 +543,7 @@ const sendPasswordResetEmail = async (req, res) => {
         accessToken: accessToken.token,
         clientId: process.env.NODEMAILER_CLIENT_ID,
         clientSecret: process.env.NODEMAILER_CLIENT_SECRET,
-        refreshToken: process.env.NODEMAILER_REFRESH_TOKEN,
+        refreshToken: process.env.NODEMAILER_REFRESH_TOKEN,//j'ai pas compris 
       },
     });
 
