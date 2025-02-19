@@ -5,17 +5,17 @@ import { ToastContainer, toast } from 'react-toastify';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
 import DevisForm from './components/Devis/DevisForm';
-import HomePage from './pages/HomePage';
+import HomePage from './pages/ErpPages/HomePage';
 import SignInPage from './pages/authentication/SignInPage';
 import DevisList from './pages/Devis/DevisList';
 import DevisDetails from './components/Devis/DevisDetails';
-import Dashboard from './pages/Dashboard';
-import SocietiesList from './pages/SocietiesList';
-import Recherche from './pages/recherche';
+import Dashboard from './pages/ErpPages/Dashboard';
+import SocietiesList from './pages/ErpPages/SocietiesList';
+import Recherche from './pages/Devis/recherche';
 import ResetPassword from './pages/authentication/ResetPassword';
 
-import GestionCommerciale from './pages/GestionCommerciale';
-import GestionDesVentes from './pages/GestionDesVentes';
+import GestionCommerciale from './pages/ErpPages/GestionCommerciale';
+import GestionDesVentes from './pages/ErpPages/GestionDesVentes';
 import RegisterPage from './pages/authentication/RegisterPage';
 import EmailEnvoye from './pages/authentication/EmailEnvoye';
 import ClientList from './pages/Clients/ClientList';

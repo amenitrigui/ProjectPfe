@@ -451,6 +451,15 @@ const getDevisValidees = async (req, res) => {
   }
 };
 
+/**
+ * Description
+ * Création et insertion d'un entité devis
+ * @author Unknown
+ * @date 2025-02-13
+ * @param {any} req
+ * @param {any} res
+ * @returns {any}
+ */
 const createDevis = async (req, res) => {
   const { dbName } = req.params;
   const {
@@ -605,6 +614,15 @@ const createDevis = async (req, res) => {
   }
 };
 
+/**
+ * Description
+ * Suppression d'une devis
+ * @author Unknown
+ * @date 2025-02-13
+ * @param {any} req
+ * @param {any} res
+ * @returns {any}
+ */
 const deleteDevis = async (req, res) => {
   const { dbName, NUMBL } = req.params;
 
@@ -613,7 +631,6 @@ const deleteDevis = async (req, res) => {
       .status(400)
       .json({ message: "Le numéro du devis (NUMBL) est requis." });
   }
-
   try {
     const dynamicSequelize = getSequelizeConnection(dbName);
     await dynamicSequelize.authenticate();

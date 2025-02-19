@@ -37,9 +37,13 @@ function ToolBar(props) {
       },
       body: JSON.stringify(props.clientInfos)
     })
-      .then(response => response.json())  // Parse the JSON response
+      .then(response => response.json())
       .then(data => {
-        console.log(data.message);  // Accessing the success message
+        console.log(data.message);
+        props.setClientList(data.result);
+        props.setShowAlert(true);
+        props.setMessage("Client Ajouté Avec Succès")
+        props.setOperationEffectue(true);
       })
       .catch((error) => {
         console.error('Error:', error.message);  // Logging the error message
@@ -53,10 +57,6 @@ function ToolBar(props) {
           },
         }
       );
-      props.setClientList(response.data.result);
-      props.setShowAlert(true);
-      props.setMessage("Client Ajouté Avec Succès")
-      props.setOperationEffectue(true);
   }
   
   return (
@@ -66,7 +66,6 @@ function ToolBar(props) {
           <button
             type="button"
             onClick={() => handleAjout()}
-            disabled= {Object.values(props.clientInfos).length != 7}
             className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
           >
             <FontAwesomeIcon

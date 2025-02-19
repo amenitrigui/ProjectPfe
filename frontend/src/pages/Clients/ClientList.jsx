@@ -65,6 +65,7 @@ function ClientList() {
     email: "",
   });
 
+  // * Filtrage de la liste des clients par colonne
   const handleFilterChange = (e, column) => {
     const value = e.target.value;
     setFilters((prevFilters) => ({
@@ -84,6 +85,7 @@ function ClientList() {
       });
   };
 
+  // * Colonnes de DataTable
   const columns = [
     { name: "Code", selector: (row) => row.code, sortable: true },
     { name: "Raison Sociale", selector: (row) => row.rsoc, sortable: true },
@@ -92,6 +94,7 @@ function ClientList() {
     { name: "Email", selector: (row) => row.email },
   ];
 
+  // * Style personalisé de DataTable
   const customStyles = {
     headCells: {
       style: {
@@ -124,13 +127,14 @@ function ClientList() {
     console.log(selectedRows);
   };
 
+  console.log(showAlert);
+
   return (
     <div className="drawer lg:drawer-open">
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content">
-        {/* Contenu principal */}
         <div className="container mx-auto p-6">
-          <Alert message={message} showAlert={showAlert} />
+          {showAlert && <Alert message={message} showAlert={showAlert} /> }
           <ToolBar
             setOperationEffectue={setOperationEffectue}
             clientInfos={clientInfos}
