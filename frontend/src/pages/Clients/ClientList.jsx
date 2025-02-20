@@ -8,7 +8,7 @@ import Alert from "../../components/Common/Alert";
 import { Link } from 'react-router-dom';
 import { FiHome, FiLogOut, FiShoppingCart, FiUser, FiBox, FiSettings, FiTruck } from 'react-icons/fi';
 import { useDispatch, useSelector } from "react-redux";
-import { getClientList } from "../../app/client/clientSlice";
+import { getClientList,FilltersSaisieUser,getClientFilter } from "../../app/client/clientSlice";
 
 
 function ClientList() {
@@ -35,7 +35,9 @@ useEffect(()=>{
 
   // * State pour Vérifier si une opération (insert, delete, update) est effectué
   const [operationEffectue, setOperationEffectue] = useState(false);
- 
+  const filters= useSelector((store)=>store.ClientCrud.filters)
+  console.log(filters)
+
   // useEffect(() => {
   //   const fetchClients = async () => {
   //     try {
@@ -59,32 +61,28 @@ useEffect(()=>{
   //   fetchClients();
   // }, []);
 
-  const [filters, setFilters] = useState({
-    code: "",
-    rsoc: "",
-    adresse: "",
-    cp: "",
-    email: "",
-  });
+
 
   // * Filtrage de la liste des clients par colonne
   const handleFilterChange = (e, column) => {
-    const value = e.target.value;
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [column]: value,
-    }));
+    // const value = e.target.value;
+    // setFilters((prevFilters) => ({
+    //   ...prevFilters,
+    //   [column]: value,
+    // }));
 
-    axios
-      .get(`http://localhost:5000/api/client/${dbName}/filterClient`, {
-        params: { filters },
-      })
-      .then((res) => {
-        setFilteredClient(res.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    // axios
+    //   .get(`http://localhost:5000/api/client/${dbName}/filterClient`, {
+    //     params: { filters },
+    //   })
+    //   .then((res) => {
+    //     setFilteredClient(res.data.data);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
+    dispatch(FilltersSaisieUser({valeur :e.target.value,collonne :column}))
+    dispatch(getClientFilter())
   };
 
   // * Colonnes de DataTable

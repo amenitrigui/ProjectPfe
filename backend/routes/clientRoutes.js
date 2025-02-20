@@ -5,6 +5,6 @@ router.get("/:dbName/List",getlisteclient);
 router.get("/:dbName/filterClient",getlisteclientsfilter);
 router.get("/:dbName/Get/:code", getClient);
 router.post("/:dbName/Add",AjouterClient);
-router.delete("/:dbName/Delete", supprimerClient);
+router.delete("/:dbName/Delete/:code", supprimerClient);
 router.put("/:dbName/Update", updateClient);
 module.exports = router;

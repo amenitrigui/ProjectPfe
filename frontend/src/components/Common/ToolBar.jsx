@@ -4,22 +4,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFolderPlus,
   faEdit,
-  faTrashAlt,
-  faSearch,
-  faArrowLeft,
-  faArrowRight,
-  faList,
-  faSignOutAlt,
-  faTimes,
-  faCheck,
+  faTrashAlt
 } from "@fortawesome/free-solid-svg-icons";
-import { PrinterIcon } from "@heroicons/react/20/solid";
 
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import Alert from "./Alert";
+import { useState } from "react"; 
 import { useDispatch, useSelector } from "react-redux";
 import { addClient } from "../../app/client/clientSlice";
+import { deleteClient } from '../../app/client/clientSlice'
 
 function ToolBar(props) {
   const dispatch = useDispatch();
@@ -40,7 +32,6 @@ function ToolBar(props) {
         <>
           <button
             type="button"
-            onClick={() => handleAjout()}
             className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
           >
             <FontAwesomeIcon
@@ -69,7 +60,7 @@ function ToolBar(props) {
           <div>
             <button
               type="button"
-              onClick={() => {setIsDeleting(true)}}
+              onClick={() => {dispatch(deleteClient())}}
               className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
             >
               <FontAwesomeIcon
@@ -103,16 +94,6 @@ function ToolBar(props) {
             </div> }
           </div>
           <div className="border-r border-gray-300 h-8"></div>
-          {/* Naviger vers le dashboard */}
-          {/* <button
-            type="button"
-            className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
-          >
-            <FontAwesomeIcon icon={faSignOutAlt} className="text-3xl" />
-            <span className="ml-2 text-sm font-semibold text-gray-700">
-              Quitter
-            </span>
-          </button> */}
         </>
       </div>
     </nav>
