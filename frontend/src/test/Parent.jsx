@@ -1,29 +1,47 @@
-import React, { useState } from 'react'
-import Test from './Test';
-import Test1 from './Test1';
-function Parent() {
-    const [testValue, setTestValue] = useState("");
-    const [objValue, setObjValue] = useState({
-      field1: "",
-      field2: "",
-      field3: ""
-    })
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { decrement, increment, getClientList } from "../app/interfaceAPP/testSlice";
 
-    function updateState() {
-      setObjValue({field1: "value1",field2: "value2", field3: "value3"})
-    }
+function Parent() {
+  const [testValue, setTestValue] = useState("");
+  const [objValue, setObjValue] = useState({
+    field1: "",
+    field2: "",
+    field3: "",
+  });
+
+  function updateState() {
+    setObjValue({ field1: "value1", field2: "value2", field3: "value3" });
+  }
+
+  const count = useSelector((state) => state.test2.value);
+  const status = useSelector((state) => state.test2.status);
+  const clientlist = useSelector((state) => state.test2.clientList); // Récupération des clients
+  console.log(clientlist)
+  const dispatch = useDispatch();
+
+  // Charger la liste des clients au montage du composant
+  useEffect(() => {
+    dispatch(getClientList());
+  }, [dispatch]);
+
   return (
     <div>
-      <Test testValue = {testValue}/>
-      {/* the state updates, the loop only happens once though */}
-      <Test1 setTestValue= {setTestValue}/>
-      {Object.values(objValue).map((value) => {
-        <h1>{value}</h1>
-      })}
+      <div>
+        <button onClick={() => dispatch(increment())}>Increment</button>
+        <span>{count}</span>
+      </div>
+      <button onClick={() => dispatch(decrement())}>Decrement</button>
 
-      <button onClick={updateState}>Update state</button>
+      {status === "loading" && <p>Chargement...</p>}
+      {status === "failed" && <p>Erreur lors du chargement des clients</p>}
+
+      {status === "succeeded" &&
+        Object.values(clientlist)?.map((item, index) => (
+          <div key={index}>{item.code}</div> // Assurez-vous que chaque item a une propriété "name"
+        ))}
     </div>
-  )
+  );
 }
 
-export default Parent
+export default Parent;
