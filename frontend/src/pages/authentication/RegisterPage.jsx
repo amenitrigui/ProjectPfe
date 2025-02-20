@@ -18,6 +18,7 @@ function RegisterPage() {
     const trimmedConfirmPassword = confirmPassword.trim();
 
     if (!trimmedNom || !trimmedEmail || !trimmedPassword || !trimmedConfirmPassword) {
+      console.log("d")
       setError("Tg");
       return;
     }

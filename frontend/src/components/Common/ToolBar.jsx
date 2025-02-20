@@ -19,13 +19,16 @@ import { PrinterIcon } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Alert from "./Alert";
+import { useSelector } from "react-redux";
 
 function ToolBar(props) {
   const navigate = useNavigate();
   const [isDeleting, setIsDeleting] = useState(false)
   const dbName = localStorage.getItem("selectedDatabase");
   const token = localStorage.getItem("token");
-  console.log(props.clientInfos);
+  const clientInfos = useSelector((state) => state.client.clientInfos);
+
+  console.log("clientInfos from toolbar: ",clientInfos)
   
   // * ajout d'un client
   const handleAjout = async () => {
@@ -39,8 +42,7 @@ function ToolBar(props) {
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data.message);
-        props.setClientList(data.result);
+        console.log(data);
         props.setShowAlert(true);
         props.setMessage("Client Ajouté Avec Succès")
         props.setOperationEffectue(true);
@@ -48,15 +50,6 @@ function ToolBar(props) {
       .catch((error) => {
         console.error('Error:', error.message);  // Logging the error message
       });
-
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/${props.targetTable}/${dbName}/List`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
   }
   
   return (

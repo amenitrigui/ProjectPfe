@@ -23,17 +23,17 @@ function EmailEnvoye() {
                 `${process.env.REACT_APP_API_URL}/api/users/passwordReset`,
                 { email: user.email, password: trimedpassword, token: token },
                 {
-                  headers: {
-                    Authorization: `Bearer ${token}`
-                  }
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
                 }
-              )
-              .then(res => {
-                console.log(res);
-              })
-              .catch(error => {
-                console.log(error);
-              });  
+            )
+                .then(res => {
+                    console.log(res);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
         }
 
         navigate("/");

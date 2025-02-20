@@ -5,27 +5,19 @@ import SideBar from "../../components/Common/SideBar";
 import ClientForm from "../../components/Client/ClientForm";
 import ToolBar from "../../components/Common/ToolBar";
 import Alert from "../../components/Common/Alert";
+import { Link } from 'react-router-dom';
+import { FiHome, FiLogOut, FiShoppingCart, FiUser, FiBox, FiSettings, FiTruck } from 'react-icons/fi';
+import { useDispatch, useSelector } from "react-redux";
+import { fetchClientList } from "../../app/client/clientSlice";
 
 function ClientList() {
   // * Utilisés pour l'affichage de DataTable
-  const [clients, setClients] = useState([]);
   const [filteredClient, setFilteredClient] = useState([]);
   // * Utilisé pour spécifier quelle db (societé) on interroge
   const dbName = localStorage.getItem("selectedDatabase");
   // * Utilisé pour l'authorization de l'utilisateur à effectuer des opérations
   const token = localStorage.getItem("token");
-  // * les Informations provenant de composant ClientForm
-  // * pour quelles peuvent etres accessibles par
-  // * le composant ToolBar
-  const [clientInfos, setClientInfos] = useState({
-    code: "",
-    rsoc: "",
-    adresse: "",
-    cp: "",
-    email: "",
-    telephone: "",
-    desrep: "",
-  });
+  
   // * State pour l'affichage d'une alert
   const [showAlert, setShowAlert] = useState(false);
   // * State pour le message d'une alert
@@ -33,28 +25,15 @@ function ClientList() {
 
   // * State pour Vérifier si une opération (insert, delete, update) est effectué
   const [operationEffectue, setOperationEffectue] = useState(false);
+  const clientList = useSelector((state) => state.client.clientList);
+  console.log(clientList)
+  const dispatch = useDispatch();
   // * UseEffect #1 : Récuperer La liste des clients
   useEffect(() => {
-    const fetchClients = async () => {
-      try {
-        if (!dbName) throw new Error("Aucune base de données sélectionnée.");
-
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/client/${dbName}/List`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setClients(response.data.result);
-        setFilteredClient(response.data.result);
-      } catch (error) {
-        console.error(error.message);
-      }
-    };
-
-    fetchClients();
+    const fetchData = async() => {
+      dispatch(fetchClientList())
+    }
+    fetchData();
   }, []);
 
   const [filters, setFilters] = useState({
@@ -127,24 +106,96 @@ function ClientList() {
     console.log(selectedRows);
   };
 
-  console.log(showAlert);
-
   return (
-    <div className="drawer lg:drawer-open">
-      <input id="my-drawer" type="checkbox" className="drawer-toggle" />
+    <div className="bg-gray-100 min-h-screen p-6">
+
       <div className="drawer-content">
+        <div className="drawer">
+          <input type="checkbox" id="my-drawer" className="drawer-toggle" />
+
+          <div className="drawer-content">
+
+            {/* Contenu principal ici */}
+            <label htmlFor="my-drawer" className="btn btn-primary drawer-button m-4 w-40">
+              <img src="enter.png" alt="enter Icon" className="w-6 h-6" />
+            </label>
+            <h1 className="text-2xl font-bold text-center">Liste de clients</h1>
+
+          </div>
+          <div className="drawer-side">
+            <label htmlFor="my-drawer" className="drawer-overlay"></label>
+            <ul className="menu bg-blue-800 text-white min-h-full w-80 p-6 space-y-6">
+              {/* Sidebar Header */}
+              <div className="text-center text-xl font-semibold mb-8">
+                <h2>Logicom ERP</h2>
+              </div>
+
+              {/* Dashboard Section */}
+              <li className="mb-4">
+                <Link to="/home-Page" className="flex items-center space-x-4 p-3 hover:bg-blue-700 rounded-md transition">
+                  <FiHome className="text-xl" /> <span>Acuiell</span>
+                </Link>
+              </li>
+
+              {/* Sales Section */}
+              <li className="mb-4">
+                <Link to="/DevisList" className="flex items-center space-x-4 p-3 hover:bg-blue-700 rounded-md transition">
+                  <FiShoppingCart className="text-xl" /> <span>gestion ventes</span>
+                </Link>
+              </li>
+
+              {/* Inventory Section */}
+              <li className="mb-4">
+                <Link to="/DevisFormTout" className="flex items-center space-x-4 p-3 hover:bg-blue-700 rounded-md transition">
+                  <FiBox className="text-xl" /> <span>devis form</span>
+                </Link>
+              </li>
+
+              {/* Purchasing Section */}
+              <li className="mb-4">
+                <Link to="/Purchases" className="flex items-center space-x-4 p-3 hover:bg-blue-700 rounded-md transition">
+                  <FiTruck className="text-xl" /> <span>Achats</span>
+                </Link>
+              </li>
+
+              {/* Customer Management Section */}
+              <li className="mb-4">
+                <Link to="/ClientList" className="flex items-center space-x-4 p-3 hover:bg-blue-700 rounded-md transition">
+                  <FiUser className="text-xl" /> <span>Clients</span>
+                </Link>
+              </li>
+
+              {/* Settings Section */}
+              <li className="mb-4">
+                <Link to="/Settings" className="flex items-center space-x-4 p-3 hover:bg-blue-700 rounded-md transition">
+                  <FiSettings className="text-xl" /> <span>Paramètres</span>
+                </Link>
+              </li>
+
+              {/* Logout Section */}
+              <li>
+                <Link to="/" className="flex items-center space-x-4 p-3 hover:bg-blue-700 rounded-md transition">
+                  <FiLogOut className="text-xl" /> <span>Déconnexion</span>
+                </Link>
+              </li>
+
+            </ul>
+          </div>
+
+        </div>
+
+        {/* Contenu principal */}
         <div className="container mx-auto p-6">
           {showAlert && <Alert message={message} showAlert={showAlert} /> }
           <ToolBar
             setOperationEffectue={setOperationEffectue}
-            clientInfos={clientInfos}
             targetTable={"client"}
             setClientList={setFilteredClient}
             setShowAlert={setShowAlert}
             setMessage={setMessage}
           />
+
           <ClientForm
-            setClientInfos={setClientInfos}
             operationEffectue={operationEffectue}
           />
           <br />
@@ -162,7 +213,7 @@ function ClientList() {
           <div className="bg-white p-4 rounded-lg shadow-lg mt-4">
             <DataTable
               columns={columns}
-              data={filteredClient}
+              data={clientList}
               customStyles={customStyles}
               selectableRows
               fixedHeader
@@ -175,8 +226,6 @@ function ClientList() {
         </div>
       </div>
 
-      {/* SideBar ici */}
-      <SideBar />
     </div>
   );
 }

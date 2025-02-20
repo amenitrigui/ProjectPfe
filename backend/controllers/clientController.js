@@ -22,6 +22,7 @@ const getlisteclient = async (req, res) => {
     const result = await dbConnection.query(`select * from client`, {
       type: dbConnection.QueryTypes.SELECT,
     });
+
     return res.status(200).json({
       message: "liste client recupere",
       result,

@@ -1,28 +1,19 @@
 import React, { useState } from 'react'
 import Test from './Test';
 import Test1 from './Test1';
+import { useDispatch, useSelector } from 'react-redux';
+import { decrement, increment } from '../app/interface cd/testingSlice';
+
 function Parent() {
-    const [testValue, setTestValue] = useState("");
-    const [objValue, setObjValue] = useState({
-      field1: "",
-      field2: "",
-      field3: ""
-    })
-
-    function updateState() {
-      setObjValue({field1: "value1",field2: "value2", field3: "value3"})
-    }
+  const testValue = useSelector((state) => state.test.testValue)
+  const dispatch = useDispatch();
   return (
-    <div>
-      <Test testValue = {testValue}/>
-      {/* the state updates, the loop only happens once though */}
-      <Test1 setTestValue= {setTestValue}/>
-      {Object.values(objValue).map((value) => {
-        <h1>{value}</h1>
-      })}
-
-      <button onClick={updateState}>Update state</button>
+    <div>parent: {testValue}
+    <br />
+    <button className="btn btn-primary" onClick={() => dispatch(increment())}>increment</button>
+    <button className="btn btn-primary" onClick={() => dispatch(decrement())}>decrement</button>
     </div>
+  
   )
 }
 
