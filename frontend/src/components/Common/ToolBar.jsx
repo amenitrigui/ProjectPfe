@@ -19,45 +19,16 @@ import { PrinterIcon } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Alert from "./Alert";
+import { getclientDelete } from "../../app/client/clientSlice";
+import { useDispatch } from "react-redux";
 
 function ToolBar(props) {
   const navigate = useNavigate();
   const [isDeleting, setIsDeleting] = useState(false)
   const dbName = localStorage.getItem("selectedDatabase");
   const token = localStorage.getItem("token");
-  console.log(props.clientInfos);
+  const dispatch=useDispatch()
   
-  // * ajout d'un client
-  const handleAjout = async () => {
-    
-    fetch(`${process.env.REACT_APP_API_URL}/api/${props.targetTable}/${dbName}/Add`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(props.clientInfos)
-    })
-      .then(response => response.json())  // Parse the JSON response
-      .then(data => {
-        console.log(data.message);  // Accessing the success message
-      })
-      .catch((error) => {
-        console.error('Error:', error.message);  // Logging the error message
-      });
-
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/${props.targetTable}/${dbName}/List`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      props.setClientList(response.data.result);
-      props.setShowAlert(true);
-      props.setMessage("Client Ajouté Avec Succès")
-      props.setOperationEffectue(true);
-  }
   
   return (
     <nav className=" w-full h-[110px] border-b border-gray-700 flex items-center px-6 mt-6">
@@ -65,7 +36,6 @@ function ToolBar(props) {
         <>
           <button
             type="button"
-            onClick={() => handleAjout()}
             className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
           >
             <FontAwesomeIcon
@@ -94,7 +64,7 @@ function ToolBar(props) {
           <div>
             <button
               type="button"
-              onClick={() => {setIsDeleting(true)}}
+              onClick={() => {dispatch(getclientDelete())}}
               className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
             >
               <FontAwesomeIcon

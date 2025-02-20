@@ -9,4 +9,4 @@ export default configureStore(
         ClientCrud : clientSlice
     },
 })
-//bch nrmiha fiha les data mt3i kol 
+//bch nrmiha fiha les data mt3i kol http://localhost:5000/api/client/SOLEVO/filterClient?code=88&rsoc=&adresse=&cp=&email=
