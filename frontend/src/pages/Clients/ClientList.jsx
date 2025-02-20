@@ -20,13 +20,6 @@ const clientList=useSelector((store)=>store.ClientCrud.clientList)
 useEffect(()=>{
   dispatch(getClientList())
 },[])
-console.log(typeof(clientList))
-
-// useEffect(()=>
-// {
-//   dispatch(getClientFilter() )
-// })
-
 
   // * Utilisés pour l'affichage de DataTable
   const [filteredClient, setFilteredClient] = useState([]);

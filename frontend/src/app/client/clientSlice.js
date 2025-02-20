@@ -12,96 +12,122 @@ export const getClientList = createAsyncThunk(
   }
 );
 
+export const addClient = createAsyncThunk(
+    "slice/addClient",
+    async(_, thunkApi) => {
+        const clientInfos = thunkApi.getState().ClientCrud.clientInfos;
+        console.log(clientInfos);
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/client/SOLEVO/Add`, {
+            clientInfos
+        })
+        console.log(response);
+        return response.data;
+    }
+)
+
 // Thunk pour filtrer les clients (Correction ici)
 export const getClientFilter = createAsyncThunk(
-  "slice/getClientFilter",
-  async (_, thunkAPI) => {
-    // Passer `filters` en paramètre
-    console.log("ddd");
-    const response = await axios.get(
-      `http://localhost:5000/api/client/SOLEVO/filterClient`,
-      {
-        params: thunkAPI.getState().ClientCrud.filters, // Utiliser filters ici
-      }
-    );
-    console.log(response);
-    return response.data.result; // Retourner la réponse
-  }
-); // slice/getclientDelete identifiant uniquepour la methode
-export const getclientDelete = createAsyncThunk(
-  "slice/getclientDelete",
-  async () => {
-    const response = await axios.delete(
-      `http://localhost:5000/api/client/SOLEVO/Delete/41101462`
-    );
-    return response;
-  }
-);
+    "slice/getClientFilter",
+    async (_, thunkAPI) => { // Passer `filters` en paramètre
+        console.log("ddd")
+        const response = await axios.get(`http://localhost:5000/api/client/SOLEVO/filterClient`, {
+            params: thunkAPI.getState().ClientCrud.filters, // Utiliser filters ici
+        });
+        console.log(response)
+        return response.data.result; // Retourner la réponse
+
+    }
+); // slice/deleteClient identifiant uniquepour la methode
+export const deleteClient = createAsyncThunk("slice/deleteClient",
+    async () => {
+        const response = await axios.delete(`http://localhost:5000/api/client/SOLEVO/Delete/41101462`)
+        return response
+    }   
+)
 
 export const clientSlice = createSlice({
-  name: "slice",
-  initialState: {
-    value: 0,
-    clientList: [],
-    status: "idle", // idle | loading | succeeded | failed
-    error: null,
-    filters: {
-      code: "",
-      rsoc: "",
-      adresse: "",
-      cp: "",
-      email: "",
-    },
-  },
-  reducers: {
-    // Action synchrone pour modifier les filtres
-    FilltersSaisieUser: (state, action) => {
-      const { valeur, collonne } = action.payload;
-      state.filters[collonne] = valeur; // Correction ici
-    },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(getClientList.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(getClientList.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.clientList = action.payload;
-      })
-      .addCase(getClientList.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message;
-      })
+            name: "slice",
+            initialState: {
+            clientInfos: {},
+            value: 0,
+            clientList: [],
+            status: "idle", // idle | loading | succeeded | failed
+            error: null,
+            filters: {
+                code: "",
+                rsoc: "",
+                adresse: "",
+                cp: "",
+                email: "",
+            }
+            },
+            reducers: {
+                // Action synchrone pour modifier les filtres
+                FilltersSaisieUser: (state, action) => {
+                    const { valeur, collonne } = action.payload;
+                    state.filters[collonne] = valeur; // Correction ici
+                },
+                fillClientInfos: (state, action) => {
+                    const { field, value } = action.payload;
+                    state.clientInfos[field] = value;
+                }
+            },
+            extraReducers: (builder) => {
+                builder
+                    .addCase(getClientList.pending, (state) => {
+                        state.status = "loading";
+                    })
+                    .addCase(getClientList.fulfilled, (state, action) => {
+                        state.status = "succeeded";
+                        state.clientList = action.payload;
+                    })
+                    .addCase(getClientList.rejected, (state, action) => {
+                        state.status = "failed";
+                        state.error = action.error.message;
+                    })
+                    
+                    .addCase(getClientFilter.pending, (state) => {
+                        state.status = "loading";
+                    })
+                    .addCase(getClientFilter.fulfilled, (state, action) => {
+                        state.status = "succeeded";
+                        state.clientList = action.payload; // Mettre à jour la liste filtrée
+                    })
+                    .addCase(getClientFilter.rejected, (state, action) => {
+                        state.status = "failed";
+                        state.error = action.error.message;
+                    })
+                    
+                    .addCase(deleteClient.pending, (state) => {
+                        state.status = "loading";
+                        console.log(state.status)
+                    })
+                    .addCase(deleteClient.fulfilled, (state, action) => {
+                        state.status = "succeeded";
+                        state.clientList = action.payload;
+                        console.log(state.status)
+                    })
+                    .addCase(deleteClient.rejected, (state, action) => {
+                        state.status = "failed";
+                        state.error = action.error.message;
+                        console.log(state.status)
+                    })
 
-      .addCase(getClientFilter.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(getClientFilter.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.clientList = action.payload; // Mettre à jour la liste filtrée
-      })
-      .addCase(getClientFilter.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message;
-      })
+                    .addCase(addClient.pending, (state) => {
+                        console.log("pending");
+                        state.status = "pending"
+                    })
+                    .addCase(addClient.fulfilled, (state, action) => {
+                    console.log("succeeded");
+                    state.status = "succeeded";
+                    })
+                    .addCase(addClient.rejected, (state, action) => {
+                    console.log(action.payload);
+                    state.status = "failed";
+                    state.error = action.payload;
+                    });
+            }
+        });
 
-      .addCase(getclientDelete.pending, (state) => {
-        state.status = "loading";
-        console.log(state.status);
-      })
-      .addCase(getclientDelete.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.clientList = action.payload;
-        console.log(state.status);
-      })
-      .addCase(getclientDelete.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message;
-        console.log(state.status);
-      });
-  },
-});
-
-export const { FilltersSaisieUser } = clientSlice.actions;
+export const { FilltersSaisieUser,fillClientInfos } = clientSlice.actions;
 export default clientSlice.reducer;
