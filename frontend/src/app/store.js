@@ -9,4 +9,4 @@ export default configureStore(
         ClientCrud : clientSlice
     },
 })
-//bch nrmiha fiha les data mt3i kol 
+//bch nrmiha fiha les data mt3i kol

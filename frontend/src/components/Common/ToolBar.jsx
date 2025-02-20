@@ -18,8 +18,8 @@ import { PrinterIcon } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Alert from "./Alert";
-import { useDispatch, useSelector } from "react-redux";
-import { addClient } from "../../app/client/clientSlice";
+import { getclientDelete } from "../../app/client/clientSlice";
+import { useDispatch } from "react-redux";
 
 function ToolBar(props) {
   const dispatch = useDispatch();
@@ -27,12 +27,7 @@ function ToolBar(props) {
   const [isDeleting, setIsDeleting] = useState(false)
   const dbName = localStorage.getItem("selectedDatabase");
   const token = localStorage.getItem("token");
-  const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
   
-  // * ajout d'un client
-  const handleAjout = async () => {
-    dispatch(addClient())
-  }
   
   return (
     <nav className=" w-full h-[110px] border-b border-gray-700 flex items-center px-6 mt-6">
@@ -40,7 +35,6 @@ function ToolBar(props) {
         <>
           <button
             type="button"
-            onClick={() => handleAjout()}
             className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
           >
             <FontAwesomeIcon
@@ -69,7 +63,7 @@ function ToolBar(props) {
           <div>
             <button
               type="button"
-              onClick={() => {setIsDeleting(true)}}
+              onClick={() => {dispatch(getclientDelete())}}
               className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
             >
               <FontAwesomeIcon
@@ -103,16 +97,6 @@ function ToolBar(props) {
             </div> }
           </div>
           <div className="border-r border-gray-300 h-8"></div>
-          {/* Naviger vers le dashboard */}
-          {/* <button
-            type="button"
-            className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
-          >
-            <FontAwesomeIcon icon={faSignOutAlt} className="text-3xl" />
-            <span className="ml-2 text-sm font-semibold text-gray-700">
-              Quitter
-            </span>
-          </button> */}
         </>
       </div>
     </nav>

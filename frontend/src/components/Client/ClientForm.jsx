@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fillClientInfos } from "../../app/client/clientSlice";
+import { FilltersSaisieUser } from "../../app/client/clientSlice";
 
 function ClientForm(props) {
   const clientInfos = useSelector((state)=>state.ClientCrud.clientInfos);
@@ -9,7 +9,7 @@ function ClientForm(props) {
   // * mettre à jour les valeurs
   // * des champs du formulaire client / devis
   const handleChange = (e, field) => {
-    dispatch(fillClientInfos({field, value: e.target.value}))
+    dispatch(FilltersSaisieUser({field, value: e.target.value}))
   }
   
   // * useEffect #1 : Si une opération est effectué (insert, update, delete)

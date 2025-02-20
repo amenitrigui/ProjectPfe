@@ -143,14 +143,13 @@ const AjouterClient = async (req, res) => {
  * @returns {status}
  */
 const supprimerClient = async (req, res) => {
-  const { dbName } = req.params;
-  const { code } = req.body;
-
+  const { dbName,code } = req.params;
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const Client = defineClientModel(dbConnection);
-
+    
     await Client.destroy({ where: {code: code}});
+    console.log(code)
 
     return res.status(200).json({ message: "client supprimé avec succès" });
   } catch (error) {
