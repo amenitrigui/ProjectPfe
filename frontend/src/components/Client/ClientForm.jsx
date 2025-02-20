@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fillClientInfos } from "../../app/client/clientSlice";
 
 function ClientForm(props) {
-  const clientInfos = useSelector((state)=>state.client.clientInfos);
-  const clientList = useSelector((state) => state.client.clientList);
+  const clientInfos = useSelector((state)=>state.ClientCrud.clientInfos);
+  const clientList = useSelector((state) => state.ClientCrud.clientList);
   const dispatch = useDispatch();
   // * mettre à jour les valeurs
   // * des champs du formulaire client / devis

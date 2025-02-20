@@ -112,20 +112,19 @@ const getlisteclientsfilter = async (req, res) => {
  */
 const AjouterClient = async (req, res) => {
   const { dbName } = req.params;
-  const { code, rsoc, adresse, cp, email, telephone, desrep } = req.body;
-
+  const { clientInfos } = req.body;
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const Client = defineClientModel(dbConnection);
     const newClient = await Client.create({
       //add + save min base 3ibrt 3ml insert into mn base de donnes
-      code,
-      email,
-      rsoc,
-      cp,
-      telephone,
-      desrep,
-      adresse,
+      code: clientInfos.code,
+      email: clientInfos.email,
+      rsoc: clientInfos.rsoc,
+      cp: clientInfos.cp,
+      telephone: clientInfos.telephone,
+      desrep: clientInfos.desrep,
+      adresse: clientInfos.adresse,
     });
 
     return res.status(200).json({ message: "insertion avec succès" });

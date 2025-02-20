@@ -1,6 +1,5 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import axios from "axios";
 // ? icons
 import {
   faFolderPlus,
@@ -19,37 +18,20 @@ import { PrinterIcon } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Alert from "./Alert";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { addClient } from "../../app/client/clientSlice";
 
 function ToolBar(props) {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isDeleting, setIsDeleting] = useState(false)
   const dbName = localStorage.getItem("selectedDatabase");
   const token = localStorage.getItem("token");
-  const clientInfos = useSelector((state) => state.client.clientInfos);
-
-  console.log("clientInfos from toolbar: ",clientInfos)
+  const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
   
   // * ajout d'un client
   const handleAjout = async () => {
-    
-    fetch(`${process.env.REACT_APP_API_URL}/api/${props.targetTable}/${dbName}/Add`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(props.clientInfos)
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        props.setShowAlert(true);
-        props.setMessage("Client Ajouté Avec Succès")
-        props.setOperationEffectue(true);
-      })
-      .catch((error) => {
-        console.error('Error:', error.message);  // Logging the error message
-      });
+    dispatch(addClient())
   }
   
   return (

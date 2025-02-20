@@ -8,9 +8,19 @@ import Alert from "../../components/Common/Alert";
 import { Link } from 'react-router-dom';
 import { FiHome, FiLogOut, FiShoppingCart, FiUser, FiBox, FiSettings, FiTruck } from 'react-icons/fi';
 import { useDispatch, useSelector } from "react-redux";
-import { fetchClientList } from "../../app/client/clientSlice";
+import { getClientList } from "../../app/client/clientSlice";
+
 
 function ClientList() {
+
+const dispatch = useDispatch()
+const clientList=useSelector((store)=>store.ClientCrud.clientList)
+
+ // * UseEffect #1 : Récuperer La liste des clients
+useEffect(()=>{
+  dispatch(getClientList())
+},[])
+
   // * Utilisés pour l'affichage de DataTable
   const [filteredClient, setFilteredClient] = useState([]);
   // * Utilisé pour spécifier quelle db (societé) on interroge
@@ -25,16 +35,29 @@ function ClientList() {
 
   // * State pour Vérifier si une opération (insert, delete, update) est effectué
   const [operationEffectue, setOperationEffectue] = useState(false);
-  const clientList = useSelector((state) => state.client.clientList);
-  console.log(clientList)
-  const dispatch = useDispatch();
-  // * UseEffect #1 : Récuperer La liste des clients
-  useEffect(() => {
-    const fetchData = async() => {
-      dispatch(fetchClientList())
-    }
-    fetchData();
-  }, []);
+ 
+  // useEffect(() => {
+  //   const fetchClients = async () => {
+  //     try {
+  //       if (!dbName) throw new Error("Aucune base de données sélectionnée.");
+
+  //       const response = await axios.get(
+  //         `${process.env.REACT_APP_API_URL}/api/client/${dbName}/List`,
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${token}`,
+  //           },
+  //         }
+  //       );
+  //       setClients(response.data.result);
+  //       setFilteredClient(response.data.result);
+  //     } catch (error) {
+  //       console.error(error.message);
+  //     }
+  //   };
+
+  //   fetchClients();
+  // }, []);
 
   const [filters, setFilters] = useState({
     code: "",
@@ -103,7 +126,7 @@ function ClientList() {
   };
 
   const handleSelectionChange = ({ selectedRows }) => {
-    console.log(selectedRows);
+    console.log(selectedRows[0].code);
   };
 
   return (
