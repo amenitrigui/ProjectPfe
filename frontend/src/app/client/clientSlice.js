@@ -39,8 +39,9 @@ export const getClientFilter = createAsyncThunk(
     }
 ); // slice/deleteClient identifiant uniquepour la methode
 export const deleteClient = createAsyncThunk("slice/deleteClient",
-    async () => {
-        const response = await axios.delete(`http://localhost:5000/api/client/SOLEVO/Delete/41101462`)
+    async (_,thunkAPI) => {
+        const id = thunkAPI.getState().ClientCrud.clientAsuprimer;
+        const response = await axios.delete(`http://localhost:5000/api/client/SOLEVO/Delete/${id}`)
         return response
     }   
 )
@@ -48,9 +49,10 @@ export const deleteClient = createAsyncThunk("slice/deleteClient",
 export const clientSlice = createSlice({
             name: "slice",
             initialState: {
-            clientInfos: {},
+            clientInfos: {},//Add  formulaire 
             value: 0,
             clientList: [],
+            clientAsuprimer: "", // id reeelement code 
             status: "idle", // idle | loading | succeeded | failed
             error: null,
             filters: {
@@ -68,8 +70,12 @@ export const clientSlice = createSlice({
                     state.filters[collonne] = valeur; // Correction ici
                 },
                 fillClientInfos: (state, action) => {
-                    const { field, value } = action.payload;
+                    const { field, value } = action.payload; //actions fiha les donnes (payload)
                     state.clientInfos[field] = value;
+                },// haja simple 
+                setclientAsupprimer :(state,action)=>{
+                    const {id}=action.payload;
+                    state.clientAsuprimer=id;
                 }
             },
             extraReducers: (builder) => {
@@ -97,7 +103,7 @@ export const clientSlice = createSlice({
                         state.status = "failed";
                         state.error = action.error.message;
                     })
-                    
+// 
                     .addCase(deleteClient.pending, (state) => {
                         state.status = "loading";
                         console.log(state.status)
@@ -129,5 +135,5 @@ export const clientSlice = createSlice({
             }
         });
 
-export const { FilltersSaisieUser,fillClientInfos } = clientSlice.actions;
+export const { FilltersSaisieUser,fillClientInfos ,setclientAsupprimer} = clientSlice.actions;
 export default clientSlice.reducer;

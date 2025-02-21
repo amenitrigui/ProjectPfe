@@ -8,7 +8,7 @@ import Alert from "../../components/Common/Alert";
 import { Link } from 'react-router-dom';
 import { FiHome, FiLogOut, FiShoppingCart, FiUser, FiBox, FiSettings, FiTruck } from 'react-icons/fi';
 import { useDispatch, useSelector } from "react-redux";
-import { getClientList,FilltersSaisieUser,getClientFilter } from "../../app/client/clientSlice";
+import { getClientList,FilltersSaisieUser,getClientFilter, setclientAsupprimer } from "../../app/client/clientSlice";
 
 
 function ClientList() {
@@ -124,7 +124,8 @@ useEffect(()=>{
   };
 
   const handleSelectionChange = ({ selectedRows }) => {
-    console.log(selectedRows[0].code);
+    
+    dispatch(setclientAsupprimer({id:selectedRows[0].code}))
   };
 
   return (
@@ -209,15 +210,15 @@ useEffect(()=>{
         <div className="container mx-auto p-6">
           {showAlert && <Alert message={message} showAlert={showAlert} /> }
           <ToolBar
-            setOperationEffectue={setOperationEffectue}
-            targetTable={"client"}
-            setClientList={setFilteredClient}
-            setShowAlert={setShowAlert}
-            setMessage={setMessage}
+            // setOperationEffectue={setOperationEffectue}
+            // targetTable={"client"}
+            // setClientList={setFilteredClient}
+            // setShowAlert={setShowAlert}
+            // setMessage={setMessage}
           />
 
           <ClientForm
-            operationEffectue={operationEffectue}
+            // operationEffectue={operationEffectue}
           />
           <br />
           <div className="grid grid-cols-3 gap-4 p-4 bg-gray-100 rounded-lg shadow-md">

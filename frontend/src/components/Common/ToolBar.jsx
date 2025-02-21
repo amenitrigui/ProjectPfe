@@ -10,20 +10,28 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useState } from "react"; 
 import { useDispatch, useSelector } from "react-redux";
-import { addClient } from "../../app/client/clientSlice";
+import { addClient, getClientList } from "../../app/client/clientSlice";
 import { deleteClient } from '../../app/client/clientSlice'
 
-function ToolBar(props) {
+function ToolBar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isDeleting, setIsDeleting] = useState(false)
   const dbName = localStorage.getItem("selectedDatabase");
   const token = localStorage.getItem("token");
-  const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
+  const status =useSelector((state)=>state.ClientCrud.status)
+  console.log(status)
   
   // * ajout d'un client
   const handleAjout = async () => {
     dispatch(addClient())
+    dispatch(getClientList())
+  }
+  // todo suprimer client
+  const handlesuprimer =async ()=>
+  {
+    dispatch(deleteClient())
+    dispatch(getClientList())
   }
   
   return (
@@ -61,7 +69,7 @@ function ToolBar(props) {
           <div>
             <button
               type="button"
-              onClick={() => {dispatch(deleteClient())}}
+              onClick={() => handlesuprimer()}
               className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
             >
               <FontAwesomeIcon
