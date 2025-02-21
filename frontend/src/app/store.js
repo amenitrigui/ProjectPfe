@@ -7,7 +7,7 @@ export default configureStore(
     reducer:
     {
         test2: testSlice,
-        ClientCrud : clientSlice,
+        ClientCrud : clientSlice, // client partie min store cle: clientcrud/valeur : clientslice
         uiStates: uiStatesReducer
     },
 })

@@ -6,7 +6,7 @@ import Alert from "../../components/Common/Alert";
 import { Link } from 'react-router-dom';
 import { FiHome, FiLogOut, FiShoppingCart, FiUser, FiBox, FiSettings, FiTruck } from 'react-icons/fi';
 import { useDispatch, useSelector } from "react-redux";
-import { getClientList,setFiltresClient,getClientFilter, setclientAsupprimer } from "../../app/client/clientSlice";
+import { getClientList,setFiltresClient,getClientFilter, setclientAsupprimer, setClientInfos, setclientMiseJOUR } from "../../app/client/clientSlice";
 
 
 function ClientList() {
@@ -110,8 +110,10 @@ const clientList=useSelector((store)=>store.ClientCrud.clientList)
   };
 
   const handleSelectionChange = ({ selectedRows }) => {
-    if(selectedRows.length != 0){
-      dispatch(setclientAsupprimer({id:selectedRows[0].code}))
+    if (selectedRows.length != 0){
+      console.log(selectedRows)
+    dispatch(setclientAsupprimer({id:selectedRows[0].code}))
+    dispatch(setclientMiseJOUR({clientMiseAjour:selectedRows[0]}))
     }
   };
 

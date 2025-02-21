@@ -1,15 +1,19 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fillClientInfos } from "../../app/client/clientSlice";
+import { setClientInfos } from "../../app/client/clientSlice";
 
 function ClientForm() {
   const clientInfos = useSelector((state)=>state.ClientCrud.clientInfos);
   const clientList = useSelector((state) => state.ClientCrud.clientList);
+  const clientselectioneListe =useSelector((state)=>state.ClientCrud.clientUpdate)
+  
+  
   const dispatch = useDispatch();
   // * mettre à jour les valeurs
   // * des champs du formulaire client / devis
   const handleChange = (e, field) => {
-    dispatch(fillClientInfos({field, value: e.target.value}))
+    dispatch(setClientInfos({field, value: e.target.value}))
+    
   }
   
   // * useEffect #1 : Si une opération est effectué (insert, update, delete)
@@ -35,6 +39,7 @@ function ClientForm() {
           <input
             type="text"
             className="w-full border border-gray-300 rounded-md p-2"
+            defaultValue={clientselectioneListe.code}
             onChange={(e) => handleChange(e,"code")}
           />
         </div>
@@ -44,6 +49,7 @@ function ClientForm() {
           <input
             type="text"
             className="w-full border border-gray-300 rounded-md p-2"
+             defaultValue={clientselectioneListe.rsoc}
             onChange={(e) => handleChange(e,"rsoc")}
           />
         </div>
@@ -53,6 +59,7 @@ function ClientForm() {
           <input
             type="text"
             className="w-full border border-gray-300 rounded-md p-2"
+             defaultValue={clientselectioneListe.adresse}
             onChange={(e) => handleChange(e,"adresse")}
           />
         </div>
@@ -62,6 +69,7 @@ function ClientForm() {
           <input
             type="text"
             className="w-full border border-gray-300 rounded-md p-2"
+             defaultValue={clientselectioneListe.cp}
             onChange={(e) => handleChange(e,"cp")}
           />
         </div>
@@ -71,6 +79,7 @@ function ClientForm() {
           <input
             type="email"
             className="w-full border border-gray-300 rounded-md p-2"
+             defaultValue={clientselectioneListe.email}
             onChange={(e) => handleChange(e,"email")}
           />
         </div>
@@ -80,6 +89,7 @@ function ClientForm() {
           <input
             type="text"
             className="w-full border border-gray-300 rounded-md p-2"
+            defaultValue={clientselectioneListe.telephone}
             onChange={(e) => handleChange(e,"telephone")}
           />
         </div>
@@ -89,6 +99,7 @@ function ClientForm() {
           <input
             type="text"
             className="w-full border border-gray-300 rounded-md p-2"
+             defaultValue={clientselectioneListe.desrep}
             onChange={(e) => handleChange(e,"desrep")}
           />
         </div>

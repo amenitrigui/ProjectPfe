@@ -9,7 +9,7 @@ import {
 
 import { useState } from "react"; 
 import { useDispatch, useSelector } from "react-redux";
-import { addClient, getClientList } from "../../app/client/clientSlice";
+import { addClient, getClientList, updateclient } from "../../app/client/clientSlice";
 import { deleteClient } from '../../app/client/clientSlice'
 import { setAlertMessage, toggleAlert } from "../../app/interfaceAPP/uiSlice";
 
@@ -29,6 +29,11 @@ function ToolBar() {
   const handlesuprimer =async ()=>
   {
     dispatch(deleteClient())
+    dispatch(getClientList())
+  }
+  const handleupdate =async()=>
+  {
+    dispatch(updateclient())
     dispatch(getClientList())
   }
   
@@ -54,6 +59,7 @@ function ToolBar() {
           <button
             type="button"
             className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
+            onClick={()=>handleupdate()}
           >
             <FontAwesomeIcon
               icon={faEdit}
