@@ -12,6 +12,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addClient, getClientList, updateclient } from "../../app/client/clientSlice";
 import { deleteClient } from '../../app/client/clientSlice'
+import {  setAlertMessage, setAlertMessageModel, setClearAppele, setShowAlerteModel, toggleAlert } from "../../app/interfaceAPP/uiSlice";
 
 function ToolBar() {
   const dispatch = useDispatch();
@@ -25,20 +26,22 @@ function ToolBar() {
   // * ajout d'un client
   const handleAjout = async () => {
     dispatch(addClient())
+   
     dispatch(getClientList())
+    dispatch(setAlertMessage("ajouter avec succes"))
+    dispatch(setClearAppele())
   }
-  // todo suprimer client
-  const handlesuprimer =async ()=>
-  {
-    dispatch(deleteClient())
-    dispatch(getClientList())
-  }
+
   const handleupdate =async()=>
   {
     dispatch(updateclient())
     dispatch(getClientList())
   }
-  
+  const afficherModel= ()=>
+  {
+    dispatch(setAlertMessageModel("vous etes sur de suprimer ce client ?"))
+    dispatch(setShowAlerteModel())
+  }
   return (
     <nav className=" w-full h-[110px] border-b border-gray-700 flex items-center px-6 mt-6">
       <div className="flex space-x-4">
@@ -75,7 +78,7 @@ function ToolBar() {
           <div>
             <button
               type="button"
-              onClick={() => handlesuprimer()}
+              onClick={() => afficherModel()}
               className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
             >
               <FontAwesomeIcon

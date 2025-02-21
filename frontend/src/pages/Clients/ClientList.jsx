@@ -8,18 +8,19 @@ import Alert from "../../components/Common/Alert";
 import { Link } from 'react-router-dom';
 import { FiHome, FiLogOut, FiShoppingCart, FiUser, FiBox, FiSettings, FiTruck } from 'react-icons/fi';
 import { useDispatch, useSelector } from "react-redux";
-import { getClientList,FilltersSaisieUser,getClientFilter, setclientAsupprimer, setClientInfos, setclientMiseJOUR } from "../../app/client/clientSlice";
+import { getClientList, FilltersSaisieUser, getClientFilter, setclientAsupprimer, setClientInfos, setclientMiseJOUR } from "../../app/client/clientSlice";
+import AlertModalD from "../../components/Common/AlertModalD";
 
 
 function ClientList() {
 
-const dispatch = useDispatch()
-const clientList=useSelector((store)=>store.ClientCrud.clientList)
+  const dispatch = useDispatch()
+  const clientList = useSelector((store) => store.ClientCrud.clientList)
 
- // * UseEffect #1 : Récuperer La liste des clients
-useEffect(()=>{
-  dispatch(getClientList())
-},[])
+  // * UseEffect #1 : Récuperer La liste des clients
+  useEffect(() => {
+    dispatch(getClientList())
+  }, [])
 
   // * Utilisés pour l'affichage de DataTable
   const [filteredClient, setFilteredClient] = useState([]);
@@ -27,7 +28,7 @@ useEffect(()=>{
   const dbName = localStorage.getItem("selectedDatabase");
   // * Utilisé pour l'authorization de l'utilisateur à effectuer des opérations
   const token = localStorage.getItem("token");
-  
+
   // * State pour l'affichage d'une alert
   const [showAlert, setShowAlert] = useState(false);
   // * State pour le message d'une alert
@@ -35,7 +36,7 @@ useEffect(()=>{
 
   // * State pour Vérifier si une opération (insert, delete, update) est effectué
   const [operationEffectue, setOperationEffectue] = useState(false);
-  const filters= useSelector((store)=>store.ClientCrud.filters)
+  const filters = useSelector((store) => store.ClientCrud.filters)
   console.log(filters)
 
   // useEffect(() => {
@@ -81,7 +82,7 @@ useEffect(()=>{
     //   .catch((error) => {
     //     console.log(error);
     //   });
-    dispatch(FilltersSaisieUser({valeur :e.target.value,collonne :column}))
+    dispatch(FilltersSaisieUser({ valeur: e.target.value, collonne: column }))
     dispatch(getClientFilter())
   };
 
@@ -124,10 +125,9 @@ useEffect(()=>{
   };
 
   const handleSelectionChange = ({ selectedRows }) => {
-    if (selectedRows){
-      console.log(selectedRows)
-    dispatch(setclientAsupprimer({id:selectedRows[0].code}))
-    dispatch(setclientMiseJOUR({clientMiseAjour:selectedRows[0]}))
+    if (selectedRows) {
+      dispatch(setclientAsupprimer({ id: selectedRows[0].code }))
+      dispatch(setclientMiseJOUR({ clientMiseAjour: selectedRows[0] }))
     }
   };
 
@@ -211,17 +211,18 @@ useEffect(()=>{
 
         {/* Contenu principal */}
         <div className="container mx-auto p-6">
-          {showAlert && <Alert message={message} showAlert={showAlert} /> }
+          <Alert />
+          <AlertModalD></AlertModalD>
           <ToolBar
-            // setOperationEffectue={setOperationEffectue}
-            // targetTable={"client"}
-            // setClientList={setFilteredClient}
-            // setShowAlert={setShowAlert}
-            // setMessage={setMessage}
+          // setOperationEffectue={setOperationEffectue}
+          // targetTable={"client"}
+          // setClientList={setFilteredClient}
+          // setShowAlert={setShowAlert}
+          // setMessage={setMessage}
           />
 
           <ClientForm
-            // operationEffectue={operationEffectue}
+          // operationEffectue={operationEffectue}
           />
           <br />
           <div className="grid grid-cols-3 gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
