@@ -201,17 +201,24 @@ const getClient = async (req, res) => {
  */
 const updateClient = async(req, res) => {
   const { dbName } = req.params;
-  const { code, rsoc, adresse, cp, email, telephone, desrep } = req.body;
+  const { clientUpdate} = req.body;
+  console.log(clientUpdate)
+
   try{
     const dbConnection = await getDatabaseConnection(dbName, res);
     const Client = defineClientModel(dbConnection);
-    const client = await Client.findOne({ where: { code: code } });
+    const client = await Client.findOne({ where: { code: clientUpdate.code } });
+    
+
     if(client){
-      await Client.update({rsoc: rsoc, adresse: adresse, cp: cp, email: email, telephone: telephone, desrep}, { where: {code: code } });
+      await Client.update({rsoc: clientUpdate.rsoc, adresse: clientUpdate.adresse, cp: clientUpdate.cp, email: clientUpdate.email, telephone: clientUpdate.telephone, desrep :clientUpdate.desrep}, { where: {code: clientUpdate.code } });
       return res.status(200).json({message: "Client mise à jour avec succès"})
     }
   }catch(error) {
-    return res.status(500).json({message: "un erreur est survenu lors de mise à jour de client"})
+    return res.status(500).json({
+      message: "un erreur est survenu lors de mise à jour de client ",
+      error: error.message
+    })
   }
 }
 

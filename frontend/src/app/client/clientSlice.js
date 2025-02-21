@@ -5,8 +5,7 @@ import axios from "axios";
 export const getClientList = createAsyncThunk(
   "slice/getClientList",
   async () => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/List`
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/client/SOLEVO/List`
     );
     return response.data.result;
   }
@@ -24,6 +23,21 @@ export const addClient = createAsyncThunk(
         return response.data;
     }
 )
+export const updateclient=createAsyncThunk(
+    "slice/updateClient",
+    async(_,thunkAPI)=>
+        {   
+            const clientUpdate = thunkAPI.getState().ClientCrud.clientUpdate;
+            console.log(clientUpdate)
+          
+        clientUpdate.rsoc= "aaaaaa";
+        const response = await axios.put(`${process.env.REACT_APP_API_URL}/api/client/SOLEVO/Update`,
+            {clientUpdate} // htha y3niii bch tjib les donnes il kol htha body 
+        )
+        return response
+    }
+
+)
 
 // Thunk pour filtrer les clients (Correction ici)
 export const getClientFilter = createAsyncThunk(
@@ -31,10 +45,12 @@ export const getClientFilter = createAsyncThunk(
     async (_, thunkAPI) => { // Passer `filters` en paramètre
         console.log("ddd")
         const response = await axios.get(`http://localhost:5000/api/client/SOLEVO/filterClient`, {
-            params: thunkAPI.getState().ClientCrud.filters, // Utiliser filters ici
+            params:{
+                filters: thunkAPI.getState().ClientCrud.filters, // Utiliser filters ici
+            }
         });
         console.log(response)
-        return response.data.result; // Retourner la réponse
+        return response.data.data; // Retourner la réponse
 
     }
 ); // slice/deleteClient identifiant uniquepour la methode
@@ -52,6 +68,7 @@ export const clientSlice = createSlice({
             clientInfos: {},//Add  formulaire 
             value: 0,
             clientList: [],
+            clientUpdate:{},
             clientAsuprimer: "", // id reeelement code 
             status: "idle", // idle | loading | succeeded | failed
             error: null,
@@ -69,16 +86,21 @@ export const clientSlice = createSlice({
                     const { valeur, collonne } = action.payload;
                     state.filters[collonne] = valeur; // Correction ici
                 },
-                fillClientInfos: (state, action) => {
+                setClientInfos: (state, action) => {
                     const { field, value } = action.payload; //actions fiha les donnes (payload)
                     state.clientInfos[field] = value;
                 },// haja simple 
                 setclientAsupprimer :(state,action)=>{
                     const {id}=action.payload;
                     state.clientAsuprimer=id;
-                }
+                },
+                setclientMiseJOUR :(state,action)=>{
+                    const {clientMiseAjour}=action.payload;
+                    state.clientUpdate=clientMiseAjour;
+                },
+                
             },
-            extraReducers: (builder) => {
+            extraReducers: (builder) => { 
                 builder
                     .addCase(getClientList.pending, (state) => {
                         state.status = "loading";
@@ -103,14 +125,14 @@ export const clientSlice = createSlice({
                         state.status = "failed";
                         state.error = action.error.message;
                     })
-// 
+
                     .addCase(deleteClient.pending, (state) => {
                         state.status = "loading";
                         console.log(state.status)
                     })
                     .addCase(deleteClient.fulfilled, (state, action) => {
                         state.status = "succeeded";
-                        state.clientList = action.payload;
+                        console.log(action.payload)
                         console.log(state.status)
                     })
                     .addCase(deleteClient.rejected, (state, action) => {
@@ -131,9 +153,26 @@ export const clientSlice = createSlice({
                     console.log(action.payload);
                     state.status = "failed";
                     state.error = action.payload;
+                    })
+
+                    .addCase(updateclient.pending, (state) => {
+                        console.log("pending");
+                        state.status = "pending"
+                    })
+                    .addCase(updateclient.fulfilled, (state, action) => {
+                        console.log("succeeded");
+                        state.status = "succeeded";
+                    })
+                    .addCase(updateclient.rejected, (state, action) => {
+                        console.log(action);
+                        state.status = "failed";
+                        state.error = action.payload;
                     });
+                   
+
+
             }
         });
 
-export const { FilltersSaisieUser,fillClientInfos ,setclientAsupprimer} = clientSlice.actions;
+export const { FilltersSaisieUser,setClientInfos ,setclientAsupprimer,setclientMiseJOUR} = clientSlice.actions;
 export default clientSlice.reducer;
