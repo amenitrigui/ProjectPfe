@@ -1,36 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import DataTable from "react-data-table-component";
-import axios from "axios";
-import SideBar from "../../components/Common/SideBar";
 import ClientForm from "../../components/Client/ClientForm";
 import ToolBar from "../../components/Common/ToolBar";
 import Alert from "../../components/Common/Alert";
 import { Link } from 'react-router-dom';
 import { FiHome, FiLogOut, FiShoppingCart, FiUser, FiBox, FiSettings, FiTruck } from 'react-icons/fi';
 import { useDispatch, useSelector } from "react-redux";
-import { getClientList,FilltersSaisieUser,getClientFilter } from "../../app/client/clientSlice";
+import { getClientList,setFiltresClient,getClientFilter, setclientAsupprimer } from "../../app/client/clientSlice";
 
 
 function ClientList() {
 
 const dispatch = useDispatch()
 const clientList=useSelector((store)=>store.ClientCrud.clientList)
-
  // * UseEffect #1 : Récuperer La liste des clients
-useEffect(()=>{
-  dispatch(getClientList())
-},[])
+  useEffect(()=>{
+    dispatch(getClientList())
+  },[])
 
-  // * Utilisés pour l'affichage de DataTable
-  const [filteredClient, setFilteredClient] = useState([]);
   // * Utilisé pour spécifier quelle db (societé) on interroge
   const dbName = localStorage.getItem("selectedDatabase");
   // * Utilisé pour l'authorization de l'utilisateur à effectuer des opérations
   const token = localStorage.getItem("token");
-
-  // * State pour Vérifier si une opération (insert, delete, update) est effectué
-  const [operationEffectue, setOperationEffectue] = useState(false);
-  const filters= useSelector((store)=>store.ClientCrud.filters)
+  const filtresClient= useSelector((store)=>store.ClientCrud.filtresClient)
 
   // useEffect(() => {
   //   const fetchClients = async () => {
@@ -75,7 +67,7 @@ useEffect(()=>{
     //   .catch((error) => {
     //     console.log(error);
     //   });
-    dispatch(FilltersSaisieUser({valeur :e.target.value,collonne :column}))
+    dispatch(setFiltresClient({valeur :e.target.value,collonne :column}))
     dispatch(getClientFilter())
   };
 
@@ -118,7 +110,9 @@ useEffect(()=>{
   };
 
   const handleSelectionChange = ({ selectedRows }) => {
-    console.log(selectedRows[0].code);
+    if(selectedRows.length != 0){
+      dispatch(setclientAsupprimer({id:selectedRows[0].code}))
+    }
   };
 
   return (
@@ -201,13 +195,21 @@ useEffect(()=>{
 
         {/* Contenu principal */}
         <div className="container mx-auto p-6">
-          <Alert type="error"/>
-          <ToolBar />
+          <Alert />
+          <ToolBar
+            // setOperationEffectue={setOperationEffectue}
+            // targetTable={"client"}
+            // setClientList={setFilteredClient}
+            // setShowAlert={setShowAlert}
+            // setMessage={setMessage}
+          />
 
-          <ClientForm />
+          <ClientForm
+            // operationEffectue={operationEffectue}
+          />
           <br />
           <div className="grid grid-cols-3 gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
-            {Object.keys(filters).map((column, index) => (
+            {Object.keys(filtresClient).map((column, index) => (
               <input
                 key={index}
                 type="text"

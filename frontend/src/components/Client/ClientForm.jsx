@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fillClientInfos } from "../../app/client/clientSlice";
 
-function ClientForm(props) {
+function ClientForm() {
   const clientInfos = useSelector((state)=>state.ClientCrud.clientInfos);
   const clientList = useSelector((state) => state.ClientCrud.clientList);
   const dispatch = useDispatch();
