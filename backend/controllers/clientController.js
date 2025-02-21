@@ -44,7 +44,6 @@ const getlisteclient = async (req, res) => {
 const getlisteclientsfilter = async (req, res) => {
   const { dbName } = req.params;
   const { filters } = req.query;
-  console.log(req);
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     // ? liste des conditions
