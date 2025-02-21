@@ -7,23 +7,24 @@ import {
   faTrashAlt
 } from "@fortawesome/free-solid-svg-icons";
 
-import { useNavigate } from "react-router-dom";
 import { useState } from "react"; 
 import { useDispatch, useSelector } from "react-redux";
-import { addClient } from "../../app/client/clientSlice";
+import { addClient, getClientList } from "../../app/client/clientSlice";
 import { deleteClient } from '../../app/client/clientSlice'
+import { setAlertMessage, toggleAlert } from "../../app/interfaceAPP/uiSlice";
 
 function ToolBar(props) {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [isDeleting, setIsDeleting] = useState(false)
   const dbName = localStorage.getItem("selectedDatabase");
   const token = localStorage.getItem("token");
-  const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
   
   // * ajout d'un client
   const handleAjout = async () => {
-    dispatch(addClient())
+    dispatch(addClient());
+    dispatch(setAlertMessage("client Ajouté avec succès"))
+    dispatch(toggleAlert());
+    dispatch(getClientList());
   }
   
   return (

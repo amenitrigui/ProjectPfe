@@ -27,16 +27,10 @@ useEffect(()=>{
   const dbName = localStorage.getItem("selectedDatabase");
   // * Utilisé pour l'authorization de l'utilisateur à effectuer des opérations
   const token = localStorage.getItem("token");
-  
-  // * State pour l'affichage d'une alert
-  const [showAlert, setShowAlert] = useState(false);
-  // * State pour le message d'une alert
-  const [message, setMessage] = useState("");
 
   // * State pour Vérifier si une opération (insert, delete, update) est effectué
   const [operationEffectue, setOperationEffectue] = useState(false);
   const filters= useSelector((store)=>store.ClientCrud.filters)
-  console.log(filters)
 
   // useEffect(() => {
   //   const fetchClients = async () => {
@@ -207,18 +201,10 @@ useEffect(()=>{
 
         {/* Contenu principal */}
         <div className="container mx-auto p-6">
-          {showAlert && <Alert message={message} showAlert={showAlert} /> }
-          <ToolBar
-            setOperationEffectue={setOperationEffectue}
-            targetTable={"client"}
-            setClientList={setFilteredClient}
-            setShowAlert={setShowAlert}
-            setMessage={setMessage}
-          />
+          <Alert type="error"/>
+          <ToolBar />
 
-          <ClientForm
-            operationEffectue={operationEffectue}
-          />
+          <ClientForm />
           <br />
           <div className="grid grid-cols-3 gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
             {Object.keys(filters).map((column, index) => (
