@@ -41,10 +41,6 @@ export const uiSlice = createSlice({
         setClearAppele : (state,action)=>{
             state.clearAppele=action.payload;
         }
-
-
-
-      
     }
 })
 export const { setAlertMessage, toggleAlert, setAlertType,setAlertMessageModel ,setShowAlerteModel,setClearAppele} = uiSlice.actions;
