@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 function Alert(){
   const message = useSelector((state) => state.uiStates.message);
   const showAlert = useSelector((state) => state.uiStates.showAlert);
+  console.log(showAlert)
   return (
     <>
       {showAlert && 

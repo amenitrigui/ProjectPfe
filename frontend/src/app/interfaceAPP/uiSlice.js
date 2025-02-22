@@ -9,7 +9,11 @@ export const uiSlice = createSlice({
         // * alertType : warning, success, error...
         message: "initial alert message",
         showAlert: false,
-        alertType: ""
+        alertType: "",
+        // *state alerte model 
+        showAlertModal:false,
+        alerteModelMessage : "",
+        clearAppele:false
     },
     reducers: {
         setAlertMessage: (state, action) => {
@@ -21,8 +25,27 @@ export const uiSlice = createSlice({
         },
         setAlertType: (state, action) => {
             state.alertType = action.payload;
+        },
+
+
+        /// Alerte  moch simple 
+        setAlertMessageModel :(state,action)=>{
+            state.alerteModelMessage=action.payload;
+           
+        },
+        setShowAlerteModel : (state,action)=>{
+            state.showAlertModal=true;
+        },
+
+
+        setClearAppele : (state,action)=>{
+            state.clearAppele=action.payload;
         }
+
+
+
+      
     }
 })
-export const { setAlertMessage, toggleAlert, setAlertType } = uiSlice.actions;
+export const { setAlertMessage, toggleAlert, setAlertType,setAlertMessageModel ,setShowAlerteModel,setClearAppele} = uiSlice.actions;
 export default uiSlice.reducer;
