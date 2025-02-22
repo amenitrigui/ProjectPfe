@@ -4,20 +4,23 @@ import './App.css';
 import { ToastContainer, toast } from 'react-toastify';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
-import DevisForm from './components/DevisForm';
-import HomePage from './pages/HomePage';
-import SignInPage from './pages/SignInPage';
-import DevisList from './pages/DevisList';
-import DevisDetails from './components/DevisDetails';
-import Dashboard from './pages/Dashboard';
-import SocietiesList from './pages/SocietiesList';
-import Recherche from './pages/recherche';
-import ResetPassword from './pages/ResetPassword';
+import DevisForm from './components/Devis/DevisForm';
+import HomePage from './pages/ErpPages/HomePage';
+import SignInPage from './pages/authentication/SignInPage';
+import DevisList from './pages/Devis/DevisList';
+import DevisDetails from './components/Devis/DevisDetails';
+import Dashboard from './pages/ErpPages/Dashboard';
+import SocietiesList from './pages/ErpPages/SocietiesList';
+import Recherche from './pages/Devis/recherche';
+import ResetPassword from './pages/authentication/ResetPassword';
 
-import GestionCommerciale from './pages/GestionCommerciale';
-import GestionDesVentes from './pages/GestionDesVentes';
-import RegisterPage from './pages/RegisterPage';
-import EmailEnvoye from './pages/EmailEnvoye';
+import GestionCommerciale from './pages/ErpPages/GestionCommerciale';
+import GestionDesVentes from './pages/ErpPages/GestionDesVentes';
+import RegisterPage from './pages/authentication/RegisterPage';
+import EmailEnvoye from './pages/authentication/EmailEnvoye';
+import ClientList from './pages/Clients/ClientList';
+import Parent from './test/Parent';
+import DevisFormTout from './pages/Devis/DevisFormTout';
 
 function App() {
   
@@ -40,11 +43,11 @@ function App() {
       />
 
       <Routes>
-        <Route path="/" element={<SignInPage />} /> 
+        <Route path="/" element={<SignInPage />} />
         <Route path="/Devis-Form" element={<DevisForm />} />
         <Route path="/Home-Page" element={<HomePage />} />
         <Route path="/DevisList" element={<DevisList />} />
-        <Route path="/devis-details/:numbl" element={<DevisDetails />} />
+        <Route path="/dvis-details/e:numbl" element={<DevisDetails />} />
         <Route path="/Dashboard" element={<Dashboard />} />
         <Route path="/SocietiesList" element={<SocietiesList />} />
         <Route path="/recherche" element={<Recherche />} /> 
@@ -53,6 +56,10 @@ function App() {
         <Route path="/RegisterPage" element={<RegisterPage />} /> 
         <Route path="/ResetPassword" element={<ResetPassword />}></Route>
         <Route path="/EmailEnvoye" element = {<EmailEnvoye />}></Route>
+        <Route path="/ClientList" element = {<ClientList />}></Route>
+        <Route path="/Parent" element = {<Parent />}></Route>
+        <Route path="/DevisFormTout" element = {<DevisFormTout />}></Route>
+        
        
       </Routes>
     </Router>

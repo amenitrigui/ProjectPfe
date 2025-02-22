@@ -1,32 +1,38 @@
 const { DataTypes } = require("sequelize");
 
 const defineClientModel = (sequelize) => {
-  return sequelize.define(
-    "Client",
-    {
-      code: {
-        type: DataTypes.STRING,
-        primaryKey: true,
-        allowNull: false,
-      },
-      rsoc: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      email: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      cp: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
+  return sequelize.define("Client", {
+    code: {
+      type: DataTypes.STRING,
+      primaryKey: true,
+      allowNull: false,
     },
-    {
-      tableName: "client",
-      timestamps: false,
-    }
-  );
+    rsoc: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    cp: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    telephone: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    desrep: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+
+  }, {
+    tableName: "client",
+    timestamps: false,
+  });
 };
 
 module.exports = defineClientModel;
