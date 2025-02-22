@@ -1,6 +1,6 @@
 
 const { Sequelize } = require("sequelize");
-require('dotenv').config();  
+require('dotenv').config();
 
 const defaultDbConfig = {
   username: process.env.DB_USER, 
@@ -37,10 +37,10 @@ const getSequelizeConnection = (dbName = "") => {
 
 
 
-const sequelize = getSequelizeConnection();  
+const sequelize = getSequelizeConnection();  //conxexion avexc serveur mysql
 
 
-const sequelizeUserERP = getSequelizeConnection("usererpsole")///le non de la base de donnnes
+const sequelizeUserERP = getSequelizeConnection("usererpsole")///connexion specifiquenmrnt le non de la base de donnnes
 const testConnections = async () => {
   try { 
     await sequelize.authenticate();
@@ -48,7 +48,7 @@ const testConnections = async () => {
     
    
     await sequelizeUserERP.authenticate();
-    console.log("Connexion réussie à la base de données usererp."); 
+    console.log("Connexion réussie à la base de données usererpsole."); 
   } catch (error) {
     console.error("Erreur lors de la connexion à l'une des bases de données :", error.message);
   }

@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 import { FiHome, FiLogOut, FiShoppingCart, FiUser, FiBox, FiSettings, FiTruck } from 'react-icons/fi';
 
 function SideBar() {
-    console.log("SideBar")
     return (
         <>
-            <div className="drawer-side">
+            {/* Sidebar Container */}
+            <div className="drawer-side fixed inset-0 z-50"> {/* Fixed and on top */}
                 <label htmlFor="my-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
                 <ul className="menu bg-blue-800 text-white min-h-full w-80 p-6 space-y-6">
                     {/* Sidebar Header */}
@@ -30,8 +30,8 @@ function SideBar() {
 
                     {/* Inventory Section */}
                     <li className="mb-4">
-                        <Link to="/Inventory" className="flex items-center space-x-4 p-3 hover:bg-blue-700 rounded-md transition">
-                            <FiBox className="text-xl" /> <span>Inventaire</span>
+                        <Link to="/DevisFormTout" className="flex items-center space-x-4 p-3 hover:bg-blue-700 rounded-md transition">
+                            <FiBox className="text-xl" /> <span>devis form</span>
                         </Link>
                     </li>
 
@@ -44,7 +44,7 @@ function SideBar() {
 
                     {/* Customer Management Section */}
                     <li className="mb-4">
-                        <Link to="/Customers" className="flex items-center space-x-4 p-3 hover:bg-blue-700 rounded-md transition">
+                        <Link to="/ClientList" className="flex items-center space-x-4 p-3 hover:bg-blue-700 rounded-md transition">
                             <FiUser className="text-xl" /> <span>Clients</span>
                         </Link>
                     </li>
@@ -67,7 +67,7 @@ function SideBar() {
             </div>
 
             {/* Logo placed outside the sidebar */}
-            <div className="logicom-logo absolute bottom-6 right-6">
+            <div className="logicom-logo absolute bottom-6 right-6 z-50">
                 <img src="/logo.png" alt="Logicom Logo" className="w-20 h-auto" />
             </div>
         </>

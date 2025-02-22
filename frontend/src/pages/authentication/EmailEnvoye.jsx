@@ -19,18 +19,24 @@ function EmailEnvoye() {
         const trimedpassword = password.trim()
         const trimedNVpassword = password.trim()
         if (trimedpassword == trimedNVpassword) {
-            axios.put(`${process.env.REACT_APP_API_URL}/api/users/passwordReset`, { email: user.email, password: trimedpassword })
+            axios.put(
+                `${process.env.REACT_APP_API_URL}/api/users/passwordReset`,
+                { email: user.email, password: trimedpassword, token: token },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            )
                 .then(res => {
                     console.log(res);
-                    console.log("c'est bon la meeme")
-                    navigate("/");
-                }).catch(error => {
-                    console.log("ne sonrt pas la meme ", error.response.data.message)
-                }
-                )
-
-
+                })
+                .catch(error => {
+                    console.log(error);
+                });
         }
+
+        navigate("/");
     }
 
     return (
@@ -103,7 +109,7 @@ function EmailEnvoye() {
                             type="submit"
                             className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105"
                         >
-                            Reunisialiser le mot passe
+                            Réinisialiser le mot passe
                         </button>
                     </form>
                 </div>

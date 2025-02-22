@@ -2,22 +2,21 @@ import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import SideBar from "../components/SideBar";
+import SideBar from "../../components/Common/SideBar";
 
 function DevisList() {
   const [devis, setDevis] = useState([]);
   const [filteredDevis, setFilteredDevis] = useState([]);
-  const [filters, setFilters] = useState({
-    NUMBL: "",
-    DATT: "",
-    libpv: "",
-    CODECLI: "",
-    ADRCLI: "",
-    RSCLI: "",
-    MTTC: "",
-  });
+  const dataBaseName = localStorage.getItem("selectedDatabase");
 
   useEffect(() => {
+    /**
+     * Description
+     * Chargement de liste des devis
+     * @author Ameni
+     * @date 2025-02-06
+     * @returns {filteredDevis / devis}
+     */
     const fetchDevis = async () => {
       try {
         const dbName = localStorage.getItem("selectedDatabase");
@@ -36,6 +35,49 @@ function DevisList() {
     fetchDevis();
   }, []);
 
+  /**
+   * Description
+   * Filtrage de contenu de datatable par colonne
+   * @author Unknown
+   * @date 2025-02-06
+   * @returns {filteredDevis}
+   */
+  const handleFilterChange = (e, column) => {
+    const value = e.target.value;
+    filters[column] = value;
+
+    axios.get("http://localhost:5000/api/devis/filterDevis", { params: {filters: filters, databaseName: dataBaseName} })
+    .then(res => {
+      console.log(res.data.data);
+      setFilteredDevis(res.data.data);
+
+    }).catch(error => {
+      console.log(error);
+    })
+  };
+
+  /**
+   * Description
+   * Filtres pour les barres de recherche
+   * @author Unknown
+   * @date 2025-02-06
+   */
+  const [filters, setFilters] = useState({
+    NUMBL: "",
+    DATT: "",
+    libpv: "",
+    CODECLI: "",
+    ADRCLI: "",
+    RSCLI: "",
+    MTTC: "",
+  });
+
+  /**
+   * Description
+   * Colonnes de datatable
+   * @author Ameni
+   * @date 2025-02-06
+   */
   const columns = [
     { name: "Numéro BL", selector: (row) => row.NUMBL, sortable: true },
     { name: "Date", selector: (row) => row.datt, sortable: true },
@@ -46,6 +88,12 @@ function DevisList() {
     { name: "Montant TTC", selector: (row) => row.MTTC },
   ];
 
+  /**
+   * Description
+   * styles personalisées de datatable
+   * @author Ameni
+   * @date 2025-02-06
+   */
   const customStyles = {
     headCells: {
       style: {
@@ -74,23 +122,6 @@ function DevisList() {
     },
   };
 
-  const handleFilterChange = (e, column) => {
-    const value = e.target.value;
-
-    setFilters((prevFilters) => {
-      const newFilters = { ...prevFilters, [column]: value };
-
-      const filteredData = devis.filter((row) =>
-        Object.keys(newFilters).every((key) =>
-          row[key]?.toString().toLowerCase().includes(newFilters[key].toLowerCase())
-        )
-      );
-
-      setFilteredDevis(filteredData);
-      return newFilters;
-    });
-  };
-
   return (
     <div className="container mx-auto p-6">
       {/* Header */}
@@ -100,8 +131,12 @@ function DevisList() {
         <img src="logicom.jpg" alt="Logicom Logo" className="h-16 w-auto rounded-md shadow-md" />
         <h1 className="text-4xl font-bold text-blue-700 text-center">📜 Liste des Devis</h1>
         <div className="flex space-x-4 text-lg font-semibold">
-          <Link to="/Dashboard" className="text-blue-600 hover:underline">Dashboard</Link>
-          <Link to="/" className="text-blue-600 hover:underline">Sign In</Link>
+          <Link to="/Dashboard" className="text-blue-600 hover:underline">
+            Dashboard
+          </Link>
+          <Link to="/" className="text-blue-600 hover:underline">
+            Sign In
+          </Link>
         </div>
       </div>
 
@@ -111,7 +146,6 @@ function DevisList() {
           <input
             key={index}
             type="text"
-            value={filters[column]}
             onChange={(e) => handleFilterChange(e, column)}
             placeholder={`🔍 ${columns[index].name}`}
             className="border p-2 rounded-md shadow-sm focus:ring focus:ring-blue-300"
