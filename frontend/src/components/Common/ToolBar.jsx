@@ -7,6 +7,7 @@ import {
   faTrashAlt
 } from "@fortawesome/free-solid-svg-icons";
 
+import { useNavigate } from "react-router-dom";
 import { useState } from "react"; 
 import { useDispatch, useSelector } from "react-redux";
 import { addClient, getClientList, updateclient } from "../../app/client/clientSlice";
@@ -15,9 +16,12 @@ import {  setAlertMessage, setAlertMessageModel, setClearAppele, setShowAlerteMo
 
 function ToolBar() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [isDeleting, setIsDeleting] = useState(false)
   const dbName = localStorage.getItem("selectedDatabase");
   const token = localStorage.getItem("token");
+  
+ 
   
   // * ajout d'un client
   const handleAjout = async () => {
@@ -27,6 +31,7 @@ function ToolBar() {
     dispatch(setAlertMessage("ajouter avec succes"))
     dispatch(setClearAppele())
   }
+
   const handleupdate =async()=>
   {
     dispatch(updateclient())

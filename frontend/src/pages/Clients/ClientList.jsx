@@ -1,5 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
+import axios from "axios";
+import SideBar from "../../components/Common/SideBar";
 import ClientForm from "../../components/Client/ClientForm";
 import ToolBar from "../../components/Common/ToolBar";
 import Alert from "../../components/Common/Alert";
@@ -20,11 +22,12 @@ function ClientList() {
     dispatch(getClientList())
   }, [])
 
+  // * Utilisés pour l'affichage de DataTable
+  const [filteredClient, setFilteredClient] = useState([]);
   // * Utilisé pour spécifier quelle db (societé) on interroge
   const dbName = localStorage.getItem("selectedDatabase");
   // * Utilisé pour l'authorization de l'utilisateur à effectuer des opérations
   const token = localStorage.getItem("token");
-  const filtresClient= useSelector((store)=>store.ClientCrud.filtresClient)
 
   // * State pour l'affichage d'une alert
   const [showAlert, setShowAlert] = useState(false);
@@ -122,7 +125,7 @@ function ClientList() {
   };
 
   const handleSelectionChange = ({ selectedRows }) => {
-    if (selectedRows.length != 0) {
+    if (selectedRows) {
       dispatch(setclientAsupprimer({ id: selectedRows[0].code }))
       dispatch(setclientMiseJOUR({ clientMiseAjour: selectedRows[0] }))
     }
@@ -223,7 +226,7 @@ function ClientList() {
           />
           <br />
           <div className="grid grid-cols-3 gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
-            {Object.keys(filtresClient).map((column, index) => (
+            {Object.keys(filters).map((column, index) => (
               <input
                 key={index}
                 type="text"

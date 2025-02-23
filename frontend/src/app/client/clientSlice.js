@@ -52,11 +52,15 @@ export const getClientFilter = createAsyncThunk(
         console.log(response)
         return response.data.data; // Retourner la réponse
 
-    console.log(response);
-
-    return response;
-  }
-);
+    }
+); // slice/deleteClient identifiant uniquepour la methode
+export const deleteClient = createAsyncThunk("slice/deleteClient",
+    async (_,thunkAPI) => {
+        const id = thunkAPI.getState().ClientCrud.clientAsuprimer;
+        const response = await axios.delete(`http://localhost:5000/api/client/SOLEVO/Delete/${id}`)
+        return response
+    }   
+)
 
 export const clientSlice = createSlice({
             name: "slice",
@@ -78,7 +82,7 @@ export const clientSlice = createSlice({
             },
             reducers: {
                 // Action synchrone pour modifier les filtres
-                setFiltresClient: (state, action) => {
+                FilltersSaisieUser: (state, action) => {
                     const { valeur, collonne } = action.payload;
                     state.filters[collonne] = valeur; // Correction ici
                 },
@@ -164,8 +168,11 @@ export const clientSlice = createSlice({
                         state.status = "failed";
                         state.error = action.payload;
                     });
+                   
+
+
             }
         });
 
-export const { setFiltresClient,setClientInfos ,setclientAsupprimer,setclientMiseJOUR} = clientSlice.actions;
+export const { FilltersSaisieUser,setClientInfos ,setclientAsupprimer,setclientMiseJOUR} = clientSlice.actions;
 export default clientSlice.reducer;
