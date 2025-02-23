@@ -20,7 +20,7 @@ function EmailEnvoye() {
         const trimedNVpassword = password.trim()
         if (trimedpassword == trimedNVpassword) {
             axios.put(
-                `${process.env.REACT_APP_API_URL}/api/users/passwordReset`,
+                `${process.env.BACKEND_URL}/api/users/passwordReset`,
                 { email: user.email, password: trimedpassword, token: token },
                 {
                     headers: {

@@ -21,7 +21,7 @@ function ResetPassword() {
 
         console.log(trimmedEmail)
 
-        axios.post(`${process.env.REACT_APP_API_URL}/api/users/passwordResetRequest`, { "email": trimmedEmail })
+        axios.post(`${process.env.BACKEND_URL}/api/users/passwordResetRequest`, { "email": trimmedEmail })
             .then(response => {
                 console.log(response);
                 setError("");

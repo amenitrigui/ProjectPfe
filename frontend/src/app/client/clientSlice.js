@@ -5,7 +5,7 @@ import axios from "axios";
 export const getClientList = createAsyncThunk(
   "slice/getClientList",
   async () => {
-    const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/client/SOLEVO/List`
+    const response = await axios.get(`${process.env.BACKEND_URL}/api/client/SOLEVO/List`
     );
     return response.data.result;
   }
@@ -16,7 +16,7 @@ export const addClient = createAsyncThunk(
     async(_, thunkApi) => {
         const clientInfos = thunkApi.getState().ClientCrud.clientInfos;
         console.log(clientInfos);
-        const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/client/SOLEVO/Add`, {
+        const response = await axios.post(`${process.env.BACKEND_URL}/api/client/SOLEVO/Add`, {
             clientInfos
         })
         console.log(response);
@@ -31,7 +31,7 @@ export const updateclient=createAsyncThunk(
             console.log(clientUpdate)
           
         clientUpdate.rsoc= "aaaaaa";
-        const response = await axios.put(`${process.env.REACT_APP_API_URL}/api/client/SOLEVO/Update`,
+        const response = await axios.put(`${process.env.BACKEND_URL}/api/client/SOLEVO/Update`,
             {clientUpdate} // htha y3niii bch tjib les donnes il kol htha body 
         )
         return response

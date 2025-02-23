@@ -45,7 +45,7 @@ function ClientList() {
   //       if (!dbName) throw new Error("Aucune base de données sélectionnée.");
 
   //       const response = await axios.get(
-  //         `${process.env.REACT_APP_API_URL}/api/client/${dbName}/List`,
+  //         `${process.env.BACKEND_URL}/api/client/${dbName}/List`,
   //         {
   //           headers: {
   //             Authorization: `Bearer ${token}`,

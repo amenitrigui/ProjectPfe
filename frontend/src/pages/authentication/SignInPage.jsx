@@ -19,7 +19,7 @@ function SignInPage() {
     }
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/login`, {
+      const response = await fetch(`${process.env.BACKEND_URL}/api/users/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

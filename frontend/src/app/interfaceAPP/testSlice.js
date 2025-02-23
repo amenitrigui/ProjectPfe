@@ -5,7 +5,7 @@ import axios from "axios";
 export const getClientList = createAsyncThunk( // thunk hiya haja tibta 3ibrt async
   "slice/getClientList",
   async () => {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/client/SOLEVO/List`);
+      const response = await axios.get(`${process.env.BACKEND_URL}/api/client/SOLEVO/List`);
       
       return response.data.result;
   }

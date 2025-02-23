@@ -23,7 +23,7 @@ function DevisList() {
         if (!dbName) throw new Error("Aucune base de données sélectionnée.");
 
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/devis/${dbName}/devis`
+          `${process.env.BACKEND_URL}/api/devis/${dbName}/devis`
         );
         setDevis(response.data.devisList);
         setFilteredDevis(response.data.devisList);

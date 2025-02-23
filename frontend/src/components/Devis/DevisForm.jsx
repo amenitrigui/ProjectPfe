@@ -252,7 +252,7 @@ const DevisForm = () => {
 
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/devis/${selectedDatabase}/clients`
+          `${process.env.BACKEND_URL}/api/devis/${selectedDatabase}/clients`
         );
 
         console.log("Clients récupérés:", response.data);
@@ -279,7 +279,7 @@ const DevisForm = () => {
 
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/devis/${selectedDatabase}/familles`
+          `${process.env.BACKEND_URL}/api/devis/${selectedDatabase}/familles`
         );
 
         console.log("Familles récupérées :", response.data);
@@ -315,7 +315,7 @@ const DevisForm = () => {
 
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/devis/${selectedDatabase}/codes/famille/${famille}`
+        `${process.env.BACKEND_URL}/api/devis/${selectedDatabase}/codes/famille/${famille}`
       );
 
       console.log("Réponse de l'API :", response.data);
@@ -355,7 +355,7 @@ const DevisForm = () => {
 
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/devis/${selectedDatabase}/articles/details/${code}`
+        `${process.env.BACKEND_URL}/api/devis/${selectedDatabase}/articles/details/${code}`
       );
 
       if (response.data.article) {
@@ -395,7 +395,7 @@ const DevisForm = () => {
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/devis/${selectedDatabase}/articles/${code}/updateConfig`,
+        `${process.env.BACKEND_URL}/api/devis/${selectedDatabase}/articles/${code}/updateConfig`,
         { codeart: code, newConfigValue }
       );
 
@@ -468,7 +468,7 @@ const DevisForm = () => {
           }
 
           const response = await axios.get(
-            `${process.env.REACT_APP_API_URL}/api/devis/${dbName}/clients/code/${selectedCode}`
+            `${process.env.BACKEND_URL}/api/devis/${dbName}/clients/code/${selectedCode}`
           );
 
           console.log("Clients récupérés:", response.data);
@@ -510,7 +510,7 @@ const DevisForm = () => {
           }
 
           const response = await axios.get(
-            `${process.env.REACT_APP_API_URL}/api/devis/${dbName}/clients/rsoc/${selectedRsoc}`
+            `${process.env.BACKEND_URL}/api/devis/${dbName}/clients/rsoc/${selectedRsoc}`
           );
 
           console.log("Client récupéré par raison sociale:", response.data);
@@ -550,7 +550,7 @@ const DevisForm = () => {
         }
 
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/devis/${dbName}/devis/libpv/${selectedDevis}`
+          `${process.env.BACKEND_URL}/api/devis/${dbName}/devis/libpv/${selectedDevis}`
         );
 
         console.log("Réponse API:", response.data);
@@ -620,7 +620,7 @@ const DevisForm = () => {
       console.log("Date formatée envoyée à l'API:", formattedDate);
 
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/devis/${selectedDatabase}/last-numbl?datebl=${formattedDate}`
+        `${process.env.BACKEND_URL}/api/devis/${selectedDatabase}/last-numbl?datebl=${formattedDate}`
       );
 
       const data = await response.json();
@@ -671,7 +671,7 @@ const DevisForm = () => {
       }
 
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/users/get-devis-details/${database}`,
+        `${process.env.BACKEND_URL}/api/users/get-devis-details/${database}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -710,7 +710,7 @@ const DevisForm = () => {
       });
 
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/users/get-devis-details/${database}/${NUMBL}`,
+        `${process.env.BACKEND_URL}/api/users/get-devis-details/${database}/${NUMBL}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -857,7 +857,7 @@ const DevisForm = () => {
         }
 
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/devis/get-representant-details/${dbName}/${formData}`
+          `${process.env.BACKEND_URL}/api/devis/get-representant-details/${dbName}/${formData}`
         );
 
         console.log("Réponse complète de l'API:", response);
@@ -1105,7 +1105,7 @@ const DevisForm = () => {
     try {
       setMessage(null);
       const response = await axios.delete(
-        `${process.env.REACT_APP_API_URL}/api/devis/${selectedDatabase}/devis/${numbl}`
+        `${process.env.BACKEND_URL}/api/devis/${selectedDatabase}/devis/${numbl}`
       );
 
       if (
@@ -1403,7 +1403,7 @@ const DevisForm = () => {
       }
 
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/devis/${dbName}/create`,
+        `${process.env.BACKEND_URL}/api/devis/${dbName}/create`,
         dataToSend
       );
 
@@ -1505,7 +1505,7 @@ const DevisForm = () => {
       console.log("Données envoyées :", JSON.stringify(requestBody, null, 2));
 
       const response = await axios.put(
-        `${process.env.REACT_APP_API_URL}/api/devis/${database}/${formData.NUMBL}`,
+        `${process.env.BACKEND_URL}/api/devis/${database}/${formData.NUMBL}`,
         requestBody,
         {
           headers: {
@@ -1564,7 +1564,7 @@ const DevisForm = () => {
   const fetchSecteurs = async () => {
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/users/secteurs/ERP13`
+        `${process.env.BACKEND_URL}/api/users/secteurs/ERP13`
       );
       const data = await response.json();
       if (data && Array.isArray(data.sectors)) {
