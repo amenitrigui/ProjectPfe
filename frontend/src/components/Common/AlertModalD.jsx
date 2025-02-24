@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteClient, getClientList } from "../../app/client/clientSlice";
-import { setClearAppele } from "../../app/interfaceAPP/uiSlice";
+import { deleteClient, getClientList } from "../../app/client_slices/clientSlice";
+import { setClearAppele, setShowAlerteModel } from "../../app/interface_slices/uiSlice";
 
 function AlertModalD() {
   const message = useSelector((state) => state.uiStates.alerteModelMessage);
@@ -9,6 +9,7 @@ function AlertModalD() {
   const dispatch = useDispatch();
   // * suprimer client
   const handlesuprimer = async () => {
+    dispatch(setShowAlerteModel(false))
     dispatch(deleteClient())
     dispatch(getClientList())
     // ! s'exécute une seule fois, puis reste true
@@ -23,12 +24,12 @@ function AlertModalD() {
   return (
     <dialog id="my_modal_1" className="modal">
       <div className="modal-box">
-        <h3 className="font-bold text-lg">Hello!</h3>
+        <h3 className="font-bold text-lg">Confirmez</h3>
         <p className="py-4">{message || "Press ESC key or click the button below to close"}</p>
         <div className="modal-action">
           <form method="dialog">
             <button className="btn btn-error" onClick={() => { handlesuprimer() }}>Supprimer</button>
-            <button className="btn">Close</button>
+            <button className="btn" onClick={() => {dispatch(setShowAlerteModel(false))}}>Close</button>
           </form>
         </div>
       </div>

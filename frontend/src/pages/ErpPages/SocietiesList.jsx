@@ -31,7 +31,8 @@ const SocietiesList = () => {
         return;
       }
 
-      const response = await fetch(`${process.env.BACKEND_URL}/api/users/select-database`,
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/users/select-database`,
         {
           method: "POST",
           headers: {
@@ -39,14 +40,14 @@ const SocietiesList = () => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            databaseName: society
-          })
+            databaseName: society,
+          }),
         }
       );
 
       if (response.status === 200) {
         console.log(response.data);
-        // ! devisList 
+        // ! devisList
         // const devisList = response.data.devis;
         // console.log("Liste des devis récupérés :", devisList);
 

@@ -113,6 +113,7 @@ const getlisteclientsfilter = async (req, res) => {
 const AjouterClient = async (req, res) => {
   const { dbName } = req.params;
   const { clientInfos } = req.body;
+  console.log(clientInfos)
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const Client = defineClientModel(dbConnection);
@@ -202,7 +203,6 @@ const getClient = async (req, res) => {
 const updateClient = async(req, res) => {
   const { dbName } = req.params;
   const { clientUpdate} = req.body;
-  console.log(clientUpdate)
 
   try{
     const dbConnection = await getDatabaseConnection(dbName, res);

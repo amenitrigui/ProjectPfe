@@ -37,7 +37,7 @@ const Recherche = () => {
     setError("");
     try {
       const response = await fetch(
-        `${process.env.BACKEND_URL}/api/devis/search/${selectedCriteria}/${selectedDatabase}/${searchValue}`
+        `${process.env.REACT_APP_API_URL}/api/devis/search/${selectedCriteria}/${selectedDatabase}/${searchValue}`
       );
   
       if (!response.ok) {

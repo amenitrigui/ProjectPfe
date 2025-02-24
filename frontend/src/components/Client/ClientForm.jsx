@@ -1,29 +1,47 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setClientInfos } from "../../app/client/clientSlice";
+import { setClientInfos, setClientInfosEntiere } from "../../app/client_slices/clientSlice";
 
 function ClientForm() {
   const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
-  const clientList = useSelector((state) => state.ClientCrud.clientList);
-  const clientselectioneListe = useSelector((state) => state.ClientCrud.clientUpdate)
-const clearApelle=useSelector((state)=>state.uiStates.clearAppele)
+  const clearApelle=useSelector((state)=>state.uiStates.clearAppele)
 
   const dispatch = useDispatch();
   // * mettre à jour les valeurs
   // * des champs du formulaire client / devis
-  const handleChange = (e, field) => {
-    dispatch(setClientInfos({ field, value: e.target.value }))
+  const handleChange = (e, colonne) => {
+    dispatch(setClientInfos({ colonne, valeur: e.target.value }))
 
   }
 
   // * useEffect #1 : Si une opération est effectué (insert, update, delete)
-  // * indiqué par la mutation de operationEffectue
+  // * indiqué par la mutation de clearApelle
   // * vider les champs text
+  // * On a utilisé un useEffect puisque dispatch(setClearAppele(false))
+  // * est compté comme effet secondaire (side effect)
+  // ! Si on n'utilise pas useEffect on va avoir un erreur
+  useEffect(() => {
+    console.log(clearApelle);
+    if(clearApelle){
+      dispatch(setClientInfosEntiere({  // Reset clientInfos in Redux state
+        code: "",
+        rsoc: "",
+        adresse: "",
+        cp: "",
+        email: "",
+        telephone: "",
+        desrep: ""
+      }));
+    }
+  }, [clearApelle])
 
-  if(clearApelle){
-      document.querySelectorAll("input").forEach(input => input.value = "");
-      console.log("1")
-  }
+  // * useEffect #2 : pour remplir les champs text par les valeurs 
+  // * des champ d'un client selectionné
+  // * ceci est nécessaire après chaque réinitialisation des champs
+  // useEffect(() => {
+  //   if(clearApelle)
+  //     document.querySelectorAll("input").forEach(input => input.value = "test");
+  // }, [clearApelle])
   return (
 
     <div className="p-6 border border-gray-300 rounded-lg shadow-md bg-white">
@@ -39,7 +57,7 @@ const clearApelle=useSelector((state)=>state.uiStates.clearAppele)
           <input
             type="text"
             className="w-full border border-gray-300 rounded-md p-2"
-            defaultValue={clientselectioneListe.code}
+            defaultValue={clientInfos.code}
             onChange={(e) => handleChange(e, "code")}
           />
         </div>
@@ -49,7 +67,7 @@ const clearApelle=useSelector((state)=>state.uiStates.clearAppele)
           <input
             type="text"
             className="w-full border border-gray-300 rounded-md p-2"
-            defaultValue={clientselectioneListe.rsoc}
+            defaultValue={clientInfos.rsoc}
             onChange={(e) => handleChange(e, "rsoc")}
           />
         </div>
@@ -59,7 +77,7 @@ const clearApelle=useSelector((state)=>state.uiStates.clearAppele)
           <input
             type="text"
             className="w-full border border-gray-300 rounded-md p-2"
-            defaultValue={clientselectioneListe.adresse}
+            defaultValue={clientInfos.adresse}
             onChange={(e) => handleChange(e, "adresse")}
           />
         </div>
@@ -69,7 +87,7 @@ const clearApelle=useSelector((state)=>state.uiStates.clearAppele)
           <input
             type="text"
             className="w-full border border-gray-300 rounded-md p-2"
-            defaultValue={clientselectioneListe.cp}
+            defaultValue={clientInfos.cp}
             onChange={(e) => handleChange(e, "cp")}
           />
         </div>
@@ -79,7 +97,7 @@ const clearApelle=useSelector((state)=>state.uiStates.clearAppele)
           <input
             type="email"
             className="w-full border border-gray-300 rounded-md p-2"
-            defaultValue={clientselectioneListe.email}
+            defaultValue={clientInfos.email}
             onChange={(e) => handleChange(e, "email")}
           />
         </div>
@@ -89,7 +107,7 @@ const clearApelle=useSelector((state)=>state.uiStates.clearAppele)
           <input
             type="text"
             className="w-full border border-gray-300 rounded-md p-2"
-            defaultValue={clientselectioneListe.telephone}
+            defaultValue={clientInfos.telephone}
             onChange={(e) => handleChange(e, "telephone")}
           />
         </div>
@@ -99,7 +117,7 @@ const clearApelle=useSelector((state)=>state.uiStates.clearAppele)
           <input
             type="text"
             className="w-full border border-gray-300 rounded-md p-2"
-            defaultValue={clientselectioneListe.desrep}
+            defaultValue={clientInfos.desrep}
             onChange={(e) => handleChange(e, "desrep")}
           />
         </div>

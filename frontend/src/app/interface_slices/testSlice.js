@@ -2,12 +2,15 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // Thunk pour récupérer la liste des clients
-export const getClientList = createAsyncThunk( // thunk hiya haja tibta 3ibrt async
+export const getClientList = createAsyncThunk(
+  // thunk hiya haja tibta 3ibrt async
   "slice/getClientList",
   async () => {
-      const response = await axios.get(`${process.env.BACKEND_URL}/api/client/SOLEVO/List`);
-      
-      return response.data.result;
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/List`
+    );
+
+    return response.data.result;
   }
 );
 
@@ -34,7 +37,6 @@ export const testSlice = createSlice({
       })
       .addCase(getClientList.fulfilled, (state, action) => {
         state.status = "succeeded";
-        console.log(action.payload)
         state.clientList = action.payload;
       })
       .addCase(getClientList.rejected, (state, action) => {

@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { decrement, increment, getClientList } from "../app/interfaceAPP/testSlice";
+import {
+  decrement,
+  increment,
+  getClientList,
+} from "../app/interface_slices/testSlice";
 
 function Parent() {
   const [testValue, setTestValue] = useState("");
@@ -17,7 +21,7 @@ function Parent() {
   const count = useSelector((state) => state.test2.value);
   const status = useSelector((state) => state.test2.status);
   const clientlist = useSelector((state) => state.test2.clientList); // Récupération des clients
-  console.log(clientlist)
+  console.log(clientlist);
   const dispatch = useDispatch();
 
   // Charger la liste des clients au montage du composant

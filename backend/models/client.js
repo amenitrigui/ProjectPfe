@@ -6,6 +6,10 @@ const defineClientModel = (sequelize) => {
       type: DataTypes.STRING,
       primaryKey: true,
       allowNull: false,
+      validate: {
+        len: [0,9],
+        isNumeric: true,
+      }
     },
     rsoc: {
       type: DataTypes.STRING,
