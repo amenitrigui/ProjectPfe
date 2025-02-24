@@ -1,18 +1,24 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setClientInfos } from "../../app/client/clientSlice";
+import { setClientInfos } from "../../app/client_slices/clientSlice";
 
 function ClientForm() {
   const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
   const clientList = useSelector((state) => state.ClientCrud.clientList);
   const clientselectioneListe = useSelector((state) => state.ClientCrud.clientUpdate)
 const clearApelle=useSelector((state)=>state.uiStates.clearAppele)
-
+ const [code, setCode] = useState("");
+  const [email, setEmail] = useState("");
+ 
+  const [error, setError] = useState("");
   const dispatch = useDispatch();
   // * mettre à jour les valeurs
   // * des champs du formulaire client / devis
-  const handleChange = (e, field) => {
-    dispatch(setClientInfos({ field, value: e.target.value }))
+  const handleChange = (e, collone) => {
+    dispatch(setClientInfos({ collone, value: e.target.value }))
+    // setEmail("");
+    // setCode("")
+
 
   }
 

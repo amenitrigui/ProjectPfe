@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteClient, getClientList } from "../../app/client/clientSlice";
-import { setClearAppele } from "../../app/interfaceAPP/uiSlice";
+import { deleteClient, getClientList } from "../../app/client_slices/clientSlice";
+import { setClearAppele } from "../../app/interface_slices/uiSlice";
 
 function AlertModalD() {
   const message = useSelector((state) => state.uiStates.alerteModelMessage);

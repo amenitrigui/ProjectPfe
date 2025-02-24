@@ -87,8 +87,8 @@ export const clientSlice = createSlice({
                     state.filters[collonne] = valeur; // Correction ici
                 },
                 setClientInfos: (state, action) => {
-                    const { field, value } = action.payload; //actions fiha les donnes (payload)
-                    state.clientInfos[field] = value;
+                    const { collone, value } = action.payload; //actions fiha les donnes (payload)
+                    state.clientInfos[collone] = value;
                 },// haja simple 
                 setclientAsupprimer :(state,action)=>{
                     const {id}=action.payload;

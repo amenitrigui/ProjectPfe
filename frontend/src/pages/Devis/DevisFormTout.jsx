@@ -3,6 +3,7 @@ import ToolBar from "../../components/Common/ToolBar";
 import SideBar from "../../components/Common/SideBar";
 import { Link } from 'react-router-dom';
 import { FiHome, FiLogOut, FiShoppingCart, FiUser, FiBox, FiSettings, FiTruck } from 'react-icons/fi';
+import DevisList from "./DevisList";
 
 
 function DevisFormTout() {
@@ -170,17 +171,28 @@ function DevisFormTout() {
                     <input type="text" className="w-full border border-gray-300 rounded-md p-2" />
                 </div>
             </div>
-
+         
             {/* Table des articles */}
             <div className="mt-6">
+            <div className="bg-gray-300 p-4 sticky bottom-0 w-full">
                 <table className="min-w-full table-auto border-collapse border border-gray-300">
                     <thead className="bg-gray-100">
                         <tr>
+                            <th className="p-3 text-left text-sm font-medium text-gray-600">Famille</th>
                             <th className="p-3 text-left text-sm font-medium text-gray-600">Code Article</th>
-                            <th className="p-3 text-left text-sm font-medium text-gray-600">Libellé</th>
+                            <th className="p-3 text-left text-sm font-medium text-gray-600">Libelle</th>
                             <th className="p-3 text-left text-sm font-medium text-gray-600">Unité</th>
+                            <th className="p-3 text-left text-sm font-medium text-gray-600">Quantite</th>
+                            <th className="p-3 text-left text-sm font-medium text-gray-600">Remise</th>
+                            <th className="p-3 text-left text-sm font-medium text-gray-600">TVA</th>
+
                             <th className="p-3 text-left text-sm font-medium text-gray-600">PUHT</th>
-                            <th className="p-3 text-left text-sm font-medium text-gray-600">Taux TVA</th>
+                            <th className="p-3 text-left text-sm font-medium text-gray-600">PUTTC</th>
+                            <th className="p-3 text-left text-sm font-medium text-gray-600">NET HT</th>
+
+
+
+                            
                         </tr>
                     </thead>
                     <tbody className="text-sm">
@@ -194,7 +206,11 @@ function DevisFormTout() {
                     </tbody>
                 </table>
             </div>
+            </div>
+            <DevisList></DevisList>
+
         </div>
+      
     );
 }
 

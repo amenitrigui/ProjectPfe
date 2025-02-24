@@ -10,9 +10,9 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useState } from "react"; 
 import { useDispatch, useSelector } from "react-redux";
-import { addClient, getClientList, updateclient } from "../../app/client/clientSlice";
-import { deleteClient } from '../../app/client/clientSlice'
-import {  setAlertMessage, setAlertMessageModel, setClearAppele, setShowAlerteModel, toggleAlert } from "../../app/interfaceAPP/uiSlice";
+import { addClient, getClientList, updateclient } from "../../app/client_slices/clientSlice";
+import { deleteClient } from '../../app/client_slices/clientSlice'
+import {  setAlertMessage, setAlertMessageModel, setClearAppele, setShowAlerteModel, toggleAlert } from "../../app/interface_slices/uiSlice";
 
 function ToolBar() {
   const dispatch = useDispatch();
@@ -27,7 +27,7 @@ function ToolBar() {
   const handleAjout = async () => {
     dispatch(addClient())
    
-    dispatch(getClientList())
+    dispatch(getClientList()) // tetzed fi liste fi kol mara n3ml ajout 
     dispatch(setAlertMessage("ajouter avec succes"))
     dispatch(setClearAppele())
   }
