@@ -1,202 +1,283 @@
-import React from "react";
+import Select from 'react-select';
+import {
+    CheckIcon,
+    PencilIcon,
+    PrinterIcon,
+    TrashIcon,
+  } from "@heroicons/react/20/solid";
+  
 
-function ArticlesDevis(props) {
-  const formData = props.formData;
-  const lignesValidees = props.lignesValidees;
-  const lignes = props.lignes;
+function ArticlesDevis() {
+    return (
+        <div className="space-y-4 p-4 border rounded-md mt-4">
 
-  const calculerTaxe = () => {
-    const taxe = parseFloat(formData.MTTC) - parseFloat(formData.totalHt);
-    return isNaN(taxe) ? 0 : taxe.toFixed(3);
-  };
-  return (
-    <div className="flex flex-col min-h-screen">
-      <div className="overflow-x-auto flex-grow">
-        <table className="table-auto w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="border border-gray-300 p-2">Famille</th>
-              <th className="border border-gray-300 p-2">Code Article</th>
-              <th className="border border-gray-300 p-2">Libelle</th>
-              <th className="border border-gray-300 p-2">Unité</th>
-              <th className="border border-gray-300 p-2">Quantité</th>
-              <th className="border border-gray-300 p-2">Remise</th>
-              <th className="border border-gray-300 p-2">TVA</th>
-              <th className="border border-gray-300 p-2">PUHT</th>
-              <th className="border border-gray-300 p-2">PUTTC</th>
-              <th className="border border-gray-300 p-2">NET HT</th>
-            </tr>
-          </thead>
-          <tbody>
-            {lignes.length > 0 &&
-              lignes
-                .filter((ligne) => ligne.QteART && ligne.PUART)
-                .map((ligne, index) => {
-                  const quantite = parseFloat(ligne.QteART) || 0;
-                  const prix1 = parseFloat(ligne.PUART) || 0;
-                  const remise = parseFloat(ligne.Remise) || 0;
-                  const tauxtva = parseFloat(ligne.TauxTVA) || 0;
+            <div className="space-y-4 p-4 border rounded-md mt-4">
+                <h3 className="text-lg font-bold">Articles</h3>
 
-                  const netHt =
-                    quantite && prix1
-                      ? quantite * prix1 * (1 - remise / 100)
-                      : 0;
-                  const puttc =
-                    prix1 && tauxtva ? prix1 * (1 + tauxtva / 100) : 0;
+                <div className="grid grid-cols-6 gap-4 items-center">
+                    <div>
+                        <label className="block font-medium">FAMILLE</label>
+                        <Select
+                            isClearable
 
-                  return (
-                    <tr key={index}>
-                      <td className="border border-gray-300 p-2">
-                        {ligne.famille || ""}
-                      </td>
-                      <td className="border border-gray-300 p-2">
-                        {ligne.CodeART || ""}
-                      </td>
-                      <td className="border border-gray-300 p-2">
-                        {ligne.DesART || ""}
-                      </td>
-                      <td className="border border-gray-300 p-2">
-                        {ligne.Unite || ""}
-                      </td>
-                      <td className="border border-gray-300 p-2">
-                        {quantite || ""}
-                      </td>
-                      <td className="border border-gray-300 p-2">
-                        {remise !== 0 ? `${remise}%` : ""}
-                      </td>
-                      <td className="border border-gray-300 p-2">
-                        {tauxtva || ""}
-                      </td>
-                      <td className="border border-gray-300 p-2">
-                        {prix1 || ""}
-                      </td>
-                      <td className="border border-gray-300 p-2">
-                        {puttc || ""}
-                      </td>
-                      <td className="border border-gray-300 p-2">
-                        {netHt || ""}
-                      </td>
-                    </tr>
-                  );
-                })}
-            {lignesValidees.length > 0 &&
-              lignesValidees
-                .filter((ligne) => ligne.nbrunite && ligne.prix1)
-                .map((ligne, idx) => (
-                  <tr key={idx} className="border-b hover:bg-indigo-100">
-                    <td className="border border-gray-300 p-2">
-                      {ligne.famille || ""}
-                    </td>
-                    <td className="border border-gray-300 p-2">
-                      {ligne.code || ""}
-                    </td>
-                    <td className="border border-gray-300 p-2">
-                      {ligne.libelle || ""}
-                    </td>
-                    <td className="border border-gray-300 p-2">
-                      {ligne.unite || ""}
-                    </td>
-                    <td className="border border-gray-300 p-2">
-                      {ligne.nbrunite || ""}
-                    </td>
-                    <td className="border border-gray-300 p-2">
-                      {ligne.Remise || "0"}
-                    </td>
-                    <td className="border border-gray-300 p-2">
-                      {ligne.tauxtva || ""}
-                    </td>
-                    <td className="border border-gray-300 p-2">
-                      {ligne.prix1 || ""}
-                    </td>
-                    <td className="border border-gray-300 p-2">
-                      {ligne.puttc || ""}
-                    </td>
-                    <td className="border border-gray-300 p-2">
-                      {ligne.netHt || ""}
-                    </td>
-                  </tr>
-                ))}
-          </tbody>
-        </table>
-      </div>
 
-      <div className="bg-gray-300 p-4 sticky bottom-0 w-full">
-        <div className="flex flex-wrap gap-4">
-          <div className="flex-1 min-w-[150px]">
-            <label className="block font-medium font-bold">Montant HT :</label>
 
-            <input
-              type="text"
-              name="totalHt"
-              value={formData.totalHt}
-              className="w-full border rounded-md p-2"
-              readOnly
-            />
-          </div>
-          <div className="flex-1 min-w-[150px]">
-            <label className="block font-medium">Remise Totale :</label>
-            <input
-              type="text"
-              name="Remise"
-              value={formData.Remise}
-              className="w-full border rounded-md p-2"
-              readOnly
-            />
-          </div>
-          <div className="flex-1 min-w-[150px]">
-            <label className="block font-medium">Net HT Global :</label>
-            <input
-              type="text"
-              name="netHtGlobal"
-              value={formData.totalHt}
-              className="w-full border rounded-md p-2"
-              readOnly
-            />
-          </div>
-          <div className="flex-1 min-w-[150px]">
-            <label className="block font-medium">Taxe :</label>
-            <input
-              type="text"
-              name="taxe"
-              value={calculerTaxe()}
-              className="w-full border rounded-md p-2"
-              readOnly
-            />
-          </div>
-          <div className="flex-1 min-w-[150px]">
-            <label className="block font-medium">Montant TTC :</label>
-            <input
-              type="text"
-              name="MTTC"
-              value={formData.MTTC}
-              className="w-full border rounded-md p-2"
-              readOnly
-            />
-          </div>
-          <div className="flex-1 min-w-[150px]">
-            <label className="block font-medium">Timbre :</label>
-            <input
-              type="text"
-              name="timbre"
-              value={formData.timbre}
-              className="w-full border rounded-md p-2"
-              readOnly
-            />
-          </div>
-          <div className="flex-1 min-w-[150px]">
-            <label className="block font-medium">À Payer :</label>
-            <input
-              type="text"
-              name="aPayer"
-              value={formData.MTTC}
-              className="w-full border rounded-md p-2"
-              readOnly
-            />
-          </div>
+                            placeholder="Sélectionner ou taper une famille"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block font-medium">CODE ARTICLE</label>
+                        <input
+                            type="text"
+                            placeholder="Sélectionner un code article"
+
+
+                            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+
+                        />
+                    </div>
+                    <div>
+                        <label className="block font-medium">LIBELLE</label>
+                        <input
+                            type="text"
+                            placeholder="Sélectionner un code article"
+
+
+                            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block font-medium">UNITE</label>
+                        <input
+                            type="text"
+                            placeholder="Sélectionner un code article"
+
+
+                            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block font-medium">QUANTITE</label>
+                        <input
+                            type="text"
+                            placeholder="Sélectionner un code article"
+
+
+                            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block font-medium">CONFIG</label>
+                        <input
+                            type="text"
+                            placeholder="Sélectionner un code article"
+
+
+                            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+
+                        />
+                    </div>
+
+
+
+
+                </div>
+
+            </div>
+            <div className="grid grid-cols-6 gap-4 items-center">
+                    <div>
+                      <label className="block font-medium">REMISE</label>
+                      <input
+                        type="text"
+                        step="0.001"
+                        placeholder="Remise"
+                       
+                        className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-medium">T.V.A</label>
+                      <input
+                        type="text"
+                        placeholder="tauxtva"
+                        
+                        className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-medium">P.U.T.T.C</label>
+                      <input
+                        type="text"
+                        step="0.001"
+                        placeholder="puttc"
+                        
+                        className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-medium">MT NET H.T</label>
+                      <input
+                        type="text"
+                        placeholder="netHt"
+                       
+                        className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <label className="block font-medium">Nbr/Uté </label>
+
+                      <input
+                        type="text"
+                        placeholder="nbrunite"
+                        
+                        className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
+                    <div className="flex space-x-4">
+                      <div className="flex-1">
+                        <label className="block font-medium">P.U.H.T</label>
+                        <input
+                          type="text"
+                          step="0.001"
+                          placeholder="prix1"
+                          
+                          className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        />
+                      </div>
+
+                      <div className="flex-1">
+                        <label className="block font-medium">Collisage</label>
+                        <input
+                          type="text"
+                          placeholder=""
+                         
+                          className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex space-x-2 justify-end">
+                    <button
+                     
+                      className="text-green-500 p-2 border rounded-lg hover:bg-green-100"
+                      title="Valider"
+                    >
+                      <CheckIcon className="h-6 w-6" />
+                    </button>
+
+                    <button
+                     
+                      className="text-blue-500 p-2 border rounded-lg hover:bg-blue-100"
+                      title="Modifier"
+                    >
+                      <PencilIcon className="h-6 w-6" />
+                    </button>
+
+
+                    <button
+                    
+                      className="text-red-500 p-2 border rounded-lg hover:bg-red-100"
+                      title="Supprimer"
+                    >
+                      <TrashIcon className="h-6 w-6" />
+                    </button>
+                  </div>
+
+            
+            </div>
+           
+           
+            <div className="bg-gray-300 p-4 sticky bottom-0 w-full">
+              <div className="flex flex-wrap gap-4">
+                <div className="flex-1 min-w-[150px]">
+                  <label className="block  font-bold">
+                    Montant HT :
+                  </label>
+
+                  <input
+                    type="text"
+                    name="totalHt"
+                  
+                    className="w-full border rounded-md p-2"
+                    readOnly
+                  />
+                </div>
+                <div className="flex-1 min-w-[150px]">
+                  <label className="block font-medium">Remise Totale :</label>
+                  <input
+                    type="text"
+                    name="Remise"
+                  
+                    className="w-full border rounded-md p-2"
+                    readOnly
+                  />
+                </div>
+                <div className="flex-1 min-w-[150px]">
+                  <label className="block font-medium">Net HT Global :</label>
+                  <input
+                    type="text"
+                    name="netHtGlobal"
+                   
+                    className="w-full border rounded-md p-2"
+                    readOnly
+                  />
+                </div>
+                <div className="flex-1 min-w-[150px]">
+                  <label className="block font-medium">Taxe :</label>
+                  <input
+                    type="text"
+                    name="taxe"
+                   
+                    className="w-full border rounded-md p-2"
+                    readOnly
+                  />
+                </div>
+                <div className="flex-1 min-w-[150px]">
+                  <label className="block font-medium">Montant TTC :</label>
+                  <input
+                    type="text"
+                    name="MTTC"
+                  
+                    className="w-full border rounded-md p-2"
+                    readOnly
+                  />
+                </div>
+                <div className="flex-1 min-w-[150px]">
+                  <label className="block font-medium">Timbre :</label>
+                  <input
+                    type="text"
+                    name="timbre"
+                   
+                    className="w-full border rounded-md p-2"
+                    readOnly
+                  />
+                </div>
+                <div className="flex-1 min-w-[150px]">
+                  <label className="block font-medium">À Payer :</label>
+                  <input
+                    type="text"
+                    name="aPayer"
+                   
+                    className="w-full border rounded-md p-2"
+                    readOnly
+                  />
+                </div>
+              </div>
+            </div>
+
         </div>
-      </div>
-    </div>
-  );
+
+
+    )
 }
 
 export default ArticlesDevis;

@@ -132,29 +132,19 @@ function ClientList() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar avec largeur fixe */}
-      <div className="w-64 bg-white shadow-lg">
-        <SideBar />
-      </div>
-       
-
+   
+      <div className="flex min-h-screen bg-gray-100">
+        {/* Sidebar */}
+        <SideBar className="w-64 bg-white shadow-lg h-screen fixed left-0 top-0" />
+    
         {/* Contenu principal */}
-        <div className="container mx-auto p-6">
+        <div className="flex-1 ml-64 p-6">
           <Alert />
-          <AlertModalD></AlertModalD>
-          <ToolBar
-          // setOperationEffectue={setOperationEffectue}
-          // targetTable={"client"}
-          // setClientList={setFilteredClient}
-          // setShowAlert={setShowAlert}
-          // setMessage={setMessage}
-          />
-
-          <ClientForm
-          // operationEffectue={operationEffectue}
-          />
+          <AlertModalD />
+          <ToolBar />
+          <ClientForm />
           <br />
+    
           <div className="grid grid-cols-3 gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
             {Object.keys(filters).map((column, index) => (
               <input
@@ -166,6 +156,7 @@ function ClientList() {
               />
             ))}
           </div>
+    
           <div className="bg-white p-4 rounded-lg shadow-lg mt-4">
             <DataTable
               columns={columns}
@@ -181,9 +172,8 @@ function ClientList() {
           </div>
         </div>
       </div>
-
+    );
     
-  );
 }
 
 export default ClientList;
