@@ -5,34 +5,34 @@ export const uiSlice = createSlice({
   initialState: {
     // * states pour l'affichage d'un alert
     // * message: message d'alert
-    // * showAlert: visibilité d'alert
-    // * alertType : warning, success, error...
+    // * afficherAlert: visibilité d'alert
+    // * typeAlert : warning, success, error...
     message: "initial alert message",
-    showAlert: false,
-    alertType: "",
+    afficherAlert: false,
+    typeAlert: "",
     // *state alerte model
-    showAlertModal: false,
-    alerteModelMessage: "",
+    afficherAlertModal: false,
+    messageAlertModal: "",
     clearAppele: false,
   },
   reducers: {
     setAlertMessage: (state, action) => {
       state.message = action.payload;
-      state.showAlert = true;
+      state.afficherAlert = true;
     },
     toggleAlert: (state) => {
-      state.showAlert = !state.showAlert;
+      state.afficherAlert = !state.afficherAlert;
     },
-    setAlertType: (state, action) => {
-      state.alertType = action.payload;
+    setTypeAlert: (state, action) => {
+      state.typeAlert = action.payload;
     },
 
     /// Alerte  moch simple
-    setAlertMessageModel: (state, action) => {
-      state.alerteModelMessage = action.payload;
+    setMessageAlertModal: (state, action) => {
+      state.messageAlertModal = action.payload;
     },
-    setShowAlerteModel: (state, action) => {
-      state.showAlertModal = action.payload;
+    setAfficherAlerteModel: (state, action) => {
+      state.afficherAlertModal = action.payload;
     },
 
     setClearAppele: (state, action) => {
@@ -43,9 +43,9 @@ export const uiSlice = createSlice({
 export const {
   setAlertMessage,
   toggleAlert,
-  setAlertType,
-  setAlertMessageModel,
-  setShowAlerteModel,
+  setTypeAlert,
+  setMessageAlertModal,
+  setafficherAlerteModel,
   setClearAppele,
 } = uiSlice.actions;
 export default uiSlice.reducer;

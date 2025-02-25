@@ -31,12 +31,11 @@ app.get("/", async (req, res) => {
     await sequelize.authenticate();// conexion avec la base de donnes
     console.log(">get server.js: Connexion à la base de données réussie !");
   } catch (error) { 
-    console.error("Impossible de se connecter à la base de données:", error);
-    res.status(500).send("Impossible de se connecter à la base de données");
+    res.status(500).send("Impossible de se connecter à la base de données", error);
   }
 });
 
 const PORT = process.env.PORT || 5000  
 app.listen(PORT, () => {
-  console.log(`Server is listening on port ${PORT}`);
+  console.log(`Serveur est en écoute sur le port: ${PORT}`);
 });

@@ -11,7 +11,6 @@ function ClientForm() {
   // * des champs du formulaire client / devis
   const handleChange = (e, colonne) => {
     dispatch(setClientInfos({ colonne, valeur: e.target.value }))
-
   }
 
   // * useEffect #1 : Si une opération est effectué (insert, update, delete)
@@ -34,14 +33,6 @@ function ClientForm() {
       }));
     }
   }, [clearApelle])
-
-  // * useEffect #2 : pour remplir les champs text par les valeurs 
-  // * des champ d'un client selectionné
-  // * ceci est nécessaire après chaque réinitialisation des champs
-  // useEffect(() => {
-  //   if(clearApelle)
-  //     document.querySelectorAll("input").forEach(input => input.value = "test");
-  // }, [clearApelle])
   return (
 
     <div className="p-6 border border-gray-300 rounded-lg shadow-md bg-white">
@@ -54,6 +45,7 @@ function ClientForm() {
       <form className="grid grid-cols-2 gap-4 items-center">
         <div>
           <label className="block font-medium mb-1">Code Client :</label>
+          {/* the value is NOT two-way bound */}
           <input
             type="text"
             className="w-full border border-gray-300 rounded-md p-2"

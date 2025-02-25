@@ -2,8 +2,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // Thunk pour récupérer la liste des clients
-export const getClientList = createAsyncThunk(
-  "slice/getClientList",
+export const getListeClient = createAsyncThunk(
+  "slice/getListeClient",
   async () => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/List`
@@ -12,8 +12,8 @@ export const getClientList = createAsyncThunk(
   }
 );
 
-export const addClient = createAsyncThunk(
-  "slice/addClient",
+export const ajouterClient = createAsyncThunk(
+  "slice/ajouterClient",
   async (_, thunkApi) => {
     const clientInfos = thunkApi.getState().ClientCrud.clientInfos;
     console.log(clientInfos);
@@ -28,8 +28,10 @@ export const addClient = createAsyncThunk(
     return response.data;
   }
 );
-export const updateclient = createAsyncThunk(
-  "slice/updateClient",
+
+// ? Thunk pour mettre à jour un client
+export const majClient = createAsyncThunk(
+  "slice/majClient",
   async (_, thunkAPI) => {
     const clientUpdate = thunkAPI.getState().ClientCrud.clientInfos;
 
@@ -41,9 +43,9 @@ export const updateclient = createAsyncThunk(
   }
 );
 
-// Thunk pour filtrer les clients (Correction ici)
-export const getClientFilter = createAsyncThunk(
-  "slice/getClientFilter",
+// ? Thunk pour filtrer les clients (Correction ici)
+export const filtrerClients = createAsyncThunk(
+  "slice/filtrerClients",
   async (_, thunkAPI) => {
     // Passer `filters` en paramètre
     const response = await axios.get(
@@ -56,15 +58,16 @@ export const getClientFilter = createAsyncThunk(
     );
     return response.data.data; // Retourner la réponse
   }
-); // slice/deleteClient identifiant uniquepour la methode
-export const deleteClient = createAsyncThunk(
-  "slice/deleteClient",
+);
+
+// ? slice/supprimerClient identifiant uniquepour la methode
+export const supprimerClient = createAsyncThunk(
+  "slice/supprimerClient",
   async (_, thunkAPI) => {
-    const id = thunkAPI.getState().ClientCrud.clientAsuprimer;
+    const id = thunkAPI.getState().ClientCrud.clientsASupprimer;
     const response = await axios.delete(
       `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/Delete/${id}`
     );
-
     return response.data;
   }
 );
@@ -85,11 +88,13 @@ export const clientSlice = createSlice({
       telephone: "",
       desrep: "",
     }, //Add  formulaire
-    value: 0,
-    clientList: [],
-    clientAsuprimer: [], // id reeelement code
-    status: "idle",
-    error: null,
+    listeClients: [],
+    clientsASupprimer: [], // id reeelement code
+    status: "inactive",
+    erreur: null,
+    // todo: change this to french
+    // todo: this is for later tho
+    // todo: hence the "todo"
     filters: {
       code: "",
       rsoc: "",
@@ -100,7 +105,7 @@ export const clientSlice = createSlice({
   },
   reducers: {
     // Action synchrone pour modifier les filtres
-    FilltersSaisieUser: (state, action) => {
+    setFiltresSaisient: (state, action) => {
       const { valeur, collonne } = action.payload;
       state.filters[collonne] = valeur; // Correction ici
     },
@@ -111,82 +116,82 @@ export const clientSlice = createSlice({
     setClientInfosEntiere: (state, action) => {
       state.clientInfos = action.payload;
     },
-    setclientAsupprimer: (state, action) => {
-      state.clientAsuprimer.push(action.payload);
+    setClientsASupprimer: (state, action) => {
+      state.clientsASupprimer.push(action.payload);
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getClientList.pending, (state) => {
+      .addCase(getListeClient.pending, (state) => {
         state.status = "chargement";
       })
-      .addCase(getClientList.fulfilled, (state, action) => {
+      .addCase(getListeClient.fulfilled, (state, action) => {
         state.status = "réussi";
-        state.clientList = action.payload;
+        state.listeClients = action.payload;
       })
-      .addCase(getClientList.rejected, (state, action) => {
+      .addCase(getListeClient.rejected, (state, action) => {
         state.status = "échoué";
-        state.error = action.error.message;
+        state.erreur = action.erreur.message;
       })
 
-      .addCase(getClientFilter.pending, (state) => {
+      .addCase(filtrerClients.pending, (state) => {
         state.status = "chargement";
       })
-      .addCase(getClientFilter.fulfilled, (state, action) => {
+      .addCase(filtrerClients.fulfilled, (state, action) => {
         state.status = "réussi";
-        state.clientList = action.payload; // Mettre à jour la liste filtrée
+        state.listeClients = action.payload; // Mettre à jour la liste filtrée
       })
-      .addCase(getClientFilter.rejected, (state, action) => {
+      .addCase(filtrerClients.rejected, (state, action) => {
         state.status = "échoué";
-        state.error = action.error.message;
+        state.erreur = action.erreur.message;
       })
 
-      .addCase(deleteClient.pending, (state) => {
+      .addCase(supprimerClient.pending, (state) => {
         state.status = "chargement";
         console.log(state.status);
       })
-      .addCase(deleteClient.fulfilled, (state, action) => {
+      .addCase(supprimerClient.fulfilled, (state, action) => {
         state.status = "réussi";
         console.log(action.payload);
         console.log(state.status);
       })
-      .addCase(deleteClient.rejected, (state, action) => {
+      .addCase(supprimerClient.rejected, (state, action) => {
         state.status = "échoué";
-        state.error = action.error.message;
+        state.erreur = action.erreur.message;
         console.log(state.status);
       })
 
-      .addCase(addClient.pending, (state) => {
+      .addCase(ajouterClient.pending, (state) => {
         state.status = "chargement";
       })
-      .addCase(addClient.fulfilled, (state, action) => {
+      .addCase(ajouterClient.fulfilled, (state, action) => {
         console.log(action);
         state.status = "réussi";
       })
-      .addCase(addClient.rejected, (state, action) => {
+      .addCase(ajouterClient.rejected, (state, action) => {
         console.log(action);
         state.status = "échoué";
-        state.error = action.payload;
+        state.erreur = action.payload;
       })
 
-      .addCase(updateclient.pending, (state) => {
+      .addCase(majClient.pending, (state) => {
         state.status = "chargement";
       })
-      .addCase(updateclient.fulfilled, (state, action) => {
+      .addCase(majClient.fulfilled, (state, action) => {
         state.status = "réussi";
       })
-      .addCase(updateclient.rejected, (state, action) => {
+      .addCase(majClient.rejected, (state, action) => {
         console.log(action);
         state.status = "échoué";
-        state.error = action.payload;
+        state.erreur = action.payload;
       });
   },
 });
 
 export const {
-  FilltersSaisieUser,
+  setFiltresSaisient,
   setClientInfos,
-  setclientAsupprimer,
+  setClientsASupprimer,
   setClientInfosEntiere,
 } = clientSlice.actions;
 export default clientSlice.reducer;

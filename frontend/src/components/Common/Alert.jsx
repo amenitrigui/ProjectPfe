@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 
 function Alert() {
   const message = useSelector((state) => state.uiStates.message);
-  const showAlert = useSelector((state) => state.uiStates.showAlert);
+  const afficherAlert = useSelector((state) => state.uiStates.afficherAlert);
   return (
     <>
-      {showAlert && (
+      {afficherAlert && (
         <div role="alert" className={`alert alert-success`}>
           <svg
             xmlns="http://www.w3.org/2000/svg"

@@ -15,10 +15,10 @@ import {
 } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getClientList,
-  FilltersSaisieUser,
-  getClientFilter,
-  setclientAsupprimer,
+  getListeClient,
+  setFiltresSaisient,
+  filtrerClients,
+  setClientsASupprimer,
   setClientInfosEntiere,
 } from "../../app/client_slices/clientSlice";
 import AlertModalD from "../../components/Common/AlertModalD";
@@ -26,11 +26,11 @@ import { setClearAppele } from "../../app/interface_slices/uiSlice";
 
 function ClientList() {
   const dispatch = useDispatch();
-  const clientList = useSelector((store) => store.ClientCrud.clientList);
+  const listeClients = useSelector((store) => store.ClientCrud.listeClients);
 
   // * UseEffect #1 : Récuperer La liste des clients
   useEffect(() => {
-    dispatch(getClientList());
+    dispatch(getListeClient());
   }, []);
 
   // * Utilisé pour spécifier quelle db (societé) on interroge
@@ -38,50 +38,10 @@ function ClientList() {
   // * Utilisé pour l'authorization de l'utilisateur à effectuer des opérations
   const token = localStorage.getItem("token");
   const filters = useSelector((store) => store.ClientCrud.filters);
-
-  // useEffect(() => {
-  //   const fetchClients = async () => {
-  //     try {
-  //       if (!dbName) throw new Error("Aucune base de données sélectionnée.");
-
-  //       const response = await axios.get(
-  //         `${process.env.REACT_APP_API_URL}/api/client/${dbName}/List`,
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         }
-  //       );
-  //       setClients(response.data.result);
-  //       setFilteredClient(response.data.result);
-  //     } catch (error) {
-  //       console.error(error.message);
-  //     }
-  //   };
-
-  //   fetchClients();
-  // }, []);
-
   // * Filtrage de la liste des clients par colonne
   const handleFilterChange = (e, column) => {
-    // const value = e.target.value;
-    // setFilters((prevFilters) => ({
-    //   ...prevFilters,
-    //   [column]: value,
-    // }));
-
-    // axios
-    //   .get(`${process.env.REACT_APP_API_URL}/api/client/${dbName}/filterClient`, {
-    //     params: { filters },
-    //   })
-    //   .then((res) => {
-    //     setFilteredClient(res.data.data);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
-    dispatch(FilltersSaisieUser({ valeur: e.target.value, collonne: column }));
-    dispatch(getClientFilter());
+    dispatch(setFiltresSaisient({ valeur: e.target.value, collonne: column }));
+    dispatch(filtrerClients());
   };
 
   // * Colonnes de DataTable
@@ -126,13 +86,13 @@ function ClientList() {
     selectedRows.every(value => console.log(value));
     dispatch(setClearAppele(false))
     if (selectedRows.length != 0) {
-      dispatch(setclientAsupprimer(selectedRows[0].code));
+      dispatch(setClientsASupprimer(selectedRows[0].code));
       dispatch(setClientInfosEntiere(selectedRows[0]));
     }
 
     if(selectedRows.length == 0) {
       dispatch(setClearAppele(true));
-      dispatch(setclientAsupprimer([]))
+      dispatch(setClientsASupprimer([]))
     }
   };
 
@@ -256,7 +216,7 @@ function ClientList() {
           <div className="bg-white p-4 rounded-lg shadow-lg mt-4">
             <DataTable
               columns={columns}
-              data={clientList}
+              data={listeClients}
               customStyles={customStyles}
               selectableRows
               fixedHeader

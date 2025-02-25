@@ -11,17 +11,14 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  addClient,
-  getClientList,
-  updateclient,
+  ajouterClient,
+  getListeClient,
+  majClient,
 } from "../../app/client_slices/clientSlice";
-import { deleteClient } from "../../app/client_slices/clientSlice";
 import {
-  setAlertMessage,
-  setAlertMessageModel,
   setClearAppele,
-  setShowAlerteModel,
-  toggleAlert,
+  setMessageAlertModal,
+  setafficherAlerteModel,
 } from "../../app/interface_slices/uiSlice";
 
 function ToolBar() {
@@ -30,27 +27,28 @@ function ToolBar() {
   const [isDeleting, setIsDeleting] = useState(false);
   const dbName = localStorage.getItem("selectedDatabase");
   const token = localStorage.getItem("token");
-  const status = useSelector((state) => state.ClientCrud.status);
-  const clientsASupprimer = useSelector((state) => state.ClientCrud.clientAsuprimer);
+  const clientsASupprimer = useSelector((state) => state.ClientCrud.clientsASupprimer);
+  const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
+  console.log(clientInfos);
 
   // * ajout d'un client
   const handleAjout = async () => {
-      dispatch(addClient());
-      dispatch(getClientList());
+      dispatch(ajouterClient());
+      dispatch(getListeClient());
       dispatch(setClearAppele(true));
   };
 
   // * méthode pour mettre à jour un client
   const handleupdate = async () => {
-    dispatch(updateclient());
-    dispatch(getClientList());
+    dispatch(majClient());
+    dispatch(getListeClient());
   };
 
   // * afficher la fenetre de confirmation
   // * pour supprimer un client
   const afficherModel = async () => {
-    dispatch(setAlertMessageModel("Etes vouz sur de suprimer ce client?"));
-    dispatch(setShowAlerteModel(true));
+    dispatch(setMessageAlertModal("Etes vouz sur de suprimer ce client?"));
+    dispatch(setafficherAlerteModel(true));
   };
   return (
     <nav className=" w-full h-[110px] border-b border-gray-700 flex items-center px-6 mt-6">

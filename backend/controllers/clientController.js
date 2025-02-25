@@ -1,5 +1,4 @@
 const defineClientModel = require("../models/client");
-const jwt = require("jsonwebtoken");
 const {
   getDatabaseConnection,
   verifyTokenValidity,
@@ -13,7 +12,7 @@ const {
  * @param {String} dbName
  * @returns {ListeClients}
  */
-const getlisteclient = async (req, res) => {
+const getListeClients = async (req, res) => {
   const { dbName } = req.params;
   try {
     //const decoded = verifyTokenValidity(req, res);
@@ -41,7 +40,7 @@ const getlisteclient = async (req, res) => {
  * @param {any} res
  * @returns {ListeClientsFiltre}
  */
-const getlisteclientsfilter = async (req, res) => {
+const filtrerListeClients = async (req, res) => {
   const { dbName } = req.params;
   const { filters } = req.query;
   console.log(filters);
@@ -200,7 +199,7 @@ const getClient = async (req, res) => {
  * @param {String} rsoc
  * @returns {nouvClient}
  */
-const updateClient = async(req, res) => {
+const majClient = async(req, res) => {
   const { dbName } = req.params;
   const { clientUpdate} = req.body;
 
@@ -223,10 +222,10 @@ const updateClient = async(req, res) => {
 }
 
 module.exports = {
-  getlisteclient,
-  getlisteclientsfilter,
+  getListeClients,
+  filtrerListeClients,
   AjouterClient,
   supprimerClient,
   getClient,
-  updateClient
+  majClient
 };

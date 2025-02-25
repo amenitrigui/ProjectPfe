@@ -31,7 +31,10 @@ const defineClientModel = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
-
+    adresse: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    }
 
   }, {
     tableName: "client",
