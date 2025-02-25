@@ -2,37 +2,49 @@ import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import SideBar from "../../components/Common/SideBar";
+import { useDispatch, useSelector } from "react-redux";
+import { getDevisList } from "../../app/devis_slices/devisSlice";
 
 function DevisList() {
   const [devis, setDevis] = useState([]);
   const [filteredDevis, setFilteredDevis] = useState([]);
   const dataBaseName = localStorage.getItem("selectedDatabase");
+  //Action 
+  const  dispatch =useDispatch()
+  // todo lire les donnes de listedevis a partie min devisslice
+  const ListeDevis = useSelector((store)=>store.DevisCrud.DevisList)
+  // todo recuperation de donnes donc on utilise useeffect
+ useEffect(()=>  
+{
+  dispatch(getDevisList())
+},[]) // [] hthii bch may9ahdch f boucle infini 
 
-  useEffect(() => {
-    /**
-     * Description
-     * Chargement de liste des devis
-     * @author Ameni
-     * @date 2025-02-06
-     * @returns {filteredDevis / devis}
-     */
-    const fetchDevis = async () => {
-      try {
-        const dbName = localStorage.getItem("selectedDatabase");
-        if (!dbName) throw new Error("Aucune base de données sélectionnée.");
+  // useEffect(() => {
+  //   /**
+  //    * Description
+  //    * Chargement de liste des devis
+  //    * @author Ameni
+  //    * @date 2025-02-06
+  //    * @returns {filteredDevis / devis}
+  //    */
+  //   const fetchDevis = async () => {
+  //     try {
+  //       const dbName = localStorage.getItem("selectedDatabase");
+  //       if (!dbName) throw new Error("Aucune base de données sélectionnée.");
 
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/devis/${dbName}/devis`
-        );
-        setDevis(response.data.devisList);
-        setFilteredDevis(response.data.devisList);
-      } catch (error) {
-        console.error(error.message);
-      }
-    };
+  //       const response = await axios.get(
+  //         `${process.env.REACT_APP_API_URL}/api/devis/${dbName}/devis`
+  //       );
+  //       setDevis(response.data.devisList);
+  //       setFilteredDevis(response.data.devisList);
+  //     } catch (error) {
+  //       console.error(error.message);
+  //     }
+  //   };
 
-    fetchDevis();
-  }, []);
+  //   fetchDevis();
+  // }, []);
 
   /**
    * Description
@@ -125,7 +137,7 @@ function DevisList() {
     <div className="container mx-auto p-6">
       {/* Header */}
  
-      <div className="flex justify-between items-center mb-6 p-4 bg-white shadow-md rounded-lg">
+      {/* <div className="flex justify-between items-center mb-6 p-4 bg-white shadow-md rounded-lg">
         
         <img src="logicom.jpg" alt="Logicom Logo" className="h-16 w-auto rounded-md shadow-md" />
         <h1 className="text-4xl font-bold text-blue-700 text-center">📜 Liste des Devis</h1>
@@ -137,7 +149,7 @@ function DevisList() {
             Sign In
           </Link>
         </div>
-      </div>
+      </div> */}
 
       {/* Zone de recherche */}
       <div className="grid grid-cols-3 gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
@@ -156,7 +168,7 @@ function DevisList() {
       <div className="bg-white p-4 rounded-lg shadow-lg mt-4">
         <DataTable
           columns={columns}
-          data={filteredDevis}
+          data={ListeDevis}
           customStyles={customStyles}
           selectableRows
           fixedHeader

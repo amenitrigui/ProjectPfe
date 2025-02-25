@@ -13,6 +13,7 @@ const initializeDynamicModels = (sequelize) => {
 };
 
 
+
 const getFamilles = async (req, res) => {
   const { dbName } = req.params;
 
@@ -54,7 +55,10 @@ const getFamilles = async (req, res) => {
     });
   }
 };
+// const getArticlesTout = aync(req,res) =>{
+// const {dbName}=req.params; 
 
+// }
 const getAllcodearticle = async (req, res) => {
   const { dbName } = req.params;
 

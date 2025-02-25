@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  decrement,
-  increment,
-  getListeClient,
-} from "../app/interface_slices/testSlice";
+import { decrement, increment } from "../app/interface_slices/testSlice";
+import { getListeClient } from "../app/client_slices/clientSlice";
+import SideBar from "../components/Common/SideBar";
+import ArticlesDevis from "../components/Devis/ArticlesDevis";
+
 
 function Parent() {
   const [testValue, setTestValue] = useState("");
@@ -32,6 +32,8 @@ function Parent() {
   return (
     <div>
       <div>
+        <SideBar></SideBar>
+      <ArticlesDevis></ArticlesDevis>
         <button onClick={() => dispatch(increment())}>Increment</button>
         <span>{count}</span>
       </div>
