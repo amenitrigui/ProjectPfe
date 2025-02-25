@@ -28,31 +28,37 @@ import {
   setAlertMessage,
   setClearAppele,
 } from "../../app/interface_slices/uiSlice";
+import { AjouterDevis } from "../../app/devis_slices/devisSlice";
 
 function ToolBar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isDeleting, setIsDeleting] = useState(false);
-  const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
-  console.log(clientInfos);
-  
+  const toolbarTable = useSelector((state) => state.uiStates.toolbarTable);
 
-  // * ajout d'un client
+  // * ajout d'un client/devi
   const handleAjout = async () => {
+    if (toolbarTable == "client") {
       dispatch(ajouterClient());
       dispatch(getListeClient());
       dispatch(setAlertMessage("Ajouté avec succès"));
       dispatch(setClearAppele(true));
+    }
+    if (toolbarTable == "devis") {
+      console.log("ajouter un devis");
+      dispatch(AjouterDevis());
+    }
   };
 
-  // * méthode pour mettre à jour un client
+  // * méthode pour mettre à jour un client/devis
   const handleupdate = async () => {
+
     dispatch(majClient());
     dispatch(getListeClient());
   };
 
   // * afficher la fenetre de confirmation
-  // * pour supprimer un ou plusieurs clients
+  // * pour supprimer un ou plusieurs clients/devis
   const afficherModel = async () => {
     dispatch(setMessageAlertModal("Etes vouz sur de suprimer ce(s) client(s)?"));
     dispatch(setAfficherAlertModal(true));
