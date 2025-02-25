@@ -27,6 +27,7 @@ import {
   setMessageAlertModal,
   setAlertMessage,
   setClearAppele,
+  setActiverChampsForm,
 } from "../../app/interface_slices/uiSlice";
 
 function ToolBar() {
@@ -45,6 +46,7 @@ function ToolBar() {
       }
       if(toolbarTable == "devis") {
         console.log("ajouter un devis");
+        dispatch(setActiverChampsForm(true))
       }
   };
 

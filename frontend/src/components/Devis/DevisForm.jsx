@@ -1,9 +1,10 @@
 import React from "react";
 import { FaFileInvoice, FaUser, FaClipboardList, FaUsers } from "react-icons/fa";
-import { Link } from 'react-router-dom';
-import { FiHome, FiLogOut, FiShoppingCart, FiUser, FiBox, FiSettings, FiTruck } from 'react-icons/fi';
+import { useSelector } from "react-redux";
 
 function DevisForm() {
+  const activerChampsForm = useSelector((state) => state.uiStates.activerChampsForm);
+  console.log(activerChampsForm);
   return (
     <>
       <div className="space-y-4 p-6 border rounded-lg shadow-md bg-white">
@@ -14,12 +15,12 @@ function DevisForm() {
         <label className="block font-medium">N° Devis :</label>
         <input
           type="text"
-          className="w-full border border-gray-300 rounded-md p-2 bg-gray-100"
-          readOnly
+          className="w-full border border-gray-300 rounded-md p-2"
+          readOnly={true}
         />
 
         <label className="block font-medium">Point de vente :</label>
-        <input className="w-full border border-gray-300 rounded-md p-2" />
+        <input className="w-full border border-gray-300 rounded-md p-2" readOnly={true}/>
       </div>
 
       {/* Information Client */}
@@ -31,39 +32,43 @@ function DevisForm() {
         <label className="block font-medium">Code Client :</label>
         <input
           type="text"
-          className="w-full border border-gray-300 rounded-md p-2 bg-gray-100"
-          readOnly
+          className="w-full border border-gray-300 rounded-md p-2"
+          readOnly={true}
         />
 
         <label className="block font-medium">Raison Sociale :</label>
         <input
           type="text"
-          className="w-full border border-gray-300 rounded-md p-2 bg-gray-100"
-          readOnly
+          className="w-full border border-gray-300 rounded-md p-2"
+          readOnly={true}
         />
 
         <label className="block font-medium">Adresse :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
+          readOnly={true}
         />
 
         <label className="block font-medium">Code Postal :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
+          readOnly={true}
         />
 
         <label className="block font-medium">Email :</label>
         <input
           type="email"
           className="w-full border border-gray-300 rounded-md p-2"
+          readOnly={true}
         />
 
         <label className="block font-medium">Téléphone :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
+          readOnly={true}
         />
       </div>
 
@@ -77,6 +82,7 @@ function DevisForm() {
         <input
           type="date"
           className="w-full border border-gray-300 rounded-md p-2"
+          readOnly={true}
         />
 
         <label className="block font-medium">Pièce Liée :</label>
@@ -89,18 +95,21 @@ function DevisForm() {
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
+          readOnly={true}
         />
 
         <label className="block font-medium">À l'attention de :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
+          readOnly={true}
         />
 
         <label className="block font-medium">Délai de livraison :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
+          readOnly={true}
         />
       </div>
 
@@ -115,36 +124,42 @@ function DevisForm() {
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
+          readOnly={true}
         />
 
         <label className="block font-medium">RSREP :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
+          readOnly={true}
         />
 
         <label className="block font-medium">Code Secteur :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
+          readOnly={true}
         />
 
         <label className="block font-medium">Désignation Secteur :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
+          readOnly={true}
         />
 
         <label className="block font-medium mt-4">Commentaire :</label>
         <textarea
           rows="3"
           className="w-full border border-gray-300 rounded-md p-2"
+          readOnly={true}
         ></textarea>
 
         <label className="block font-medium mt-4">Affaire :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
+          readOnly={true}
         />
       </div>
     </>

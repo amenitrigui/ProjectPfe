@@ -9,6 +9,7 @@ const defineArticleModel = require("../models/article");
 const defineDfpModel = require("../models/Dfp");
 
 const defineLdfpModel = require("../models/Ldfp ");
+const { getDatabaseConnection } = require("../common/commonMethods");
 
 const getTousDevis = async (req, res) => {
   const { dbName } = req.params;
@@ -47,6 +48,18 @@ const getTousDevis = async (req, res) => {
     });
   }
 };
+
+const getDevisCreator = async(req, res) => {
+  const dbConnection = getDatabaseConnection("UserErpSole", res);
+  const result = await dbConnection.query(
+    `SELECT  FROM utlisateur `,
+    { type: QueryTypes.SELECT }
+  );
+
+  if(result) {
+    return res.status(200).json({result})
+  }
+}
 
 module.exports = {
   getTousDevis,
