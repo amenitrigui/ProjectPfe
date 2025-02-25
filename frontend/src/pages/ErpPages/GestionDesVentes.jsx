@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FaTruck,
@@ -18,28 +18,30 @@ const GestionDesVentes = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-   const [selectedRsoc, setSelectedRsoc] = useState(null);
-  
-   if(!localStorage.getItem('token')){
-    navigate('/SignInPage');
-   }
-    useEffect(() => {
-      const selectedDatabase = localStorage.getItem("selectedDatabase");
-      const societies = localStorage.getItem("societies");
-  
-      if (selectedDatabase && societies) {
-        const parsedSocieties = JSON.parse(societies);
-        const selectedSociety = parsedSocieties.find(society => society.societe === selectedDatabase);
-  
-        if (selectedSociety) {
-          setSelectedRsoc(selectedSociety.rsoc);
-        } else {
-          console.log("Société non trouvée.");
-        }
+  const [selectedRsoc, setSelectedRsoc] = useState(null);
+
+  if (!localStorage.getItem("token")) {
+    navigate("/SignInPage");
+  }
+  useEffect(() => {
+    const selectedDatabase = localStorage.getItem("selectedDatabase");
+    const societies = localStorage.getItem("societies");
+
+    if (selectedDatabase && societies) {
+      const parsedSocieties = JSON.parse(societies);
+      const selectedSociety = parsedSocieties.find(
+        (society) => society.societe === selectedDatabase
+      );
+
+      if (selectedSociety) {
+        setSelectedRsoc(selectedSociety.rsoc);
       } else {
-        console.log("Aucune société ou base de données sélectionnée.");
+        console.log("Société non trouvée.");
       }
-    }, []);
+    } else {
+      console.log("Aucune société ou base de données sélectionnée.");
+    }
+  }, []);
 
   const handleLogout = () => {
     setIsModalOpen(true);
@@ -89,11 +91,12 @@ const GestionDesVentes = () => {
           GESTION DES VENTES
         </h1>
         <div className="absolute top-4 left-4">
-        <h2 className="text-black font-bold italic text-3xl">
-            <span className="font-bold">{selectedRsoc || "Aucune société sélectionnée"}</span>
-        </h2> 
-
-      </div>
+          <h2 className="text-black font-bold italic text-3xl">
+            <span className="font-bold">
+              {selectedRsoc || "Aucune société sélectionnée"}
+            </span>
+          </h2>
+        </div>
 
         <button
           onClick={handleLogout}

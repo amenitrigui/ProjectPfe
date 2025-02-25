@@ -1,5 +1,4 @@
 const defineClientModel = require("../models/client");
-const jwt = require("jsonwebtoken");
 const {
   getDatabaseConnection,
   verifyTokenValidity,
@@ -13,7 +12,7 @@ const {
  * @param {String} dbName
  * @returns {ListeClients}
  */
-const getlisteclient = async (req, res) => {
+const getListeClients = async (req, res) => {
   const { dbName } = req.params;
   try {
     //const decoded = verifyTokenValidity(req, res);
@@ -41,7 +40,7 @@ const getlisteclient = async (req, res) => {
  * @param {any} res
  * @returns {ListeClientsFiltre}
  */
-const getlisteclientsfilter = async (req, res) => {
+const filtrerListeClients = async (req, res) => {
   const { dbName } = req.params;
   const { filters } = req.query;
   console.log(filters);
@@ -113,6 +112,7 @@ const getlisteclientsfilter = async (req, res) => {
 const AjouterClient = async (req, res) => {
   const { dbName } = req.params;
   const { clientInfos } = req.body;
+  console.log(clientInfos)
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const Client = defineClientModel(dbConnection);
@@ -143,12 +143,14 @@ const AjouterClient = async (req, res) => {
  * @returns {status}
  */
 const supprimerClient = async (req, res) => {
-  const { dbName,code } = req.params;
+  const { dbName } = req.params;
+  const { clients } = req.body;
+  console.log(clients);
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const Client = defineClientModel(dbConnection);
     
-    await Client.destroy({ where: {code: code}});
+    await Client.destroy({ where: {code: clients}});
     console.log(code)
 
     return res.status(200).json({ message: "client supprimé avec succès" });
@@ -199,10 +201,9 @@ const getClient = async (req, res) => {
  * @param {String} rsoc
  * @returns {nouvClient}
  */
-const updateClient = async(req, res) => {
+const majClient = async(req, res) => {
   const { dbName } = req.params;
   const { clientUpdate} = req.body;
-  console.log(clientUpdate)
 
   try{
     const dbConnection = await getDatabaseConnection(dbName, res);
@@ -223,10 +224,10 @@ const updateClient = async(req, res) => {
 }
 
 module.exports = {
-  getlisteclient,
-  getlisteclientsfilter,
+  getListeClients,
+  filtrerListeClients,
   AjouterClient,
   supprimerClient,
   getClient,
-  updateClient
+  majClient
 };

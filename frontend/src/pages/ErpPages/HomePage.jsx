@@ -119,47 +119,41 @@ function HomePage() {
                 Catalogue des logiciels
               </h4>
               <div className="space-y-4">
-              <p className="text-lg text-teal-500">
-                  ERP LOGICOM
-                </p>
+                <p className="text-lg text-teal-500">ERP LOGICOM</p>
                 <p className="text-lg text-teal-500">
                   Gestion Station de Services
-                  </p>
-                  <p className="text-lg text-teal-500">
-                  Gestion des Abattoires
-                  </p>
-                  <p className="text-lg text-teal-500">
-                  Gestion de Restauration
-                  </p>
+                </p>
+                <p className="text-lg text-teal-500">Gestion des Abattoires</p>
+                <p className="text-lg text-teal-500">Gestion de Restauration</p>
               </div>
             </div>
             <div className="text-center">
-  <h4 className="text-2xl font-semibold mb-4">Contactez-nous</h4>
+              <h4 className="text-2xl font-semibold mb-4">Contactez-nous</h4>
 
-  <p className="text-lg mb-6">
-    <strong>Email :</strong>{" "}
-    <a href="mailto:sf.logicom@tunet.tn" className="text-teal-500">
-      <i className="fas fa-envelope mr-2"></i>
-      sf.logicom@tunet.tn
-    </a>
-  </p>
-  <p className="text-lg mb-6">
-    <strong>Adresse :</strong>{" "}
-    <i className="fas fa-map-marker-alt mr-2"></i>
-    Avenue 14 Janvier Imm., Karama 1ère étage App 12, 3003 - SFAX - TUNISIE
-  </p>
-  <p className="text-lg mb-6">
-    <strong>Téléphone :</strong>{" "}
-    <i className="fas fa-phone-alt mr-2"></i>
-    (+216) 74 400 110
-  </p>
-  <p className="text-lg mb-6">
-    <strong>Autre numéro :</strong>{" "}
-    <i className="fas fa-phone-alt mr-2"></i>
-    (+216) 74 400 110
-  </p>
-</div>
-
+              <p className="text-lg mb-6">
+                <strong>Email :</strong>{" "}
+                <a href="mailto:sf.logicom@tunet.tn" className="text-teal-500">
+                  <i className="fas fa-envelope mr-2"></i>
+                  sf.logicom@tunet.tn
+                </a>
+              </p>
+              <p className="text-lg mb-6">
+                <strong>Adresse :</strong>{" "}
+                <i className="fas fa-map-marker-alt mr-2"></i>
+                Avenue 14 Janvier Imm., Karama 1ère étage App 12, 3003 - SFAX -
+                TUNISIE
+              </p>
+              <p className="text-lg mb-6">
+                <strong>Téléphone :</strong>{" "}
+                <i className="fas fa-phone-alt mr-2"></i>
+                (+216) 74 400 110
+              </p>
+              <p className="text-lg mb-6">
+                <strong>Autre numéro :</strong>{" "}
+                <i className="fas fa-phone-alt mr-2"></i>
+                (+216) 74 400 110
+              </p>
+            </div>
           </div>
 
           <div className="text-center mt-12 border-t border-gray-700 pt-6">

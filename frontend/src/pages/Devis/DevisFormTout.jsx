@@ -1,9 +1,9 @@
 import { FaFileInvoice, FaUser, FaClipboardList, FaUsers } from "react-icons/fa";
 import ToolBar from "../../components/Common/ToolBar";
-import SideBar from "../../components/Common/SideBar";
 import { Link } from 'react-router-dom';
 import { FiHome, FiLogOut, FiShoppingCart, FiUser, FiBox, FiSettings, FiTruck } from 'react-icons/fi';
 import DevisList from "./DevisList";
+import SideBar from "../../components/Common/SideBar";
 
 
 function DevisFormTout() {

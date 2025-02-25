@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
@@ -28,9 +28,17 @@ const Dashboard = () => {
             { name: "Dashboard", icon: "home-outline", path: "/" },
             { name: "Customers", icon: "people-outline", path: "/ClientList" },
             { name: "devis", icon: "chatbubble-outline", path: "/DevisList" },
-            { name: "les societes", icon: "help-outline", path: "/SocietiesList" },
+            {
+              name: "les societes",
+              icon: "help-outline",
+              path: "/SocietiesList",
+            },
             { name: "Settings", icon: "settings-outline", path: "/" },
-            { name: "devistout", icon: "lock-closed-outline", path: "/DevisFormTout" },
+            {
+              name: "devistout",
+              icon: "lock-closed-outline",
+              path: "/DevisFormTout",
+            },
             { name: "Sign Out", icon: "log-out-outline", path: "/" },
           ].map((item, index) => (
             <li key={index}>
@@ -103,17 +111,39 @@ const Dashboard = () => {
               </thead>
               <tbody>
                 {[
-                  { name: "Star Refrigerator", price: "$1200", payment: "Paid", status: "delivered" },
-                  { name: "Dell Laptop", price: "$110", payment: "Due", status: "pending" },
-                  { name: "Apple Watch", price: "$1200", payment: "Paid", status: "return" },
-                  { name: "Addidas Shoes", price: "$620", payment: "Due", status: "inProgress" },
+                  {
+                    name: "Star Refrigerator",
+                    price: "$1200",
+                    payment: "Paid",
+                    status: "delivered",
+                  },
+                  {
+                    name: "Dell Laptop",
+                    price: "$110",
+                    payment: "Due",
+                    status: "pending",
+                  },
+                  {
+                    name: "Apple Watch",
+                    price: "$1200",
+                    payment: "Paid",
+                    status: "return",
+                  },
+                  {
+                    name: "Addidas Shoes",
+                    price: "$620",
+                    payment: "Due",
+                    status: "inProgress",
+                  },
                 ].map((order, index) => (
                   <tr key={index}>
                     <td>{order.name}</td>
                     <td>{order.price}</td>
                     <td>{order.payment}</td>
                     <td>
-                      <span className={`status ${order.status}`}>{order.status}</span>
+                      <span className={`status ${order.status}`}>
+                        {order.status}
+                      </span>
                     </td>
                   </tr>
                 ))}
@@ -127,8 +157,16 @@ const Dashboard = () => {
             </div>
             <table>
               {[
-                { name: "David", country: "Italy", img: "assets/imgs/customer02.jpg" },
-                { name: "Amit", country: "India", img: "assets/imgs/customer01.jpg" },
+                {
+                  name: "David",
+                  country: "Italy",
+                  img: "assets/imgs/customer02.jpg",
+                },
+                {
+                  name: "Amit",
+                  country: "India",
+                  img: "assets/imgs/customer01.jpg",
+                },
               ].map((customer, index) => (
                 <tr key={index}>
                   <td width="60px">

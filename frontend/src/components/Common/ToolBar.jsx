@@ -3,9 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faFolderPlus,
-  faEdit,
-  faTrashAlt,
   faCheck,
   faPencil,
   faPrint,
@@ -15,51 +12,56 @@ import {
   faArrowRight,
   faList,
   faSignOutAlt,
-  faTimes
+  faTimes,
+  faFolderPlus,
+  faEdit,
+  faTrashAlt
 } from "@fortawesome/free-solid-svg-icons";
 import {
-  addClient,
-  getClientList,
-  updateclient,
-  deleteClient
+  ajouterClient,
+  getListeClient,
+  majClient
 } from "../../app/client_slices/clientSlice";
 import {
+  setAfficherAlertModal,
+  setMessageAlertModal,
   setAlertMessage,
-  setAlertMessageModel,
   setClearAppele,
-  setShowAlerteModel
 } from "../../app/interface_slices/uiSlice";
 
 function ToolBar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isDeleting, setIsDeleting] = useState(false);
-  const [isNewMode, setIsNewMode] = useState(false);
-  const dbName = localStorage.getItem("selectedDatabase");
-  const token = localStorage.getItem("token");
+  const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
+  console.log(clientInfos);
 
+  // * ajout d'un client
   const handleAjout = async () => {
-    dispatch(addClient());
-    dispatch(getClientList());
-    dispatch(setAlertMessage("Ajouté avec succès"));
-    dispatch(setClearAppele());
+      dispatch(ajouterClient());
+      dispatch(getListeClient());
+      dispatch(setAlertMessage("Ajouté avec succès"));
+      dispatch(setClearAppele(true));
   };
 
-  const handleUpdate = async () => {
-    dispatch(updateclient());
-    dispatch(getClientList());
+  // * méthode pour mettre à jour un client
+  const handleupdate = async () => {
+    dispatch(majClient());
+    dispatch(getListeClient());
   };
 
-  const afficherModel = () => {
-    dispatch(setAlertMessageModel("Vous êtes sûr de supprimer ce client ?"));
-    dispatch(setShowAlerteModel());
+  // * afficher la fenetre de confirmation
+  // * pour supprimer un ou plusieurs clients
+  const afficherModel = async () => {
+    dispatch(setMessageAlertModal("Etes vouz sur de suprimer ce(s) client(s)?"));
+    dispatch(setAfficherAlertModal(true));
   };
 
-  const validateNewMode = () => {
+  const validerNouvMode = () => {
     console.log("Mode validé");
   };
 
-  const cancelNewMode = () => {
+  const annulerNouvMode = () => {
     console.log("Mode annulé");
   };
 
@@ -80,7 +82,7 @@ function ToolBar() {
           <button
             type="button"
             className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
-            onClick={handleUpdate}
+            onClick={() => handleupdate()}
           >
             <FontAwesomeIcon icon={faEdit} className="text-yellow-600 text-3xl" />
             <span className="text-sm font-semibold text-gray-700">Modifier</span>

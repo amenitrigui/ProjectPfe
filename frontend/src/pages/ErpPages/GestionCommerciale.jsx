@@ -1,9 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FaShoppingCart, FaUser, FaTruck, FaChartBar, FaWarehouse, FaCashRegister } from 'react-icons/fa';
-import { MdOutlineProductionQuantityLimits } from 'react-icons/md';
-import { BsBuilding, BsGraphUp } from 'react-icons/bs';
-import { AiOutlineStock } from 'react-icons/ai';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  FaShoppingCart,
+  FaUser,
+  FaTruck,
+  FaChartBar,
+  FaWarehouse,
+  FaCashRegister,
+} from "react-icons/fa";
+import { MdOutlineProductionQuantityLimits } from "react-icons/md";
+import { BsBuilding, BsGraphUp } from "react-icons/bs";
+import { AiOutlineStock } from "react-icons/ai";
 
 const GestionCommerciale = () => {
   const [selectedRsoc, setSelectedRsoc] = useState(null);
@@ -14,7 +21,9 @@ const GestionCommerciale = () => {
 
     if (selectedDatabase && societies) {
       const parsedSocieties = JSON.parse(societies);
-      const selectedSociety = parsedSocieties.find(society => society.societe === selectedDatabase);
+      const selectedSociety = parsedSocieties.find(
+        (society) => society.societe === selectedDatabase
+      );
 
       if (selectedSociety) {
         setSelectedRsoc(selectedSociety.rsoc);
@@ -27,25 +36,25 @@ const GestionCommerciale = () => {
   }, []);
 
   const sections = [
-    { name: 'ACHAT', icon: <FaShoppingCart /> },
-    { name: 'VENTE', icon: <FaCashRegister /> },
-    { name: 'CLIENT', icon: <FaUser /> },
-    { name: 'FOURNIS', icon: <FaTruck /> },
-    { name: 'B.C.C.', icon: <AiOutlineStock /> },
-    { name: 'STAT.', icon: <BsGraphUp /> },
-    { name: 'IM. PHYSIQUE', icon: <FaWarehouse /> },
-    { name: 'GESTION DES A.D.', icon: <BsBuilding /> },
-    { name: 'PRODUCTION', icon: <MdOutlineProductionQuantityLimits /> },
-    { name: 'POINTS DE VENTE', icon: <FaCashRegister /> },
-    { name: 'CAISSE CENTRALE', icon: <FaCashRegister /> },
-    { name: 'SUIVI DES AFFAIRES', icon: <FaChartBar /> },
+    { name: "ACHAT", icon: <FaShoppingCart /> },
+    { name: "VENTE", icon: <FaCashRegister /> },
+    { name: "CLIENT", icon: <FaUser /> },
+    { name: "FOURNIS", icon: <FaTruck /> },
+    { name: "B.C.C.", icon: <AiOutlineStock /> },
+    { name: "STAT.", icon: <BsGraphUp /> },
+    { name: "IM. PHYSIQUE", icon: <FaWarehouse /> },
+    { name: "GESTION DES A.D.", icon: <BsBuilding /> },
+    { name: "PRODUCTION", icon: <MdOutlineProductionQuantityLimits /> },
+    { name: "POINTS DE VENTE", icon: <FaCashRegister /> },
+    { name: "CAISSE CENTRALE", icon: <FaCashRegister /> },
+    { name: "SUIVI DES AFFAIRES", icon: <FaChartBar /> },
   ];
 
   const navigate = useNavigate();
 
   const handleSectionClick = (section) => {
-    if (section === 'VENTE') {
-      navigate('/GestionDesVentes');
+    if (section === "VENTE") {
+      navigate("/GestionDesVentes");
     }
   };
 
@@ -54,17 +63,19 @@ const GestionCommerciale = () => {
       <img
         src="/eee.PNG"
         alt="Illustration"
-        className="absolute bottom-0 left-0 h-64 w-64 object-contain mb-4 ml-4" 
+        className="absolute bottom-0 left-0 h-64 w-64 object-contain mb-4 ml-4"
       />
 
-      <h1 className="text-white text-4xl font-bold mt-10 mb-12">GESTION COMMERCIALE</h1>
+      <h1 className="text-white text-4xl font-bold mt-10 mb-12">
+        GESTION COMMERCIALE
+      </h1>
 
-     
       <div className="absolute top-4 left-4">
-      <h2 className="text-black font-bold italic text-3xl">
-            <span className="font-bold">{selectedRsoc || "Aucune société sélectionnée"}</span>
-        </h2> 
-
+        <h2 className="text-black font-bold italic text-3xl">
+          <span className="font-bold">
+            {selectedRsoc || "Aucune société sélectionnée"}
+          </span>
+        </h2>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-11/12 max-w-7xl mt-24">
@@ -75,7 +86,9 @@ const GestionCommerciale = () => {
             onClick={() => handleSectionClick(section.name)}
           >
             <div className="text-blue-500 text-5xl mb-4">{section.icon}</div>
-            <p className="text-gray-800 text-xl font-semibold">{section.name}</p>
+            <p className="text-gray-800 text-xl font-semibold">
+              {section.name}
+            </p>
           </div>
         ))}
       </div>

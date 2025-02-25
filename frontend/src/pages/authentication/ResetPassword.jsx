@@ -11,8 +11,6 @@ function ResetPassword() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // ? lessons were learned here...was a fun 2 hour breakdown at the caffee
-        // ? trying to figure out what went wrong
         const trimmedEmail = email.trim();
         if (!trimmedEmail) {
             setError("L'email est requise pour réinitialiser le mot de passe");

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { decrement, increment, getClientList } from "../app/interface_slices/testSlice";
+import { decrement, increment } from "../app/interface_slices/testSlice";
+import { getListeClient } from "../app/client_slices/clientSlice";
 import SideBar from "../components/Common/SideBar";
 import ArticlesDevis from "../components/Devis/ArticlesDevis";
 
@@ -19,13 +20,13 @@ function Parent() {
 
   const count = useSelector((state) => state.test2.value);
   const status = useSelector((state) => state.test2.status);
-  const clientlist = useSelector((state) => state.test2.clientList); // Récupération des clients
-  console.log(clientlist)
+  const listeClients = useSelector((state) => state.test2.listeClients); // Récupération des clients
+  console.log(listeClients);
   const dispatch = useDispatch();
 
   // Charger la liste des clients au montage du composant
   useEffect(() => {
-    dispatch(getClientList());
+    dispatch(getListeClient());
   }, [dispatch]);
 
   return (
@@ -42,7 +43,7 @@ function Parent() {
       {status === "failed" && <p>Erreur lors du chargement des clients</p>}
 
       {status === "succeeded" &&
-        Object.values(clientlist)?.map((item, index) => (
+        Object.values(listeClients)?.map((item, index) => (
           <div key={index}>{item.code}</div> // Assurez-vous que chaque item a une propriété "name"
         ))}
     </div>
