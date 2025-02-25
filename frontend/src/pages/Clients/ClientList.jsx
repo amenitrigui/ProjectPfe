@@ -139,9 +139,9 @@ function ClientList() {
     
         {/* Contenu principal */}
         <div className="flex-1 ml-64 p-6">
+          <ToolBar />
           <Alert />
           <AlertModalD />
-          <ToolBar />
           <ClientForm />
           <br />
     

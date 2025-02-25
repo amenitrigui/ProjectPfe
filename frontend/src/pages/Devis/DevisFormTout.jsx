@@ -17,9 +17,13 @@ function DevisFormTout() {
                 <div className="drawer-content">
 
                     {/* Contenu principal ici */}
-                    <label htmlFor="my-drawer" className="btn btn-primary drawer-button m-4 w-40">
-                        <img src="enter.png" alt="enter Icon" className="w-6 h-6" />
-                    </label>
+                    <div className="flex justify-end">
+                        <label htmlFor="my-drawer" className="btn btn-primary drawer-button m-4 w-40 flex items-center justify-center">
+                            <img src="enter.png" alt="enter Icon" className="w-6 h-6 mr-2" />
+                            Entrer
+                        </label>
+                    </div>
+
 
                 </div>
                 <div className="drawer-side">

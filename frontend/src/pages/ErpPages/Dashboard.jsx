@@ -15,9 +15,12 @@ const Dashboard = () => {
           <li>
             <a href="#">
               <span className="icon">
-                <ion-icon name="logo-apple"></ion-icon>
+              
+
+              <ion-icon name="speedometer-outline"></ion-icon>
+
               </span>
-              <span className="title">Brand Name</span>
+              <span className="title">ERP Logicom</span>
             </a>
           </li>
 

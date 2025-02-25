@@ -12,6 +12,13 @@ export const getDevisList = createAsyncThunk(
     return response.data.devisList; // ✅ Retourner uniquement les données utiles
   }
 );
+export const addDevis = createAsyncThunk(
+  "slice/AddDevis"  ,
+  async(_thunkAPI)=>{
+    const response =await axios.post(`${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/create`)
+    return response
+  }
+)
 
 export const devisSlice = createSlice({
   name: "devisSlice", // ✅ Correction du nom
