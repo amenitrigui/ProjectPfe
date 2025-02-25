@@ -18,7 +18,7 @@ import {
 import {
   setClearAppele,
   setMessageAlertModal,
-  setafficherAlerteModel,
+  setAfficherAlertModal,
 } from "../../app/interface_slices/uiSlice";
 
 function ToolBar() {
@@ -27,7 +27,6 @@ function ToolBar() {
   const [isDeleting, setIsDeleting] = useState(false);
   const dbName = localStorage.getItem("selectedDatabase");
   const token = localStorage.getItem("token");
-  const clientsASupprimer = useSelector((state) => state.ClientCrud.clientsASupprimer);
   const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
   console.log(clientInfos);
 
@@ -45,10 +44,10 @@ function ToolBar() {
   };
 
   // * afficher la fenetre de confirmation
-  // * pour supprimer un client
+  // * pour supprimer un ou plusieurs clients
   const afficherModel = async () => {
-    dispatch(setMessageAlertModal("Etes vouz sur de suprimer ce client?"));
-    dispatch(setafficherAlerteModel(true));
+    dispatch(setMessageAlertModal("Etes vouz sur de suprimer ce(s) client(s)?"));
+    dispatch(setAfficherAlertModal(true));
   };
   return (
     <nav className=" w-full h-[110px] border-b border-gray-700 flex items-center px-6 mt-6">

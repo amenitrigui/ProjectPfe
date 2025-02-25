@@ -31,7 +31,7 @@ export const uiSlice = createSlice({
     setMessageAlertModal: (state, action) => {
       state.messageAlertModal = action.payload;
     },
-    setAfficherAlerteModel: (state, action) => {
+    setAfficherAlertModal: (state, action) => {
       state.afficherAlertModal = action.payload;
     },
 
@@ -45,7 +45,7 @@ export const {
   toggleAlert,
   setTypeAlert,
   setMessageAlertModal,
-  setafficherAlerteModel,
+  setAfficherAlertModal,
   setClearAppele,
 } = uiSlice.actions;
 export default uiSlice.reducer;

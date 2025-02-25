@@ -64,14 +64,17 @@ export const filtrerClients = createAsyncThunk(
 export const supprimerClient = createAsyncThunk(
   "slice/supprimerClient",
   async (_, thunkAPI) => {
-    const id = thunkAPI.getState().ClientCrud.clientsASupprimer;
     const response = await axios.delete(
-      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/Delete/${id}`
+      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/Delete/`,
+      {
+        data: {
+          clients: thunkAPI.getState().ClientCrud.clientsASupprimer,
+        },
+      }
     );
     return response.data;
   }
 );
-
 
 export const clientSlice = createSlice({
   name: "slice",
@@ -131,7 +134,7 @@ export const clientSlice = createSlice({
       })
       .addCase(getListeClient.rejected, (state, action) => {
         state.status = "échoué";
-        state.erreur = action.erreur.message;
+        state.erreur = action.erreur;
       })
 
       .addCase(filtrerClients.pending, (state) => {
@@ -143,7 +146,7 @@ export const clientSlice = createSlice({
       })
       .addCase(filtrerClients.rejected, (state, action) => {
         state.status = "échoué";
-        state.erreur = action.erreur.message;
+        state.erreur = action.erreur;
       })
 
       .addCase(supprimerClient.pending, (state) => {
@@ -157,7 +160,7 @@ export const clientSlice = createSlice({
       })
       .addCase(supprimerClient.rejected, (state, action) => {
         state.status = "échoué";
-        state.erreur = action.erreur.message;
+        state.erreur = action.erreur;
         console.log(state.status);
       })
 

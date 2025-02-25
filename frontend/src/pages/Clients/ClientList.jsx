@@ -83,7 +83,7 @@ function ClientList() {
   };
 
   const handleSelectionChange = ({ selectedRows }) => {
-    selectedRows.every(value => console.log(value));
+    // selectedRows.every(value => console.log(value));
     dispatch(setClearAppele(false))
     if (selectedRows.length != 0) {
       dispatch(setClientsASupprimer(selectedRows[0].code));
