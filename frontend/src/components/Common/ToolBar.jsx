@@ -35,6 +35,7 @@ function ToolBar() {
   const [isDeleting, setIsDeleting] = useState(false);
   const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
   console.log(clientInfos);
+  
 
   // * ajout d'un client
   const handleAjout = async () => {
