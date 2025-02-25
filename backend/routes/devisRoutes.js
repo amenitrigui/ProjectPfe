@@ -4,7 +4,6 @@ const {
   getAllClients,
   getClientByCode,
   getClientByRsoc,
-  getAllDevis,
   getLibpvByNumbl,
   getDevisWithDetails,
   getTotalDevis,
@@ -15,14 +14,16 @@ const {
   updateDevis,
   deleteDevis,
   filterDevis,
-} = require("../controllers/devisController");
+} = require("../controllers/devisControllerPlaceholder");
+
+const { getTousDevis } = require("../controllers/devisController");
 const { getAllcodearticle } = require("../controllers/articleController");
 
 router.get("/:dbName/clients", getAllClients);
 router.get("/:dbName/clients/code/:code", getClientByCode);
 router.get("/:dbName/clients/rsoc/:rsoc", getClientByRsoc);
 router.get("/:dbName/article", getAllcodearticle);
-router.get("/:dbName/devis", getAllDevis);
+router.get("/:dbName/devis", getTousDevis);
 router.get("/:dbName/devis/libpv/:numbl", getLibpvByNumbl);
 router.get("/:dbName/devis/details", getDevisWithDetails);
 router.get(

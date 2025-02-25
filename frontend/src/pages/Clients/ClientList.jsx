@@ -22,7 +22,7 @@ import {
   setClientInfosEntiere,
 } from "../../app/client_slices/clientSlice";
 import AlertModalD from "../../components/Common/AlertModalD";
-import { setClearAppele } from "../../app/interface_slices/uiSlice";
+import { setClearAppele, setToolbarTable } from "../../app/interface_slices/uiSlice";
 import SideBar from "../../components/Common/SideBar";
 
 function ClientList() {
@@ -32,6 +32,7 @@ function ClientList() {
   // * UseEffect #1 : Récuperer La liste des clients
   useEffect(() => {
     dispatch(getListeClient());
+    dispatch(setToolbarTable("client"));
   }, []);
 
   // * Utilisé pour spécifier quelle db (societé) on interroge
