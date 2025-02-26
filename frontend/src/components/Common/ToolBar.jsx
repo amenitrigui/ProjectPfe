@@ -29,6 +29,7 @@ import {
   setClearAppele,
   setActiverChampsForm,
 } from "../../app/interface_slices/uiSlice";
+import { AjouterDevis } from "../../app/devis_slices/devisSlice";
 
 function ToolBar() {
   const dispatch = useDispatch();
@@ -46,6 +47,7 @@ function ToolBar() {
       }
       if(toolbarTable == "devis") {
         console.log("ajouter un devis");
+        dispatch(AjouterDevis());
         dispatch(setActiverChampsForm(true))
       }
   };

@@ -1,4 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 
 export const uiSlice = createSlice({
   name: "uiSlice",
@@ -25,6 +26,7 @@ export const uiSlice = createSlice({
     // * selon le mode
     activerChampsForm: false
   },
+
   reducers: {
     setAlertMessage: (state, action) => {
       state.message = action.payload;
@@ -36,7 +38,7 @@ export const uiSlice = createSlice({
     setTypeAlert: (state, action) => {
       state.typeAlert = action.payload;
     },
-
+    
     /// Alerte  moch simple
     setMessageAlertModal: (state, action) => {
       state.messageAlertModal = action.payload;

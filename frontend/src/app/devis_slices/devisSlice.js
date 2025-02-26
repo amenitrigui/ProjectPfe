@@ -23,37 +23,57 @@ export const AjouterDevis = createAsyncThunk(
     return response
   }
 )
+export const getNombrededevis = createAsyncThunk(
+  "Slice/getNmobredevis", async (_, thinkAPI) => {
+  const response = await axios.get(
+    `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/devis/total`
+  );
+  return response.data.totalDevis;
+}
+)
+export const getTotalChifre = createAsyncThunk(
+  "slice/getNombreTotal", async (_, thinkAPI) => {
+  const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/devis/totalchiffre`
 
+  );
+  console.log(response);
+  return response.data.totalchifre;
+}
+)
 export const devisSlice = createSlice({
   name: "devisSlice",
   initialState: {
     DevisList: [],
     devisInfo:
     {
-      NUMBL:"",
-      libpv:"",
-      adresse:"",
-      code:"",
-      cp:"",
-      DATEBL:"",
-      MREMISE:"",
-      MTTC:"",
-      comm:"",
-      RSREP:"",
-      CODEREP:"",
-      usera:"",
-      rsoc:"",
-      codesecteur:"",
-      MHT:"",
-      articles:[],
+      NUMBL: "",
+      libpv: "",
+      adresse: "",
+      code: "",
+      cp: "",
+      DATEBL: "",
+      MREMISE: "",
+      MTTC: "",
+      comm: "",
+      RSREP: "",
+      CODEREP: "",
+      usera: "",
+      rsoc: "",
+      codesecteur: "",
+      MHT: "",
+      articles: [],
+
+
     },
-    status: "idle",
-    error: null,
+    totalchifre: 0,
+    nombreDeDevis: 0,
+    status: "idle", // ✅ Doit être dans initialState
+    error: null, // ✅ Doit être dans initialState
   },
   reducers: {
-    setDevisInfo:(state,action)=>{
-      const {collone,valeur}=action.payload;
-      state.devisInfo[collone]=valeur;
+    setDevisInfo: (state, action) => {
+      const { collone, valeur } = action.payload;
+      state.devisInfo[collone] = valeur;
     }
 
   },
@@ -83,9 +103,37 @@ export const devisSlice = createSlice({
       .addCase(AjouterDevis.rejected, (state, action) => {
         state.erreur = action.payload;
         state.status = "echoue";
+      })
+      .addCase(getNombrededevis.pending, (state) => {
+        state.status = "chargeement";
+      })
+      .addCase(getNombrededevis.fulfilled, (state, action) => {
+        console.log(action)
+        state.nombreDeDevis = action.payload;
+        state.status = "reussi";
+      })
+      .addCase(getNombrededevis.rejected, (state, action) => {
+        state.nombreDeDevis = action.payload;
+        state.status = "echoue"
+      })
+      .addCase(getTotalChifre.pending, (state) => {
+        state.status = "chargeement";
+      })
+      .addCase(getTotalChifre.fulfilled, (state, action) => {
+        console.log(action)
+        state.totalchifre = action.payload;
+        state.status = "reussi";
+      })
+      .addCase(getTotalChifre.rejected, (state, action) => {
+        state.totalchifre = action.payload;
+        state.status = "echoue"
       });
+
+
+
+
   },
 });
-export const {setDevisInfo}=devisSlice.actions
+export const { setDevisInfo } = devisSlice.actions
 
 export default devisSlice.reducer;

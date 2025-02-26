@@ -274,51 +274,7 @@ const getDevisWithDetails = async (req, res) => {
   }
 };
 
-/**
- * Description
- * Récuperer le nombre de devis d'une socièté donnée (dbName)
- * @author Unknown
- * @date 2025-02-08
- * @returns {status}
- */
-const getTotalDevis = async (req, res) => {
-  const { dbName } = req.params;
 
-  if (!dbName) {
-    return res.status(400).json({
-      message: "Le nom de la base de données est requis.",
-    });
-  }
-
-  try {
-    const dynamicSequelize = getSequelizeConnection(dbName);
-    const Devis = defineDevisModel(dynamicSequelize);
-
-    const devisCount = await Devis.count({
-      distinct: true,
-      col: "NUMBL",
-    });
-
-    console.log(
-      "Total des devis (distinct NUMBL) avec Sequelize : ",
-      devisCount
-    );
-
-    return res.status(200).json({
-      message: "Total des devis récupéré avec succès.",
-      totalDevis: devisCount,
-    });
-  } catch (error) {
-    console.error(
-      "Erreur lors de la récupération du total des devis :",
-      error.message
-    );
-    return res.status(500).json({
-      message: "Erreur lors de la récupération du total des devis.",
-      error: error.message,
-    });
-  }
-};
 
 const getDevisCountByMonthAndYear = async (req, res) => {
   const { dbName } = req.params;
@@ -889,7 +845,7 @@ module.exports = {
   getLibpvByNumbl,
   getDevisWithDetails,
   getDevisCountByMonthAndYear,
-  getTotalDevis,
+ 
   getDevisValidees,
   createDevis,
   getCodeRepAndRsRep,

@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { getNombrededevis, getTotalChifre } from "../../app/devis_slices/devisSlice";
+
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
@@ -7,7 +10,16 @@ const Dashboard = () => {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(getNombrededevis())
+    dispatch(getTotalChifre())
+  }, [])
 
+  const nombredevis = useSelector((state) => state.DevisCrud.nombreDeDevis)
+  console.log(nombredevis)
+  const totalchifre= useSelector((state)=> state.DevisCrud.totalchifre)
+console.log(totalchifre)
   return (
     <div className="container">
       <div className={`navigation ${isSidebarOpen ? "active" : ""}`}>
@@ -15,9 +27,9 @@ const Dashboard = () => {
           <li>
             <a href="#">
               <span className="icon">
-              
 
-              <ion-icon name="speedometer-outline"></ion-icon>
+
+                <ion-icon name="speedometer-outline"></ion-icon>
 
               </span>
               <span className="title">ERP Logicom</span>
@@ -74,8 +86,8 @@ const Dashboard = () => {
 
         <div className="cardBox">
           {[
-            { number: "1,504", name: "Daily Views", icon: "eye-outline" },
-            { number: "80", name: "Sales", icon: "cart-outline" },
+            { number: nombredevis, name: "Nombre devis generes ", icon: "eye-outline" },
+            { number: totalchifre.toFixed(2), name: "total chifre", icon: "cart-outline" },
             { number: "284", name: "Comments", icon: "chatbubbles-outline" },
             { number: "$7,842", name: "Earning", icon: "cash-outline" },
           ].map((card, index) => (

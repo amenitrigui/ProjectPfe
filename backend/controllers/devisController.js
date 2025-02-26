@@ -48,6 +48,75 @@ const getTousDevis = async (req, res) => {
     });
   }
 };
+const getTotalChifre = async (req, res) => {
+  const { dbName } = req.params;
+  if (!dbName) {
+    return res.status(400).json({
+      message: "le nom de la base de donnes est requis",
+
+    });
+  }
+  try {
+    const dynamicSequelize = getSequelizeConnection(dbName);
+    const Devis = defineDevisModel(dynamicSequelize);
+    const totalchifre = await Devis.sum("MTTC");
+    return res.status(200).json({
+      message: "Total de chifre  de devis récupéré avec succès.",
+      totalchifre: totalchifre,
+    });
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération du total de chifre  de devis :",
+      error.message
+    );
+    return res.status(500).json({
+      message: "Erreur lors de la récupération du total de chifre de devis.",
+      error: error.message,
+    });
+  }
+};
+
+
+
+const getNombreDevis = async (req, res) => {
+  const { dbName } = req.params;
+
+  if (!dbName) {
+    return res.status(400).json({
+      message: "Le nom de la base de données est requis.",
+    });
+  }
+
+  try {
+    const dynamicSequelize = getSequelizeConnection(dbName);
+    const Devis = defineDevisModel(dynamicSequelize);
+
+    const devisCount = await Devis.count({
+      distinct: true,
+      col: "NUMBL",
+    });
+
+    console.log(
+      "Total des devis (distinct NUMBL) avec Sequelize : ",
+      devisCount
+    );
+
+    return res.status(200).json({
+      message: "Total des devis récupéré avec succès.",
+      totalDevis: devisCount,
+    });
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération du total des devis :",
+      error.message
+    );
+    return res.status(500).json({
+      message: "Erreur lors de la récupération du total des devis.",
+      error: error.message,
+    });
+  }
+};
+
 
 const getDevisCreator = async(req, res) => {
   const dbConnection = getDatabaseConnection("UserErpSole", res);
@@ -63,4 +132,6 @@ const getDevisCreator = async(req, res) => {
 
 module.exports = {
   getTousDevis,
+  getNombreDevis,
+  getTotalChifre
 }
