@@ -14,31 +14,33 @@ export const getDevisList = createAsyncThunk(
 );
 export const AjouterDevis = createAsyncThunk(
   "slice/AddDevis",
-  async (_thunkAPI) => {
-    const devisInfo = _thunkAPI.getState().DevisCrud.devisInfo;
+  async (_,thunkAPI) => {
+    console.log("ddd")
+    const devisInfo = thunkAPI.getState().DevisCrud.devisInfo;
     const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/create`,
       { devisInfo }
     );
+    console.log(response)
+    return response.data.devis
 
-    return response
   }
 )
 export const getNombrededevis = createAsyncThunk(
-  "Slice/getNmobredevis", async (_, thinkAPI) => {
-  const response = await axios.get(
-    `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/devis/total`
-  );
-  return response.data.totalDevis;
-}
+  "Slice/getNmobredevis", async () => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/devis/total`
+    );
+    return response.data.totalDevis;
+  }
 )
 export const getTotalChifre = createAsyncThunk(
-  "slice/getNombreTotal", async (_, thinkAPI) => {
-  const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/devis/totalchiffre`
+  "slice/getNombreTotal", async () => {
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/devis/totalchiffre`
 
-  );
-  console.log(response);
-  return response.data.totalchifre;
-}
+    );
+    console.log(response);
+    return response.data.totalchifre;
+  }
 )
 export const devisSlice = createSlice({
   name: "devisSlice", // ✅ Correction du nom
@@ -46,24 +48,22 @@ export const devisSlice = createSlice({
     DevisList: [],
     devisInfo:
     {
-      NUMBL: "",
-      libpv: "",
-      adresse: "",
-      code: "",
-      cp: "",
-      DATEBL: "",
-      MREMISE: "",
-      MTTC: "",
-      comm: "",
-      RSREP: "",
-      CODEREP: "",
-      usera: "",
-      rsoc: "",
-      codesecteur: "",
-      MHT: "",
-      articles: [],
-
-
+      "libpv":"SIEGE LOCAL",
+      "adresse":"ddd",
+      "NUMBL":"452",
+      "code":"41102630",
+      "cp":"12",
+      "DATEBL":"dd",
+      "MREMISE":"ddd",
+      "MTTC":"ddd",
+      "comm":"zzz",
+      "RSREP":"ss",
+      "CODEREP":"ss",
+      "usera":"ss",
+      "rsoc":"ss",
+      "codesecteur":"xx",
+      "MHT":"aa",
+      "articles":[]
     },
     totalchifre: 0,
     nombreDeDevis: 0,

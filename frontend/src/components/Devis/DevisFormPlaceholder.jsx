@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import {
@@ -19,15 +18,7 @@ import {
 } from "@heroicons/react/20/solid";
 import Select from "react-select";
 import { useNavigate, useParams } from "react-router-dom";
-
-import { toast } from "react-toastify";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useLocation } from "react-router-dom";
-import Devis from "./Devis";
-import ArticlesDevis from "./ArticlesDevis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// ? icons
 import {
   faFolderPlus,
   faEdit,
@@ -40,8 +31,16 @@ import {
   faTimes,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useLocation } from "react-router-dom";
 
 const DevisFormPlaceholder = () => {
+
+
+
+
   const [formData, setFormData] = useState({
     NUMBL: "",
     pointVente: "",
@@ -92,18 +91,12 @@ const DevisFormPlaceholder = () => {
   const formattedDate = new Date().toLocaleDateString("fr-FR");
 
   const { dbName } = useParams();
+  const totalPages = Math.ceil(formData.lignes.length / 10);
 
   const formRef = useRef(null);
 
   const navigate = useNavigate();
 
-  /**
-   * Description
-   * @author Unknown
-   * @date 2025-02-06
-   * @param {any} selectedDevis
-   * @returns {any}
-   */
   const handleEditDevis = (selectedDevis) => {
     setFormData({
       ...selectedDevis,
@@ -112,14 +105,21 @@ const DevisFormPlaceholder = () => {
     });
   };
 
-  /**
-   * Description
-   * hide show devis??
-   * @date 2025-02-06
-   * @param {any} e
-   * @returns {any}
-   * @author Unknown
-   */
+  const handlePrint = () => {
+    const printContent = document.getElementById("devis");
+    if (!printContent) {
+      console.error("Aucun contenu à imprimer.");
+      return;
+    }
+
+    const originalContent = document.body.innerHTML;
+    document.body.innerHTML = printContent.outerHTML;
+
+    window.print();
+
+    document.body.innerHTML = originalContent;
+    window.location.reload();
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -182,16 +182,9 @@ const DevisFormPlaceholder = () => {
   const [message, setMessage] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  /**
-   * Description
-   * ? useEffect #1
-   * @author Unknown
-   * @date 2025-02-06
-   * @param {any} (
-   * @returns {any}
-   */
+
+
   useEffect(() => {
-    console.log(location);
     const locationFormData =
       location.state?.formData ||
       JSON.parse(localStorage.getItem("searchResults"))?.[0] ||
@@ -200,15 +193,8 @@ const DevisFormPlaceholder = () => {
     if (locationFormData) {
       setFormData(locationFormData);
     }
-  }, [location.pathname]);
+  }, [location.state]);
 
-  /**
-   * Description
-   * @author Unknown
-   * @date 2025-02-06
-   * @param {any} article
-   * @returns {any}
-   */
   const filteredItems = filteredArticles.filter((article) => {
     const codeMatch = article.code
       .toLowerCase()
@@ -219,12 +205,6 @@ const DevisFormPlaceholder = () => {
     return codeMatch && libelleMatch;
   });
 
-  /**
-   * Description
-   * @author Unknown
-   * @date 2025-02-06
-   * @returns {any}
-   */
   const cancelEditMode = () => {
     setIsEditMode(false);
   };
@@ -241,7 +221,6 @@ const DevisFormPlaceholder = () => {
     setSelectedBoxIndex(index);
     setIsModalOpen(true);
   };
-  // ? UseEffect #2
   useEffect(() => {
     const fetchClients = async () => {
       if (!selectedDatabase) {
@@ -268,7 +247,6 @@ const DevisFormPlaceholder = () => {
     fetchClients();
   }, [selectedDatabase]);
 
-  // ? UseEffect #3
   useEffect(() => {
     const fetchFamilles = async () => {
       if (!selectedDatabase) {
@@ -537,7 +515,6 @@ const DevisFormPlaceholder = () => {
     }
   };
 
-  // ? UseEffect #4
   useEffect(() => {
     console.log("selectedDevis avant requête:", selectedDevis);
     const fetchLibpv = async () => {
@@ -573,7 +550,6 @@ const DevisFormPlaceholder = () => {
     }
   }, [selectedDevis]);
 
-  // ? UseEffect #5
   useEffect(() => {
     console.log("Libpv list mise à jour:", libpvList);
   }, [libpvList]);
@@ -648,7 +624,6 @@ const DevisFormPlaceholder = () => {
     }
   };
 
-  // ? UseEffect #6
   useEffect(() => {
     const selectedDatabase = localStorage.getItem("selectedDatabase");
 
@@ -750,7 +725,6 @@ const DevisFormPlaceholder = () => {
     }
   };
 
-  // ? UseEffect #7
   useEffect(() => {
     const savedLignes = localStorage.getItem("lignesValidees");
     if (savedLignes) {
@@ -782,7 +756,6 @@ const DevisFormPlaceholder = () => {
     fetchDevisDetails(selectedDatabase, cleanedNumbl); // Charger le nouveau devis
   };
 
-  // ? UseEffect #8
   useEffect(() => {
     const selectedDatabase = localStorage.getItem("selectedDatabase");
     const selectedNumbl = localStorage.getItem("selectedDevisNumbl");
@@ -822,7 +795,6 @@ const DevisFormPlaceholder = () => {
     }
   };
 
-  // ? UseEffect #9
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -845,7 +817,6 @@ const DevisFormPlaceholder = () => {
     }
   };
 
-  // ? UseEffect #10
   useEffect(() => {
     const fetchRepresentants = async () => {
       try {
@@ -932,7 +903,6 @@ const DevisFormPlaceholder = () => {
     return totalRemise;
   };
 
-  // ? UseEffect #11
   useEffect(() => {
     const totalRemise = calculateTotalDiscount();
     setFormData({
@@ -1088,6 +1058,7 @@ const DevisFormPlaceholder = () => {
     );
   };
 
+
   const removedevis = async () => {
     const numbl = localStorage.getItem("selectedDevisNumbl");
     const selectedDatabase = localStorage.getItem("selectedDatabase");
@@ -1131,9 +1102,8 @@ const DevisFormPlaceholder = () => {
     } catch (err) {
       setMessage({
         type: "error",
-        text: `Erreur: ${
-          err.response?.data.message || "Erreur lors de la suppression"
-        }`,
+        text: `Erreur: ${err.response?.data.message || "Erreur lors de la suppression"
+          }`,
         style: getMessageStyle("error"),
       });
     }
@@ -1234,19 +1204,19 @@ const DevisFormPlaceholder = () => {
         lignes: prevData.lignes.map((ligne, ligneIndex) =>
           ligneIndex === index
             ? {
-                code: "",
-                libelle: "",
-                nbrunite: "",
-                prix1: "",
-                tauxtva: "",
-                unite: "",
-                famille: "",
-                netHt: "",
-                Remise: "",
-                quantite: "",
-                CONFIG: "",
-                isVisible: true,
-              }
+              code: "",
+              libelle: "",
+              nbrunite: "",
+              prix1: "",
+              tauxtva: "",
+              unite: "",
+              famille: "",
+              netHt: "",
+              Remise: "",
+              quantite: "",
+              CONFIG: "",
+              isVisible: true,
+            }
             : ligne
         ),
         totalHt: totalMontantHT.toFixed(3),
@@ -1262,7 +1232,6 @@ const DevisFormPlaceholder = () => {
     }
   };
 
-  // ? UseEffect #12
   useEffect(() => {
     const lignesEnLocalStorage = JSON.parse(
       localStorage.getItem("lignesValidees")
@@ -1296,6 +1265,78 @@ const DevisFormPlaceholder = () => {
     label: client.rsoc,
   }));
 
+  function numberToText(number) {
+    if (number === undefined || number === null || isNaN(number)) {
+      console.error("Valeur invalide pour numberToText:", number);
+      return "Valeur invalide";
+    }
+
+    const units = [
+      "",
+      "un",
+      "deux",
+      "trois",
+      "quatre",
+      "cinq",
+      "six",
+      "sept",
+      "huit",
+      "neuf",
+      "dix",
+      "onze",
+      "douze",
+      "treize",
+      "quatorze",
+      "quinze",
+      "seize",
+      "dix-sept",
+      "dix-huit",
+      "dix-neuf",
+      "vingt",
+      "trente",
+      "quarante",
+      "cinquante",
+      "soixante",
+      "soixante-dix",
+      "quatre-vingts",
+      "quatre-vingt-dix",
+    ];
+    const tens = [
+      "",
+      "",
+      "vingt",
+      "trente",
+      "quarante",
+      "cinquante",
+      "soixante",
+      "septante",
+      "huitante",
+      "nonante",
+    ];
+
+    const convertPart = (num) => {
+      if (num < 20) return units[num];
+      else if (num < 100) {
+        const ten = Math.floor(num / 10);
+        const unit = num % 10;
+        return `${tens[ten]}${unit ? "-" + units[unit] : ""}`;
+      } else {
+        return `${units[Math.floor(num / 100)]} cent${num % 100 !== 0 ? " " + convertPart(num % 100) : ""
+          }`;
+      }
+    };
+
+    const [intPart, decPart] = number.toString().split(".");
+    const intText = convertPart(Number(intPart));
+
+    if (decPart) {
+      const decText = convertPart(Number(decPart));
+      return `${intText} dinars et ${decText} millimes`;
+    }
+
+    return `${intText} dinars`;
+  }
+
   const handleSearchClick = () => {
     navigate("/recherche");
   };
@@ -1308,6 +1349,11 @@ const DevisFormPlaceholder = () => {
 
   const handleShowDevis = () => {
     setShowDevis(true);
+  };
+
+  const calculerTaxe = () => {
+    const taxe = parseFloat(formData.MTTC) - parseFloat(formData.totalHt);
+    return isNaN(taxe) ? 0 : taxe.toFixed(3);
   };
 
   const calculerRemiseTotale = () => {
@@ -1323,7 +1369,6 @@ const DevisFormPlaceholder = () => {
       .toFixed(3);
   };
 
-  // ? UseEffect #13
   useEffect(() => {
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -1576,7 +1621,6 @@ const DevisFormPlaceholder = () => {
     }
   };
 
-  // ? UseEffect #14
   useEffect(() => {
     fetchSecteurs();
   }, []);
@@ -1624,7 +1668,199 @@ const DevisFormPlaceholder = () => {
           }}
           className="p-6 bg-gray-50 rounded-lg space-y-6"
         >
+          <nav className=" w-full h-[110px] border-b border-gray-700 flex items-center px-6 mt-6">
+            {" "}
+            {/* Ajout de mt-16 */}
+            <div className="flex space-x-4">
+              {!isNewMode && !isEditMode ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={addLigne}
+                    className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
+                  >
+                    <FontAwesomeIcon
+                      icon={faFolderPlus}
+                      className="text-blue-600 text-3xl"
+                    />
+                    <span className="text-sm font-semibold text-gray-700">
+                      Nouveaux
+                    </span>
+                  </button>
+                  <div className="border-r border-gray-300 h-8"></div>
 
+                  <button
+                    type="button"
+                    className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
+                    onClick={handleeditligneDevis}
+                  >
+                    <FontAwesomeIcon
+                      icon={faEdit}
+                      className="text-yellow-600 text-3xl"
+                    />
+                    <span className="text-sm font-semibold text-gray-700">
+                      Modifier
+                    </span>
+                  </button>
+                  <div className="border-r border-gray-300 h-8"></div>
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmModal(true)}
+                      className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
+                    >
+                      <FontAwesomeIcon
+                        icon={faTrashAlt}
+                        className="text-red-600 text-3xl"
+                      />
+                      <span className="text-sm font-semibold text-gray-700">
+                        Supprimer
+                      </span>
+                    </button>
+
+                    {showConfirmModal && (
+                      <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex items-center justify-center z-50">
+                        <div className="bg-white p-8 rounded-md shadow-lg max-w-sm w-full">
+                          <p className="text-xl font-semibold mb-4">
+                            Voulez-vous vraiment supprimer ce devis ?
+                          </p>
+                          <div className="flex justify-around">
+                            <button
+                              onClick={() => {
+                                removedevis();
+                                setShowConfirmModal(false);
+                              }}
+                              className="bg-red-600 text-white px-4 py-2 rounded-md"
+                            >
+                              Oui
+                            </button>
+                            <button
+                              onClick={() => setShowConfirmModal(false)}
+                              className="bg-gray-500 text-white px-4 py-2 rounded-md"
+                            >
+                              Non
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {message && <div style={message.style}>{message.text}</div>}
+                  </div>
+                  <div className="border-r border-gray-300 h-8"></div>
+
+                  <button
+                    onClick={handleSearchClick}
+                    className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
+                  >
+                    <FontAwesomeIcon
+                      icon={faSearch}
+                      className="text-blue-600 text-3xl"
+                    />
+                    <span className="text-sm font-semibold text-gray-700">
+                      Rechercher
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100"
+                    onClick={() => handleDevisNavigation(-1)}
+                  >
+                    <FontAwesomeIcon icon={faArrowLeft} className="text-3xl" />
+                  </button>
+
+                  <button
+                    type="button"
+                    className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100"
+                    onClick={() => handleDevisNavigation(1)}
+                  >
+                    <FontAwesomeIcon icon={faArrowRight} className="text-3xl" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => navigate("/DevisList")}
+                    className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
+                  >
+                    <FontAwesomeIcon icon={faList} className="text-3xl" />
+                    <span className="ml-2 text-sm font-semibold text-gray-700">
+                      Liste
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => navigate("/Dashboard")}
+                    className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
+                  >
+                    <FontAwesomeIcon icon={faSignOutAlt} className="text-3xl" />
+                    <span className="ml-2 text-sm font-semibold text-gray-700">
+                      Quitter
+                    </span>
+                  </button>
+                </>
+              ) : isNewMode ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={cancelNewMode}
+                    className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100"
+                  >
+                    <FontAwesomeIcon icon={faTimes} className="text-3xl" />
+                    <span className="ml-2 text-sm font-semibold text-gray-700">
+                      Annuler
+                    </span>
+                  </button>
+                  <div className="border-r border-gray-300 h-8"></div>
+
+                  <button
+                    type="button"
+                    onClick={validateNewMode}
+                    className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100"
+                  >
+                    <FontAwesomeIcon icon={faCheck} className="text-3xl" />
+                    <span className="ml-2 text-sm font-semibold text-gray-700">
+                      Valider
+                    </span>
+                  </button>
+                </>
+              ) : isEditMode ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={cancelEditMode}
+                    className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100"
+                  >
+                    <FontAwesomeIcon icon={faTimes} className="text-3xl" />
+                    <span className="ml-2 text-sm font-semibold text-gray-700">
+                      Annuler
+                    </span>
+                  </button>
+                  <div className="border-r border-gray-300 h-8"></div>
+
+                  <button
+                    type="button"
+                    onClick={handleUpdateDevis}
+                    className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100"
+                  >
+                    <FontAwesomeIcon icon={faCheck} className="text-3xl" />
+                    <span className="ml-2 text-sm font-semibold text-gray-700">
+                      Valider
+                    </span>
+                  </button>
+                </>
+              ) : null}
+            </div>
+            <div className="flex justify-center space-x-8 flex-grow"></div>
+            <div className="ml-auto flex items-center space-x-4">
+              <button
+                type="submit"
+                className="flex items-center text-white px-4 py-2 rounded-md border p-2 hover:bg-gray-100"
+              >
+                <PrinterIcon className="h-6 w-6 text-black mr-2" />
+                <span className="text-black font-semibold">Édition</span>
+              </button>
+            </div>
+          </nav>
           <h2 className="text-black font-bold italic text-3xl">
             Devis / Facture Proforma
           </h2>
@@ -2447,6 +2683,7 @@ const DevisFormPlaceholder = () => {
                       <PencilIcon className="h-6 w-6" />
                     </button>
 
+
                     <button
                       onClick={() => handleDelete(index)}
                       className="text-red-500 p-2 border rounded-lg hover:bg-red-100"
@@ -2460,10 +2697,499 @@ const DevisFormPlaceholder = () => {
             </div>
           ))}
 
-          <ArticlesDevis lignes= {lignes} lignesValidees= {lignesValidees} formData= {formData}/>
+          <div className="flex flex-col min-h-screen">
+            <div className="overflow-x-auto flex-grow">
+              <table className="table-auto w-full border-collapse border border-gray-300">
+                <thead>
+                  <tr className="bg-gray-200">
+                    <th className="border border-gray-300 p-2">Famille</th>
+                    <th className="border border-gray-300 p-2">Code Article</th>
+                    <th className="border border-gray-300 p-2">Libelle</th>
+                    <th className="border border-gray-300 p-2">Unité</th>
+                    <th className="border border-gray-300 p-2">Quantité</th>
+                    <th className="border border-gray-300 p-2">Remise</th>
+                    <th className="border border-gray-300 p-2">TVA</th>
+                    <th className="border border-gray-300 p-2">PUHT</th>
+                    <th className="border border-gray-300 p-2">PUTTC</th>
+                    <th className="border border-gray-300 p-2">NET HT</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {lignes.length > 0 &&
+                    lignes
+                      .filter((ligne) => ligne.QteART && ligne.PUART)
+                      .map((ligne, index) => {
+                        const quantite = parseFloat(ligne.QteART) || 0;
+                        const prix1 = parseFloat(ligne.PUART) || 0;
+                        const remise = parseFloat(ligne.Remise) || 0;
+                        const tauxtva = parseFloat(ligne.TauxTVA) || 0;
+
+                        const netHt =
+                          quantite && prix1
+                            ? quantite * prix1 * (1 - remise / 100)
+                            : 0;
+                        const puttc =
+                          prix1 && tauxtva ? prix1 * (1 + tauxtva / 100) : 0;
+
+                        return (
+                          <tr key={index}>
+                            <td className="border border-gray-300 p-2">
+                              {ligne.famille || ""}
+                            </td>
+                            <td className="border border-gray-300 p-2">
+                              {ligne.CodeART || ""}
+                            </td>
+                            <td className="border border-gray-300 p-2">
+                              {ligne.DesART || ""}
+                            </td>
+                            <td className="border border-gray-300 p-2">
+                              {ligne.Unite || ""}
+                            </td>
+                            <td className="border border-gray-300 p-2">
+                              {quantite || ""}
+                            </td>
+                            <td className="border border-gray-300 p-2">
+                              {remise !== 0 ? `${remise}%` : ""}
+                            </td>
+                            <td className="border border-gray-300 p-2">
+                              {tauxtva || ""}
+                            </td>
+                            <td className="border border-gray-300 p-2">
+                              {prix1 || ""}
+                            </td>
+                            <td className="border border-gray-300 p-2">
+                              {puttc || ""}
+                            </td>
+                            <td className="border border-gray-300 p-2">
+                              {netHt || ""}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                  {lignesValidees.length > 0 &&
+                    lignesValidees
+                      .filter((ligne) => ligne.nbrunite && ligne.prix1)
+                      .map((ligne, idx) => (
+                        <tr key={idx} className="border-b hover:bg-indigo-100">
+                          <td className="border border-gray-300 p-2">
+                            {ligne.famille || ""}
+                          </td>
+                          <td className="border border-gray-300 p-2">
+                            {ligne.code || ""}
+                          </td>
+                          <td className="border border-gray-300 p-2">
+                            {ligne.libelle || ""}
+                          </td>
+                          <td className="border border-gray-300 p-2">
+                            {ligne.unite || ""}
+                          </td>
+                          <td className="border border-gray-300 p-2">
+                            {ligne.nbrunite || ""}
+                          </td>
+                          <td className="border border-gray-300 p-2">
+                            {ligne.Remise || "0"}
+                          </td>
+                          <td className="border border-gray-300 p-2">
+                            {ligne.tauxtva || ""}
+                          </td>
+                          <td className="border border-gray-300 p-2">
+                            {ligne.prix1 || ""}
+                          </td>
+                          <td className="border border-gray-300 p-2">
+                            {ligne.puttc || ""}
+                          </td>
+                          <td className="border border-gray-300 p-2">
+                            {ligne.netHt || ""}
+                          </td>
+                        </tr>
+                      ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="bg-gray-300 p-4 sticky bottom-0 w-full">
+              <div className="flex flex-wrap gap-4">
+                <div className="flex-1 min-w-[150px]">
+                  <label className="block font-medium font-bold">
+                    Montant HT :
+                  </label>
+
+                  <input
+                    type="text"
+                    name="totalHt"
+                    value={formData.totalHt}
+                    className="w-full border rounded-md p-2"
+                    readOnly
+                  />
+                </div>
+                <div className="flex-1 min-w-[150px]">
+                  <label className="block font-medium">Remise Totale :</label>
+                  <input
+                    type="text"
+                    name="Remise"
+                    value={formData.Remise}
+                    className="w-full border rounded-md p-2"
+                    readOnly
+                  />
+                </div>
+                <div className="flex-1 min-w-[150px]">
+                  <label className="block font-medium">Net HT Global :</label>
+                  <input
+                    type="text"
+                    name="netHtGlobal"
+                    value={formData.totalHt}
+                    className="w-full border rounded-md p-2"
+                    readOnly
+                  />
+                </div>
+                <div className="flex-1 min-w-[150px]">
+                  <label className="block font-medium">Taxe :</label>
+                  <input
+                    type="text"
+                    name="taxe"
+                    value={calculerTaxe()}
+                    className="w-full border rounded-md p-2"
+                    readOnly
+                  />
+                </div>
+                <div className="flex-1 min-w-[150px]">
+                  <label className="block font-medium">Montant TTC :</label>
+                  <input
+                    type="text"
+                    name="MTTC"
+                    value={formData.MTTC}
+                    className="w-full border rounded-md p-2"
+                    readOnly
+                  />
+                </div>
+                <div className="flex-1 min-w-[150px]">
+                  <label className="block font-medium">Timbre :</label>
+                  <input
+                    type="text"
+                    name="timbre"
+                    value={formData.timbre}
+                    className="w-full border rounded-md p-2"
+                    readOnly
+                  />
+                </div>
+                <div className="flex-1 min-w-[150px]">
+                  <label className="block font-medium">À Payer :</label>
+                  <input
+                    type="text"
+                    name="aPayer"
+                    value={formData.MTTC}
+                    className="w-full border rounded-md p-2"
+                    readOnly
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         </form>
       ) : (
-        <Devis formData={formData} formattedDate= {formattedDate} />
+        <div>
+          <div
+            id="devis"
+            className="p-6 bg-white rounded-lg shadow-lg max-w-screen-lg mx-auto"
+          >
+            <div className="grid grid-cols-2 border-b border-gray-300 pb-4 mb-6">
+              <div>
+                <h1 className="text-black font-bold italic text-3xl">
+                  Ste Logicom - Progiciel de Gestion Intégrée ERP
+                </h1>
+                <p className="text-sm text-gray-600">
+                  S.A.R.L au capital de 11.000 DT
+                  <br />
+                  BIAT HARZALLAH 08 700 00040 10 52971444
+                  <br />
+                  Tél/Fax: 74 400110 - 74 461010
+                  <br />
+                  RC: B141691998
+                </p>
+              </div>
+              <div className="text-right">
+                <h2 className="text-lg font-bold text-black">
+                  Devis/Facture Proforma
+                </h2>
+                <p>
+                  <strong>Numéro:</strong>
+                  {formData.NUMBL}
+                  <br />
+                  <strong>Date:</strong> {formattedDate}
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 border-t border-gray-300 pt-4 mt-6">
+              <div className="flex flex-col gap-2">
+                <p className="border p-2 text-sm">
+                  <strong>DATE:</strong> {formattedDate}
+                </p>
+
+                <p className="border p-2 text-sm">
+                  <strong>CLIENT:</strong>
+                  {formData.CODECLI}
+                </p>
+                <p className="border p-2 text-sm">
+                  <strong>PAGE:</strong>
+                  {formData.numPage}/{totalPages}
+                </p>
+                <p className="mt-4 text-sm text-gray-700">
+                  Monsieur / Madame, suite à votre demande, nous avons le
+                  plaisir de vous communiquer notre meilleure offre de prix pour
+                  :
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <p className="border p-2 text-sm">
+                  <strong>Raison Sociale:</strong> {formData.RSCLI}
+                </p>
+                <p className="border p-2 text-sm">
+                  <strong>Adresse:</strong> {formData.ADRCLI}
+                </p>
+                <p className="border p-2 text-sm">
+                  <strong>Code Postal:</strong> {formData.cp}
+                </p>
+                <p className="border p-2 text-sm">
+                  <strong>Email:</strong> {formData.email}
+                </p>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto mb-6">
+              <table className="table-auto w-full border border-gray-300">
+                <thead className="bg-gray-200">
+                  <tr>
+                    {[
+                      "Famille",
+                      "Code Article",
+                      "Libellé",
+                      "Unite",
+                      "QteART",
+                      "Nbr Unité",
+                      "PU HT",
+                      "Remise",
+                      "TVA %",
+                      "PU TTC",
+                      "Net HT",
+                    ].map((header) => (
+                      <th
+                        key={header}
+                        className="border border-gray-300 px-2 py-1 text-left text-sm"
+                      >
+                        {header}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {formData.lignes.map((ligne, index) => (
+                    <tr key={index} className="border-b hover:bg-gray-50">
+                      <td className="border border-gray-300 px-2 py-1 text-sm">
+                        {ligne.famille}
+                      </td>
+                      <td className="border border-gray-300 px-2 py-1 text-sm">
+                        {ligne.CodeART}
+                      </td>
+                      <td className="border border-gray-300 px-2 py-1 text-sm">
+                        {ligne.DesART}
+                      </td>
+                      <td className="border border-gray-300 px-2 py-1 text-sm">
+                        {ligne.Unite}
+                      </td>
+                      <td className="border border-gray-300 px-2 py-1 text-sm">
+                        {ligne.QteART}
+                      </td>
+                      <td className="border border-gray-300 px-2 py-1 text-sm">
+                        {ligne.nbun}
+                      </td>
+                      <td className="border border-gray-300 px-2 py-1 text-sm">
+                        {ligne.PUART}
+                      </td>
+                      <td className="border border-gray-300 px-2 py-1 text-sm">
+                        {ligne.Remise}
+                      </td>
+                      <td className="border border-gray-300 px-2 py-1 text-sm">
+                        {ligne.TauxTVA}
+                      </td>
+                      <td className="border border-gray-300 px-2 py-1 text-sm">
+                        {ligne.puttc}
+                      </td>
+                      <td className="border border-gray-300 px-2 py-1 text-sm">
+                        {ligne.netHt}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="flex justify-between gap-6">
+              <div className="w-1/3 p-4  rounded-lg">
+                <table className="table-auto w-full border-collapse">
+                  <tbody>
+                    <tr>
+                      <td className="border border-gray-300 px-2 py-1">
+                        Taux TVA
+                      </td>
+                      <td className="border border-gray-300 px-2 py-1">
+                        {formData.lignes[0]?.tauxtva || 0}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="border border-gray-300 px-2 py-1">Base</td>
+                      <td className="border border-gray-300 px-2 py-1">
+                        {formData.lignes
+                          .reduce(
+                            (acc, ligne) => acc + parseFloat(ligne.netHt || 0),
+                            0
+                          )
+                          .toFixed(3)}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="border border-gray-300 px-2 py-1">
+                        Montants
+                      </td>
+                      <td className="border border-gray-300 px-2 py-1">
+                        {formData.taxe || 0}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="border border-gray-300 px-2 py-1 font-bold text-right">
+                        Total Taxe
+                      </td>
+                      <td className="border border-gray-300 px-2 py-1 font-bold">
+                        {formData.taxe || 0}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <div className="mt-4 p-2 border border-gray-300 rounded-lg inline-block">
+                  <p className="text-right text-sm font-medium">
+                    Arrêter la présentation de devise à la somme:{" "}
+                    <span className="text-black font-semibold">
+                      {numberToText(formData.taxe)}
+                    </span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="w-1/3 prounded-lg">
+                <table className="table-auto w-full mt-4 border-collapse">
+                  <tbody>
+                    <tr>
+                      <td className="border border-gray-300 px-4 py-2 font-semibold">
+                        Délai de Livraison:
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {formData.delaiLivraison}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="border border-gray-300 px-4 py-2 font-semibold">
+                        Transport:
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {formData.transport}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="border border-gray-300 px-4 py-2 font-semibold">
+                        Mode de Paiement:
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {formData.modePaiement}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <div className="mt-4 p-4 border border-gray-300 rounded-lg">
+                  <h3 className="text-lg font-semibold text-gray-700">
+                    Cachet & Signature
+                  </h3>
+                  <div className="h-16 border-dashed border-gray-500 flex justify-center items-center"></div>
+                </div>
+              </div>
+
+              <div className="w-1/3 p-4  rounded-lg">
+                <table className="table-auto w-full text-sm border-collapse">
+                  <tbody>
+                    <tr>
+                      <td className="border border-gray-300 px-2 py-1 font-medium">
+                        Total HT:
+                      </td>
+                      <td className="border border-gray-300 px-2 py-1">
+                        {formData.totalHt}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="border border-gray-300 px-2 py-1 font-medium">
+                        Net HT Global:
+                      </td>
+                      <td className="border border-gray-300 px-2 py-1">
+                        {formData.totalHt}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="border border-gray-300 px-2 py-1 font-medium">
+                        Total TAXES:
+                      </td>
+                      <td className="border border-gray-300 px-2 py-1">
+                        {formData.taxe}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="border border-gray-300 px-2 py-1 font-medium">
+                        MT T.T.C:
+                      </td>
+                      <td className="border border-gray-300 px-2 py-1">
+                        {formData.MTTC}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="border border-gray-300 px-2 py-1 font-medium">
+                        Timbre:
+                      </td>
+                      <td className="border border-gray-300 px-2 py-1">
+                        {formData.timbre}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="border border-gray-300 px-2 py-1 font-medium">
+                        Montant à Payer:
+                      </td>
+                      <td className="border border-gray-300 px-2 py-1 font-bold">
+                        {formData.MTTC}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <div>
+                  <p className="fixed bottom-0 left-0 w-full text-center text-gray-600 text-xs">
+                    Espérons que notre offre trouve votre entière satisfaction,
+                    veuillez agréer, Monsieur/Madame, nos sentiments les plus
+                    distingués.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-center">
+              <button
+                type="button"
+                className="text-white bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg focus:outline-none"
+                onClick={handlePrint}
+              >
+                <PrinterIcon className="h-6 w-6 inline-block mr-2" />
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

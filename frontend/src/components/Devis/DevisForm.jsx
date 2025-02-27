@@ -15,7 +15,7 @@ function DevisForm() {
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2 bg-gray-100"
-          readOnly
+          
         />
 
         <label className="block font-medium">Point de vente :</label>
@@ -27,19 +27,20 @@ function DevisForm() {
         <h3 className="text-lg font-bold flex items-center space-x-2">
           <FaUser className="text-green-500" />
           <span>Information Client</span>
+          <button className="btn btn-outline btn-accent" onClick={()=>window.location.href='/ClientList'}> <i className="fas fa-plus-circle"></i></button>
         </h3>
         <label className="block font-medium">Code Client :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2 bg-gray-100"
-          readOnly
+         
         />
 
         <label className="block font-medium">Raison Sociale :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2 bg-gray-100"
-          readOnly
+          
         />
 
         <label className="block font-medium">Adresse :</label>
@@ -79,11 +80,7 @@ function DevisForm() {
           className="w-full border border-gray-300 rounded-md p-2"
         />
 
-        <label className="block font-medium">Pièce Liée :</label>
-        <input
-          type="file"
-          className="w-full border border-gray-300 rounded-md p-2"
-        />
+       
 
         <label className="block font-medium">Transport :</label>
         <input

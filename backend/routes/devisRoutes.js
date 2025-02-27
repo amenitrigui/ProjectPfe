@@ -9,19 +9,19 @@ const {
  
   getDevisCountByMonthAndYear,
   getDevisValidees,
-  createDevis,
+ 
   getCodeRepAndRsRep,
   updateDevis,
   deleteDevis,
   filterDevis,
 } = require("../controllers/devisControllerPlaceholder");
-
-
-
-const { getTousDevis , getNombreDevis,getTotalChifre} = require("../controllers/devisController");
 const { getAllcodearticle } = require("../controllers/articleController");
+
+
+
+const { getTousDevis , getNombreDevis,getTotalChifre, creerDevis,} = require("../controllers/devisController");
 //devis controller mt3na 
-router.post("/:dbName/create", createDevis);
+router.post("/:dbName/create", creerDevis);
 router.get("/:dbName/clients", getAllClients);
 router.get("/:dbName/devis/total",getNombreDevis);
 router.get("/:dbName/devis/totalchiffre",getTotalChifre);
