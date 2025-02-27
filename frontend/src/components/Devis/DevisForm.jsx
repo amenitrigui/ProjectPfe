@@ -1,9 +1,16 @@
 import React from "react";
-import { FaFileInvoice, FaUser, FaClipboardList, FaUsers } from "react-icons/fa";
+import {
+  FaFileInvoice,
+  FaUser,
+  FaClipboardList,
+  FaUsers,
+} from "react-icons/fa";
 import { useSelector } from "react-redux";
 
 function DevisForm() {
-  const activerChampsForm = useSelector((state) => state.uiStates.activerChampsForm);
+  const activerChampsForm = useSelector(
+    (state) => state.uiStates.activerChampsForm
+  );
   console.log(activerChampsForm);
   return (
     <>
@@ -13,14 +20,18 @@ function DevisForm() {
           <span>Identifiants Devis</span>
         </h3>
         <label className="block font-medium">N° Devis :</label>
+        <select
+          className="select select-bordered w-full max-w-xs"
+          readOnly={activerChampsForm}
+        >
+          <option>DV2456456</option>
+        </select>
+
+        <label className="block font-medium">Point de vente :</label>
         <input
-          type="text"
           className="w-full border border-gray-300 rounded-md p-2"
           readOnly={true}
         />
-
-        <label className="block font-medium">Point de vente :</label>
-        <input className="w-full border border-gray-300 rounded-md p-2" readOnly={true}/>
       </div>
 
       {/* Information Client */}
@@ -28,48 +39,54 @@ function DevisForm() {
         <h3 className="text-lg font-bold flex items-center space-x-2">
           <FaUser className="text-green-500" />
           <span>Information Client</span>
-          <button className="btn btn-outline btn-accent" onClick={()=>window.location.href='/ClientList'}> <i className="fas fa-plus-circle"></i></button>
+          <button
+            className="btn btn-outline btn-accent"
+            onClick={() => (window.location.href = "/ClientList")}
+          >
+            {" "}
+            <i className="fas fa-plus-circle"></i>
+          </button>
         </h3>
         <label className="block font-medium">Code Client :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={true}
+          readOnly={!activerChampsForm}
         />
 
         <label className="block font-medium">Raison Sociale :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={true}
+          readOnly={!activerChampsForm}
         />
 
         <label className="block font-medium">Adresse :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={true}
+          readOnly={!activerChampsForm}
         />
 
         <label className="block font-medium">Code Postal :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={true}
+          readOnly={!activerChampsForm}
         />
 
         <label className="block font-medium">Email :</label>
         <input
           type="email"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={true}
+          readOnly={!activerChampsForm}
         />
 
         <label className="block font-medium">Téléphone :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={true}
+          readOnly={!activerChampsForm}
         />
       </div>
 
@@ -83,30 +100,28 @@ function DevisForm() {
         <input
           type="date"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={true}
+          readOnly={!activerChampsForm}
         />
-
-       
 
         <label className="block font-medium">Transport :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={true}
+          readOnly={!activerChampsForm}
         />
 
         <label className="block font-medium">À l'attention de :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={true}
+          readOnly={!activerChampsForm}
         />
 
         <label className="block font-medium">Délai de livraison :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={true}
+          readOnly={!activerChampsForm}
         />
       </div>
 
@@ -121,42 +136,42 @@ function DevisForm() {
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={true}
+          readOnly={!activerChampsForm}
         />
 
         <label className="block font-medium">RSREP :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={true}
+          readOnly={!activerChampsForm}
         />
 
         <label className="block font-medium">Code Secteur :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={true}
+          readOnly={!activerChampsForm}
         />
 
         <label className="block font-medium">Désignation Secteur :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={true}
+          readOnly={!activerChampsForm}
         />
 
         <label className="block font-medium mt-4">Commentaire :</label>
         <textarea
           rows="3"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={true}
+          readOnly={!activerChampsForm}
         ></textarea>
 
         <label className="block font-medium mt-4">Affaire :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={true}
+          readOnly={!activerChampsForm}
         />
       </div>
     </>
