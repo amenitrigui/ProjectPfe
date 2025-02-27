@@ -53,7 +53,6 @@ const getTotalChifre = async (req, res) => {
   if (!dbName) {
     return res.status(400).json({
       message: "le nom de la base de donnes est requis",
-
     });
   }
   try {
@@ -75,8 +74,6 @@ const getTotalChifre = async (req, res) => {
     });
   }
 };
-
-
 
 const getNombreDevis = async (req, res) => {
   const { dbName } = req.params;
@@ -117,14 +114,12 @@ const getNombreDevis = async (req, res) => {
   }
 };
 const creerDevis = async (req, res) => {
-  console.log(req);
-
   const { dbName } = req.params;
   const {
     NUMBL,
     libpv,
-    adresse,
-    code,
+    ADRCLI,
+    CODECLI,
     cp,
     DATEBL,
     MREMISE,
@@ -133,32 +128,32 @@ const creerDevis = async (req, res) => {
     RSREP,
     CODEREP,
     usera,
-    rsoc,
+    RSCLI,
     codesecteur,
     MHT,
     articles,
   } = req.body.devisInfo;
 
   console.log("NUMBL reçu:", NUMBL);
-  console.log("Code client reçu:", code);
+  console.log("Code client reçu:", CODECLI);
   console.log("Articles reçus :", articles);
 
   if (!NUMBL || NUMBL.trim() === "") {
     return res.status(400).json({ message: "Le champ NUMBL est manquant." });
   }
-  if (!code || code.trim() === "") {
+  if (!CODECLI || CODECLI.trim() === "") {
     return res.status(400).json({ message: "Le code client est manquant." });
   }
-  if (!adresse || adresse.trim() === "") {
+  if (!ADRCLI || ADRCLI.trim() === "") {
     return res
       .status(400)
       .json({ message: "L'adresse du client est manquante ou vide." });
   }
-  if (!Array.isArray(articles)) {
-    return res
-      .status(400)
-      .json({ message: "Le champ 'articles' doit être un tableau." });
-  }
+  // if (!Array.isArray(articles)) {
+  //   return res
+  //     .status(400)
+  //     .json({ message: "Le champ 'articles' doit être un tableau." });
+  // }
 
   try {
     const dynamicSequelize = getSequelizeConnection(dbName);
@@ -166,29 +161,11 @@ const creerDevis = async (req, res) => {
 
     const Dfp = defineDfpModel(dynamicSequelize);
     const Ldfp = defineLdfpModel(dynamicSequelize);
-    const Client = defineClientModel(dynamicSequelize);
 
     const existingDevis = await Dfp.findOne({ where: { NUMBL } });
     if (existingDevis) {
       return res.status(400).json({
         message: `Le devis avec le numéro ${NUMBL} existe déjà.`,
-      });
-    }
-
-    const client = await Client.findOne({ where: { code } });
-    if (!client) {
-      return res.status(404).json({ message: "Client non trouvé." });
-    }
-
-    console.log("Données du client récupérées :", client);
-
-    const clientAdresse =
-      client.adresse && client.adresse.trim() !== "" ? client.adresse : adresse;
-
-    if (!clientAdresse || clientAdresse.trim() === "") {
-      return res.status(400).json({
-        message:
-          "L'adresse du client est manquante ou vide même après vérification.",
       });
     }
 
@@ -203,8 +180,8 @@ const creerDevis = async (req, res) => {
     const dfpData = {
       NUMBL,
       libpv,
-      ADRCLI: clientAdresse,
-      CODECLI: client.code,
+      ADRCLI,
+      CODECLI,
       DATEBL,
       MREMISE,
       MTTC,
@@ -212,55 +189,55 @@ const creerDevis = async (req, res) => {
       CODEREP,
       MHT,
       codesecteur,
-      CP: client.cp,
+      cp,
       comm,
-      RSCLI: client.rsoc,
+      RSCLI,
       MLETTRE: mlettre,
     };
 
     const devis = await Dfp.create(dfpData, { transaction });
 
-    const insertedArticles = [];
+    // const insertedArticles = [];
 
-    for (const article of articles) {
-      if (
-        !article.code ||
-        !article.libelle ||
-        !article.nbrunite ||
-        !article.prix1 ||
-        !article.tauxtva
-      ) {
-        await transaction.rollback();
-        return res.status(400).json({
-          message:
-            "Tous les champs nécessaires pour l'article doivent être fournis.",
-        });
-      }
+    // for (const article of articles) {
+    //   if (
+    //     !article.code ||
+    //     !article.libelle ||
+    //     !article.nbrunite ||
+    //     !article.prix1 ||
+    //     !article.tauxtva
+    //   ) {
+    //     await transaction.rollback();
+    //     return res.status(400).json({
+    //       message:
+    //         "Tous les champs nécessaires pour l'article doivent être fournis.",
+    //     });
+    //   }
 
-      const articleData = {
-        NUMBL,
-        CodeART: article.code,
-        DesART: article.libelle,
-        QteART: article.nbrunite,
-        PUART: article.prix1,
+    //   const articleData = {
+    //     NUMBL,
+    //     CodeART: article.code,
+    //     DesART: article.libelle,
+    //     QteART: article.nbrunite,
+    //     PUART: article.prix1,
 
-        TauxTVA: article.tauxtva,
-        Unite: article.unite || "unité",
-        Conf: article.CONFIG || "",
-        famille: article.famille || "",
-        nbun: article.nbrunite,
-      };
+    //     TauxTVA: article.tauxtva,
+    //     Unite: article.unite || "unité",
+    //     Conf: article.CONFIG || "",
+    //     famille: article.famille || "",
+    //     nbun: article.nbrunite,
+    //   };
 
-      const insertedArticle = await Ldfp.create(articleData, { transaction });
-      insertedArticles.push(insertedArticle);
-    }
+    //   const insertedArticle = await Ldfp.create(articleData, { transaction });
+    //   insertedArticles.push(insertedArticle);
+    // }
 
     await transaction.commit();
 
     return res.status(201).json({
       message: "Devis créé avec succès.",
       devis,
-      articles: insertedArticles,
+      // articles: insertedArticles,
       mlettre,
     });
   } catch (error) {
@@ -272,21 +249,37 @@ const creerDevis = async (req, res) => {
   }
 };
 
-const getDevisCreator = async(req, res) => {
-  const dbConnection = getDatabaseConnection("UserErpSole", res);
-  const result = await dbConnection.query(
-    `SELECT  FROM utlisateur `,
-    { type: QueryTypes.SELECT }
-  );
+const getDevis = async (req, res) => {
+  try {
+    const { dbName } = req.params;
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const devis = await dbConnection.query(
+      "SELECT NUMBL, libpv, ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where NUMBL = 'DV2401612'"
+    );
 
-  if(result) {
-    return res.status(200).json({result})
+    return res
+      .status(200)
+      .json({ message: "devis récuperé avec succès", devis: devis });
+  } catch (error) {
+    return res.status(500).json({ message: error });
   }
-}
+};
+
+const getDevisCreator = async (req, res) => {
+  const dbConnection = getDatabaseConnection("UserErpSole", res);
+  const result = await dbConnection.query(`SELECT  FROM utlisateur `, {
+    type: QueryTypes.SELECT,
+  });
+
+  if (result) {
+    return res.status(200).json({ result });
+  }
+};
 
 module.exports = {
   getTousDevis,
   getNombreDevis,
   getTotalChifre,
-  creerDevis
-}
+  creerDevis,
+  getDevis,
+};
