@@ -13,8 +13,6 @@ const defineDfpModel = (sequelize) => {
         type: DataTypes.STRING,
        
       },
-
-
       ADRCLI: {
         type: DataTypes.STRING,
         allowNull: false,

@@ -40,7 +40,7 @@ function DevisForm() {
           className="select select-bordered w-full max-w-xs"
           disabled={activerChampsForm}
         >
-          <option>2456456</option>
+          <option></option>
         </select>
 
         <label className="block font-medium">Point de vente :</label>
