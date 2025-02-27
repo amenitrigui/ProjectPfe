@@ -27,6 +27,7 @@ import ClientList from "./pages/Clients/ClientList";
 import Parent from "./test/Parent";
 import DevisFormTout from "./pages/Devis/DevisFormTout";
 import Deconnexion from "./pages/authentication/Deconnexion";
+import DevisFormPlaceholder from "./components/Devis/DevisFormPlaceholder";
 
 function App() {
   const notify = () => {
@@ -65,6 +66,7 @@ function App() {
         <Route path="/ClientList" element={<ClientList />}></Route>
         <Route path="/Parent" element={<Parent />}></Route>
         <Route path="/DevisFormTout" element={<DevisFormTout />}></Route>
+        <Route path="/DevisFormPlaceholder" element ={<DevisFormPlaceholder></DevisFormPlaceholder>}></Route>
       </Routes>
     </Router>
   );
