@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setClientInfos, setClientInfosEntiere } from "../../app/client_slices/clientSlice";
+import { setDevisInfo } from "../../app/devis_slices/devisSlice";
 
 function ClientForm() {
   const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
@@ -9,8 +10,18 @@ function ClientForm() {
   const dispatch = useDispatch();
   // * mettre à jour les valeurs
   // * des champs du formulaire client / devis
+  const insertionDepuisDevisForm=useSelector((state)=>state.ClientCrud.insertionDepuisDevisForm)
+  console.log(insertionDepuisDevisForm)
   const handleChange = (e, colonne) => {
     dispatch(setClientInfos({ colonne, valeur: e.target.value }))
+    if (insertionDepuisDevisForm)
+    {
+      setDevisInfo({colonne,valeur:e.target.value});
+      console.log(colonne)
+    console.log(e.target.value)
+    }
+    
+   
   }
 
   // * useEffect #1 : Si une opération est effectué (insert, update, delete)
@@ -20,6 +31,7 @@ function ClientForm() {
   // * est compté comme effet secondaire (side effect)
   // ! Si on n'utilise pas useEffect on va avoir un erreur
   useEffect(() => {
+    
     if(clearApelle){
       dispatch(setClientInfosEntiere({  // Reset clientInfos in Redux state
         code: "",

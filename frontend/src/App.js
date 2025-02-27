@@ -26,8 +26,8 @@ import EmailEnvoye from "./pages/authentication/EmailEnvoye";
 import ClientList from "./pages/Clients/ClientList";
 import Parent from "./test/Parent";
 import DevisFormTout from "./pages/Devis/DevisFormTout";
-import Deconnexion from "./pages/authentication/Deconnexion";
 import DevisFormPlaceholder from "./components/Devis/DevisFormPlaceholder";
+import Deconnexion from "./pages/authentication/Deconnexion";
 
 function App() {
   const notify = () => {
