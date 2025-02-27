@@ -26,6 +26,7 @@ import EmailEnvoye from "./pages/authentication/EmailEnvoye";
 import ClientList from "./pages/Clients/ClientList";
 import Parent from "./test/Parent";
 import DevisFormTout from "./pages/Devis/DevisFormTout";
+import Deconnexion from "./pages/authentication/Deconnexion";
 
 function App() {
   const notify = () => {
@@ -48,6 +49,7 @@ function App() {
 
       <Routes>
         <Route path="/" element={<SignInPage />} />
+        <Route path="/deconnexion" element={<Deconnexion />} />
         <Route path="/Devis-Form" element={<DevisForm />} />
         <Route path="/Home-Page" element={<HomePage />} />
         <Route path="/DevisList" element={<DevisList />} />

@@ -62,8 +62,6 @@ export const devisSlice = createSlice({
       codesecteur: "",
       MHT: "",
       articles: [],
-
-
     },
     totalchifre: 0,
     nombreDeDevis: 0,
@@ -74,6 +72,9 @@ export const devisSlice = createSlice({
     setDevisInfo: (state, action) => {
       const { collone, valeur } = action.payload;
       state.devisInfo[collone] = valeur;
+    },
+    setDevisList: (state, action) => {
+      state.DevisList = action.payload;
     }
 
   },
@@ -134,6 +135,6 @@ export const devisSlice = createSlice({
 
   },
 });
-export const { setDevisInfo } = devisSlice.actions
+export const { setDevisInfo,setDevisList } = devisSlice.actions
 
 export default devisSlice.reducer;

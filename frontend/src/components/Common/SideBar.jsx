@@ -35,20 +35,20 @@ function SideBar() {
                     </li>
           {[
             { name: "Dashboard", icon: "home-outline", path: "/" },
-            { name: "Customers", icon: "people-outline", path: "/ClientList" },
-            { name: "devis", icon: "chatbubble-outline", path: "/DevisList" },
+            { name: "Clients", icon: "people-outline", path: "/ClientList" },
+            { name: "Devis", icon: "chatbubble-outline", path: "/DevisList" },
+            {
+              name: "devistout",
+              icon: "lock-closed-outline",
+              path: "/DevisFormTout",
+            },
             {
               name: "les societes",
               icon: "help-outline",
               path: "/SocietiesList",
             },
             { name: "Settings", icon: "settings-outline", path: "/" },
-            {
-              name: "devistout",
-              icon: "lock-closed-outline",
-              path: "/DevisFormTout",
-            },
-            { name: "Sign Out", icon: "log-out-outline", path: "/" },
+            { name: "Deconnexion", icon: "log-out-outline", path: "/deconnexion" },
           ].map((item, index) => (
             <li key={index}>
               {/* Use Link instead of <a> */}

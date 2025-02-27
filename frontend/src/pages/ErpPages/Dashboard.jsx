@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { getNombrededevis, getTotalChifre } from "../../app/devis_slices/devisSlice";
+import {
+  getNombrededevis,
+  getTotalChifre,
+} from "../../app/devis_slices/devisSlice";
 
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -10,16 +13,16 @@ const Dashboard = () => {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getNombrededevis())
-    dispatch(getTotalChifre())
-  }, [])
+    dispatch(getNombrededevis());
+    dispatch(getTotalChifre());
+  }, []);
 
-  const nombredevis = useSelector((state) => state.DevisCrud.nombreDeDevis)
-  console.log(nombredevis)
-  const totalchifre= useSelector((state)=> state.DevisCrud.totalchifre)
-console.log(totalchifre)
+  const nombredevis = useSelector((state) => state.DevisCrud.nombreDeDevis);
+  console.log(nombredevis);
+  const totalchifre = useSelector((state) => state.DevisCrud.totalchifre);
+  console.log(totalchifre);
   return (
     <div className="container">
       <div className={`navigation ${isSidebarOpen ? "active" : ""}`}>
@@ -27,19 +30,21 @@ console.log(totalchifre)
           <li>
             <a href="#">
               <span className="icon">
-
-
                 <ion-icon name="speedometer-outline"></ion-icon>
-
               </span>
               <span className="title">ERP Logicom</span>
             </a>
           </li>
 
           {[
-            { name: "Dashboard", icon: "home-outline", path: "/" },
-            { name: "Customers", icon: "people-outline", path: "/ClientList" },
+            { name: "Dashboard", icon: "home-outline", path: "/dashboard" },
+            { name: "Clients", icon: "people-outline", path: "/ClientList" },
             { name: "devis", icon: "chatbubble-outline", path: "/DevisList" },
+            {
+              name: "devistout",
+              icon: "lock-closed-outline",
+              path: "/DevisFormTout",
+            },
             {
               name: "les societes",
               icon: "help-outline",
@@ -47,11 +52,10 @@ console.log(totalchifre)
             },
             { name: "Settings", icon: "settings-outline", path: "/" },
             {
-              name: "devistout",
-              icon: "lock-closed-outline",
-              path: "/DevisFormTout",
+              name: "Deconnexion",
+              icon: "log-out-outline",
+              path: "/deconnexion",
             },
-            { name: "Sign Out", icon: "log-out-outline", path: "/" },
           ].map((item, index) => (
             <li key={index}>
               {/* Use Link instead of <a> */}
@@ -86,10 +90,26 @@ console.log(totalchifre)
 
         <div className="cardBox">
           {[
-            { number: nombredevis, name: "Nombre devis generes ", icon: "eye-outline" },
-            { number: totalchifre.toFixed(2), name: "total chifre", icon: "cart-outline" },
-            { number: "284", name: "Comments", icon: "chatbubbles-outline" },
-            { number: "$7,842", name: "Earning", icon: "cash-outline" },
+            {
+              number: nombredevis,
+              name: "Nombre devis generes ",
+              icon: "cart-outline",
+            },
+            {
+              number: totalchifre.toFixed(2),
+              name: "total chifre",
+              icon: "cash-outline",
+            },
+            {
+              number: nombredevis,
+              name: "Nombre devis generes ",
+              icon: "cart-outline",
+            },
+            {
+              number: totalchifre.toFixed(2),
+              name: "total chifre",
+              icon: "cash-outline",
+            }
           ].map((card, index) => (
             <div className="card" key={index}>
               <div>
@@ -168,31 +188,33 @@ console.log(totalchifre)
               <h2>Recent Customers</h2>
             </div>
             <table>
-              {[
-                {
-                  name: "David",
-                  country: "Italy",
-                  img: "assets/imgs/customer02.jpg",
-                },
-                {
-                  name: "Amit",
-                  country: "India",
-                  img: "assets/imgs/customer01.jpg",
-                },
-              ].map((customer, index) => (
-                <tr key={index}>
-                  <td width="60px">
-                    <div className="imgBx">
-                      <img src={customer.img} alt="Customer" />
-                    </div>
-                  </td>
-                  <td>
-                    <h4>
-                      {customer.name} <br /> <span>{customer.country}</span>
-                    </h4>
-                  </td>
-                </tr>
-              ))}
+              <tbody>
+                {[
+                  {
+                    name: "David",
+                    country: "Italy",
+                    img: "assets/imgs/customer02.jpg",
+                  },
+                  {
+                    name: "Amit",
+                    country: "India",
+                    img: "assets/imgs/customer01.jpg",
+                  },
+                ].map((customer, index) => (
+                  <tr key={index}>
+                    <td width="60px">
+                      <div className="imgBx">
+                        <img src={customer.img} alt="Customer" />
+                      </div>
+                    </td>
+                    <td>
+                      <h4>
+                        {customer.name} <br /> <span>{customer.country}</span>
+                      </h4>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
             </table>
           </div>
         </div>
