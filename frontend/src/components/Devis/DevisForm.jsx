@@ -1,10 +1,17 @@
 import React from "react";
-import { FaFileInvoice, FaUser, FaClipboardList, FaUsers } from "react-icons/fa";
+import {
+  FaFileInvoice,
+  FaUser,
+  FaClipboardList,
+  FaUsers,
+} from "react-icons/fa";
 import { useSelector } from "react-redux";
 
 function DevisForm() {
-  const activerChampsForm = useSelector((state) => state.uiStates.activerChampsForm);
-  console.log(activerChampsForm)
+  const activerChampsForm = useSelector(
+    (state) => state.uiStates.activerChampsForm
+  );
+  console.log(activerChampsForm);
   return (
     <>
       <div className="space-y-4 p-6 border rounded-lg shadow-md bg-white">
@@ -21,7 +28,10 @@ function DevisForm() {
         </select>
 
         <label className="block font-medium">Point de vente :</label>
-        <input className="w-full border border-gray-300 rounded-md p-2" readOnly={true}/>
+        <input
+          className="w-full border border-gray-300 rounded-md p-2"
+          readOnly={true}
+        />
       </div>
 
       {/* Information Client */}
@@ -29,7 +39,13 @@ function DevisForm() {
         <h3 className="text-lg font-bold flex items-center space-x-2">
           <FaUser className="text-green-500" />
           <span>Information Client</span>
-          <button className="btn btn-outline btn-accent" onClick={()=>window.location.href='/ClientList'}> <i className="fas fa-plus-circle"></i></button>
+          <button
+            className="btn btn-outline btn-accent"
+            onClick={() => (window.location.href = "/ClientList")}
+          >
+            {" "}
+            <i className="fas fa-plus-circle"></i>
+          </button>
         </h3>
         <label className="block font-medium">Code Client :</label>
         <input
