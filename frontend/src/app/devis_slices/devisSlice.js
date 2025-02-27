@@ -1,54 +1,66 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// Action asynchrone pour récupérer la liste des devis
-export const getDevisList = createAsyncThunk(
-  "slice/getDevisList",
-  async () => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/devis`
-    );
-    return response.data.devisList;
-  }
-);
 
+// Action asynchrone pour récupérer la liste des devis
+export const getDevisList = createAsyncThunk("slice/getDevisList", async () => {
+  const response = await axios.get(
+    `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/devis`
+  );
+  return response.data.devisList;
+});
 
 export const AjouterDevis = createAsyncThunk(
   "slice/AddDevis",
-  async (_,thunkAPI) => {
-    console.log("ddd")
+  async (_, thunkAPI) => {
+    console.log("ddd");
     const devisInfo = thunkAPI.getState().DevisCrud.devisInfo;
-    const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/create`,
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/create`,
       { devisInfo }
     );
-    console.log(response)
-    return response.data.devis
-
+    console.log(response);
+    return response.data.devis;
   }
-)
+);
 export const getNombrededevis = createAsyncThunk(
-  "Slice/getNmobredevis", async () => {
+  "Slice/getNmobredevis",
+  async () => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/devis/total`
     );
     return response.data.totalDevis;
   }
-)
+);
 export const getTotalChifre = createAsyncThunk(
-  "slice/getNombreTotal", async () => {
-    const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/devis/totalchiffre`
-
+  "slice/getNombreTotal",
+  async () => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/devis/totalchiffre`
     );
     console.log(response);
     return response.data.totalchifre;
   }
-)
+);
+export const getdevis = createAsyncThunk("Slice/getDevis", async (NUMBL) => {
+  const response = await axios.get(
+    `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getDevis`,
+    {
+      params:{
+        NUMBL
+      }
+    }
+    
+  );
+console.log(response)
+
+  return response.data.devis;
+});
 export const devisSlice = createSlice({
   name: "devisSlice",
   initialState: {
     DevisList: [],
-    devisInfo:
-    {
+    devisInfo: {
       NUMBL: "",
       libpv: "",
       ADRCLI: "",
@@ -78,7 +90,7 @@ export const devisSlice = createSlice({
     },
     setDevisList: (state, action) => {
       state.DevisList = action.payload;
-    }
+    },
   },
 
   extraReducers: (builder) => {
@@ -111,32 +123,43 @@ export const devisSlice = createSlice({
         state.status = "chargeement";
       })
       .addCase(getNombrededevis.fulfilled, (state, action) => {
-        console.log(action)
+        console.log(action);
         state.nombreDeDevis = action.payload;
         state.status = "reussi";
       })
       .addCase(getNombrededevis.rejected, (state, action) => {
         state.nombreDeDevis = action.payload;
-        state.status = "echoue"
+        state.status = "echoue";
       })
+
+
       .addCase(getTotalChifre.pending, (state) => {
         state.status = "chargeement";
       })
       .addCase(getTotalChifre.fulfilled, (state, action) => {
-        console.log(action)
+        console.log(action);
         state.totalchifre = action.payload;
         state.status = "reussi";
       })
       .addCase(getTotalChifre.rejected, (state, action) => {
         state.totalchifre = action.payload;
-        state.status = "echoue"
+        state.status = "echoue";
+      })
+
+      .addCase(getdevis.pending, (state) => {
+        state.status = "chargeement";
+      })
+      .addCase(getdevis.fulfilled, (state, action) => {
+      
+        state.DevisList = action.payload;
+        state.status = "reussi";
+      })
+      .addCase(getdevis.rejected, (state, action) => {
+        state.devisInfo = action.payload;
+        state.status = "echoue";
       });
-
-
-
-
   },
 });
-export const { setDevisInfo,setDevisList } = devisSlice.actions
+export const { setDevisInfo, setDevisList } = devisSlice.actions;
 
 export default devisSlice.reducer;

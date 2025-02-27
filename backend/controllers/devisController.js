@@ -252,16 +252,34 @@ const creerDevis = async (req, res) => {
 const getDevis = async (req, res) => {
   try {
     const { dbName } = req.params;
+    const {NUMBL} = req.query;
+    
     const dbConnection = await getDatabaseConnection(dbName, res);
-    const devis = await dbConnection.query(
-      "SELECT NUMBL, libpv, ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where NUMBL = 'DV2401612'"
-    );
-
-    return res
-      .status(200)
-      .json({ message: "devis récuperé avec succès", devis: devis });
+    if (NUMBL != null) {
+      // devis selectionné
+      const devis = await dbConnection.query(
+        `SELECT libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where NUMBL = :NUMBL`,
+        {
+          replacements: { NUMBL },
+          type: dbConnection.QueryTypes.SELECT,
+        }
+      );
+      return res
+        .status(200)
+        .json({ message: "devis recupere avec succes", devis: devis });
+    }else{
+      const ListNumbl = await dbConnection.query(
+        `SELECT NUMBL from dfp   order by  (NUMBL)`,
+        {
+          type: dbConnection.QueryTypes.SELECT,
+        }
+      );
+      return res
+        .status(200)
+        .json({ message: "tout le code devis  recupere avec succe", devis: ListNumbl });
+    }
   } catch (error) {
-    return res.status(500).json({ message: error });
+    return res.status(500).json({ message: error.message });
   }
 };
 

@@ -8,29 +8,38 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { setInsertionDepuisDevisForm } from "../../app/client_slices/clientSlice";
 import { useNavigate } from "react-router-dom";
-
+import { useEffect } from "react";
+import { getdevis } from "../../app/devis_slices/devisSlice";
+import Select from "react-select";
 function DevisForm() {
+  const DevisList = useSelector((state) => state.DevisCrud.DevisList);
+  console.log(DevisList);
+  useEffect(() => {
+    dispatch(getdevis());
+  }, []);
+const handleSelectDevis=((e)=>{
+console.log(e.target.value)
+dispatch(getdevis(e.target.value));
+  
+})
   const activerChampsForm = useSelector(
     (state) => state.uiStates.activerChampsForm
   );
   const dispatch = useDispatch();
-  const navi=useNavigate();
-    const insertionDepuisDevisForm=useSelector((state)=>state.ClientCrud.insertionDepuisDevisForm)
+  const navi = useNavigate();
+  const insertionDepuisDevisForm = useSelector(
+    (state) => state.ClientCrud.insertionDepuisDevisForm
+  );
 
-  const handleAjoutClientRedirect=()=>
-  {
-    
+  const handleAjoutClientRedirect = () => {
     dispatch(setInsertionDepuisDevisForm(true));
 
-    navi("/ClientList")
- 
-  }
-  console.log(activerChampsForm);
+    navi("/ClientList");
+  };
+
   return (
     <>
-    
       <div className="space-y-4 p-6 border rounded-lg shadow-md bg-white">
-    
         <h3 className="text-lg font-bold flex items-center space-x-2">
           <FaFileInvoice className="text-blue-500" />
           <span>Identifiants Devis</span>
@@ -39,8 +48,13 @@ function DevisForm() {
         <select
           className="select select-bordered w-full max-w-xs"
           disabled={activerChampsForm}
+          onChange={(e)=>handleSelectDevis(e)}
         >
-          <option></option>
+          {DevisList.map((devis) => (
+            <option key={devis.NUMBL} value={devis.NUMBL}>
+              {devis.NUMBL}
+            </option>
+          ))}
         </select>
 
         <label className="block font-medium">Point de vente :</label>
@@ -60,9 +74,7 @@ function DevisForm() {
           <span>Information Client</span>
           <button
             className="btn btn-outline btn-accent"
-            onClick={() => 
-              handleAjoutClientRedirect()
-            }
+            onClick={() => handleAjoutClientRedirect()}
           >
             {" "}
             <i className="fas fa-plus-circle"></i>
