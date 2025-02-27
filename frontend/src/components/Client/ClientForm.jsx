@@ -40,10 +40,6 @@ function ClientForm() {
         cp: "",
         email: "",
         telephone: "",
-
-
-
-        
         desrep: ""
       }));
     }

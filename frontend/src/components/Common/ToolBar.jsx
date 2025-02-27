@@ -45,6 +45,7 @@ function ToolBar() {
   // * ajout d'un client/devi
   const handleAjout = async () => {
     dispatch(setActiverBoutonsValiderAnnuler(true));
+    dispatch(setActiverChampsForm(true));
     //validerAjout();
   };
 
@@ -79,6 +80,7 @@ function ToolBar() {
 
   const annulerOperation = () => {
     dispatch(setActiverBoutonsValiderAnnuler(false));
+    dispatch(setActiverChampsForm(false));
   };
 
   return (
