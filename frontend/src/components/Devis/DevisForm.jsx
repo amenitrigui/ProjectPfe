@@ -5,16 +5,32 @@ import {
   FaClipboardList,
   FaUsers,
 } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setInsertionDepuisDevisForm } from "../../app/client_slices/clientSlice";
+import { useNavigate } from "react-router-dom";
 
 function DevisForm() {
   const activerChampsForm = useSelector(
     (state) => state.uiStates.activerChampsForm
   );
+  const dispatch = useDispatch();
+  const navi=useNavigate();
+    const insertionDepuisDevisForm=useSelector((state)=>state.ClientCrud.insertionDepuisDevisForm)
+
+  const handleAjoutClientRedirect=()=>
+  {
+    
+    dispatch(setInsertionDepuisDevisForm(true));
+
+    navi("/ClientList")
+ 
+  }
   console.log(activerChampsForm);
   return (
     <>
+    
       <div className="space-y-4 p-6 border rounded-lg shadow-md bg-white">
+    
         <h3 className="text-lg font-bold flex items-center space-x-2">
           <FaFileInvoice className="text-blue-500" />
           <span>Identifiants Devis</span>
@@ -41,7 +57,9 @@ function DevisForm() {
           <span>Information Client</span>
           <button
             className="btn btn-outline btn-accent"
-            onClick={() => (window.location.href = "/ClientList")}
+            onClick={() => 
+              handleAjoutClientRedirect()
+            }
           >
             {" "}
             <i className="fas fa-plus-circle"></i>

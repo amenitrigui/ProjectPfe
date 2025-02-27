@@ -105,6 +105,7 @@ export const clientSlice = createSlice({
       cp: "",
       email: "",
     },
+    insertionDepuisDevisForm: false
   },
   reducers: {
     // Action synchrone pour modifier les filtres
@@ -121,6 +122,10 @@ export const clientSlice = createSlice({
     },
     setClientsASupprimer: (state, action) => {
       state.clientsASupprimer.push(action.payload);
+    },
+    setInsertionDepuisDevisForm : (state,action)=>
+    {
+      state.insertionDepuisDevisForm=action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -196,5 +201,6 @@ export const {
   setClientInfos,
   setClientsASupprimer,
   setClientInfosEntiere,
+  setInsertionDepuisDevisForm,
 } = clientSlice.actions;
 export default clientSlice.reducer;

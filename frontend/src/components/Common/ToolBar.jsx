@@ -39,7 +39,7 @@ function ToolBar() {
   const [isDeleting, setIsDeleting] = useState(false);
   const toolbarTable = useSelector((state) => state.uiStates.toolbarTable);
   const activerBoutonsValiderAnnuler = useSelector((state) => state.uiStates.activerBoutonsValiderAnnuler);
-  console.log(activerBoutonsValiderAnnuler);
+ 
 
   // * ajout d'un client/devi
   const handleAjout = async () => {
@@ -185,7 +185,10 @@ function ToolBar() {
         </div>
       </nav>
 
-      <h2 className="text-black font-bold italic text-3xl">Devis / Facture Proforma</h2>
+      {toolbarTable=="devis"&&
+      <h2 className="text-black font-bold italic text-3xl">Devis / Facture Proforma</h2>}
+        {toolbarTable=="client"&&
+      <h2 className="text-black font-bold italic text-3xl">client / Facture Proforma</h2>}
     </>
   );
 }
