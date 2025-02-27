@@ -22,7 +22,11 @@ export const uiSlice = createSlice({
     // * puisque toolbar est un composant common de
     // * client et devis pour le moment
     toolbarTable: "",
-   
+    // * state pour activer/ desactiver les champs de formulaire
+    // * selon le mode
+    activerChampsForm: false,
+    // * state pour afficher/cacher les boutons de validation/annulation
+    activerBoutonsValiderAnnuler: false
   },
 
   reducers: {
@@ -36,7 +40,6 @@ export const uiSlice = createSlice({
     setTypeAlert: (state, action) => {
       state.typeAlert = action.payload;
     },
-    
     /// Alerte  moch simple
     setMessageAlertModal: (state, action) => {
       state.messageAlertModal = action.payload;
@@ -50,7 +53,13 @@ export const uiSlice = createSlice({
     },
     setToolbarTable: (state, action) => {
       state.toolbarTable = action.payload;
-    }
+    },
+    setActiverChampsForm: (state, action) => {
+      state.activerChampsForm = action.payload;
+    },
+    setActiverBoutonsValiderAnnuler: (state, action) => {
+      state.activerBoutonsValiderAnnuler = action.payload;
+    },
   },
 });
 export const {
@@ -60,6 +69,8 @@ export const {
   setMessageAlertModal,
   setAfficherAlertModal,
   setClearAppele,
-  setToolbarTable
+  setToolbarTable,
+  setActiverChampsForm,
+  setActiverBoutonsValiderAnnuler
 } = uiSlice.actions;
 export default uiSlice.reducer;

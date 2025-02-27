@@ -2,9 +2,8 @@ import ToolBar from "../../components/Common/ToolBar";
 import SideBar from "../../components/Common/SideBar";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setToolbarTable } from "../../app/interface_slices/uiSlice";
+import { setActiverChampsForm, setToolbarTable } from "../../app/interface_slices/uiSlice";
 
-import DevisList from "./DevisList";
 import DevisForm from "../../components/Devis/DevisForm";
 
 
@@ -12,6 +11,7 @@ function DevisFormTout() {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setToolbarTable("devis"));
+        dispatch(setActiverChampsForm(false))
     },[])
     return (
         <div className="bg-gray-100 min-h-screen p-6">
@@ -30,11 +30,10 @@ function DevisFormTout() {
                         </label>
                     </div>
 
-
                 </div>
                 <div className="drawer-side">
                     <label htmlFor="my-drawer" className="drawer-overlay"></label>
-                    <SideBar></SideBar>
+                    <SideBar />
                 </div>
                 <ToolBar />
             </div>
@@ -47,7 +46,8 @@ function DevisFormTout() {
             <div className="mt-6">
                 <div className="p-4 sticky bottom-0 w-full">
                     <table className="min-w-full table-auto border-collapse border border-gray-300">
-                        <thead className="bg-gray-300"> {/* Ajout du fond gris pour l'en-tête */}
+                        <thead className="bg-gray-300">
+                            {/* Ajout du fond gris pour l'en-tête */}
                             <tr>
                                 <th className="p-3 text-left text-sm font-medium text-gray-600 border">Famille</th>
                                 <th className="p-3 text-left text-sm font-medium text-gray-600 border">Code Article</th>

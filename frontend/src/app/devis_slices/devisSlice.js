@@ -8,10 +8,11 @@ export const getDevisList = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/devis`
     );
-
-    return response.data.devisList; // ✅ Retourner uniquement les données utiles
+    return response.data.devisList;
   }
 );
+
+
 export const AjouterDevis = createAsyncThunk(
   "slice/AddDevis",
   async (_,thunkAPI) => {
@@ -43,27 +44,27 @@ export const getTotalChifre = createAsyncThunk(
   }
 )
 export const devisSlice = createSlice({
-  name: "devisSlice", // ✅ Correction du nom
+  name: "devisSlice",
   initialState: {
     DevisList: [],
     devisInfo:
     {
-      "libpv":"SIEGE LOCAL",
-      "adresse":"ddd",
-      "NUMBL":"452",
-      "code":"41102630",
-      "cp":"12",
-      "DATEBL":"dd",
-      "MREMISE":"ddd",
-      "MTTC":"ddd",
-      "comm":"zzz",
-      "RSREP":"ss",
-      "CODEREP":"ss",
-      "usera":"ss",
-      "rsoc":"ss",
-      "codesecteur":"xx",
-      "MHT":"aa",
-      "articles":[]
+      NUMBL: "",
+      libpv: "",
+      adresse: "",
+      code: "",
+      cp: "",
+      DATEBL: "",
+      MREMISE: "",
+      MTTC: "",
+      comm: "",
+      RSREP: "",
+      CODEREP: "",
+      usera: "",
+      rsoc: "",
+      codesecteur: "",
+      MHT: "",
+      articles: [],
     },
     totalchifre: 0,
     nombreDeDevis: 0,
@@ -74,6 +75,9 @@ export const devisSlice = createSlice({
     setDevisInfo: (state, action) => {
       const { collone, valeur } = action.payload;
       state.devisInfo[collone] = valeur;
+    },
+    setDevisList: (state, action) => {
+      state.DevisList = action.payload;
     }
 
   },
@@ -86,7 +90,7 @@ export const devisSlice = createSlice({
       })
       .addCase(getDevisList.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.DevisList = action.payload; // ✅ Action contient les données
+        state.DevisList = action.payload;
         console.log(action);
       })
       .addCase(getDevisList.rejected, (state, action) => {
@@ -96,11 +100,9 @@ export const devisSlice = createSlice({
       })
       .addCase(AjouterDevis.pending, (state) => {
         state.status = "chargement";
-
       })
       .addCase(AjouterDevis.fulfilled, (state, action) => {
         state.status = "reussi";
-
       })
       .addCase(AjouterDevis.rejected, (state, action) => {
         state.erreur = action.payload;
@@ -136,6 +138,6 @@ export const devisSlice = createSlice({
 
   },
 });
-export const { setDevisInfo } = devisSlice.actions
+export const { setDevisInfo,setDevisList } = devisSlice.actions
 
 export default devisSlice.reducer;
