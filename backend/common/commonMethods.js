@@ -10,28 +10,24 @@ const { Sequelize, QueryTypes } = require("sequelize");
  * @returns {decodedToken}
  */
 function verifyTokenValidity(req, res) {
- 
-    const authHeader = req.header("Authorization");
-    if (!authHeader) {
-      return res
-        .status(401)
-        .json({ message: "En-tête Authorization manquant." });
-    }
+  const authHeader = req.header("Authorization");
+  if (!authHeader) {
+    return res.status(401).json({ message: "En-tête Authorization manquant." });
+  }
 
-    const decodedJWT = jwt.verify(
-      authHeader.replace("Bearer ", ""),
-      process.env.JWT_SECRET_KEY
-    );
+  const decodedJWT = jwt.verify(
+    authHeader.replace("Bearer ", ""),
+    process.env.JWT_SECRET_KEY
+  );
 
-    // ? decodedJWT.exp s'exprime en secondes d'ou *1000
-    if (Date.now() > decodedJWT.exp * 1000) {
-      return res
-        .status(401)
-        .json({ message: "Session expiré, veuillez reconnectez svp" });
-    }
+  // ? decodedJWT.exp s'exprime en secondes d'ou *1000
+  if (Date.now() > decodedJWT.exp * 1000) {
+    return res
+      .status(401)
+      .json({ message: "Session expiré, veuillez reconnectez svp" });
+  }
 
-    return decodedJWT;
-  
+  return decodedJWT;
 }
 
 /**
@@ -60,11 +56,9 @@ const getDatabaseConnection = async (databaseName, res) => {
     await dbConnection.authenticate();
     return dbConnection;
   } catch (error) {
-    return res
-      .status(500)
-      .json({
-        message: `un erreur est survenu lors de récupération d'une connexion avec db ${databaseName}`,
-      });
+    return res.status(500).json({
+      message: `un erreur est survenu lors de récupération d'une connexion avec db ${databaseName}`,
+    });
   }
 };
 
