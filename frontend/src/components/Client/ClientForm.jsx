@@ -20,7 +20,6 @@ function ClientForm() {
   // * est compté comme effet secondaire (side effect)
   // ! Si on n'utilise pas useEffect on va avoir un erreur
   useEffect(() => {
-    console.log(clearApelle);
     if(clearApelle){
       dispatch(setClientInfosEntiere({  // Reset clientInfos in Redux state
         code: "",

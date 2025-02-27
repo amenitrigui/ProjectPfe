@@ -11,7 +11,6 @@ function DevisForm() {
   const activerChampsForm = useSelector(
     (state) => state.uiStates.activerChampsForm
   );
-  console.log(activerChampsForm);
   return (
     <>
       <div className="space-y-4 p-6 border rounded-lg shadow-md bg-white">
@@ -22,16 +21,19 @@ function DevisForm() {
         <label className="block font-medium">N° Devis :</label>
         <select
           className="select select-bordered w-full max-w-xs"
-          readOnly={activerChampsForm}
+          disabled={activerChampsForm}
         >
-          <option>DV2456456</option>
+          <option>2456456</option>
         </select>
 
         <label className="block font-medium">Point de vente :</label>
-        <input
-          className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={true}
-        />
+        <select
+          className="select select-bordered w-full max-w-xs"
+          disabled={!activerChampsForm}
+        >
+          <option>SIEGE LOCAL</option>
+          <option>SIEGE DISTANT</option>
+        </select>
       </div>
 
       {/* Information Client */}

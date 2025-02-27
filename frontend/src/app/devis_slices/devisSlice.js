@@ -68,8 +68,8 @@ export const devisSlice = createSlice({
     },
     totalchifre: 0,
     nombreDeDevis: 0,
-    status: "idle", // ✅ Doit être dans initialState
-    error: null, // ✅ Doit être dans initialState
+    status: "idle",
+    error: null,
   },
   reducers: {
     setDevisInfo: (state, action) => {
@@ -79,7 +79,6 @@ export const devisSlice = createSlice({
     setDevisList: (state, action) => {
       state.DevisList = action.payload;
     }
-
   },
 
   extraReducers: (builder) => {

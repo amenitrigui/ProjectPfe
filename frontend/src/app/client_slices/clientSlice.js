@@ -105,6 +105,7 @@ export const clientSlice = createSlice({
       cp: "",
       email: "",
     },
+    isertionDepuisDevis: false
   },
   reducers: {
     // Action synchrone pour modifier les filtres

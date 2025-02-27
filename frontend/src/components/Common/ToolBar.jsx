@@ -16,12 +16,12 @@ import {
   faFolderPlus,
   faEdit,
   faTrashAlt,
-  faCancel
+  faCancel,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   ajouterClient,
   getListeClient,
-  majClient
+  majClient,
 } from "../../app/client_slices/clientSlice";
 import {
   setAfficherAlertModal,
@@ -38,18 +38,19 @@ function ToolBar() {
   const navigate = useNavigate();
   const [isDeleting, setIsDeleting] = useState(false);
   const toolbarTable = useSelector((state) => state.uiStates.toolbarTable);
-  const activerBoutonsValiderAnnuler = useSelector((state) => state.uiStates.activerBoutonsValiderAnnuler);
-  console.log(activerBoutonsValiderAnnuler);
+  const activerBoutonsValiderAnnuler = useSelector(
+    (state) => state.uiStates.activerBoutonsValiderAnnuler
+  );
 
   // * ajout d'un client/devi
   const handleAjout = async () => {
     dispatch(setActiverBoutonsValiderAnnuler(true));
+    dispatch(setActiverChampsForm(true));
     //validerAjout();
   };
 
   // * méthode pour mettre à jour un client/devis
   const handleupdate = async () => {
-
     dispatch(majClient());
     dispatch(getListeClient());
   };
@@ -57,61 +58,87 @@ function ToolBar() {
   // * afficher la fenetre de confirmation
   // * pour supprimer un ou plusieurs clients/devis
   const afficherModel = async () => {
-    dispatch(setMessageAlertModal("Etes vouz sur de suprimer ce(s) client(s)?"));
+    dispatch(
+      setMessageAlertModal("Etes vouz sur de suprimer ce(s) client(s)?")
+    );
     dispatch(setAfficherAlertModal(true));
   };
 
   const validerAjout = () => {
-    if(toolbarTable == "client") {
+    if (toolbarTable == "client") {
       dispatch(ajouterClient());
       dispatch(getListeClient());
       dispatch(setAlertMessage("Ajouté avec succès"));
       dispatch(setClearAppele(true));
     }
-    if(toolbarTable == "devis") {
+    if (toolbarTable == "devis") {
       console.log("ajouter un devis");
       dispatch(AjouterDevis());
-      dispatch(setActiverChampsForm(true))
+      dispatch(setActiverChampsForm(true));
     }
   };
 
   const annulerOperation = () => {
-    dispatch(setActiverBoutonsValiderAnnuler(false))
+    dispatch(setActiverBoutonsValiderAnnuler(false));
+    dispatch(setActiverChampsForm(false));
   };
 
   return (
     <>
       <nav className="w-full h-[110px] border-b border-gray-700 flex items-center px-6 mt-6">
         <div className="flex space-x-4">
+          {!activerBoutonsValiderAnnuler && (
+            <button
+              type="button"
+              onClick={handleAjout}
+              className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
+            >
+              <FontAwesomeIcon
+                icon={faFolderPlus}
+                className="text-blue-600 text-3xl"
+              />
+              <span className="text-sm font-semibold text-gray-700">
+                Nouveaux
+              </span>
+            </button>
+          )}
+          {!activerBoutonsValiderAnnuler && (
+            <>
+              <div className="border-r border-gray-300 h-8"></div>
+              <button
+                type="button"
+                className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
+                onClick={() => handleupdate()}
+              >
+                <FontAwesomeIcon
+                  icon={faEdit}
+                  className="text-yellow-600 text-3xl"
+                />
+                <span className="text-sm font-semibold text-gray-700">
+                  Modifier
+                </span>
+              </button>
+            </>
+          )}
+          {!activerBoutonsValiderAnnuler && (
+            <>
+              <div className="border-r border-gray-300 h-8"></div>
 
-          {!activerBoutonsValiderAnnuler && <button
-            type="button"
-            onClick={handleAjout}
-            className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
-          >
-            <FontAwesomeIcon icon={faFolderPlus} className="text-blue-600 text-3xl" />
-            <span className="text-sm font-semibold text-gray-700">Nouveaux</span>
-          </button>
-          }
-          {!activerBoutonsValiderAnnuler && <><div className="border-r border-gray-300 h-8"></div>
-          <button
-            type="button"
-            className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
-            onClick={() => handleupdate()}
-          >
-            <FontAwesomeIcon icon={faEdit} className="text-yellow-600 text-3xl" />
-            <span className="text-sm font-semibold text-gray-700">Modifier</span>
-          </button></>}
-          {!activerBoutonsValiderAnnuler && <><div className="border-r border-gray-300 h-8"></div>
-
-          <button
-            type="button"
-            onClick={afficherModel}
-            className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
-          >
-            <FontAwesomeIcon icon={faTrashAlt} className="text-red-600 text-3xl" />
-            <span className="text-sm font-semibold text-gray-700">Supprimer</span>
-          </button></>}
+              <button
+                type="button"
+                onClick={afficherModel}
+                className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
+              >
+                <FontAwesomeIcon
+                  icon={faTrashAlt}
+                  className="text-red-600 text-3xl"
+                />
+                <span className="text-sm font-semibold text-gray-700">
+                  Supprimer
+                </span>
+              </button>
+            </>
+          )}
 
           {isDeleting && (
             <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex items-center justify-center z-50">
@@ -120,7 +147,9 @@ function ToolBar() {
                   Voulez-vous vraiment supprimer ce devis ?
                 </p>
                 <div className="flex justify-around">
-                  <button className="bg-red-600 text-white px-4 py-2 rounded-md">Oui</button>
+                  <button className="bg-red-600 text-white px-4 py-2 rounded-md">
+                    Oui
+                  </button>
                   <button
                     onClick={() => setIsDeleting(false)}
                     className="bg-gray-500 text-white px-4 py-2 rounded-md"
@@ -132,60 +161,87 @@ function ToolBar() {
             </div>
           )}
 
-{!activerBoutonsValiderAnnuler && <><div className="border-r border-gray-300 h-8"></div>
+          {!activerBoutonsValiderAnnuler && (
+            <>
+              <div className="border-r border-gray-300 h-8"></div>
 
-          <button className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100">
-            <FontAwesomeIcon icon={faSearch} className="text-blue-600 text-3xl" />
-            <span className="text-sm font-semibold text-gray-700">Rechercher</span>
-          </button></>}
+              <button className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100">
+                <FontAwesomeIcon
+                  icon={faSearch}
+                  className="text-blue-600 text-3xl"
+                />
+                <span className="text-sm font-semibold text-gray-700">
+                  Rechercher
+                </span>
+              </button>
+            </>
+          )}
 
-          {!activerBoutonsValiderAnnuler && <button className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100">
-            <FontAwesomeIcon icon={faArrowLeft} className="text-3xl" />
-          </button>}
+          {!activerBoutonsValiderAnnuler && (
+            <button className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100">
+              <FontAwesomeIcon icon={faArrowLeft} className="text-3xl" />
+            </button>
+          )}
 
-          {!activerBoutonsValiderAnnuler && <button className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100">
-            <FontAwesomeIcon icon={faArrowRight} className="text-3xl" />
-          </button>}
+          {!activerBoutonsValiderAnnuler && (
+            <button className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100">
+              <FontAwesomeIcon icon={faArrowRight} className="text-3xl" />
+            </button>
+          )}
 
-          {!activerBoutonsValiderAnnuler && <button
-            type="button"
-            onClick={() => navigate("/DevisList")}
-            className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
-          >
-            <FontAwesomeIcon icon={faList} className="text-3xl" />
-            <span className="ml-2 text-sm font-semibold text-gray-700">Liste</span>
-          </button>}
+          {!activerBoutonsValiderAnnuler && (
+            <button
+              type="button"
+              onClick={() => navigate("/DevisList")}
+              className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
+            >
+              <FontAwesomeIcon icon={faList} className="text-3xl" />
+              <span className="ml-2 text-sm font-semibold text-gray-700">
+                Liste
+              </span>
+            </button>
+          )}
 
-          {!activerBoutonsValiderAnnuler && <button
-            type="button"
-            onClick={() => navigate("/Dashboard")}
-            className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
-          >
-            <FontAwesomeIcon icon={faSignOutAlt} className="text-3xl" />
-            <span className="ml-2 text-sm font-semibold text-gray-700">Quitter</span>
-          </button>}
+          {!activerBoutonsValiderAnnuler && (
+            <button
+              type="button"
+              onClick={() => navigate("/Dashboard")}
+              className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
+            >
+              <FontAwesomeIcon icon={faSignOutAlt} className="text-3xl" />
+              <span className="ml-2 text-sm font-semibold text-gray-700">
+                Quitter
+              </span>
+            </button>
+          )}
 
-          {activerBoutonsValiderAnnuler && <button
-            type="button"
-            onClick={() => validerAjout()}
-            className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
-          >
-            <FontAwesomeIcon icon={faCheck} className="text-3xl" />
-            <span className="ml-2 text-sm font-semibold text-gray-700">Valider</span>
-          </button>}
+          {activerBoutonsValiderAnnuler && (
+            <button
+              type="button"
+              onClick={() => validerAjout()}
+              className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
+            >
+              <FontAwesomeIcon icon={faCheck} className="text-3xl" />
+              <span className="ml-2 text-sm font-semibold text-gray-700">
+                Valider
+              </span>
+            </button>
+          )}
 
-          {activerBoutonsValiderAnnuler && <button
-            type="button"
-            onClick={() => annulerOperation()}
-            className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
-          >
-            <FontAwesomeIcon icon={faCancel} className="text-3xl" />
-            <span className="ml-2 text-sm font-semibold text-gray-700">Annuler</span>
-          </button>}
+          {activerBoutonsValiderAnnuler && (
+            <button
+              type="button"
+              onClick={() => annulerOperation()}
+              className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
+            >
+              <FontAwesomeIcon icon={faCancel} className="text-3xl" />
+              <span className="ml-2 text-sm font-semibold text-gray-700">
+                Annuler
+              </span>
+            </button>
+          )}
         </div>
       </nav>
-
-      <h2 className="text-black font-bold italic text-3xl">Devis / Facture Proforma</h2>
     </>
   );
 }
