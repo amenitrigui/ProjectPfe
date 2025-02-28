@@ -6,7 +6,9 @@ import {
   getDevisParCodeClient,
   getDevisParMontant,
   getDevisParPeriode,
+  setDevisInfoEntiere,
 } from "../../app/devis_slices/devisSlice";
+import DataTable from "react-data-table-component";
 
 const Recherche = () => {
   const navigate = useNavigate();
@@ -16,11 +18,14 @@ const Recherche = () => {
   const [filtrerPar, setFiltrerPar] = useState("");
 
   const devisList = useSelector((state) => state.DevisCrud.DevisList);
-  console.log(devisList);
   const status = useSelector((state) => state.DevisCrud.status);
   const erreur = useSelector((state) => state.DevisCrud.erreur);
   const [selectedResult, setSelectedResult] = useState(null);
-
+  const devisinfo = useSelector((state) => state.DevisCrud.devisInfo);
+  console.log(devisinfo);
+  const handleselecteddevis = ({selectedRows}) => {
+    dispatch(setDevisInfoEntiere(selectedRows[0]));
+  };
   const handleSearch = async () => {
     if (!valeurRecherche) {
       alert("Veuillez entrer une valeur pour la recherche.");
@@ -48,11 +53,48 @@ const Recherche = () => {
         console.log("valeur de filtre non définit");
     }
   };
+  const customStyles = {
+    headCells: {
+      style: {
+        fontWeight: "bold",
+        fontSize: "18px",
+        backgroundColor: "#e0f2fe",
+        color: "#034694",
+        padding: "12px",
+      },
+    },
+    rows: {
+      style: {
+        fontSize: "16px",
+        backgroundColor: "#f8fafc",
+        "&:hover": {
+          backgroundColor: "#dbeafe",
+        },
+      },
+    },
+    pagination: {
+      style: {
+        fontSize: "16px",
+        fontWeight: "bold",
+        backgroundColor: "#e0f2fe",
+      },
+    },
+  };
 
   const handleValidate = () => {
     navigate("/DevisFormTout");
   };
-
+  const collones = [
+    { name: "Numéro de devis", selector: (row) => row.NUMBL, sortable: true },
+    { name: "Code client", selector: (row) => row.CODECLI, sortable: true },
+    { name: "Raison Sociale", selector: (row) => row.RSCLI },
+    { name: "Point de vente", selector: (row) => row.cp },
+    { name: "Adresse", selector: (row) => row.ADRCLI },
+    { name: "Montant", selector: (row) => row.MTTC },
+    { name: "Date", selector: (row) => row.DATEBL },
+    { name: "Raison Sociale Représentant", selector: (row) => row.RSREP },
+    { name: "Code secteur", selector: (row) => row.codesecteur },
+  ];
   return (
     <div className="container mx-auto p-6">
       <h2 className="text-2xl font-semibold mb-6 text-center">Recherche</h2>
@@ -96,56 +138,22 @@ const Recherche = () => {
           </div>
         </div>
       </div>
-
-      {status == "chargement" && <p>Chargement...</p>}
-      {erreur && <p className="text-red-600">{erreur}</p>}
-      {devisList && devisList.length > 0 && (
-        <div className="mt-6">
-          <h4 className="font-semibold">Résultats :</h4>
-          <ul>
-            {devisList.map((result, index) => (
-              <li key={index}>
-                <p>
-                  <strong>Numéro de devis:</strong> {result.NUMBL}
-                </p>
-                <p>
-                  <strong>code client:</strong> {result.CODECLI}
-                </p>
-                <p>
-                  <strong>Raison Sociale</strong> {result.RSCLI}
-                </p>
-                <p>
-                  <strong>Point de vente </strong> {result.libpv}
-                </p>
-                <p>
-                  <strong>Adresse</strong> {result.ADRCLI}
-                </p>
-                <p>
-                  <strong>Montant</strong> {result.MTTC}
-                </p>
-                <p>
-                  <strong>DATE</strong> {result.DATEBL}
-                </p>
-                <p>
-                  <strong>RAISON SOCIALE de representant </strong>{" "}
-                  {result.RSREP}
-                </p>
-                <p>
-                  <strong>code secteur</strong> {result.codesecteur}
-                </p>
-              </li>
-            ))}
-          </ul>
-          <button
-            onClick={() => {
-              handleValidate();
-            }}
-            className="bg-green-600 text-white p-2 rounded-lg hover:bg-green-700 transition duration-200 mt-4"
-          >
-            Valider
-          </button>
-        </div>
-      )}
+      <DataTable
+        data={devisList}
+        columns={collones}
+        pagination
+        fixedHeader
+        customStyles={customStyles}
+        striped
+        selectableRows
+        onSelectedRowsChange={handleselecteddevis}
+      ></DataTable>
+      <button
+        onClick={handleValidate}
+        className="bg-green-600 text-white p-2 rounded-lg hover:bg-green-700 transition duration-200 mt-4"
+      >
+        Valider
+      </button>
     </div>
   );
 };

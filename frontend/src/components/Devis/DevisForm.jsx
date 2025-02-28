@@ -9,7 +9,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { setInsertionDepuisDevisForm } from "../../app/client_slices/clientSlice";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { getDevisParNUMBL, setDevisInfo, setDevisInfoEntiere } from "../../app/devis_slices/devisSlice";
+import {
+  getDevisParNUMBL,
+  setDevisInfo,
+  setDevisInfoEntiere,
+} from "../../app/devis_slices/devisSlice";
 function DevisForm() {
   const DevisList = useSelector((state) => state.DevisCrud.DevisList);
   const devisInfos = useSelector((state) => state.DevisCrud.devisInfo);
@@ -22,7 +26,7 @@ function DevisForm() {
   const handleSelectDevis = (e) => {
     dispatch(getDevisParNUMBL(e.target.value));
     console.log(DevisList[0]);
-    dispatch(setDevisInfoEntiere(DevisList[0]))
+    dispatch(setDevisInfoEntiere(DevisList[0]));
   };
   const activerChampsForm = useSelector(
     (state) => state.uiStates.activerChampsForm
@@ -38,6 +42,8 @@ function DevisForm() {
 
     navi("/ClientList");
   };
+  const devisinfo = useSelector((state) => state.DevisCrud.devisInfo);
+    console.log(devisinfo);
 
   return (
     <>
@@ -77,77 +83,59 @@ function DevisForm() {
           <button
             className="btn btn-outline btn-accent"
             onClick={() => handleAjoutClientRedirect()}
-            
           >
             {" "}
             <i className="fas fa-plus-circle"></i>
           </button>
         </h3>
         <label className="block font-medium">Code Client :</label>
-        <select
-          className="select select-bordered w-full max-w-xs"
-          disabled={activerChampsForm}
-          onChange={(e) => handleSelectDevis(e)}
-        >
-          {DevisList.map((devis) => (
-            <option key={devis.CODECLI} value={devis.CODECLI}>
-              {devis.CODECLI}
-            </option>
-          ))}
-        </select>
+        <input
+          type="text"
+          className="input input-bordered w-full max-w-xs"
+          disabled={!activerChampsForm}
+          defaultValue={devisInfos.CODECLI} // Assurez-vous d'avoir cet état dans votre composant
+          onChange={(e) => setDevisInfo({collone:"CODECLI", valeur:e.target.value})} // Mettez à jour l'état
+        />
 
         <label className="block font-medium">Raison Sociale :</label>
-        <select
-          className="select select-bordered w-full max-w-xs"
-          disabled={activerChampsForm}
-          onChange={(e) => handleSelectDevis(e)}
-        >
-          {DevisList.map((devis) => (
-            <option key={devis.RSCLI} value={devis.RSCLI}>
-              {devis.RSCLI}
-            </option>
-          ))}
-        </select>
-
+        <input
+          type="text"
+          className="input input-bordered w-full max-w-xs"
+          disabled={!activerChampsForm}
+          defaultValue={devisInfos.RSCLI} // Assurez-vous d'avoir cet état dans votre composant
+          onChange={(e) => setDevisInfo({collone:"RSCLI", valeur:e.target.value})} // Mettez à jour l'état
+        />
 
         <label className="block font-medium">Adresse :</label>
-        <select
-          className="select select-bordered w-full max-w-xs"
-          disabled={activerChampsForm}
-          onChange={(e) => handleSelectDevis(e)}
-        >
-          {DevisList.map((devis) => (
-            <option key={devis.ADRCLI} value={devis.ADRCLI}>
-              {devis.ADRCLI}
-            </option>
-          ))}
-        </select>
+        <input
+          type="text"
+          className="input input-bordered w-full max-w-xs"
+          disabled={!activerChampsForm}
+          defaultValue={devisInfos.ADRCLI} // Assurez-vous d'avoir cet état dans votre composant
+          onChange={(e) => setDevisInfo({collone:"ADRCLI", valeur:e.target.value})} // Mettez à jour l'état
+        />
 
         <label className="block font-medium">Code Postal :</label>
-        <select
-          className="select select-bordered w-full max-w-xs"
-          disabled={activerChampsForm}
-          onChange={(e) => handleSelectDevis(e)}
-        >
-          {DevisList.map((devis) => (
-            <option key={devis.cp} value={devis.cp}>
-              {devis.cp}
-            </option>
-          ))}
-        </select>
+        <input
+          type="text"
+          className="input input-bordered w-full max-w-xs"
+          disabled={!activerChampsForm}
+          defaultValue={devisInfos.cp} // Assurez-vous d'avoir cet état dans votre composant
+          onChange={(e) => setDevisInfo({collone:"cp", valeur:e.target.value})} // Mettez à jour l'état
+        />
 
         <label className="block font-medium">Email :</label>
         <input
           type="email"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={!activerChampsForm}
+          disabled={!activerChampsForm}
         />
 
         <label className="block font-medium">Téléphone :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={!activerChampsForm}
+          disabled={!activerChampsForm}
         />
       </div>
 
@@ -158,37 +146,32 @@ function DevisForm() {
           <span>Détails Devis</span>
         </h3>
         <label className="block font-medium">Date :</label>
-        <select
-          className="select select-bordered w-full max-w-xs"
-          disabled={activerChampsForm}
-          onChange={(e) => handleSelectDevis(e)}
-        >
-          {DevisList.map((devis) => (
-            <option key={devis.DATEBL} value={devis.DATEBL}>
-              {devis.DATEBL}
-            </option>
-          ))}
-        </select>
-
+        <input
+          type="date"
+          className="input input-bordered w-full max-w-xs"
+          disabled={!activerChampsForm}
+          defaultValue={devisInfos.DATEBL} // Assurez-vous d'avoir cet état dans votre composant
+          onChange={(e) => setDevisInfo({collone:"DATEBL", valeur:e.target.value})} // Mettez à jour l'état
+        />
         <label className="block font-medium">Transport :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={!activerChampsForm}
+          disabled={!activerChampsForm}
         />
 
         <label className="block font-medium">À l'attention de :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={!activerChampsForm}
+          disabled={!activerChampsForm}
         />
 
         <label className="block font-medium">Délai de livraison :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={!activerChampsForm}
+          disabled={!activerChampsForm}
         />
       </div>
 
@@ -203,24 +186,24 @@ function DevisForm() {
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={!activerChampsForm}
+          disabled={!activerChampsForm}
         />
 
         <label className="block font-medium">RSREP :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={!activerChampsForm}
+          disabled={!activerChampsForm}
         />
 
         <label className="block font-medium">Code Secteur :</label>
         <select
           className="select select-bordered w-full max-w-xs"
-          disabled={activerChampsForm}
+          disabled={!activerChampsForm}
           onChange={(e) => handleSelectDevis(e)}
         >
           {DevisList.map((devis) => (
-            <option key={devis.codesecteur} value={devis.codesecteur}>
+            <option key={devis.NUMBL} value={devis.codesecteur}>
               {devis.codesecteur}
             </option>
           ))}
@@ -230,21 +213,21 @@ function DevisForm() {
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={!activerChampsForm}
+          disabled={!activerChampsForm}
         />
 
         <label className="block font-medium mt-4">Commentaire :</label>
         <textarea
           rows="3"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={!activerChampsForm}
+          disabled={!activerChampsForm}
         ></textarea>
 
         <label className="block font-medium mt-4">Affaire :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={!activerChampsForm}
+          disabled={!activerChampsForm}
         />
       </div>
     </>

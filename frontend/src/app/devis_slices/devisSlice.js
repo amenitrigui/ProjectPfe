@@ -238,9 +238,10 @@ export const devisSlice = createSlice({
         state.status = "reussi";
       })
       .addCase(getDevisParPeriode.rejected, (state, action) => {
-        state.status = "echoue";
         state.erreur = action.payload;
-      });
+        state.status = "echoue";
+      })
+      
   },
 });
 export const { setDevisInfo, setDevisList, setDevisInfoEntiere } =
