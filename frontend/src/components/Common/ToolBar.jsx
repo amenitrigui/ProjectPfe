@@ -171,7 +171,7 @@ const HandleRecherche =async()=>{
                 <FontAwesomeIcon
                   icon={faSearch}
                   className="text-blue-600 text-3xl"
-                  onClick={HandleRecherche}
+                  onClick={() => navigate("/recherche")}
                 />
                 <span className="text-sm font-semibold text-gray-700">
 

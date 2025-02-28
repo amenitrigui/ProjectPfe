@@ -9,18 +9,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { setInsertionDepuisDevisForm } from "../../app/client_slices/clientSlice";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { getdevis, setDevisInfo, setDevisInfoEntiere } from "../../app/devis_slices/devisSlice";
+import { getDevisParNUMBL, setDevisInfo, setDevisInfoEntiere } from "../../app/devis_slices/devisSlice";
 function DevisForm() {
   const DevisList = useSelector((state) => state.DevisCrud.DevisList);
   const devisInfos = useSelector((state) => state.DevisCrud.devisInfo);
   console.log(DevisList);
   // * UseEffect #1 : récupérer la liste des codes de devis seulement
   useEffect(() => {
-    dispatch(getdevis());
+    dispatch(getDevisParNUMBL());
   }, []);
 
   const handleSelectDevis = (e) => {
-    dispatch(getdevis(e.target.value));
+    dispatch(getDevisParNUMBL(e.target.value));
     console.log(DevisList[0]);
     dispatch(setDevisInfoEntiere(DevisList[0]))
   };

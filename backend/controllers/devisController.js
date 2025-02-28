@@ -255,16 +255,16 @@ const GetDevisParPeriode = async (req, res) => {
     const { DATEBL } = req.query;
     const dbConnection = await getDatabaseConnection(dbName, res);
 
-    const periode = await dbConnection.query(
-      `select  NUMBL, libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where DATEBL= :DATEBL`,
+    const devis = await dbConnection.query(
+      `select  NUMBL, libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where DATE(DATEBL)= :DATEBL`,
       {
-        replacements: {DATEBL},
+        replacements: { DATEBL },
         type: dbConnection.QueryTypes.SELECT,
       }
     );
     return res
       .status(200)
-      .json({ message: "recupere la periode par devis ", periode });
+      .json({ message: "recupere la periode par devis ", devis: devis });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -274,7 +274,7 @@ const GetDevisListParClient = async (req, res) => {
     const { dbName } = req.params;
     const { CODECLI } = req.query;
     const dbConnection = await getDatabaseConnection(dbName, res);
-    const codeclient = await dbConnection.query(
+    const devis = await dbConnection.query(
       `select  NUMBL, libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where CODECLI=:CODECLI`,
       {
         replacements: { CODECLI },
@@ -283,7 +283,7 @@ const GetDevisListParClient = async (req, res) => {
     );
     return res
       .status(200)
-      .json({ message: "recupere code client par devis ", codeclient });
+      .json({ message: "recupere code client par devis ", devis: devis });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -309,7 +309,7 @@ const getCodesDevis = async (req, res) => {
   }
 };
 
-const getDevis = async (req, res) => {
+const getDevisParNUMBL = async (req, res) => {
   try {
     const { dbName } = req.params;
     const { NUMBL } = req.query;
@@ -375,9 +375,9 @@ module.exports = {
   getNombreDevis,
   getTotalChifre,
   creerDevis,
-  getDevis,
-  GetDevisListParClient,
-  GetDevisParPeriode,
+  getDevisParNUMBL,
   getCodesDevis,
   getDevisParMontant,
+  GetDevisListParClient,
+  GetDevisParPeriode,
 };
