@@ -10,6 +10,7 @@ const defineDfpModel = require("../models/Dfp");
 
 const defineLdfpModel = require("../models/Ldfp ");
 const { getDatabaseConnection } = require("../common/commonMethods");
+const { error } = require("console");
 
 const getTousDevis = async (req, res) => {
   const { dbName } = req.params;
@@ -248,17 +249,56 @@ const creerDevis = async (req, res) => {
     });
   }
 };
+const GetDevisParPeriode = async (req, res) => {
+  try {
+    const { dbName } = req.params;
+    const { DATEBL } = req.query;
+    const dbConnection = await getDatabaseConnection(dbName, res);
+
+    const periode = await dbConnection.query(
+      `select  NUMBL, libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where DATEBL= :DATEBL`,
+      {
+        replacements: {DATEBL},
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    );
+    return res
+      .status(200)
+      .json({ message: "recupere la periode par devis ", periode });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+const GetDevisListParClient = async (req, res) => {
+  try {
+    const { dbName } = req.params;
+    const { CODECLI } = req.query;
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const codeclient = await dbConnection.query(
+      `select  NUMBL, libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where CODECLI=:CODECLI`,
+      {
+        replacements: { CODECLI },
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    );
+    return res
+      .status(200)
+      .json({ message: "recupere code client par devis ", codeclient });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 
 const getDevis = async (req, res) => {
   try {
     const { dbName } = req.params;
-    const {NUMBL} = req.query;
-    
+    const { NUMBL } = req.query;
+
     const dbConnection = await getDatabaseConnection(dbName, res);
-    if (NUMBL != null) {
+    if (NUMBL) {
       // devis selectionné
       const devis = await dbConnection.query(
-        `SELECT libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where NUMBL = :NUMBL`,
+        `SELECT NUMBL, libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where NUMBL = :NUMBL`,
         {
           replacements: { NUMBL },
           type: dbConnection.QueryTypes.SELECT,
@@ -267,16 +307,17 @@ const getDevis = async (req, res) => {
       return res
         .status(200)
         .json({ message: "devis recupere avec succes", devis: devis });
-    }else{
+    } else {
       const ListNumbl = await dbConnection.query(
         `SELECT NUMBL from dfp   order by  (NUMBL)`,
         {
           type: dbConnection.QueryTypes.SELECT,
         }
       );
-      return res
-        .status(200)
-        .json({ message: "tout le code devis  recupere avec succe", devis: ListNumbl });
+      return res.status(200).json({
+        message: "tout le code devis  recupere avec succe",
+        devis: ListNumbl,
+      });
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -300,4 +341,6 @@ module.exports = {
   getTotalChifre,
   creerDevis,
   getDevis,
+  GetDevisListParClient,
+  GetDevisParPeriode
 };

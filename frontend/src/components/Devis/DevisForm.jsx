@@ -75,6 +75,7 @@ dispatch(getdevis(e.target.value));
           <button
             className="btn btn-outline btn-accent"
             onClick={() => handleAjoutClientRedirect()}
+            
           >
             {" "}
             <i className="fas fa-plus-circle"></i>
@@ -85,6 +86,7 @@ dispatch(getdevis(e.target.value));
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
           readOnly={!activerChampsForm}
+          defaultValue={DevisList.codecli}
         />
 
         <label className="block font-medium">Raison Sociale :</label>

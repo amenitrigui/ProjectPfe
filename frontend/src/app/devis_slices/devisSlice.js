@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-
 // Action asynchrone pour récupérer la liste des devis
 export const getDevisList = createAsyncThunk("slice/getDevisList", async () => {
   const response = await axios.get(
@@ -46,16 +45,42 @@ export const getdevis = createAsyncThunk("Slice/getDevis", async (NUMBL) => {
   const response = await axios.get(
     `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getDevis`,
     {
-      params:{
-        NUMBL
-      }
+      params: {
+        NUMBL,
+      },
     }
-    
   );
-console.log(response)
+  console.log(response);
 
   return response.data.devis;
 });
+export const getDevisParCodeClient = createAsyncThunk(
+  "slice/getDevisParCodeClient",
+  async (coldecli) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getDevisParClient`,
+      {
+        params: {
+          coldecli
+        }
+      }
+    );
+  }
+);
+export const getDevisParPeriode =createAsyncThunk(
+  "slice/getDevisParPeriode",
+  async(DATEBL)=>{
+    const response= await axios.get( `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getDevisParPeriode`,
+    {
+      params:
+      {
+        DATEBL
+      }
+    }
+  );
+  }
+)
+
 export const devisSlice = createSlice({
   name: "devisSlice",
   initialState: {
@@ -132,7 +157,6 @@ export const devisSlice = createSlice({
         state.status = "echoue";
       })
 
-
       .addCase(getTotalChifre.pending, (state) => {
         state.status = "chargeement";
       })
@@ -150,11 +174,22 @@ export const devisSlice = createSlice({
         state.status = "chargeement";
       })
       .addCase(getdevis.fulfilled, (state, action) => {
-      
         state.DevisList = action.payload;
         state.status = "reussi";
       })
       .addCase(getdevis.rejected, (state, action) => {
+        state.DevisList = action.payload;
+        state.status = "echoue";
+      })
+
+      .addCase(getDevisParCodeClient.pending, (state) => {
+        state.status = "chargeement";
+      })
+      .addCase(getDevisParCodeClient.fulfilled, (state, action) => {
+        state.DevisList = action.payload;
+        state.status = "reussi";
+      })
+      .addCase(getDevisParCodeClient.rejected, (state, action) => {
         state.devisInfo = action.payload;
         state.status = "echoue";
       });

@@ -48,7 +48,9 @@ function ToolBar() {
     dispatch(setActiverChampsForm(true));
     //validerAjout();
   };
-
+const HandleRecherche =async()=>{
+  navigate("/recherche")
+}
   // * méthode pour mettre à jour un client/devis
   const handleupdate = async () => {
     dispatch(majClient());
@@ -169,9 +171,12 @@ function ToolBar() {
                 <FontAwesomeIcon
                   icon={faSearch}
                   className="text-blue-600 text-3xl"
+                  onClick={HandleRecherche}
                 />
                 <span className="text-sm font-semibold text-gray-700">
+
                   Rechercher
+                
                 </span>
               </button>
             </>
