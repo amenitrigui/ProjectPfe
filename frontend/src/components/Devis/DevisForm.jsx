@@ -10,6 +10,7 @@ import { setInsertionDepuisDevisForm } from "../../app/client_slices/clientSlice
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import {
+  getDevisList,
   getDevisParNUMBL,
   setDevisInfo,
   setDevisInfoEntiere,
@@ -17,15 +18,15 @@ import {
 function DevisForm() {
   const DevisList = useSelector((state) => state.DevisCrud.DevisList);
   const devisInfos = useSelector((state) => state.DevisCrud.devisInfo);
-  console.log(DevisList);
   // * UseEffect #1 : récupérer la liste des codes de devis seulement
   useEffect(() => {
     dispatch(getDevisParNUMBL());
   }, []);
 
   const handleSelectDevis = (e) => {
+    console.log(e.target.value);
     dispatch(getDevisParNUMBL(e.target.value));
-    console.log(DevisList[0]);
+    
     dispatch(setDevisInfoEntiere(DevisList[0]));
   };
   const activerChampsForm = useSelector(
@@ -43,7 +44,10 @@ function DevisForm() {
     navi("/ClientList");
   };
   const devisinfo = useSelector((state) => state.DevisCrud.devisInfo);
-    console.log(devisinfo);
+
+  useEffect(() => {
+    dispatch(getDevisList())
+  }, [])
 
   return (
     <>
@@ -94,7 +98,9 @@ function DevisForm() {
           className="input input-bordered w-full max-w-xs"
           disabled={!activerChampsForm}
           defaultValue={devisInfos.CODECLI} // Assurez-vous d'avoir cet état dans votre composant
-          onChange={(e) => setDevisInfo({collone:"CODECLI", valeur:e.target.value})} // Mettez à jour l'état
+          onChange={(e) =>
+            setDevisInfo({ collone: "CODECLI", valeur: e.target.value })
+          } // Mettez à jour l'état
         />
 
         <label className="block font-medium">Raison Sociale :</label>
@@ -103,7 +109,9 @@ function DevisForm() {
           className="input input-bordered w-full max-w-xs"
           disabled={!activerChampsForm}
           defaultValue={devisInfos.RSCLI} // Assurez-vous d'avoir cet état dans votre composant
-          onChange={(e) => setDevisInfo({collone:"RSCLI", valeur:e.target.value})} // Mettez à jour l'état
+          onChange={(e) =>
+            setDevisInfo({ collone: "RSCLI", valeur: e.target.value })
+          } // Mettez à jour l'état
         />
 
         <label className="block font-medium">Adresse :</label>
@@ -112,7 +120,9 @@ function DevisForm() {
           className="input input-bordered w-full max-w-xs"
           disabled={!activerChampsForm}
           defaultValue={devisInfos.ADRCLI} // Assurez-vous d'avoir cet état dans votre composant
-          onChange={(e) => setDevisInfo({collone:"ADRCLI", valeur:e.target.value})} // Mettez à jour l'état
+          onChange={(e) =>
+            setDevisInfo({ collone: "ADRCLI", valeur: e.target.value })
+          } // Mettez à jour l'état
         />
 
         <label className="block font-medium">Code Postal :</label>
@@ -121,7 +131,9 @@ function DevisForm() {
           className="input input-bordered w-full max-w-xs"
           disabled={!activerChampsForm}
           defaultValue={devisInfos.cp} // Assurez-vous d'avoir cet état dans votre composant
-          onChange={(e) => setDevisInfo({collone:"cp", valeur:e.target.value})} // Mettez à jour l'état
+          onChange={(e) =>
+            setDevisInfo({ collone: "cp", valeur: e.target.value })
+          } // Mettez à jour l'état
         />
 
         <label className="block font-medium">Email :</label>
@@ -151,7 +163,9 @@ function DevisForm() {
           className="input input-bordered w-full max-w-xs"
           disabled={!activerChampsForm}
           defaultValue={devisInfos.DATEBL} // Assurez-vous d'avoir cet état dans votre composant
-          onChange={(e) => setDevisInfo({collone:"DATEBL", valeur:e.target.value})} // Mettez à jour l'état
+          onChange={(e) =>
+            setDevisInfo({ collone: "DATEBL", valeur: e.target.value })
+          } // Mettez à jour l'état
         />
         <label className="block font-medium">Transport :</label>
         <input
