@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getDevis } from "../../../../backend/controllers/devisController";
-import { getDevisParMontant } from "../../app/devis_slices/devisSlice";
+import { getDevisParNUMBL, getDevisParCodeClient, getDevisParMontant, getDevisParPeriode } from "../../app/devis_slices/devisSlice";
 
 const Recherche = () => {
   const navigate = useNavigate();
@@ -12,6 +11,7 @@ const Recherche = () => {
   const [filtrerPar, setFiltrerPar] = useState("");
 
   const devisList = useSelector((state) => state.DevisCrud.DevisList);
+  console.log(devisList);
   const status = useSelector((state) => state.DevisCrud.status);
   const erreur = useSelector((state) => state.DevisCrud.erreur);
 
@@ -26,10 +26,10 @@ const Recherche = () => {
     }
 
     switch(filtrerPar){
-      case("client"): dispatch(getDevisParCodeClient()); break;
-      case("devis"): dispatch(getDevis()); break;
-      case("montant"): dispatch(getDevisParMontant()); break;
-      case("periode"): dispatch(getDevisParPeriode()); break;
+      case("client"): dispatch(getDevisParCodeClient(valeurRecherche)); break;
+      case("devis"): dispatch(getDevisParNUMBL(valeurRecherche)); break;
+      case("montant"): dispatch(getDevisParMontant(valeurRecherche)); break;
+      case("periode"): dispatch(getDevisParPeriode(valeurRecherche)); break;
       default: console.log("valeur de filtre non définit");
     }
   };
@@ -50,7 +50,7 @@ const Recherche = () => {
       <div className="flex space-x-6">
         <div className="w-1/3 bg-white p-4 rounded-lg shadow-lg">
           <h3 className="text-lg font-medium text-gray-700 mb-4">
-            Recherche par
+            Rechercher Devis Par
           </h3>
           <div className="space-y-2">
             {["devis", "client", "montant", "periode", "article"].map(
@@ -88,7 +88,7 @@ const Recherche = () => {
         </div>
       </div>
 
-      {status && <p>Chargement...</p>}
+      {status=="chargement" && <p>Chargement...</p>}
       {erreur && <p className="text-red-600">{erreur}</p>}
       {devisList && devisList.length > 0 && (
         <div className="mt-6">

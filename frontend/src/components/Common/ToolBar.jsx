@@ -48,7 +48,9 @@ function ToolBar() {
     dispatch(setActiverChampsForm(true));
     //validerAjout();
   };
-
+const HandleRecherche =async()=>{
+  navigate("/recherche")
+}
   // * méthode pour mettre à jour un client/devis
   const handleupdate = async () => {
     dispatch(majClient());
@@ -172,7 +174,9 @@ function ToolBar() {
                   onClick={() => navigate("/recherche")}
                 />
                 <span className="text-sm font-semibold text-gray-700">
+
                   Rechercher
+                
                 </span>
               </button>
             </>

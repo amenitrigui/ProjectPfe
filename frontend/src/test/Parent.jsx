@@ -7,7 +7,7 @@ import ArticlesDevis from "../components/Devis/ArticlesDevis";
 import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 import Select from "react-select";
-import { getdevis } from "../app/devis_slices/devisSlice";
+import { getDevisParNUMBL } from "../app/devis_slices/devisSlice";
 
 function Parent() {
   const afficherToast = () => {
@@ -16,7 +16,7 @@ function Parent() {
     });
   };
   useEffect(() => {
-    dispatch(getdevis());
+    dispatch(getDevisParNUMBL());
   }, []);
   const dispatch = useDispatch();
   const devisList = useSelector((state) => state.DevisCrud.DevisList);
