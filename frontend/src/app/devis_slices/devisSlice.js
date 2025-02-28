@@ -52,6 +52,7 @@ export const getDevisParNUMBL = createAsyncThunk(
         },
       }
     );
+    console.log(response.data.devis);
     return response.data.devis;
   }
 );
@@ -197,8 +198,8 @@ export const devisSlice = createSlice({
       .addCase(getDevisParNUMBL.pending, (state) => {
         state.status = "chargeement";
       })
-      .addCase(getDevisParNUMBL.fulfilled, (state, action) => {
-        state.DevisList = action.payload;
+      .addCase(getDevisParNUMBL.fulfilled, (state, action) => { 
+        state.devisInfo = action.payload[0];
         state.status = "reussi";
       })
       .addCase(getDevisParNUMBL.rejected, (state, action) => {
