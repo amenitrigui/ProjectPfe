@@ -199,6 +199,7 @@ export const devisSlice = createSlice({
         state.status = "chargeement";
       })
       .addCase(getDevisParNUMBL.fulfilled, (state, action) => { 
+        state.DevisList=action.payload
         state.devisInfo = action.payload[0];
         state.status = "reussi";
       })
