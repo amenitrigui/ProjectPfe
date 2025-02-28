@@ -229,6 +229,7 @@ export const devisSlice = createSlice({
         state.status = "echoue";
         state.erreur = action.payload;
       })
+      
       .addCase(getDevisParPeriode.pending, (state) => {
         state.status = "chargeement";
       })

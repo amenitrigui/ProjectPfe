@@ -92,8 +92,8 @@ function DevisForm() {
         <input
           type="text"
           className="input input-bordered w-full max-w-xs"
-          disabled={activerChampsForm}
-          value={devisInfos.CODECLI} // Assurez-vous d'avoir cet état dans votre composant
+          disabled={!activerChampsForm}
+          defaultValue={devisInfos.CODECLI} // Assurez-vous d'avoir cet état dans votre composant
           onChange={(e) => setDevisInfo({collone:"CODECLI", valeur:e.target.value})} // Mettez à jour l'état
         />
 
@@ -101,8 +101,8 @@ function DevisForm() {
         <input
           type="text"
           className="input input-bordered w-full max-w-xs"
-          disabled={activerChampsForm}
-          value={devisInfos.RSCLI} // Assurez-vous d'avoir cet état dans votre composant
+          disabled={!activerChampsForm}
+          defaultValue={devisInfos.RSCLI} // Assurez-vous d'avoir cet état dans votre composant
           onChange={(e) => setDevisInfo({collone:"RSCLI", valeur:e.target.value})} // Mettez à jour l'état
         />
 
@@ -110,8 +110,8 @@ function DevisForm() {
         <input
           type="text"
           className="input input-bordered w-full max-w-xs"
-          disabled={activerChampsForm}
-          value={devisInfos.ADRCLI} // Assurez-vous d'avoir cet état dans votre composant
+          disabled={!activerChampsForm}
+          defaultValue={devisInfos.ADRCLI} // Assurez-vous d'avoir cet état dans votre composant
           onChange={(e) => setDevisInfo({collone:"ADRCLI", valeur:e.target.value})} // Mettez à jour l'état
         />
 
@@ -119,8 +119,8 @@ function DevisForm() {
         <input
           type="text"
           className="input input-bordered w-full max-w-xs"
-          disabled={activerChampsForm}
-          value={devisInfos.cp} // Assurez-vous d'avoir cet état dans votre composant
+          disabled={!activerChampsForm}
+          defaultValue={devisInfos.cp} // Assurez-vous d'avoir cet état dans votre composant
           onChange={(e) => setDevisInfo({collone:"cp", valeur:e.target.value})} // Mettez à jour l'état
         />
 
@@ -128,14 +128,14 @@ function DevisForm() {
         <input
           type="email"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={!activerChampsForm}
+          disabled={!activerChampsForm}
         />
 
         <label className="block font-medium">Téléphone :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={!activerChampsForm}
+          disabled={!activerChampsForm}
         />
       </div>
 
@@ -149,29 +149,29 @@ function DevisForm() {
         <input
           type="date"
           className="input input-bordered w-full max-w-xs"
-          disabled={activerChampsForm}
-          value={devisInfos.DATEBL} // Assurez-vous d'avoir cet état dans votre composant
+          disabled={!activerChampsForm}
+          defaultValue={devisInfos.DATEBL} // Assurez-vous d'avoir cet état dans votre composant
           onChange={(e) => setDevisInfo({collone:"DATEBL", valeur:e.target.value})} // Mettez à jour l'état
         />
         <label className="block font-medium">Transport :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={!activerChampsForm}
+          disabled={!activerChampsForm}
         />
 
         <label className="block font-medium">À l'attention de :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={!activerChampsForm}
+          disabled={!activerChampsForm}
         />
 
         <label className="block font-medium">Délai de livraison :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={!activerChampsForm}
+          disabled={!activerChampsForm}
         />
       </div>
 
@@ -186,20 +186,20 @@ function DevisForm() {
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={!activerChampsForm}
+          disabled={!activerChampsForm}
         />
 
         <label className="block font-medium">RSREP :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={!activerChampsForm}
+          disabled={!activerChampsForm}
         />
 
         <label className="block font-medium">Code Secteur :</label>
         <select
           className="select select-bordered w-full max-w-xs"
-          disabled={activerChampsForm}
+          disabled={!activerChampsForm}
           onChange={(e) => handleSelectDevis(e)}
         >
           {DevisList.map((devis) => (
@@ -213,21 +213,21 @@ function DevisForm() {
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={!activerChampsForm}
+          disabled={!activerChampsForm}
         />
 
         <label className="block font-medium mt-4">Commentaire :</label>
         <textarea
           rows="3"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={!activerChampsForm}
+          disabled={!activerChampsForm}
         ></textarea>
 
         <label className="block font-medium mt-4">Affaire :</label>
         <input
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
-          readOnly={!activerChampsForm}
+          disabled={!activerChampsForm}
         />
       </div>
     </>
