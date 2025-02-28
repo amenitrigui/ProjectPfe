@@ -83,6 +83,7 @@ const Recherche = () => {
   };
 
   const handleValidate = () => {
+   
     navigate("/DevisFormTout");
   };
 
