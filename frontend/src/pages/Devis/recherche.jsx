@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
@@ -9,6 +9,7 @@ import {
   setDevisInfoEntiere,
 } from "../../app/devis_slices/devisSlice";
 import DataTable from "react-data-table-component";
+import { FaArrowLeft } from "react-icons/fa"; // Import de l'icône
 
 const Recherche = () => {
   const navigate = useNavigate();
@@ -20,19 +21,18 @@ const Recherche = () => {
   const devisList = useSelector((state) => state.DevisCrud.DevisList);
   const status = useSelector((state) => state.DevisCrud.status);
   const erreur = useSelector((state) => state.DevisCrud.erreur);
-  const [selectedResult, setSelectedResult] = useState(null);
-  const devisinfo = useSelector((state) => state.DevisCrud.devisInfo);
-  console.log(devisinfo);
-  const handleselecteddevis = ({selectedRows}) => {
+
+  const handleselecteddevis = ({ selectedRows }) => {
     dispatch(setDevisInfoEntiere(selectedRows[0]));
   };
-  const handleSearch = async () => {
+
+  const handleSearch = () => {
     if (!valeurRecherche) {
       alert("Veuillez entrer une valeur pour la recherche.");
       return;
     }
     if (!filtrerPar) {
-      alert("veuillez sélectionner un filtre de recherche.");
+      alert("Veuillez sélectionner un filtre de recherche.");
       return;
     }
 
@@ -50,9 +50,10 @@ const Recherche = () => {
         dispatch(getDevisParPeriode(valeurRecherche));
         break;
       default:
-        console.log("valeur de filtre non définit");
+        console.log("Valeur de filtre non définie");
     }
   };
+
   const customStyles = {
     headCells: {
       style: {
@@ -84,6 +85,7 @@ const Recherche = () => {
   const handleValidate = () => {
     navigate("/DevisFormTout");
   };
+
   const collones = [
     { name: "Numéro de devis", selector: (row) => row.NUMBL, sortable: true },
     { name: "Code client", selector: (row) => row.CODECLI, sortable: true },
@@ -95,9 +97,19 @@ const Recherche = () => {
     { name: "Raison Sociale Représentant", selector: (row) => row.RSREP },
     { name: "Code secteur", selector: (row) => row.codesecteur },
   ];
+
   return (
     <div className="container mx-auto p-6">
+      {/* Bouton de retour */}
+      <button
+        onClick={() => navigate(-1)}
+        className="flex items-center text-blue-600 hover:text-blue-800 transition duration-200 mb-4"
+      >
+        <FaArrowLeft className="mr-2" /> Retour
+      </button>
+
       <h2 className="text-2xl font-semibold mb-6 text-center">Recherche</h2>
+
       <div className="flex space-x-6">
         <div className="w-1/3 bg-white p-4 rounded-lg shadow-lg">
           <h3 className="text-lg font-medium text-gray-700 mb-4">
@@ -121,13 +133,13 @@ const Recherche = () => {
         </div>
 
         <div className="w-2/3 bg-white p-4 rounded-lg shadow-lg">
-          <h3 className="text-lg font-medium text-gray-700 mb-4"></h3>
           <div className="flex items-center space-x-2">
             <input
               id="searchInput"
               type="text"
               onChange={(e) => setValeurRecherche(e.target.value)}
               className="p-2 border border-gray-300 rounded-lg w-full"
+              placeholder="Entrez votre recherche..."
             />
             <button
               onClick={handleSearch}
@@ -138,6 +150,7 @@ const Recherche = () => {
           </div>
         </div>
       </div>
+
       <DataTable
         data={devisList}
         columns={collones}
@@ -147,7 +160,8 @@ const Recherche = () => {
         striped
         selectableRows
         onSelectedRowsChange={handleselecteddevis}
-      ></DataTable>
+      />
+
       <button
         onClick={handleValidate}
         className="bg-green-600 text-white p-2 rounded-lg hover:bg-green-700 transition duration-200 mt-4"
