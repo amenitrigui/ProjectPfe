@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getDevisParNUMBL, getDevisParCodeClient, getDevisParMontant, getDevisParPeriode } from "../../app/devis_slices/devisSlice";
+import {
+  getDevisParNUMBL,
+  getDevisParCodeClient,
+  getDevisParMontant,
+  getDevisParPeriode,
+} from "../../app/devis_slices/devisSlice";
 
 const Recherche = () => {
   const navigate = useNavigate();
@@ -14,35 +19,39 @@ const Recherche = () => {
   console.log(devisList);
   const status = useSelector((state) => state.DevisCrud.status);
   const erreur = useSelector((state) => state.DevisCrud.erreur);
+  const [selectedResult, setSelectedResult] = useState(null);
 
   const handleSearch = async () => {
     if (!valeurRecherche) {
       alert("Veuillez entrer une valeur pour la recherche.");
       return;
     }
-    if(!filtrerPar) {
+    if (!filtrerPar) {
       alert("veuillez sélectionner un filtre de recherche.");
       return;
     }
 
-    switch(filtrerPar){
-      case("client"): dispatch(getDevisParCodeClient(valeurRecherche)); break;
-      case("devis"): dispatch(getDevisParNUMBL(valeurRecherche)); break;
-      case("montant"): dispatch(getDevisParMontant(valeurRecherche)); break;
-      case("periode"): dispatch(getDevisParPeriode(valeurRecherche)); break;
-      default: console.log("valeur de filtre non définit");
+    switch (filtrerPar) {
+      case "client":
+        dispatch(getDevisParCodeClient(valeurRecherche));
+        break;
+      case "devis":
+        dispatch(getDevisParNUMBL(valeurRecherche));
+        break;
+      case "montant":
+        dispatch(getDevisParMontant(valeurRecherche));
+        break;
+      case "periode":
+        dispatch(getDevisParPeriode(valeurRecherche));
+        break;
+      default:
+        console.log("valeur de filtre non définit");
     }
   };
 
-  // const handleValidate = () => {
-  //   if (!selectedResult) {
-  //     alert("Veuillez sélectionner un résultat avant de valider.");
-  //     return;
-  //   }
-
-  //   // Naviguer vers Devis-Form avec les données sélectionnées
-  //   navigate("/Devis-Form", { state: { formData: selectedResult } });
-  // };
+  const handleValidate = () => {
+    navigate("/DevisFormTout");
+  };
 
   return (
     <div className="container mx-auto p-6">
@@ -88,7 +97,7 @@ const Recherche = () => {
         </div>
       </div>
 
-      {status=="chargement" && <p>Chargement...</p>}
+      {status == "chargement" && <p>Chargement...</p>}
       {erreur && <p className="text-red-600">{erreur}</p>}
       {devisList && devisList.length > 0 && (
         <div className="mt-6">
@@ -100,13 +109,37 @@ const Recherche = () => {
                   <strong>Numéro de devis:</strong> {result.NUMBL}
                 </p>
                 <p>
-                  <strong>Client:</strong> {result.RSCLI}
+                  <strong>code client:</strong> {result.CODECLI}
+                </p>
+                <p>
+                  <strong>Raison Sociale</strong> {result.RSCLI}
+                </p>
+                <p>
+                  <strong>Point de vente </strong> {result.libpv}
+                </p>
+                <p>
+                  <strong>Adresse</strong> {result.ADRCLI}
+                </p>
+                <p>
+                  <strong>Montant</strong> {result.MTTC}
+                </p>
+                <p>
+                  <strong>DATE</strong> {result.DATEBL}
+                </p>
+                <p>
+                  <strong>RAISON SOCIALE de representant </strong>{" "}
+                  {result.RSREP}
+                </p>
+                <p>
+                  <strong>code secteur</strong> {result.codesecteur}
                 </p>
               </li>
             ))}
           </ul>
           <button
-            // onClick={handleValidate}
+            onClick={() => {
+              handleValidate();
+            }}
             className="bg-green-600 text-white p-2 rounded-lg hover:bg-green-700 transition duration-200 mt-4"
           >
             Valider

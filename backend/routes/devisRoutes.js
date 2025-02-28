@@ -41,6 +41,8 @@ router.get("/:dbName/getDevisParPeriode", GetDevisParPeriode);
 
 
 
+router.get("/:dbName/getListeNUMBL", getCodesDevis);
+router.get("/:dbName/getDevisParMontant", getDevisParMontant);
 
 //////////////////////////////////////////////
 
