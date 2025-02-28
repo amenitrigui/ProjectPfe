@@ -6,10 +6,10 @@ const {
   getClientByRsoc,
   getLibpvByNumbl,
   getDevisWithDetails,
- 
+
   getDevisCountByMonthAndYear,
   getDevisValidees,
- 
+
   getCodeRepAndRsRep,
   updateDevis,
   deleteDevis,
@@ -17,19 +17,23 @@ const {
 } = require("../controllers/devisControllerPlaceholder");
 const { getAllcodearticle } = require("../controllers/articleController");
 
-
-
-const { getTousDevis , getNombreDevis,getTotalChifre, creerDevis, getDevis} = require("../controllers/devisController");
-//devis controller mt3na 
+const {
+  getTousDevis,
+  getNombreDevis,
+  getTotalChifre,
+  creerDevis,
+  getDevis,
+  getCodesDevis,
+  getDevisParMontant,
+} = require("../controllers/devisController");
+//devis controller mt3na
 router.post("/:dbName/create", creerDevis);
 router.get("/:dbName/clients", getAllClients);
-router.get("/:dbName/devis/total",getNombreDevis);
-router.get("/:dbName/devis/totalchiffre",getTotalChifre);
+router.get("/:dbName/devis/total", getNombreDevis);
+router.get("/:dbName/devis/totalchiffre", getTotalChifre);
 router.get("/:dbName/getDevis", getDevis);
-
-
-
-
+router.get("/:dbName/getListeNUMBL", getCodesDevis);
+router.get("/:dbName/getDevisParMontant", getDevisParMontant);
 
 //////////////////////////////////////////////
 

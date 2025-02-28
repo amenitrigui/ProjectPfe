@@ -9,19 +9,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { setInsertionDepuisDevisForm } from "../../app/client_slices/clientSlice";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { getdevis } from "../../app/devis_slices/devisSlice";
-import Select from "react-select";
+import { getdevis, setDevisInfo, setDevisInfoEntiere } from "../../app/devis_slices/devisSlice";
 function DevisForm() {
   const DevisList = useSelector((state) => state.DevisCrud.DevisList);
+  const devisInfos = useSelector((state) => state.DevisCrud.devisInfo);
   console.log(DevisList);
+  // * UseEffect #1 : récupérer la liste des codes de devis seulement
   useEffect(() => {
     dispatch(getdevis());
   }, []);
-const handleSelectDevis=((e)=>{
-console.log(e.target.value)
-dispatch(getdevis(e.target.value));
-  
-})
+
+  const handleSelectDevis = (e) => {
+    dispatch(getdevis(e.target.value));
+    console.log(DevisList[0]);
+    dispatch(setDevisInfoEntiere(DevisList[0]))
+  };
   const activerChampsForm = useSelector(
     (state) => state.uiStates.activerChampsForm
   );
@@ -48,7 +50,7 @@ dispatch(getdevis(e.target.value));
         <select
           className="select select-bordered w-full max-w-xs"
           disabled={activerChampsForm}
-          onChange={(e)=>handleSelectDevis(e)}
+          onChange={(e) => handleSelectDevis(e)}
         >
           {DevisList.map((devis) => (
             <option key={devis.NUMBL} value={devis.NUMBL}>
@@ -85,6 +87,7 @@ dispatch(getdevis(e.target.value));
           type="text"
           className="w-full border border-gray-300 rounded-md p-2"
           readOnly={!activerChampsForm}
+          defaultValue={devisInfos.CODECLI}
         />
 
         <label className="block font-medium">Raison Sociale :</label>

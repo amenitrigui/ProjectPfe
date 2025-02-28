@@ -249,16 +249,37 @@ const creerDevis = async (req, res) => {
   }
 };
 
+const getCodesDevis = async (req, res) => {
+  try {
+    const { dbName } = req.params;
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const listeNUMBL = await dbConnection.query(
+      `SELECT NUMBL from dfp order by CAST(NUMBL AS UNSIGNED)`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    );
+
+    return res.status(200).json({
+      message: "tout le code devis recupere avec succes",
+      listeNUMBL: listeNUMBL,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 const getDevis = async (req, res) => {
   try {
     const { dbName } = req.params;
-    const {NUMBL} = req.query;
-    
+    const { NUMBL } = req.query;
+
     const dbConnection = await getDatabaseConnection(dbName, res);
-    if (NUMBL != null) {
+    console.log(NUMBL);
+    if (NUMBL) {
       // devis selectionné
       const devis = await dbConnection.query(
-        `SELECT libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where NUMBL = :NUMBL`,
+        `SELECT NUMBL,libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where NUMBL = :NUMBL`,
         {
           replacements: { NUMBL },
           type: dbConnection.QueryTypes.SELECT,
@@ -267,16 +288,6 @@ const getDevis = async (req, res) => {
       return res
         .status(200)
         .json({ message: "devis recupere avec succes", devis: devis });
-    }else{
-      const ListNumbl = await dbConnection.query(
-        `SELECT NUMBL from dfp   order by  (NUMBL)`,
-        {
-          type: dbConnection.QueryTypes.SELECT,
-        }
-      );
-      return res
-        .status(200)
-        .json({ message: "tout le code devis  recupere avec succe", devis: ListNumbl });
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -294,10 +305,37 @@ const getDevisCreator = async (req, res) => {
   }
 };
 
+const getDevisParMontant = async (req, res) => {
+  try {
+    const { dbName } = req.params;
+    const { montant } = req.query;
+
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    console.log(montant);
+    if (montant) {
+      // devis selectionné
+      const devis = await dbConnection.query(
+        `SELECT NUMBL,libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where MTTC = :montant`,
+        {
+          replacements: { montant },
+          type: dbConnection.QueryTypes.SELECT,
+        }
+      );
+      return res
+        .status(200)
+        .json({ message: "devis recupere avec succes", devis: devis });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getTousDevis,
   getNombreDevis,
   getTotalChifre,
   creerDevis,
   getDevis,
+  getCodesDevis,
+  getDevisParMontant,
 };
