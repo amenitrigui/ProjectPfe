@@ -56,15 +56,17 @@ export const getdevis = createAsyncThunk("Slice/getDevis", async (NUMBL) => {
 });
 export const getDevisParCodeClient = createAsyncThunk(
   "slice/getDevisParCodeClient",
-  async (coldecli) => {
+  async (CODECLI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getDevisParClient`,
       {
         params: {
-          coldecli
+          CODECLI
         }
       }
     );
+    console.log(response)
+    return response.data.codeclient;
   }
 );
 export const getDevisParPeriode =createAsyncThunk(
@@ -78,9 +80,26 @@ export const getDevisParPeriode =createAsyncThunk(
       }
     }
   );
+  return response.data.periode
+  console.log (response)
   }
-)
+);
 
+  
+
+
+export const getDevisParMontant = createAsyncThunk("devisSlice/getDevisParMontant", async (montant) => {
+  const response = await axios.get(
+    `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getDevisParMontant`,
+    {
+      params:{
+        montant
+      }
+    }
+  )
+  console.log(response);
+  return response.data.devis;
+})
 export const devisSlice = createSlice({
   name: "devisSlice",
   initialState: {
@@ -116,6 +135,9 @@ export const devisSlice = createSlice({
     setDevisList: (state, action) => {
       state.DevisList = action.payload;
     },
+    setDevisInfoEntiere: (state, action) => {
+      state.devisInfo = action.payload;
+    }
   },
 
   extraReducers: (builder) => {
@@ -153,7 +175,7 @@ export const devisSlice = createSlice({
         state.status = "reussi";
       })
       .addCase(getNombrededevis.rejected, (state, action) => {
-        state.nombreDeDevis = action.payload;
+        state.erreur = action.payload;
         state.status = "echoue";
       })
 
@@ -166,7 +188,7 @@ export const devisSlice = createSlice({
         state.status = "reussi";
       })
       .addCase(getTotalChifre.rejected, (state, action) => {
-        state.totalchifre = action.payload;
+        state.erreur = action.payload;
         state.status = "echoue";
       })
 
@@ -190,11 +212,37 @@ export const devisSlice = createSlice({
         state.status = "reussi";
       })
       .addCase(getDevisParCodeClient.rejected, (state, action) => {
-        state.devisInfo = action.payload;
+        state.erreur = action.payload;
         state.status = "echoue";
-      });
+      })
+      
+
+      .addCase(getDevisParMontant.pending, (state) => {
+        state.status = "chargeement";
+      })
+      .addCase(getDevisParMontant.fulfilled, (state, action) => {
+        state.DevisList = action.payload;
+        state.status = "reussi";
+      })
+      .addCase(getDevisParMontant.rejected, (state, action) => {
+        state.status = "echoue";
+        state.erreur = action.payload;
+      })
+
+      .addCase(getDevisParPeriode.pending, (state) => {
+        state.status = "chargeement";
+      })
+      .addCase(getDevisParPeriode.fulfilled, (state, action) => {
+        state.DevisList = action.payload;
+        state.status = "reussi";
+      })
+      .addCase(getDevisParPeriode.rejected, (state, action) => {
+        state.erreur = action.payload;
+        state.status = "echoue";
+      })
+      
   },
 });
-export const { setDevisInfo, setDevisList } = devisSlice.actions;
+export const { setDevisInfo, setDevisList, setDevisInfoEntiere } = devisSlice.actions;
 
 export default devisSlice.reducer;

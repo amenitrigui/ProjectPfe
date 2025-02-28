@@ -10,7 +10,10 @@ const { google } = require("googleapis");
 const handlebars = require("handlebars");
 const fs = require("fs");
 
-const { getDatabaseConnection, verifyTokenValidity } = require("../common/commonMethods");
+const {
+  getDatabaseConnection,
+  verifyTokenValidity,
+} = require("../common/commonMethods");
 
 // * initialisation de client OAuth2 avec
 // * les paramètres: clientId, clientSecret, redirectUrl
@@ -133,7 +136,7 @@ const loginUser = async (req, res) => {
     // Création du token JWT
     const token = jwt.sign(
       { codeuser: user.codeuser },
-      
+
       process.env.JWT_SECRET_KEY,
       { expiresIn: process.env.JWT_EXPIRATION }
     );
@@ -181,10 +184,9 @@ const selectDatabase = async (req, res) => {
     const codeuser = decoded.codeuser;
 
     // ! await keyword is VERY important
-    const dbConnection = await getDatabaseConnection(databaseName,res);
+    const dbConnection = await getDatabaseConnection(databaseName, res);
 
     const devisList = await dbConnection.query(
-      
       `SELECT YEAR(datebl) AS year, MAX(numbl) AS numbl
        FROM dfp
        WHERE usera = :codeuser
@@ -194,9 +196,8 @@ const selectDatabase = async (req, res) => {
         replacements: { codeuser },
         type: dbConnection.QueryTypes.SELECT,
       }
-
     );
-console.log(devisList)
+    console.log(devisList);
 
     return res.status(200).json({
       message: `Connecté à la base ${databaseName}`,
@@ -229,9 +230,9 @@ const getDevisDetails = async (req, res) => {
   }
 
   try {
-    const decoded = verifyTokenValidity(req,res);
+    const decoded = verifyTokenValidity(req, res);
     const codeuser = decoded.codeuser;
-    const dbConnection = getDatabaseConnection(databaseName,res);
+    const dbConnection = getDatabaseConnection(databaseName, res);
 
     const [devisDetails, ldfpDetails] = await Promise.all([
       dbConnection.query(
@@ -327,7 +328,7 @@ const getLatestDevisByYear = async (req, res) => {
     );
     const codeuser = decoded.codeuser;
 
-    const dbConnection = getDatabaseConnection(databaseName,res);
+    const dbConnection = getDatabaseConnection(databaseName, res);
 
     const latestDevis = await dbConnection.query(
       `SELECT 
@@ -417,7 +418,7 @@ const getAllClients = async (req, res) => {
     const decoded = verifyTokenValidity(req, res);
     const codeuser = decoded.codeuser;
 
-    const dbConnection = getDatabaseConnection(databaseName,res);
+    const dbConnection = getDatabaseConnection(databaseName, res);
 
     // Récupérer tous les clients
     const clients = await dbConnection.query(
@@ -472,7 +473,7 @@ const getAllSectors = async (req, res) => {
   }
 
   try {
-    const dbConnection = getDatabaseConnection(databaseName,res);
+    const dbConnection = getDatabaseConnection(databaseName, res);
 
     // Récupérer tous les secteurs de la table secteur
     const sectors = await dbConnection.query(
@@ -524,16 +525,16 @@ const sendPasswordResetEmail = async (req, res) => {
 
     const passwordResetToken = jwt.sign(
       {
-        codeuser: user.codeuser
+        codeuser: user.codeuser,
       },
       process.env.JWT_SECRET_KEY,
       {
-        expiresIn:  process.env.JWT_PASSWORD_RESET_EXPIRATION,
+        expiresIn: process.env.JWT_PASSWORD_RESET_EXPIRATION,
       }
     );
 
     const accessToken = await oAuth2Client.getAccessToken();
-console.log("Access Token:", accessToken);
+    console.log("Access Token:", accessToken);
 
     const transporter = nodeMailer.createTransport({
       service: "gmail",
@@ -543,15 +544,17 @@ console.log("Access Token:", accessToken);
         accessToken: accessToken.token,
         clientId: process.env.NODEMAILER_CLIENT_ID,
         clientSecret: process.env.NODEMAILER_CLIENT_SECRET,
-        refreshToken: process.env.NODEMAILER_REFRESH_TOKEN,//j'ai pas compris 
+        refreshToken: process.env.NODEMAILER_REFRESH_TOKEN, //j'ai pas compris
       },
     });
 
-    const source = fs.readFileSync("PasswordResetTemplate.html", 'utf-8').toString();
+    const source = fs
+      .readFileSync("PasswordResetTemplate.html", "utf-8")
+      .toString();
     const template = handlebars.compile(source);
     const replacements = {
-      url: `${process.env.FRONTEND_URL}/EmailEnvoye`
-    }
+      url: `${process.env.FRONTEND_URL}/EmailEnvoye`,
+    };
 
     const htmlToSend = template(replacements);
 
@@ -560,18 +563,21 @@ console.log("Access Token:", accessToken);
       to: email,
       subject: "Password Reset",
       text: "test",
-      html: htmlToSend
+      html: htmlToSend,
     };
     await transporter.sendMail(mailOptions);
-    return res.status(200).json(
-      {
-        message: "Email de réinitialisation envoyé avec succès",
-        passwordResetToken
-      }
-    );
+    return res.status(200).json({
+      message: "Email de réinitialisation envoyé avec succès",
+      passwordResetToken,
+    });
   } catch (error) {
-    console.error("Erreur lors de l'envoi de mail de réinitialisation de mot de passe: ",error);
-    return res.status(500).json({ message: "Error sending password reset email.", error });
+    console.error(
+      "Erreur lors de l'envoi de mail de réinitialisation de mot de passe: ",
+      error
+    );
+    return res
+      .status(500)
+      .json({ message: "Error sending password reset email.", error });
   }
 };
 
@@ -591,14 +597,14 @@ const passwordReset = async (req, res) => {
       .status(401)
       .json({ message: "L'utilisateur n'est pas authentifié" });
   }
-  
+
   if (!password) {
     return res.status(500).json({
       message:
-      "Le mot de passe à utiliser lors de réinitialisation ne peut pas etre vide",
+        "Le mot de passe à utiliser lors de réinitialisation ne peut pas etre vide",
     });
   }
-  const decodedJWT = verifyTokenValidity(req,res);
+  const decodedJWT = verifyTokenValidity(req, res);
 
   try {
     const user = await User.findOne({ where: { email } });
@@ -614,7 +620,9 @@ const passwordReset = async (req, res) => {
     user.motpasse = hashedPassword;
     await user.save();
 
-    return res.status(200).json({ message: "Mot de passe modifié avec succès" });
+    return res
+      .status(200)
+      .json({ message: "Mot de passe modifié avec succès" });
   } catch (error) {
     return res.status(500).json({
       message:

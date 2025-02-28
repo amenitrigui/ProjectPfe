@@ -1,77 +1,56 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import {
+  getdevis,
+  getDevisParCodeClient,
+  getDevisParMontant,
+  getDevisParPeriode,
+} from "../../app/devis_slices/devisSlice";
 
 const Recherche = () => {
-  const [selectedCriteria, setSelectedCriteria] = useState("client");
-  const [searchValue, setSearchValue] = useState("");
-  const [selectedDatabase, setSelectedDatabase] = useState(
-    localStorage.getItem("selectedDatabase") || ""
-  );
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [results, setResults] = useState([]);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [valeurRecherche, setValeurRecherche] = useState("");
+  const [filtrerPar, setFiltrerPar] = useState("");
+
+  const devisList = useSelector((state) => state.DevisCrud.DevisList);
+  const status = useSelector((state) => state.DevisCrud.status);
+  const erreur = useSelector((state) => state.DevisCrud.erreur);
   const [selectedResult, setSelectedResult] = useState(null);
 
-  const navigate = useNavigate();
-
-  // Stocker la base de données sélectionnée
-  useEffect(() => {
-    localStorage.setItem("selectedDatabase", selectedDatabase);
-  }, [selectedDatabase]);
-
-  const handleCriteriaChange = (e) => {
-    setSelectedCriteria(e.target.value);
-  };
-
-  const handleSearchInputChange = (e) => {
-    setSearchValue(e.target.value);
-  };
-
   const handleSearch = async () => {
-    if (!searchValue) {
+    if (!valeurRecherche) {
       alert("Veuillez entrer une valeur pour la recherche.");
       return;
     }
-  
-    setLoading(true);
-    setError("");
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/devis/search/${selectedCriteria}/${selectedDatabase}/${searchValue}`
-      );
-  
-      if (!response.ok) {
-        throw new Error(`Erreur ${response.status}: ${response.statusText}`);
-      }
-  
-      const data = await response.json();
-      setResults(data.results);
-  
-      // Stocker les résultats de recherche dans localStorage
-      localStorage.setItem("searchResults", JSON.stringify(data.results));
-  
-    } catch (err) {
-      console.error("Erreur de requête API:", err);
-      setError("Une erreur est survenue lors de la récupération des résultats.");
-    } finally {
-      setLoading(false);
-    }
-  };
-  
-
-  const handleValidate = () => {
-    if (!selectedResult) {
-      alert("Veuillez sélectionner un résultat avant de valider.");
+    if (!filtrerPar) {
+      alert("veuillez sélectionner un filtre de recherche.");
       return;
     }
 
-    // Naviguer vers Devis-Form avec les données sélectionnées
-    navigate("/Devis-Form", { state: { formData: selectedResult } });
+    switch (filtrerPar) {
+      case "client":
+        dispatch(getDevisParCodeClient(valeurRecherche));
+        break;
+      case "devis":
+        dispatch(getdevis(valeurRecherche));
+        break;
+      case "montant":
+        dispatch(getDevisParMontant(valeurRecherche));
+        break;
+      case "periode":
+        dispatch(getDevisParPeriode(valeurRecherche));
+        break;
+      default:
+        console.log("valeur de filtre non définit");
+    }
   };
 
-  const handleCancel = () => {
-    setSearchValue("");
-    setResults([]);
+  const handleValidate = () => {
+   
+    navigate("/DevisFormTout");
   };
 
   return (
@@ -79,19 +58,20 @@ const Recherche = () => {
       <h2 className="text-2xl font-semibold mb-6 text-center">Recherche</h2>
       <div className="flex space-x-6">
         <div className="w-1/3 bg-white p-4 rounded-lg shadow-lg">
-          <h3 className="text-lg font-medium text-gray-700 mb-4">Recherche par</h3>
+          <h3 className="text-lg font-medium text-gray-700 mb-4">
+            Recherche par
+          </h3>
           <div className="space-y-2">
             {["devis", "client", "montant", "periode", "article"].map(
-              (criteria) => (
-                <label key={criteria} className="flex items-center">
+              (filtre) => (
+                <label key={filtre} className="flex items-center">
                   <input
                     type="radio"
-                    value={criteria}
-                    checked={selectedCriteria === criteria}
-                    onChange={handleCriteriaChange}
+                    name="filtres"
                     className="mr-2"
+                    onClick={() => setFiltrerPar(filtre)}
                   />
-                  {criteria.charAt(0).toUpperCase() + criteria.slice(1)}
+                  {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                 </label>
               )
             )}
@@ -99,18 +79,12 @@ const Recherche = () => {
         </div>
 
         <div className="w-2/3 bg-white p-4 rounded-lg shadow-lg">
-          <h3 className="text-lg font-medium text-gray-700 mb-4">
-            {selectedCriteria === "client"
-              ? "Nom du client:"
-              : "Numéro de devis:"}
-          </h3>
+          <h3 className="text-lg font-medium text-gray-700 mb-4"></h3>
           <div className="flex items-center space-x-2">
             <input
               id="searchInput"
               type="text"
-              value={searchValue}
-              onChange={handleSearchInputChange}
-              placeholder={`Entrez ${selectedCriteria === "client" ? "le nom du client" : "le numéro de devis"}`}
+              onChange={(e) => setValeurRecherche(e.target.value)}
               className="p-2 border border-gray-300 rounded-lg w-full"
             />
             <button
@@ -123,25 +97,47 @@ const Recherche = () => {
         </div>
       </div>
 
-      {loading && <p>Chargement...</p>}
-      {error && <p className="text-red-600">{error}</p>}
-      {results && results.length > 0 && (
+      {status=="chargement" && <p>Chargement...</p>}
+      {erreur && <p className="text-red-600">{erreur}</p>}
+      {devisList && devisList.length > 0 && (
         <div className="mt-6">
           <h4 className="font-semibold">Résultats :</h4>
           <ul>
-            {results.map((result, index) => (
-              <li
-                key={index}
-                className={`mb-2 p-2 border ${selectedResult === result ? "border-blue-500" : "border-gray-300"} rounded-lg cursor-pointer`}
-                onClick={() => setSelectedResult(result)}
-              >
-                <p><strong>Numéro de devis:</strong> {result.NUMBL}</p>
-                <p><strong>Client:</strong> {result.RSCLI}</p>
+            {devisList.map((result, index) => (
+              <li key={index}>
+                <p>
+                  <strong>Numéro de devis:</strong> {result.NUMBL}
+                </p>
+                <p>
+                  <strong>code client:</strong> {result.CODECLI}
+                </p>
+                <p>
+                  <strong>Raison Sociale</strong> {result.RSCLI}
+                </p>
+                <p>
+                  <strong>Point de vente </strong> {result.libpv}
+                </p>
+                <p>
+                  <strong>Adresse</strong> {result.ADRCLI}
+                </p>
+                <p>
+                  <strong>Montant</strong> {result.MTTC}
+                </p>
+                <p>
+                  <strong>DATE</strong> {result.DATEBL}
+                </p>
+                <p>
+                  <strong>RAISON SOCIALE de representant </strong> {result.RSREP}
+                </p>
+                <p>
+                  <strong>code secteur</strong> {result.codesecteur}
+                </p>
+              
               </li>
             ))}
           </ul>
           <button
-            onClick={handleValidate}
+            onClick={()=>{handleValidate()}}
             className="bg-green-600 text-white p-2 rounded-lg hover:bg-green-700 transition duration-200 mt-4"
           >
             Valider
