@@ -95,7 +95,7 @@ function DevisForm() {
         <label className="block font-medium">Code Client :</label>
         <input
           type="text"
-          className="input input-bordered w-full max-w-xs"
+          className="w-full border border-gray-300 rounded-md p-2"
           disabled={!activerChampsForm}
           defaultValue={devisInfos.CODECLI} // Assurez-vous d'avoir cet état dans votre composant
           onChange={(e) =>
@@ -106,7 +106,7 @@ function DevisForm() {
         <label className="block font-medium">Raison Sociale :</label>
         <input
           type="text"
-          className="input input-bordered w-full max-w-xs"
+          className="w-full border border-gray-300 rounded-md p-2"
           disabled={!activerChampsForm}
           defaultValue={devisInfos.RSCLI} // Assurez-vous d'avoir cet état dans votre composant
           onChange={(e) =>
@@ -117,7 +117,7 @@ function DevisForm() {
         <label className="block font-medium">Adresse :</label>
         <input
           type="text"
-          className="input input-bordered w-full max-w-xs"
+          className="w-full border border-gray-300 rounded-md p-2"
           disabled={!activerChampsForm}
           defaultValue={devisInfos.ADRCLI} // Assurez-vous d'avoir cet état dans votre composant
           onChange={(e) =>
@@ -128,7 +128,7 @@ function DevisForm() {
         <label className="block font-medium">Code Postal :</label>
         <input
           type="text"
-          className="input input-bordered w-full max-w-xs"
+          className="w-full border border-gray-300 rounded-md p-2"
           disabled={!activerChampsForm}
           defaultValue={devisInfos.cp} // Assurez-vous d'avoir cet état dans votre composant
           onChange={(e) =>
@@ -160,7 +160,7 @@ function DevisForm() {
         <label className="block font-medium">Date :</label>
         <input
           type="date"
-          className="input input-bordered w-full max-w-xs"
+          className="w-full border border-gray-300 rounded-md p-2"
           disabled={!activerChampsForm}
           defaultValue={devisInfos.DATEBL} // Assurez-vous d'avoir cet état dans votre composant
           onChange={(e) =>

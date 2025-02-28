@@ -90,7 +90,7 @@ export const getDevisParCodeClient = createAsyncThunk(
 export const getDevisParPeriode = createAsyncThunk(
   "slice/getDevisParPeriode",
   async (DATEBL) => {
-    console.log(DATEBL)
+    console.log(DATEBL);
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getDevisParPeriode`,
       {
@@ -100,6 +100,16 @@ export const getDevisParPeriode = createAsyncThunk(
       }
     );
     return response.data.devis;
+  }
+);
+
+export const getListeNumbl = createAsyncThunk(
+  "devisSlice/getListeNUMBL",
+  async () => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getListeNUMBL`
+    );
+    console.log(response);
   }
 );
 
@@ -198,7 +208,8 @@ export const devisSlice = createSlice({
       .addCase(getDevisParNUMBL.pending, (state) => {
         state.status = "chargeement";
       })
-      .addCase(getDevisParNUMBL.fulfilled, (state, action) => { 
+      .addCase(getDevisParNUMBL.fulfilled, (state, action) => {
+        state.DevisList = action.payload;
         state.devisInfo = action.payload[0];
         state.status = "reussi";
       })
@@ -230,7 +241,7 @@ export const devisSlice = createSlice({
         state.status = "echoue";
         state.erreur = action.payload;
       })
-      
+
       .addCase(getDevisParPeriode.pending, (state) => {
         state.status = "chargeement";
       })
@@ -241,8 +252,7 @@ export const devisSlice = createSlice({
       .addCase(getDevisParPeriode.rejected, (state, action) => {
         state.erreur = action.payload;
         state.status = "echoue";
-      })
-      
+      });
   },
 });
 export const { setDevisInfo, setDevisList, setDevisInfoEntiere } =
