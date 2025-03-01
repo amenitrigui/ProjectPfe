@@ -34,14 +34,9 @@ oAuth2Client.setCredentials({
   refresh_token: process.env.NODEMAILER_REFRESH_TOKEN,
 });
 
-/**
- * Description
- * Enregistrer un utilisateur dans la bd
- * @verb POST
- * @author Unknown
- * @date 2025-02-07
- * @returns {status}
- */
+// * enregistrer une nouvelle utilisateur
+// * dans la base des données ErpSole
+
 const registerUser = async (req, res) => {
   const { email, motpasse, nom } = req.body;
 
@@ -87,14 +82,8 @@ const registerUser = async (req, res) => {
   }
 };
 
-/**
- * Description
- * Generer un jwt d'accès pour un utilisateur déjà inscrit
- * @verb POST
- * @author Unknown
- * @date 2025-02-07
- * @returns {status}
- */
+// * Generer un jwt d'accès pour un utilisateur déjà inscrit
+
 const loginUser = async (req, res) => {
   const { nom, motpasse } = req.body;
 
@@ -163,14 +152,9 @@ const loginUser = async (req, res) => {
   }
 };
 
-/**
- * Description
- * Recupère la liste de devis pour une sociète donnée
- * @author Unknown
- * @date 2025-02-07
- * @returns {status}
- */
-const selectDatabase = async (req, res) => {
+// * Recupère la liste de devis pour une sociète donnée
+// ! this does not belong in here
+selectDatabase = async (req, res) => {
   const { databaseName } = req.body;
 
   if (!databaseName) {
@@ -502,14 +486,9 @@ const getAllSectors = async (req, res) => {
   }
 };
 
-/**
- * Description
- * Envoyer un email de réinitialisation de mot de passe
- * pour un email donné si un utilisateur ayant cet email existe
- * @author Mahdi
- * @date 2025-02-07
- * @returns {status}
- */
+// * Envoyer un email de réinitialisation de mot de passe
+// * pour un email donné si un utilisateur ayant cet email existe
+
 const sendPasswordResetEmail = async (req, res) => {
   const { email } = req.body;
   if (!email) {
@@ -581,14 +560,9 @@ const sendPasswordResetEmail = async (req, res) => {
   }
 };
 
-/**
- * Description
- * réinitialiser le mot de passe pour un email donné
- * si un utilisateur ayant cet email existe
- * @author Mahdi
- * @date 2025-02-07
- * @returns {any}
- */
+// * réinitialiser le mot de passe pour un email donné
+// * si un utilisateur ayant cet email existe
+
 const passwordReset = async (req, res) => {
   const { email, password, token } = req.body;
 

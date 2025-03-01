@@ -4,14 +4,9 @@ const {
   verifyTokenValidity,
 } = require("../common/commonMethods");
 
-/**
- * Description
- * Récuperer la liste des clients à partir de bd
- * @author Ameni
- * @date 2025-02-13
- * @param {String} dbName
- * @returns {ListeClients}
- */
+// * récupèrer la liste des clients à partir de la base des données
+// * dbName donnée comme paramètre de requete
+
 const getListeClients = async (req, res) => {
   const { dbName } = req.params;
   try {
@@ -31,19 +26,11 @@ const getListeClients = async (req, res) => {
   }
 };
 
-/**
- * Description
- * Filtrer la liste des clients
- * @author Ameni
- * @date 2025-02-13
- * @param {any} req
- * @param {any} res
- * @returns {ListeClientsFiltre}
- */
+// * retourner une liste des clients filtrée, selon le table
+// * filters données par le client
 const filtrerListeClients = async (req, res) => {
   const { dbName } = req.params;
   const { filters } = req.query;
-  console.log(filters);
 
   const dbConnection = await getDatabaseConnection(dbName, res);
   // ? liste des conditions
@@ -94,25 +81,13 @@ const filtrerListeClients = async (req, res) => {
   });
 };
 
-/**
- * Description
- * Ajouter Un client
- * @author Ameni
- * @date 2025-02-13
- * @param {String} dbName
- * @param {String} code
- * @param {String} rsoc
- * @param {String} adresse
- * @param {String} cp
- * @param {String} email
- * @param {String} telephone
- * @param {String} desrep
- * @returns {any}
- */
+// * Inserer les informations d'un client clientInfos
+// * dans la base des données dbName donnée comme paramètre de requete
+
 const AjouterClient = async (req, res) => {
   const { dbName } = req.params;
   const { clientInfos } = req.body;
-  console.log(clientInfos)
+
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const Client = defineClientModel(dbConnection);
@@ -133,27 +108,23 @@ const AjouterClient = async (req, res) => {
   }
 };
 
-/**
- * Description
- * Supprimer un client de la bd
- * @author Mahdi
- * @date 2025-02-13
- * @param {Strign} dbName
- * @param {String} code
- * @returns {status}
- */
+// * supprimer un client ou plusieurs clients par leurs codes
+// * qui se trouvent dans le tableau clients envoyé par le client
+// * de la base des données dbName donnée comme paramètre de requete
+
 const supprimerClient = async (req, res) => {
   const { dbName } = req.params;
+  // ? tableau contenant les codes des clients à supprimer
   const { clients } = req.body;
-  console.log(clients);
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const Client = defineClientModel(dbConnection);
-    
-    await Client.destroy({ where: {code: clients}});
-    console.log(code)
 
-    return res.status(200).json({ message: "client supprimé avec succès" });
+    await Client.destroy({ where: { code: clients } });
+
+    return res
+      .status(200)
+      .json({ message: "client(s) supprimé(s) avec succès" });
   } catch (error) {
     return res
       .status(500)
@@ -161,15 +132,10 @@ const supprimerClient = async (req, res) => {
   }
 };
 
-/**
- * Description
- * Récuperer un client par son code
- * @author Mahdi
- * @date 2025-02-13
- * @param {String} dbName
- * @param {String} code
- * @returns {client}
- */
+// * récupere un client à partir de la base des données
+// * dbName donnée comme paramètre de requete
+// * par son code, aussi donnée comme paramètre de requete
+
 const getClient = async (req, res) => {
   const { dbName } = req.params;
   const { code } = req.params;
@@ -177,51 +143,51 @@ const getClient = async (req, res) => {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const Client = defineClientModel(dbConnection);
     const client = await Client.findOne({ where: { code: code } });
-    if (client)
-      return res.status(200).json({ client });
+    if (client) return res.status(200).json({ client });
 
-    return res.status(404).json({ message: "Client introuvable" }); 
-
+    return res.status(404).json({ message: "Client introuvable" });
   } catch (error) {
-    return res.status(500).json({ message: "Une erreur est survenue lors de la récupération du client.", error }); // Correct French
+    return res.status(500).json({
+      message: "Une erreur est survenue lors de la récupération du client.",
+      error,
+    }); // Correct French
   }
 };
 
-/**
- * Description
- * @author Mahdi
- * @date 2025-02-13
- * @param {String} dbName
- * @param {String} code
- * @param {String} telephone
- * @param {String} desrep
- * @param {String} email
- * @param {String} cp
- * @param {String} adresse
- * @param {String} rsoc
- * @returns {nouvClient}
- */
-const majClient = async(req, res) => {
-  const { dbName } = req.params;
-  const { clientUpdate} = req.body;
+// * mettre à jour un client d'une societé donnée comme paramètre de requete (dbName)
 
-  try{
+const majClient = async (req, res) => {
+  const { dbName } = req.params;
+  const { clientUpdate } = req.body;
+
+  try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const Client = defineClientModel(dbConnection);
     const client = await Client.findOne({ where: { code: clientUpdate.code } });
-    
 
-    if(client){
-      await Client.update({rsoc: clientUpdate.rsoc, adresse: clientUpdate.adresse, cp: clientUpdate.cp, email: clientUpdate.email, telephone: clientUpdate.telephone, desrep :clientUpdate.desrep}, { where: {code: clientUpdate.code } });
-      return res.status(200).json({message: "Client mise à jour avec succès"})
+    if (client) {
+      await Client.update(
+        {
+          rsoc: clientUpdate.rsoc,
+          adresse: clientUpdate.adresse,
+          cp: clientUpdate.cp,
+          email: clientUpdate.email,
+          telephone: clientUpdate.telephone,
+          desrep: clientUpdate.desrep,
+        },
+        { where: { code: clientUpdate.code } }
+      );
+      return res
+        .status(200)
+        .json({ message: "Client mise à jour avec succès" });
     }
-  }catch(error) {
+  } catch (error) {
     return res.status(500).json({
       message: "un erreur est survenu lors de mise à jour de client ",
-      error: error.message
-    })
+      error: error.message,
+    });
   }
-}
+};
 
 module.exports = {
   getListeClients,
@@ -229,5 +195,5 @@ module.exports = {
   AjouterClient,
   supprimerClient,
   getClient,
-  majClient
+  majClient,
 };

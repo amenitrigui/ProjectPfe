@@ -1,16 +1,11 @@
-const { Sequelize, QueryTypes } = require("sequelize");
-const defineClientModel = require("../models/client");
+const { QueryTypes } = require("sequelize");
 const defineDevisModel = require("../models/Devis");
 const { getSequelizeConnection } = require("../db/config");
-
-const jwt = require("jsonwebtoken");
-const defineArticleModel = require("../models/article");
-
 const defineDfpModel = require("../models/Dfp");
-
 const defineLdfpModel = require("../models/Ldfp ");
 const { getDatabaseConnection } = require("../common/commonMethods");
-const { error } = require("console");
+
+// * récuperer la liste des dévis d'une societé donnée (dbName)
 
 const getTousDevis = async (req, res) => {
   const { dbName } = req.params;
@@ -49,6 +44,9 @@ const getTousDevis = async (req, res) => {
     });
   }
 };
+
+// * récuperer la somme de colonne MTTC pour une societé donnée (dbName)
+
 const getTotalChifre = async (req, res) => {
   const { dbName } = req.params;
   if (!dbName) {
@@ -75,6 +73,8 @@ const getTotalChifre = async (req, res) => {
     });
   }
 };
+
+// * récuperer le nombre de dévis genérer pour une societé donnée (dbName)
 
 const getNombreDevis = async (req, res) => {
   const { dbName } = req.params;
@@ -114,6 +114,9 @@ const getNombreDevis = async (req, res) => {
     });
   }
 };
+
+// * créer un devis dans une societé donnée (dbName)
+
 const creerDevis = async (req, res) => {
   const { dbName } = req.params;
   const {
@@ -249,6 +252,10 @@ const creerDevis = async (req, res) => {
     });
   }
 };
+
+// * récuperer la liste de devis créés dans une date spécifique (DATEBL)
+// * pour une societé donnée (dbName)
+
 const GetDevisParPeriode = async (req, res) => {
   try {
     const { dbName } = req.params;
@@ -269,6 +276,10 @@ const GetDevisParPeriode = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+// * récuperer la liste de devis créés pour un client spécifique (CODECLI)
+// * pour une societé donnée (dbName)
+
 const GetDevisListParClient = async (req, res) => {
   try {
     const { dbName } = req.params;
@@ -289,6 +300,9 @@ const GetDevisListParClient = async (req, res) => {
   }
 };
 
+// * récuperer la liste des codes de devis (NUMBL)
+// * pour une societé donnée (dbName)
+
 const getCodesDevis = async (req, res) => {
   try {
     const { dbName } = req.params;
@@ -308,6 +322,9 @@ const getCodesDevis = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+// * récuperer un devis par son code (NUMBL)
+// * pour une societé donnée (dbName)
 
 const getDevisParNUMBL = async (req, res) => {
   try {
@@ -334,6 +351,10 @@ const getDevisParNUMBL = async (req, res) => {
   }
 };
 
+// * récuperer l'utilisateur qui a crée un devis à partir
+// * de la base des données ErpSole
+// * pour une societé donnée
+
 const getDevisCreator = async (req, res) => {
   const dbConnection = getDatabaseConnection("UserErpSole", res);
   const result = await dbConnection.query(`SELECT  FROM utlisateur `, {
@@ -344,6 +365,9 @@ const getDevisCreator = async (req, res) => {
     return res.status(200).json({ result });
   }
 };
+
+// * récuperer toutes les devis par montant
+// * pour une societé donnée (dbName)
 
 const getDevisParMontant = async (req, res) => {
   try {

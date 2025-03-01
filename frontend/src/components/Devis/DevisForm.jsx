@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import {
   getDevisList,
   getDevisParNUMBL,
+  getListeNumbl,
   setDevisInfo,
   setDevisInfoEntiere,
 } from "../../app/devis_slices/devisSlice";
@@ -21,6 +22,7 @@ function DevisForm() {
   // * UseEffect #1 : récupérer la liste des codes de devis seulement
   useEffect(() => {
     dispatch(getDevisParNUMBL());
+    dispatch(getListeNumbl())
   }, []);
 
   const handleSelectDevis = (e) => {

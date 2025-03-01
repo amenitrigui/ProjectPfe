@@ -1,14 +1,11 @@
 const jwt = require("jsonwebtoken");
 const { Sequelize, QueryTypes } = require("sequelize");
 
-/**
- * Description
- * Vérifier la validité d'un jwt
- * @author Mahdi
- * @date 2025-02-07
- * @param {request}
- * @returns {decodedToken}
- */
+// * fonction pour vérifier la validité d'un jwt
+// * critères :
+// * entete "Authorization" existantes
+// * durée de validité encore valable
+
 function verifyTokenValidity(req, res) {
   const authHeader = req.header("Authorization");
   if (!authHeader) {
@@ -30,14 +27,9 @@ function verifyTokenValidity(req, res) {
   return decodedJWT;
 }
 
-/**
- * Description
- * Recuperer un objet de connexion avec un nom d'une base de données donnée
- * @author Unknown
- * @date 2025-02-10
- * @param {any} databaseName
- * @returns {any}
- */
+// * obtention d'un objet Sequelize qui établit la connexion
+// * avec une base des données databaseName donnée en paramètres
+
 const getDatabaseConnection = async (databaseName, res) => {
   try {
     const dbConnection = new Sequelize(
