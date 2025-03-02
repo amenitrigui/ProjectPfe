@@ -17,39 +17,50 @@ import {
   setDevisInfoEntiere,
 } from "../../app/devis_slices/devisSlice";
 function DevisForm() {
+  const dispatch = useDispatch();
+  const navi = useNavigate();
+  // * tableau contenant la liste des devis
   const DevisList = useSelector((state) => state.DevisCrud.DevisList);
+  // * informations d'un devis provenant des champs de cette formulaire
   const devisInfos = useSelector((state) => state.DevisCrud.devisInfo);
   // * UseEffect #1 : récupérer la liste des codes de devis seulement
   useEffect(() => {
     dispatch(getDevisParNUMBL());
-    dispatch(getListeNumbl())
+    dispatch(getListeNumbl());
   }, []);
-
+  // * WIP : sélectionne un dévis de la liste des devis
+  // * pour afficher ses informations dans les champs
+  // * du formulaire
   const handleSelectDevis = (e) => {
     console.log(e.target.value);
     dispatch(getDevisParNUMBL(e.target.value));
-    
+
     dispatch(setDevisInfoEntiere(DevisList[0]));
   };
+  // * boolean pour activer/désactiver champs du formulaire
+  // * initialement false (champs désactivé en mode de consultation)
   const activerChampsForm = useSelector(
     (state) => state.uiStates.activerChampsForm
   );
-  const dispatch = useDispatch();
-  const navi = useNavigate();
   const insertionDepuisDevisForm = useSelector(
     (state) => state.ClientCrud.insertionDepuisDevisForm
   );
-
+  // * méthode pour indiquer qu'on veut ajouter un nouveau client
+  // * à partir de cette formulaire, ceci est nécessaire pour qu'on puisse
+  // * consérver tous données de devis saisies avant l'ajout du client
   const handleAjoutClientRedirect = () => {
     dispatch(setInsertionDepuisDevisForm(true));
 
     navi("/ClientList");
   };
+  // * informations d'un devis, provenant du champs de ce formulaire
   const devisinfo = useSelector((state) => state.DevisCrud.devisInfo);
 
+  // * UseEffect #2 : récupérer la liste des devis
+  // ! à supprimer/remplacer
   useEffect(() => {
-    dispatch(getDevisList())
-  }, [])
+    dispatch(getDevisList());
+  }, []);
 
   return (
     <>

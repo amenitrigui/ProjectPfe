@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { decrement, increment } from "../app/interface_slices/testSlice";
-import { getListeClient } from "../app/client_slices/clientSlice";
-import SideBar from "../components/Common/SideBar";
-import ArticlesDevis from "../components/Devis/ArticlesDevis";
 import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 import Select from "react-select";
@@ -22,7 +18,6 @@ function Parent() {
   const devisList = useSelector((state) => state.DevisCrud.DevisList);
   console.log(devisList);
 
-
   return (
     <>
       <button onClick={() => afficherToast()}>afficher toast</button>
@@ -33,7 +28,6 @@ function Parent() {
           label: devis.NUMBL,
         }))}
       />
-
     </>
   );
 }

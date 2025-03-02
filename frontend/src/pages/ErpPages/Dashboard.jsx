@@ -109,7 +109,7 @@ const Dashboard = () => {
               number: totalchifre.toFixed(2),
               name: "total chifre",
               icon: "cash-outline",
-            }
+            },
           ].map((card, index) => (
             <div className="card" key={index}>
               <div>

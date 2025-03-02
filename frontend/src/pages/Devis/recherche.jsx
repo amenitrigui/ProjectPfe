@@ -14,18 +14,17 @@ import { FaArrowLeft } from "react-icons/fa"; // Import de l'icône
 const Recherche = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  // * valeur de champs de recherche
   const [valeurRecherche, setValeurRecherche] = useState("");
+  // * critère de filtre (par client, par montant ...)
   const [filtrerPar, setFiltrerPar] = useState("");
-
+  // * liste de devis récuperer de store
   const devisList = useSelector((state) => state.DevisCrud.DevisList);
-  const status = useSelector((state) => state.DevisCrud.status);
-  const erreur = useSelector((state) => state.DevisCrud.erreur);
-
+  // * pour obtenir les informations de dévis séléctionné
   const handleselecteddevis = ({ selectedRows }) => {
     dispatch(setDevisInfoEntiere(selectedRows[0]));
   };
-
+  // * pour filtrer la liste des devis
   const handleSearch = () => {
     if (!valeurRecherche) {
       alert("Veuillez entrer une valeur pour la recherche.");
@@ -83,7 +82,6 @@ const Recherche = () => {
   };
 
   const handleValidate = () => {
-   
     navigate("/DevisFormTout");
   };
 

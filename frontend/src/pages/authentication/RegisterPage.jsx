@@ -17,8 +17,13 @@ function RegisterPage() {
     const trimmedPassword = password.trim();
     const trimmedConfirmPassword = confirmPassword.trim();
 
-    if (!trimmedNom || !trimmedEmail || !trimmedPassword || !trimmedConfirmPassword) {
-      console.log("d")
+    if (
+      !trimmedNom ||
+      !trimmedEmail ||
+      !trimmedPassword ||
+      !trimmedConfirmPassword
+    ) {
+      console.log("d");
       setError("Tg");
       return;
     }
@@ -29,27 +34,32 @@ function RegisterPage() {
     }
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          // codeuser: "02",
-          nom: trimmedNom,
-          email: trimmedEmail,
-          motpasse: trimmedPassword,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/users/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            // codeuser: "02",
+            nom: trimmedNom,
+            email: trimmedEmail,
+            motpasse: trimmedPassword,
+          }),
+        }
+      );
 
       const data = await response.json();
 
       if (response.ok) {
-           localStorage.setItem("token", data.token);
-     localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
         navigate("/");
       } else {
-        setError(data.message || "Erreur lors de l'inscription. Veuillez réessayer.");
+        setError(
+          data.message || "Erreur lors de l'inscription. Veuillez réessayer."
+        );
       }
     } catch (error) {
       console.error("Erreur lors de l'inscription:", error);

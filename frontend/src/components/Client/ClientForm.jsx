@@ -1,28 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setClientInfos, setClientInfosEntiere } from "../../app/client_slices/clientSlice";
+import {
+  setClientInfos,
+  setClientInfosEntiere,
+} from "../../app/client_slices/clientSlice";
 import { setDevisInfo } from "../../app/devis_slices/devisSlice";
 
 function ClientForm() {
-  const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
-  const clearApelle=useSelector((state)=>state.uiStates.clearAppele)
-
   const dispatch = useDispatch();
+  // * informations de client
+  const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
+  // * boolean pour appeler une méthode qui efface les champs de formulaire clientform
+  // * initialement false
+  const clearApelle = useSelector((state) => state.uiStates.clearAppele);
+  // * state pour detecter si on essai d'insérer un nouveau client à partir du formulaire de devis
+  // * initialement false
+  const insertionDepuisDevisForm = useSelector(
+    (state) => state.ClientCrud.insertionDepuisDevisForm
+  );
+  console.log(insertionDepuisDevisForm);
   // * mettre à jour les valeurs
   // * des champs du formulaire client / devis
-  const insertionDepuisDevisForm=useSelector((state)=>state.ClientCrud.insertionDepuisDevisForm)
-  console.log(insertionDepuisDevisForm)
   const handleChange = (e, colonne) => {
-    dispatch(setClientInfos({ colonne, valeur: e.target.value }))
-    if (insertionDepuisDevisForm)
-    {
-      setDevisInfo({colonne,valeur:e.target.value});
-      console.log(colonne)
-    console.log(e.target.value)
+    dispatch(setClientInfos({ colonne, valeur: e.target.value }));
+    if (insertionDepuisDevisForm) {
+      setDevisInfo({ colonne, valeur: e.target.value });
+      console.log(colonne);
+      console.log(e.target.value);
     }
-    
-   
-  }
+  };
 
   // * useEffect #1 : Si une opération est effectué (insert, update, delete)
   // * indiqué par la mutation de clearApelle
@@ -31,23 +37,23 @@ function ClientForm() {
   // * est compté comme effet secondaire (side effect)
   // ! Si on n'utilise pas useEffect on va avoir un erreur
   useEffect(() => {
-    
-    if(clearApelle){
-      dispatch(setClientInfosEntiere({  // Reset clientInfos in Redux state
-        code: "",
-        rsoc: "",
-        adresse: "",
-        cp: "",
-        email: "",
-        telephone: "",
-        desrep: ""
-      }));
+    if (clearApelle) {
+      dispatch(
+        setClientInfosEntiere({
+          // Reset clientInfos in Redux state
+          code: "",
+          rsoc: "",
+          adresse: "",
+          cp: "",
+          email: "",
+          telephone: "",
+          desrep: "",
+        })
+      );
     }
-  }, [clearApelle])
+  }, [clearApelle]);
   return (
-
     <div className="p-6 border border-gray-300 rounded-lg shadow-md bg-white">
-
       <h3 className="text-lg font-bold mb-4 flex items-center space-x-2">
         <span className="text-black">&#x1F464;</span>
         <span>Information Client</span>
@@ -124,7 +130,6 @@ function ClientForm() {
             onChange={(e) => handleChange(e, "desrep")}
           />
         </div>
-       
       </form>
     </div>
   );
