@@ -57,7 +57,6 @@ export const getDevisParNUMBL = createAsyncThunk(
         },
       }
     );
-    console.log(response.data.devis);
     return response.data.devis;
   }
 );
@@ -117,8 +116,19 @@ export const getListeNumbl = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getListeNUMBL`
     );
-    console.log(response);
     return response.data.listeNUMBL;
+  }
+);
+
+// * Action asynchrone pour récupérer la liste des points de vente d'une societé
+export const getListePointsVente = createAsyncThunk(
+  "devisSlice/getListePointsVente",
+  async () => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getListePointVente`
+    );
+
+    return response.data.pointsVenteDistincts;
   }
 );
 
@@ -127,7 +137,10 @@ export const devisSlice = createSlice({
   initialState: {
     // * liste de devis
     DevisList: [],
+    // * liste de codes de devis
     listeNUMBL: [],
+    // * liste de points de vente
+    listePointsVente: [],
     // * informations du formulaire de devis
     devisInfo: {
       NUMBL: "",
@@ -169,17 +182,14 @@ export const devisSlice = createSlice({
     builder
       .addCase(getDevisList.pending, (state) => {
         state.status = "chargement";
-        console.log(state.status);
       })
       .addCase(getDevisList.fulfilled, (state, action) => {
         state.status = "reussi";
         state.DevisList = action.payload;
-        console.log(action);
       })
       .addCase(getDevisList.rejected, (state, action) => {
         state.status = "echoue";
         state.error = action.error.message;
-        console.log(action);
       })
       .addCase(AjouterDevis.pending, (state) => {
         state.status = "chargement";
@@ -195,7 +205,6 @@ export const devisSlice = createSlice({
         state.status = "chargeement";
       })
       .addCase(getNombrededevis.fulfilled, (state, action) => {
-        console.log(action);
         state.nombreDeDevis = action.payload;
         state.status = "reussi";
       })
@@ -208,7 +217,6 @@ export const devisSlice = createSlice({
         state.status = "chargeement";
       })
       .addCase(getTotalChifre.fulfilled, (state, action) => {
-        console.log(action);
         state.totalchifre = action.payload;
         state.status = "reussi";
       })
@@ -265,7 +273,7 @@ export const devisSlice = createSlice({
         state.erreur = action.payload;
         state.status = "echoue";
       })
-      
+
       .addCase(getListeNumbl.pending, (state) => {
         state.status = "chargement";
       })
@@ -274,6 +282,18 @@ export const devisSlice = createSlice({
         state.status = "reussi";
       })
       .addCase(getListeNumbl.rejected, (state, action) => {
+        state.erreur = action.payload;
+        state.status = "echoue";
+      })
+
+      .addCase(getListePointsVente.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getListePointsVente.fulfilled, (state, action) => {
+        state.listePointsVente = action.payload;
+        state.status = "reussi";
+      })
+      .addCase(getListePointsVente.rejected, (state, action) => {
         state.erreur = action.payload;
         state.status = "echoue";
       });

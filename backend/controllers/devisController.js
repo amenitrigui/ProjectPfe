@@ -394,6 +394,29 @@ const getDevisParMontant = async (req, res) => {
   }
 };
 
+// * récuperer la liste de points de vente
+const getListePointVente = async (req, res) => {
+  try {
+    const { dbName } = req.params;
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const pointsVenteDistincts = await dbConnection.query(
+      `SELECT DISTINCT(libpv) from dfp`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    );
+
+    return res
+      .status(200)
+      .json({
+        message: "points de vente recupérés avec succès",
+        pointsVenteDistincts: pointsVenteDistincts,
+      });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getTousDevis,
   getNombreDevis,
@@ -404,4 +427,5 @@ module.exports = {
   getDevisParMontant,
   GetDevisListParClient,
   GetDevisParPeriode,
+  getListePointVente,
 };

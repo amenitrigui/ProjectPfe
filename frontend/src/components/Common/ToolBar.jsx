@@ -80,7 +80,6 @@ function ToolBar() {
       dispatch(setClearAppele(true));
     }
     if (toolbarTable == "devis") {
-      console.log("ajouter un devis");
       dispatch(AjouterDevis());
       dispatch(setActiverChampsForm(true));
     }
