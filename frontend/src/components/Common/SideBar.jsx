@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   FiHome,
@@ -10,29 +10,32 @@ import {
   FiTruck,
 } from "react-icons/fi";
 
-import { useState } from "react";
-
 function SideBar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
+  // Fonction pour basculer la visibilité de la sidebar
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
-    // Fonction pour basculer la visibilité de la sidebar
-    const toggleSidebar = () => {
-        setIsSidebarOpen(!isSidebarOpen);
-    };
-    return (
-        <>
-            <div className={`navigation ${isSidebarOpen ? "active" : ""}`}>
-                <ul>
-                    <li>
-                        <a href="#">
-                            <span className="icon">
-                            <ion-icon name="speedometer-outline"></ion-icon>
-                                {/* <ion-icon name="logo-apple"></ion-icon> */}
-                            </span>
-                            <span className="title">Logicom ERP</span>
-                        </a>
-                    </li>
+  return (
+    <>
+      <div className={`navigation ${isSidebarOpen ? "active" : ""}`}>
+        <ul>
+          <li>
+            <a href="#" style={{ display: "flex", alignItems: "center" }}>
+              <img
+                src="logicom.jpg"  // Chemin vers votre logo
+                alt="Logicom Logo"
+                style={{
+                  width: "70px",
+                  height: "50px",
+                  marginRight: "10px",
+                }}
+              />
+              <span className="title">Logicom ERP</span>
+            </a>
+          </li>
           {[
             { name: "Dashboard", icon: "home-outline", path: "/" },
             { name: "Clients", icon: "people-outline", path: "/ClientList" },
@@ -51,7 +54,6 @@ function SideBar() {
             { name: "Deconnexion", icon: "log-out-outline", path: "/deconnexion" },
           ].map((item, index) => (
             <li key={index}>
-              {/* Use Link instead of <a> */}
               <Link to={item.path}>
                 <span className="icon">
                   <ion-icon name={item.icon}></ion-icon>
