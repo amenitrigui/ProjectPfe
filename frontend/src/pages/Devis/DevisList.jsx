@@ -10,24 +10,16 @@ function DevisList() {
   const [devis, setDevis] = useState([]);
   const [filteredDevis, setFilteredDevis] = useState([]);
   const dataBaseName = localStorage.getItem("selectedDatabase");
-  //Action 
-  const  dispatch =useDispatch()
+  //Action
+  const dispatch = useDispatch();
   // todo lire les donnes de listedevis a partie min devisslice
-  const ListeDevis = useSelector((store)=>store.DevisCrud.DevisList)
+  const ListeDevis = useSelector((store) => store.DevisCrud.DevisList);
   // todo recuperation de donnes donc on utilise useeffect
- useEffect(()=>  
-{
-  dispatch(getDevisList())
-},[]) // [] hthii bch may9ahdch f boucle infini 
+  useEffect(() => {
+    dispatch(getDevisList());
+  }, []); // [] hthii bch may9ahdch f boucle infini
 
   // useEffect(() => {
-  //   /**
-  //    * Description
-  //    * Chargement de liste des devis
-  //    * @author Ameni
-  //    * @date 2025-02-06
-  //    * @returns {filteredDevis / devis}
-  //    */
   //   const fetchDevis = async () => {
   //     try {
   //       const dbName = localStorage.getItem("selectedDatabase");
@@ -46,35 +38,26 @@ function DevisList() {
   //   fetchDevis();
   // }, []);
 
-  /**
-   * Description
-   * Filtrage de contenu de datatable par colonne
-   * @author Unknown
-   * @date 2025-02-06
-   * @returns {filteredDevis}
-   */
   // ! placeholder solution
   const handleFilterChange = (e, column) => {
     const value = e.target.value;
     filters[column] = value;
 
-    axios.get("http://localhost:5000/api/devis/filterDevis", { params: {filters: filters, databaseName: dataBaseName} })
-    .then(res => {
-      console.log(res.data.data);
-      setFilteredDevis(res.data.data);
-      dispatch(setDevisList(res.data.data));
-
-    }).catch(error => {
-      console.log(error);
-    })
+    axios
+      .get("http://localhost:5000/api/devis/filterDevis", {
+        params: { filters: filters, databaseName: dataBaseName },
+      })
+      .then((res) => {
+        console.log(res.data.data);
+        setFilteredDevis(res.data.data);
+        dispatch(setDevisList(res.data.data));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
-  /**
-   * Description
-   * Filtres pour les barres de recherche
-   * @author Unknown
-   * @date 2025-02-06
-   */
+  // * tableau des filtres appliquées par l'utilisateur
   const [filters, setFilters] = useState({
     NUMBL: "",
     DATT: "",
@@ -85,12 +68,6 @@ function DevisList() {
     MTTC: "",
   });
 
-  /**
-   * Description
-   * Colonnes de datatable
-   * @author Ameni
-   * @date 2025-02-06
-   */
   const columns = [
     { name: "Numéro BL", selector: (row) => row.NUMBL, sortable: true },
     { name: "Date", selector: (row) => row.datt, sortable: true },
@@ -101,12 +78,6 @@ function DevisList() {
     { name: "Montant TTC", selector: (row) => row.MTTC },
   ];
 
-  /**
-   * Description
-   * styles personalisées de datatable
-   * @author Ameni
-   * @date 2025-02-06
-   */
   const customStyles = {
     headCells: {
       style: {

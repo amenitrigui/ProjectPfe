@@ -1,5 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice } from "@reduxjs/toolkit";
 
 export const uiSlice = createSlice({
   name: "uiSlice",
@@ -14,7 +13,7 @@ export const uiSlice = createSlice({
     // *state alerte model
     afficherAlertModal: false,
     messageAlertModal: "",
-    // * state pour vider les champs de clientInfos: 
+    // * state pour vider les champs de clientInfos:
     // * false : ne pas appeler la fonction qui vide les champs
     // * true : appeler la fonction qui vide les champs
     clearAppele: false,
@@ -26,7 +25,7 @@ export const uiSlice = createSlice({
     // * selon le mode
     activerChampsForm: false,
     // * state pour afficher/cacher les boutons de validation/annulation
-    activerBoutonsValiderAnnuler: false
+    activerBoutonsValiderAnnuler: false,
   },
 
   reducers: {
@@ -71,6 +70,6 @@ export const {
   setClearAppele,
   setToolbarTable,
   setActiverChampsForm,
-  setActiverBoutonsValiderAnnuler
+  setActiverBoutonsValiderAnnuler,
 } = uiSlice.actions;
 export default uiSlice.reducer;

@@ -2,7 +2,10 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 function Alert() {
+  // ! cette composant va etre remplacé par react toastify
+  // * message d'alert
   const message = useSelector((state) => state.uiStates.message);
+  // * boolean pour afficher/cacher cet alert
   const afficherAlert = useSelector((state) => state.uiStates.afficherAlert);
   return (
     <>

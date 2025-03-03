@@ -12,42 +12,53 @@ import { useEffect } from "react";
 import {
   getDevisList,
   getDevisParNUMBL,
+  getListeNumbl,
   setDevisInfo,
   setDevisInfoEntiere,
 } from "../../app/devis_slices/devisSlice";
 function DevisForm() {
-  const DevisList = useSelector((state) => state.DevisCrud.DevisList);
+  const dispatch = useDispatch();
+  const navi = useNavigate();
+  // * tableau contenant la liste des codes des devis
+  const listeNUMBL = useSelector((state) => state.DevisCrud.listeNUMBL);
+  // * informations d'un devis provenant des champs de cette formulaire
   const devisInfos = useSelector((state) => state.DevisCrud.devisInfo);
   // * UseEffect #1 : récupérer la liste des codes de devis seulement
   useEffect(() => {
     dispatch(getDevisParNUMBL());
+    dispatch(getListeNumbl());
   }, []);
-
+  // * WIP : sélectionne un dévis de la liste des devis
+  // * pour afficher ses informations dans les champs
+  // * du formulaire
   const handleSelectDevis = (e) => {
     console.log(e.target.value);
     dispatch(getDevisParNUMBL(e.target.value));
-    
-    dispatch(setDevisInfoEntiere(DevisList[0]));
   };
+  // * boolean pour activer/désactiver champs du formulaire
+  // * initialement false (champs désactivé en mode de consultation)
   const activerChampsForm = useSelector(
     (state) => state.uiStates.activerChampsForm
   );
-  const dispatch = useDispatch();
-  const navi = useNavigate();
   const insertionDepuisDevisForm = useSelector(
     (state) => state.ClientCrud.insertionDepuisDevisForm
   );
-
+  // * méthode pour indiquer qu'on veut ajouter un nouveau client
+  // * à partir de cette formulaire, ceci est nécessaire pour qu'on puisse
+  // * consérver tous données de devis saisies avant l'ajout du client
   const handleAjoutClientRedirect = () => {
     dispatch(setInsertionDepuisDevisForm(true));
 
     navi("/ClientList");
   };
+  // * informations d'un devis, provenant du champs de ce formulaire
   const devisinfo = useSelector((state) => state.DevisCrud.devisInfo);
 
+  // * UseEffect #2 : récupérer la liste des devis
+  // ! à supprimer/remplacer
   useEffect(() => {
-    dispatch(getDevisList())
-  }, [])
+    dispatch(getDevisList());
+  }, []);
 
   return (
     <>
@@ -62,9 +73,9 @@ function DevisForm() {
           disabled={activerChampsForm}
           onChange={(e) => handleSelectDevis(e)}
         >
-          {DevisList.map((devis) => (
-            <option key={devis.NUMBL} value={devis.NUMBL}>
-              {devis.NUMBL}
+          {listeNUMBL.map((codeDevis) => (
+            <option key={codeDevis.NUMBL} value={codeDevis.NUMBL}>
+              {codeDevis.NUMBL}
             </option>
           ))}
         </select>
@@ -95,7 +106,7 @@ function DevisForm() {
         <label className="block font-medium">Code Client :</label>
         <input
           type="text"
-          className="input input-bordered w-full max-w-xs"
+          className="w-full border border-gray-300 rounded-md p-2"
           disabled={!activerChampsForm}
           defaultValue={devisInfos.CODECLI} // Assurez-vous d'avoir cet état dans votre composant
           onChange={(e) =>
@@ -106,7 +117,7 @@ function DevisForm() {
         <label className="block font-medium">Raison Sociale :</label>
         <input
           type="text"
-          className="input input-bordered w-full max-w-xs"
+          className="w-full border border-gray-300 rounded-md p-2"
           disabled={!activerChampsForm}
           defaultValue={devisInfos.RSCLI} // Assurez-vous d'avoir cet état dans votre composant
           onChange={(e) =>
@@ -117,7 +128,7 @@ function DevisForm() {
         <label className="block font-medium">Adresse :</label>
         <input
           type="text"
-          className="input input-bordered w-full max-w-xs"
+          className="w-full border border-gray-300 rounded-md p-2"
           disabled={!activerChampsForm}
           defaultValue={devisInfos.ADRCLI} // Assurez-vous d'avoir cet état dans votre composant
           onChange={(e) =>
@@ -128,7 +139,7 @@ function DevisForm() {
         <label className="block font-medium">Code Postal :</label>
         <input
           type="text"
-          className="input input-bordered w-full max-w-xs"
+          className="w-full border border-gray-300 rounded-md p-2"
           disabled={!activerChampsForm}
           defaultValue={devisInfos.cp} // Assurez-vous d'avoir cet état dans votre composant
           onChange={(e) =>
@@ -160,7 +171,7 @@ function DevisForm() {
         <label className="block font-medium">Date :</label>
         <input
           type="date"
-          className="input input-bordered w-full max-w-xs"
+          className="w-full border border-gray-300 rounded-md p-2"
           disabled={!activerChampsForm}
           defaultValue={devisInfos.DATEBL} // Assurez-vous d'avoir cet état dans votre composant
           onChange={(e) =>
@@ -216,11 +227,7 @@ function DevisForm() {
           disabled={!activerChampsForm}
           onChange={(e) => handleSelectDevis(e)}
         >
-          {DevisList.map((devis) => (
-            <option key={devis.NUMBL} value={devis.codesecteur}>
-              {devis.codesecteur}
-            </option>
-          ))}
+          
         </select>
 
         <label className="block font-medium">Désignation Secteur :</label>

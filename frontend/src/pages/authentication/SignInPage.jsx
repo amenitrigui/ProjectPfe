@@ -19,19 +19,21 @@ function SignInPage() {
     }
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/users/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            nom: trimmedNom,
+            motpasse: trimmedPassword,
+          }),
+        }
+      );
 
-          nom: trimmedNom,
-          motpasse: trimmedPassword,
-        }),
-      });
-
-      const data = await response.json();// convertir la reponse de seurveur en objet javascript
+      const data = await response.json(); // convertir la reponse de seurveur en objet javascript
 
       if (response.ok) {
         localStorage.setItem("token", data.token);
@@ -39,7 +41,6 @@ function SignInPage() {
         localStorage.setItem("user", JSON.stringify(data.user));
         navigate("/SocietiesList");
       } else {
-    
         setError(data.message || "Erreur de connexion. Veuillez réessayer.");
       }
     } catch (error) {

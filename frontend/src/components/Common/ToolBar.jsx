@@ -36,8 +36,13 @@ import { AjouterDevis } from "../../app/devis_slices/devisSlice";
 function ToolBar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  // * state pour afficher/cacher fenetre de confirmation pour
+  // * la suppression
   const [isDeleting, setIsDeleting] = useState(false);
+  // * state pour controller quelle table on utilise
+  // * puisque ce composant est partagé
   const toolbarTable = useSelector((state) => state.uiStates.toolbarTable);
+  // * boolean pour afficher / cacher les bouton valider et supprimer
   const activerBoutonsValiderAnnuler = useSelector(
     (state) => state.uiStates.activerBoutonsValiderAnnuler
   );
@@ -48,9 +53,9 @@ function ToolBar() {
     dispatch(setActiverChampsForm(true));
     //validerAjout();
   };
-const HandleRecherche =async()=>{
-  navigate("/recherche")
-}
+  const HandleRecherche = async () => {
+    navigate("/recherche");
+  };
   // * méthode pour mettre à jour un client/devis
   const handleupdate = async () => {
     dispatch(majClient());
@@ -66,6 +71,7 @@ const HandleRecherche =async()=>{
     dispatch(setAfficherAlertModal(true));
   };
 
+  // * méthode pour valider l'ajout d'un client/devis
   const validerAjout = () => {
     if (toolbarTable == "client") {
       dispatch(ajouterClient());
@@ -80,6 +86,8 @@ const HandleRecherche =async()=>{
     }
   };
 
+  // * cacher les bouttons valider/annuler
+  // * et réafficher les autres bouttons
   const annulerOperation = () => {
     dispatch(setActiverBoutonsValiderAnnuler(false));
     dispatch(setActiverChampsForm(false));
@@ -174,9 +182,7 @@ const HandleRecherche =async()=>{
                   onClick={() => navigate("/recherche")}
                 />
                 <span className="text-sm font-semibold text-gray-700">
-
                   Rechercher
-                
                 </span>
               </button>
             </>

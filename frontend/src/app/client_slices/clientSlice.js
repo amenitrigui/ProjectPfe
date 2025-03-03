@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// Thunk pour récupérer la liste des clients
+// * Thunk pour récupérer la liste des clients
 export const getListeClient = createAsyncThunk(
   "slice/getListeClient",
   async () => {
@@ -12,6 +12,7 @@ export const getListeClient = createAsyncThunk(
   }
 );
 
+// * Thunk pour ajouter un client
 export const ajouterClient = createAsyncThunk(
   "slice/ajouterClient",
   async (_, thunkApi) => {
@@ -29,7 +30,7 @@ export const ajouterClient = createAsyncThunk(
   }
 );
 
-// ? Thunk pour mettre à jour un client
+// * Thunk pour mettre à jour un client
 export const majClient = createAsyncThunk(
   "slice/majClient",
   async (_, thunkAPI) => {
@@ -37,13 +38,13 @@ export const majClient = createAsyncThunk(
 
     const response = await axios.put(
       `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/Update`,
-      { clientUpdate } // htha y3niii bch tjib les donnes il kol htha body
+      { clientUpdate } // htha y3niii bch tjib les donnes il kol htha body, ya3ni objet kamel mesh bel champ bel champ
     );
     return response.message;
   }
 );
 
-// ? Thunk pour filtrer les clients (Correction ici)
+// * Thunk pour filtrer les clients (Correction ici)
 export const filtrerClients = createAsyncThunk(
   "slice/filtrerClients",
   async (_, thunkAPI) => {
@@ -60,7 +61,8 @@ export const filtrerClients = createAsyncThunk(
   }
 );
 
-// ? slice/supprimerClient identifiant uniquepour la methode
+// * Thunk pour supprimer des clients par leurs codes
+// * slice/supprimerClient identifiant unique pour la methode
 export const supprimerClient = createAsyncThunk(
   "slice/supprimerClient",
   async (_, thunkAPI) => {
@@ -79,9 +81,9 @@ export const supprimerClient = createAsyncThunk(
 export const clientSlice = createSlice({
   name: "slice",
   initialState: {
-    // ? les champs doivenent etres initialisées à vide
-    // ? pour éviter des problème quand on
-    // ? les utilisent tant que valeurs par defaut
+    // * les champs doivenent etres initialisées à vide
+    // * pour éviter des problème quand on
+    // * les utilisent tant que valeurs par defaut
     clientInfos: {
       code: "",
       rsoc: "",
@@ -90,14 +92,15 @@ export const clientSlice = createSlice({
       email: "",
       telephone: "",
       desrep: "",
-    }, //Add  formulaire
+    }, // * informations de formulaire de client
     listeClients: [],
-    clientsASupprimer: [], // id reeelement code
+    clientsASupprimer: [], // * tableau des codes de clients a supprimer. id reeelement code.
     status: "inactive",
     erreur: null,
     // todo: change this to french
     // todo: this is for later tho
     // todo: hence the "todo"
+    // todo: todo
     filters: {
       code: "",
       rsoc: "",
@@ -105,29 +108,32 @@ export const clientSlice = createSlice({
       cp: "",
       email: "",
     },
-    insertionDepuisDevisForm: false
+    insertionDepuisDevisForm: false,
   },
   reducers: {
-    // Action synchrone pour modifier les filtres
+    // * Action synchrone pour modifier les filtres
     setFiltresSaisient: (state, action) => {
       const { valeur, collonne } = action.payload;
       state.filters[collonne] = valeur; // Correction ici
     },
     setClientInfos: (state, action) => {
-      const { colonne, valeur } = action.payload; //actions fiha les donnes (payload)
+      // * actions fiha les donnes (payload)
+      // * exemple d'objet action : action: {payload: {}}
+      const { colonne, valeur } = action.payload;
       state.clientInfos[colonne] = valeur;
-    }, // haja simple
+    }, // el reducer houwa haja simple
     setClientInfosEntiere: (state, action) => {
       state.clientInfos = action.payload;
     },
     setClientsASupprimer: (state, action) => {
       state.clientsASupprimer.push(action.payload);
     },
-    setInsertionDepuisDevisForm : (state,action)=>
-    {
-      state.insertionDepuisDevisForm=action.payload;
+    setInsertionDepuisDevisForm: (state, action) => {
+      state.insertionDepuisDevisForm = action.payload;
     },
   },
+  // * on utilise l'objet builder pour replacer l'opérateur switch case ...
+  // * l'objet builder nous permet d'écrire des cas plus lisibles et flexibles
   extraReducers: (builder) => {
     builder
       .addCase(getListeClient.pending, (state) => {
