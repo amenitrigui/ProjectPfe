@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 import Select from "react-select";
 import { getDevisParNUMBL } from "../app/devis_slices/devisSlice";
+import ArticlesDevis from "../components/Devis/ArticlesDevis";
 
 function Parent() {
   const afficherToast = () => {
@@ -16,7 +17,6 @@ function Parent() {
   }, []);
   const dispatch = useDispatch();
   const devisList = useSelector((state) => state.DevisCrud.DevisList);
-  console.log(devisList);
 
   return (
     <>
@@ -28,6 +28,8 @@ function Parent() {
           label: devis.NUMBL,
         }))}
       />
+
+      <ArticlesDevis />
     </>
   );
 }

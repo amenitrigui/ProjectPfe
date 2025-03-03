@@ -8,6 +8,7 @@ import {
 } from "../../app/interface_slices/uiSlice";
 
 import DevisForm from "../../components/Devis/DevisForm";
+import ArticlesDevis from "../../components/Devis/ArticlesDevis";
 
 function DevisFormTout() {
   // * useEffect #1 : désactiver tous les champs
@@ -101,6 +102,7 @@ function DevisFormTout() {
               </tr>
             </tbody>
           </table>
+          <ArticlesDevis />
         </div>
       </div>
     </div>
