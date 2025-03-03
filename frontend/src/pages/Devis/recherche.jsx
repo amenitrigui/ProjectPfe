@@ -8,6 +8,7 @@ import {
   getDevisParPeriode,
   setDevisInfoEntiere,
   getInfoUtilisateur,
+  setDevisList,
 } from "../../app/devis_slices/devisSlice";
 import DataTable from "react-data-table-component";
 import { FaArrowLeft } from "react-icons/fa"; // Import de l'icône
@@ -85,6 +86,7 @@ const Recherche = () => {
   };
 
   const handleValidate = () => {
+    dispatch(setDevisList([]));
     navigate("/DevisFormTout");
   };
 

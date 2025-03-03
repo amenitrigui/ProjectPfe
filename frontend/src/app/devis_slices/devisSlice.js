@@ -9,6 +9,21 @@ export const getDevisList = createAsyncThunk("slice/getDevisList", async () => {
   return response.data.devisList;
 });
 
+export const getLigneArticle = createAsyncThunk(
+  "slice/getLigneArticle",
+  async (NumBL) => {
+    console.log(NumBL);
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getLigneArticle`,
+      {
+        params: { NumBL },
+      },
+    );
+    console.log(response)
+    return response.data.listeArticle;
+  }
+);
+
 // * Action asynchrone pour ajouter un devis
 export const AjouterDevis = createAsyncThunk(
   "slice/AddDevis",
@@ -57,7 +72,6 @@ export const getDevisParNUMBL = createAsyncThunk(
         },
       }
     );
-    console.log(response.data.devis);
     return response.data.devis;
   }
 );
@@ -93,19 +107,21 @@ export const getDevisParCodeClient = createAsyncThunk(
     return response.data.devis;
   }
 );
-export const getInfoUtilisateur = createAsyncThunk("slice/getInfoUtilisateur",
-  async(usera)=>{
-    const response=await axios.get(`${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getInfoUtilisateur`,
+export const getInfoUtilisateur = createAsyncThunk(
+  "slice/getInfoUtilisateur",
+  async (usera) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getInfoUtilisateur`,
       {
-        params:{
+        params: {
           usera,
         },
       }
     );
-    console.log(response)
+    console.log(response);
     return response.data.utilisateur;
   }
-)
+);
 // * Action asynchrone pour récupérer la liste des devis pendant une période spécifique
 export const getDevisParPeriode = createAsyncThunk(
   "slice/getDevisParPeriode",
@@ -130,8 +146,19 @@ export const getListeNumbl = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getListeNUMBL`
     );
-    console.log(response);
     return response.data.listeNUMBL;
+  }
+);
+
+// * Action asynchrone pour récupérer la liste des points de vente d'une societé
+export const getListePointsVente = createAsyncThunk(
+  "devisSlice/getListePointsVente",
+  async () => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getListePointVente`
+    );
+
+    return response.data.pointsVenteDistincts;
   }
 );
 
@@ -140,7 +167,10 @@ export const devisSlice = createSlice({
   initialState: {
     // * liste de devis
     DevisList: [],
+    // * liste de codes de devis
     listeNUMBL: [],
+    // * liste de points de vente
+    listePointsVente: [],
     // * informations du formulaire de devis
     devisInfo: {
       NUMBL: "",
@@ -154,6 +184,7 @@ export const devisSlice = createSlice({
       comm: "",
       RSREP: "",
       CODEREP: "",
+      TIMBRE:"",
       usera: "",
       RSCLI: "",
       codesecteur: "",
@@ -182,17 +213,14 @@ export const devisSlice = createSlice({
     builder
       .addCase(getDevisList.pending, (state) => {
         state.status = "chargement";
-        console.log(state.status);
       })
       .addCase(getDevisList.fulfilled, (state, action) => {
         state.status = "reussi";
         state.DevisList = action.payload;
-        console.log(action);
       })
       .addCase(getDevisList.rejected, (state, action) => {
         state.status = "echoue";
         state.error = action.error.message;
-        console.log(action);
       })
       .addCase(AjouterDevis.pending, (state) => {
         state.status = "chargement";
@@ -208,7 +236,6 @@ export const devisSlice = createSlice({
         state.status = "chargeement";
       })
       .addCase(getNombrededevis.fulfilled, (state, action) => {
-        console.log(action);
         state.nombreDeDevis = action.payload;
         state.status = "reussi";
       })
@@ -221,7 +248,6 @@ export const devisSlice = createSlice({
         state.status = "chargeement";
       })
       .addCase(getTotalChifre.fulfilled, (state, action) => {
-        console.log(action);
         state.totalchifre = action.payload;
         state.status = "reussi";
       })
@@ -278,7 +304,7 @@ export const devisSlice = createSlice({
         state.erreur = action.payload;
         state.status = "echoue";
       })
-      
+
       .addCase(getListeNumbl.pending, (state) => {
         state.status = "chargement";
       })
@@ -291,22 +317,32 @@ export const devisSlice = createSlice({
         state.status = "echoue";
       })
 
-
-
       .addCase(getInfoUtilisateur.pending, (state) => {
         state.status = "chargement";
       })
       .addCase(getInfoUtilisateur.fulfilled, (state, action) => {
-       // state.devisInfo = action.payload[0];
-        state.DevisList=action.payload;
+        // state.devisInfo = action.payload[0];
+        state.DevisList = action.payload;
         state.status = "reussi";
       })
       .addCase(getInfoUtilisateur.rejected, (state, action) => {
         state.erreur = action.payload;
         state.status = "echoue";
+      })
+
+      .addCase(getLigneArticle.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getLigneArticle.fulfilled, (state, action) => {
+        // state.devisInfo = action.payload[0];
+        state.devisInfo.articles = action.payload;
+        console.log(action.payload);
+        state.status = "reussi";
+      })
+      .addCase(getLigneArticle.rejected, (state, action) => {
+        state.erreur = action.payload;
+        state.status = "echoue";
       });
-
-
   },
 });
 export const { setDevisInfo, setDevisList, setDevisInfoEntiere } =

@@ -80,7 +80,6 @@ function ToolBar() {
       dispatch(setClearAppele(true));
     }
     if (toolbarTable == "devis") {
-      console.log("ajouter un devis");
       dispatch(AjouterDevis());
       dispatch(setActiverChampsForm(true));
     }
@@ -175,11 +174,11 @@ function ToolBar() {
             <>
               <div className="border-r border-gray-300 h-8"></div>
 
-              <button className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100">
+              <button className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100" onClick={() => navigate("/recherche")}>
                 <FontAwesomeIcon
                   icon={faSearch}
                   className="text-blue-600 text-3xl"
-                  onClick={() => navigate("/recherche")}
+                 
                 />
                 <span className="text-sm font-semibold text-gray-700">
                   Rechercher

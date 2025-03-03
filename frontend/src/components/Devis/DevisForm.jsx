@@ -10,11 +10,12 @@ import { setInsertionDepuisDevisForm } from "../../app/client_slices/clientSlice
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import {
-  getDevisList,
   getDevisParNUMBL,
   getListeNumbl,
   setDevisInfo,
   setDevisInfoEntiere,
+  getListePointsVente,
+  getLigneArticle
 } from "../../app/devis_slices/devisSlice";
 function DevisForm() {
   const dispatch = useDispatch();
@@ -23,17 +24,43 @@ function DevisForm() {
   const listeNUMBL = useSelector((state) => state.DevisCrud.listeNUMBL);
   // * informations d'un devis provenant des champs de cette formulaire
   const devisInfos = useSelector((state) => state.DevisCrud.devisInfo);
-  // * UseEffect #1 : récupérer la liste des codes de devis seulement
+  const listePointsVente = useSelector(
+    (state) => state.DevisCrud.listePointsVente
+  );
+  // * UseEffect #1 : récupérer la liste des codes de devis et liste de points de vente
   useEffect(() => {
-    dispatch(getDevisParNUMBL());
     dispatch(getListeNumbl());
+    dispatch(getListePointsVente());
   }, []);
   // * WIP : sélectionne un dévis de la liste des devis
   // * pour afficher ses informations dans les champs
   // * du formulaire
   const handleSelectDevis = (e) => {
-    console.log(e.target.value);
-    dispatch(getDevisParNUMBL(e.target.value));
+    if (e.target.value != "vide"){
+      dispatch(getDevisParNUMBL(e.target.value));
+      dispatch(getLigneArticle(devisInfos.NUMBL));
+    }
+    else
+      dispatch(
+        setDevisInfoEntiere({
+          NUMBL: "",
+          libpv: "",
+          ADRCLI: "",
+          CODECLI: "",
+          cp: "",
+          DATEBL: "",
+          MREMISE: "",
+          MTTC: "",
+          comm: "",
+          RSREP: "",
+          CODEREP: "",
+          usera: "",
+          RSCLI: "",
+          codesecteur: "",
+          MHT: "",
+          articles: [],
+        })
+      );
   };
   // * boolean pour activer/désactiver champs du formulaire
   // * initialement false (champs désactivé en mode de consultation)
@@ -54,12 +81,6 @@ function DevisForm() {
   // * informations d'un devis, provenant du champs de ce formulaire
   const devisinfo = useSelector((state) => state.DevisCrud.devisInfo);
 
-  // * UseEffect #2 : récupérer la liste des devis
-  // ! à supprimer/remplacer
-  useEffect(() => {
-    dispatch(getDevisList());
-  }, []);
-
   return (
     <>
       <div className="space-y-4 p-6 border rounded-lg shadow-md bg-white">
@@ -73,6 +94,7 @@ function DevisForm() {
           disabled={activerChampsForm}
           onChange={(e) => handleSelectDevis(e)}
         >
+          <option value="vide">Sélectionnez un devis</option>
           {listeNUMBL.map((codeDevis) => (
             <option key={codeDevis.NUMBL} value={codeDevis.NUMBL}>
               {codeDevis.NUMBL}
@@ -82,11 +104,14 @@ function DevisForm() {
 
         <label className="block font-medium">Point de vente :</label>
         <select
-           className="select select-bordered w-full max-w-xs"
+          className="select select-bordered w-full max-w-xs"
           disabled={!activerChampsForm}
         >
-          <option>SIEGE LOCAL</option>
-          <option>SIEGE DISTANT</option>
+          {listePointsVente.map((pointVente) => (
+            <option key={pointVente.libpv} value={pointVente.libpv}>
+              {pointVente.libpv}
+            </option>
+          ))}
         </select>
       </div>
 

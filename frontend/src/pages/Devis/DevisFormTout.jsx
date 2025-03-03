@@ -1,15 +1,18 @@
 import ToolBar from "../../components/Common/ToolBar";
 import SideBar from "../../components/Common/SideBar";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setActiverChampsForm,
   setToolbarTable,
 } from "../../app/interface_slices/uiSlice";
 
 import DevisForm from "../../components/Devis/DevisForm";
+import ArticlesDevis from "../../components/Devis/ArticlesDevis";
 
 function DevisFormTout() {
+  const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
+  console.log(devisInfo);
   // * useEffect #1 : désactiver tous les champs
   // * et indiquer qu'on va utiliser la table de devis
   const dispatch = useDispatch();
@@ -17,6 +20,7 @@ function DevisFormTout() {
     dispatch(setToolbarTable("devis"));
     dispatch(setActiverChampsForm(false));
   }, []);
+
   return (
     <div className="bg-gray-100 min-h-screen p-6">
       {/* Toolbar et Sidebar */}
@@ -48,6 +52,7 @@ function DevisFormTout() {
       </div>
 
       {/* Table des articles */}
+      <ArticlesDevis></ArticlesDevis>
       <div className="mt-6">
         <div className="p-4 sticky bottom-0 w-full">
           <table className="min-w-full table-auto border-collapse border border-gray-300">
@@ -87,20 +92,124 @@ function DevisFormTout() {
               </tr>
             </thead>
             <tbody className="text-sm">
-              <tr className="hover:bg-indigo-100 transition-all duration-150 ease-in-out">
-                <td className="p-3 border border-gray-300">A001</td>
-                <td className="p-3 border border-gray-300">Unité</td>
-                <td className="p-3 border border-gray-300">Article Exemple</td>
-                <td className="p-3 border border-gray-300">100.00</td>
-                <td className="p-3 border border-gray-300">19%</td>
-                <td className="p-3 border border-gray-300">10%</td>
-                <td className="p-3 border border-gray-300">20%</td>
-                <td className="p-3 border border-gray-300">200.00</td>
-                <td className="p-3 border border-gray-300">240.00</td>
-                <td className="p-3 border border-gray-300">180.00</td>
-              </tr>
+              {devisInfo.articles?.map((article) => (
+                <tr
+                  key={`${article.famille}-${article.CodeART}`}
+                  className="hover:bg-indigo-100 transition-all duration-150 ease-in-out"
+                >
+                  <td className="p-3 border border-gray-300">
+                    {article.famille}
+                  </td>
+                  <td className="p-3 border border-gray-300">
+                    {article.CodeART}
+                  </td>
+                  <td className="p-3 border border-gray-300">
+                    {article.Unite}
+                  </td>
+                  <td className="p-3 border border-gray-300">
+                    {article.QteART}
+                  </td>
+                  <td className="p-3 border border-gray-300">
+                    {article.Remise}%
+                  </td>
+                  <td className="p-3 border border-gray-300">
+                    {article.DesART}
+                  </td>
+                  <td className="p-3 border border-gray-300">
+                    {article.TauxTVA}%
+                  </td>
+                  <td className="p-3 border border-gray-300">
+                    {article.PUART}
+                  </td>
+                  <td className="p-3 border border-gray-300">
+                    {article.PUART}
+                  </td>
+                  <td className="p-3 border border-gray-300">
+                    {article.PUART}
+                  </td>
+                  
+                 
+                 
+                  {/* <td className="p-3 border border-gray-300">A001</td>
+                  <td className="p-3 border border-gray-300">A001</td>
+                  <td className="p-3 border border-gray-300">A001</td> */}
+                </tr>
+              ))}
             </tbody>
           </table>
+        </div>
+      </div>
+      <div className="bg-gray-300 p-4 sticky bottom-0 w-full">
+        <div className="flex flex-wrap gap-4">
+          <div className="flex-1 min-w-[150px]">
+            <label className="block  font-bold">Montant HT :</label>
+
+            <input
+              type="text"
+              name="totalHt"
+              defaultValue={devisInfo.MHT}
+              className="w-full border rounded-md p-2"
+              readOnly
+            />
+          </div>
+          <div className="flex-1 min-w-[150px]">
+            <label className="block font-medium">Remise Totale :</label>
+            <input
+              type="text"
+              name="Remise"
+              defaultValue={devisInfo.MREMISE}
+              className="w-full border rounded-md p-2"
+              readOnly
+            />
+          </div>
+          <div className="flex-1 min-w-[150px]">
+            <label className="block font-medium">Net HT Global :</label>
+            <input
+              type="text"
+              name="netHtGlobal"
+              className="w-full border rounded-md p-2"
+              readOnly
+            />
+          </div>
+          <div className="flex-1 min-w-[150px]">
+            <label className="block font-medium">Taxe :</label>
+            <input
+              type="text"
+              name="taxe"
+           //   defaultValue={devisInfo.}
+              className="w-full border rounded-md p-2"
+              readOnly
+            />
+          </div>
+          <div className="flex-1 min-w-[150px]">
+            <label className="block font-medium">Montant TTC :</label>
+            <input
+              type="text"
+              name="MTTC"
+              defaultValue={devisInfo.MTTC}
+              className="w-full border rounded-md p-2"
+              readOnly
+            />
+          </div>
+          <div className="flex-1 min-w-[150px]">
+            <label className="block font-medium">Timbre :</label>
+            <input
+              type="text"
+              name="timbre"
+              defaultValue={devisInfo.TIMBRE}
+              className="w-full border rounded-md p-2"
+              readOnly
+            />
+          </div>
+          <div className="flex-1 min-w-[150px]">
+            <label className="block font-medium">À Payer :</label>
+            <input
+              type="text"
+              name="aPayer"
+              className="w-full border rounded-md p-2"
+              readOnly
+            />
+          </div>
         </div>
       </div>
     </div>
