@@ -1,4 +1,7 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+
+
+
 
 export const utilisateurSlice = createSlice({
     name: "utilisateurSlice",
@@ -14,6 +17,7 @@ export const utilisateurSlice = createSlice({
             state.token = action.payload
         }
     }
+
 })
 
 export const { setDbName, setToekn } = utilisateurSlice.actions;

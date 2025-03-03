@@ -22,7 +22,7 @@ const getTousDevis = async (req, res) => {
     console.log(`Connecté à la base de données : ${dbName}`);
 
     const result = await dynamicSequelize.query(
-      `SELECT NUMBL, libpv, datt,CODECLI,ADRCLI,RSCLI,MTTC FROM dfp `,
+      `SELECT NUMBL, libpv, datt,CODECLI,ADRCLI,RSCLI,MTTC,usera,RSREP,codesecteur FROM dfp `,
       { type: QueryTypes.SELECT }
     );
 
@@ -368,7 +368,31 @@ const getDevisCreator = async (req, res) => {
 
 // * récuperer toutes les devis par montant
 // * pour une societé donnée (dbName)
-
+const getInfoUtilisateur = async (req, res) => {
+  try {
+    const { dbName } = req.params;
+    const { usera } = req.query;
+    console.log(usera)
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    if (usera) {
+      const utilisateur = await dbConnection.query(
+        `SELECT NUMBL,libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where usera = :usera`,
+        {
+          replacements: { usera },
+          type: dbConnection.QueryTypes.SELECT,
+        }
+      );
+      return res
+        .status(200)
+        .json({
+          message: "client recupere avec succes ",
+          utilisateur: utilisateur,
+        });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 const getDevisParMontant = async (req, res) => {
   try {
     const { dbName } = req.params;
@@ -404,4 +428,5 @@ module.exports = {
   getDevisParMontant,
   GetDevisListParClient,
   GetDevisParPeriode,
+  getInfoUtilisateur
 };

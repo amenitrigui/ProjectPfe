@@ -93,6 +93,19 @@ export const getDevisParCodeClient = createAsyncThunk(
     return response.data.devis;
   }
 );
+export const getInfoUtilisateur = createAsyncThunk("slice/getInfoUtilisateur",
+  async(usera)=>{
+    const response=await axios.get(`${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getInfoUtilisateur`,
+      {
+        params:{
+          usera,
+        },
+      }
+    );
+    console.log(response)
+    return response.data.utilisateur;
+  }
+)
 // * Action asynchrone pour récupérer la liste des devis pendant une période spécifique
 export const getDevisParPeriode = createAsyncThunk(
   "slice/getDevisParPeriode",
@@ -276,7 +289,24 @@ export const devisSlice = createSlice({
       .addCase(getListeNumbl.rejected, (state, action) => {
         state.erreur = action.payload;
         state.status = "echoue";
+      })
+
+
+
+      .addCase(getInfoUtilisateur.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getInfoUtilisateur.fulfilled, (state, action) => {
+       // state.devisInfo = action.payload[0];
+        state.DevisList=action.payload;
+        state.status = "reussi";
+      })
+      .addCase(getInfoUtilisateur.rejected, (state, action) => {
+        state.erreur = action.payload;
+        state.status = "echoue";
       });
+
+
   },
 });
 export const { setDevisInfo, setDevisList, setDevisInfoEntiere } =

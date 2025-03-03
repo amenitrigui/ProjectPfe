@@ -7,6 +7,7 @@ import {
   getDevisParMontant,
   getDevisParPeriode,
   setDevisInfoEntiere,
+  getInfoUtilisateur,
 } from "../../app/devis_slices/devisSlice";
 import DataTable from "react-data-table-component";
 import { FaArrowLeft } from "react-icons/fa"; // Import de l'icône
@@ -48,6 +49,8 @@ const Recherche = () => {
       case "periode":
         dispatch(getDevisParPeriode(valeurRecherche));
         break;
+      case "utilisateur":
+        dispatch(getInfoUtilisateur(valeurRecherche))
       default:
         console.log("Valeur de filtre non définie");
     }
@@ -90,10 +93,12 @@ const Recherche = () => {
     { name: "Code client", selector: (row) => row.CODECLI, sortable: true },
     { name: "Raison Sociale", selector: (row) => row.RSCLI },
     { name: "Point de vente", selector: (row) => row.cp },
-    { name: "Adresse", selector: (row) => row.ADRCLI },
+ 
     { name: "Montant", selector: (row) => row.MTTC },
     { name: "Date", selector: (row) => row.DATEBL },
-    { name: "Raison Sociale Représentant", selector: (row) => row.RSREP },
+    { name: "Vendeur", selector: (row) => row.usera },
+
+    { name: "RS Représentant", selector: (row) => row.RSREP },
     { name: "Code secteur", selector: (row) => row.codesecteur },
   ];
 
@@ -115,7 +120,7 @@ const Recherche = () => {
             Rechercher Devis Par
           </h3>
           <div className="space-y-2">
-            {["devis", "client", "montant", "periode", "article"].map(
+            {["devis", "client", "montant", "periode", "article","utilisateur"].map(
               (filtre) => (
                 <label key={filtre} className="flex items-center">
                   <input
