@@ -166,7 +166,7 @@ export const devisSlice = createSlice({
   name: "devisSlice",
   initialState: {
     // * liste de devis
-    DevisList: [],
+    devisList: [],
     // * liste de codes de devis
     listeNUMBL: [],
     // * liste de points de vente
@@ -202,7 +202,7 @@ export const devisSlice = createSlice({
       state.devisInfo[collone] = valeur;
     },
     setDevisList: (state, action) => {
-      state.DevisList = action.payload;
+      state.devisList = action.payload;
     },
     setDevisInfoEntiere: (state, action) => {
       state.devisInfo = action.payload;
@@ -216,7 +216,7 @@ export const devisSlice = createSlice({
       })
       .addCase(getDevisList.fulfilled, (state, action) => {
         state.status = "reussi";
-        state.DevisList = action.payload;
+        state.devisList = action.payload;
       })
       .addCase(getDevisList.rejected, (state, action) => {
         state.status = "echoue";
@@ -260,6 +260,7 @@ export const devisSlice = createSlice({
         state.status = "chargeement";
       })
       .addCase(getDevisParNUMBL.fulfilled, (state, action) => {
+        state.devisList = action.payload;
         state.devisInfo = action.payload[0];
         state.status = "reussi";
       })
@@ -272,7 +273,7 @@ export const devisSlice = createSlice({
         state.status = "chargeement";
       })
       .addCase(getDevisParCodeClient.fulfilled, (state, action) => {
-        state.DevisList = action.payload;
+        state.devisList = action.payload;
         state.status = "reussi";
       })
       .addCase(getDevisParCodeClient.rejected, (state, action) => {
@@ -284,7 +285,7 @@ export const devisSlice = createSlice({
         state.status = "chargeement";
       })
       .addCase(getDevisParMontant.fulfilled, (state, action) => {
-        state.DevisList = action.payload;
+        state.devisList = action.payload;
         state.status = "reussi";
       })
       .addCase(getDevisParMontant.rejected, (state, action) => {
@@ -296,7 +297,7 @@ export const devisSlice = createSlice({
         state.status = "chargeement";
       })
       .addCase(getDevisParPeriode.fulfilled, (state, action) => {
-        state.DevisList = action.payload;
+        state.devisList = action.payload;
         state.status = "reussi";
       })
       .addCase(getDevisParPeriode.rejected, (state, action) => {
@@ -332,7 +333,7 @@ export const devisSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getInfoUtilisateur.fulfilled, (state, action) => {
-        state.DevisList = action.payload;
+        state.devisList = action.payload;
         state.status = "reussi";
       })
       .addCase(getInfoUtilisateur.rejected, (state, action) => {

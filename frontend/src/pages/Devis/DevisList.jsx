@@ -13,7 +13,7 @@ function DevisList() {
   //Action
   const dispatch = useDispatch();
   // todo lire les donnes de listedevis a partie min devisslice
-  const ListeDevis = useSelector((store) => store.DevisCrud.DevisList);
+  const ListeDevis = useSelector((store) => store.DevisCrud.devisList);
   // todo recuperation de donnes donc on utilise useeffect
   useEffect(() => {
     dispatch(getDevisList());

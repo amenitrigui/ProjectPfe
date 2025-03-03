@@ -21,7 +21,7 @@ const Recherche = () => {
   // * critère de filtre (par client, par montant ...)
   const [filtrerPar, setFiltrerPar] = useState("");
   // * liste de devis récuperer de store
-  const devisList = useSelector((state) => state.DevisCrud.DevisList);
+  const devisList = useSelector((state) => state.DevisCrud.devisList);
   // * pour obtenir les informations de dévis séléctionné
   const handleselecteddevis = ({ selectedRows }) => {
     console.log(selectedRows[0])
