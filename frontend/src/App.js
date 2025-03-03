@@ -28,6 +28,7 @@ import Parent from "./test/Parent";
 import DevisFormTout from "./pages/Devis/DevisFormTout";
 import DevisFormPlaceholder from "./components/Devis/DevisFormPlaceholder";
 import Deconnexion from "./pages/authentication/Deconnexion";
+import { useSelector } from "react-redux";
 
 function App() {
   const notify = () => {
@@ -37,6 +38,9 @@ function App() {
       hideProgressBar: true,
     });
   };
+
+  const state = useSelector((state) => state);
+  console.log("State redux màj", state);
 
   return (
     <Router>

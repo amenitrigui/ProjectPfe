@@ -157,74 +157,7 @@ function ArticlesDevis() {
         </div>
       </div>
 
-      <div className="bg-gray-300 p-4 sticky bottom-0 w-full">
-        <div className="flex flex-wrap gap-4">
-          <div className="flex-1 min-w-[150px]">
-            <label className="block  font-bold">Montant HT :</label>
-
-            <input
-              type="text"
-              name="totalHt"
-              className="w-full border rounded-md p-2"
-              readOnly
-            />
-          </div>
-          <div className="flex-1 min-w-[150px]">
-            <label className="block font-medium">Remise Totale :</label>
-            <input
-              type="text"
-              name="Remise"
-              className="w-full border rounded-md p-2"
-              readOnly
-            />
-          </div>
-          <div className="flex-1 min-w-[150px]">
-            <label className="block font-medium">Net HT Global :</label>
-            <input
-              type="text"
-              name="netHtGlobal"
-              className="w-full border rounded-md p-2"
-              readOnly
-            />
-          </div>
-          <div className="flex-1 min-w-[150px]">
-            <label className="block font-medium">Taxe :</label>
-            <input
-              type="text"
-              name="taxe"
-              className="w-full border rounded-md p-2"
-              readOnly
-            />
-          </div>
-          <div className="flex-1 min-w-[150px]">
-            <label className="block font-medium">Montant TTC :</label>
-            <input
-              type="text"
-              name="MTTC"
-              className="w-full border rounded-md p-2"
-              readOnly
-            />
-          </div>
-          <div className="flex-1 min-w-[150px]">
-            <label className="block font-medium">Timbre :</label>
-            <input
-              type="text"
-              name="timbre"
-              className="w-full border rounded-md p-2"
-              readOnly
-            />
-          </div>
-          <div className="flex-1 min-w-[150px]">
-            <label className="block font-medium">À Payer :</label>
-            <input
-              type="text"
-              name="aPayer"
-              className="w-full border rounded-md p-2"
-              readOnly
-            />
-          </div>
-        </div>
-      </div>
+     
     </div>
   );
 }

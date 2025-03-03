@@ -252,6 +252,32 @@ const creerDevis = async (req, res) => {
     });
   }
 };
+//* recupere la ligne d'article
+const getLigneArticle = async (req, res) => {
+  try {
+    const { dbName } = req.params;
+    const { NumBL } = req.query;
+    console.log(NumBL)
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const listeArticle = await dbConnection.query(
+      `Select CodeART,Remise,Unite,QteART,DesART,TauxTVA,famille,PUART from ldfp where NumBL = :NumBL`,
+      {
+        replacements: { NumBL },
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    );
+
+    return res
+      .status(200)
+      .json({
+        message: "ligne Article regupere avec succe",
+        listeArticle: listeArticle,
+      });
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({ message: error.message });
+  }
+};
 
 // * récuperer la liste de devis créés dans une date spécifique (DATEBL)
 // * pour une societé donnée (dbName)
@@ -336,7 +362,7 @@ const getDevisParNUMBL = async (req, res) => {
     if (NUMBL) {
       // devis selectionné
       const devis = await dbConnection.query(
-        `SELECT NUMBL,libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where NUMBL = :NUMBL`,
+        `SELECT NUMBL,libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP,TIMBRE, usera, RSCLI, codesecteur, MHT from dfp where NUMBL = :NUMBL`,
         {
           replacements: { NUMBL },
           type: dbConnection.QueryTypes.SELECT,
@@ -372,7 +398,7 @@ const getInfoUtilisateur = async (req, res) => {
   try {
     const { dbName } = req.params;
     const { usera } = req.query;
-    console.log(usera)
+    console.log(usera);
     const dbConnection = await getDatabaseConnection(dbName, res);
     if (usera) {
       const utilisateur = await dbConnection.query(
@@ -382,12 +408,10 @@ const getInfoUtilisateur = async (req, res) => {
           type: dbConnection.QueryTypes.SELECT,
         }
       );
-      return res
-        .status(200)
-        .json({
-          message: "client recupere avec succes ",
-          utilisateur: utilisateur,
-        });
+      return res.status(200).json({
+        message: "client recupere avec succes ",
+        utilisateur: utilisateur,
+      });
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -430,12 +454,10 @@ const getListePointVente = async (req, res) => {
       }
     );
 
-    return res
-      .status(200)
-      .json({
-        message: "points de vente recupérés avec succès",
-        pointsVenteDistincts: pointsVenteDistincts,
-      });
+    return res.status(200).json({
+      message: "points de vente recupérés avec succès",
+      pointsVenteDistincts: pointsVenteDistincts,
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -452,5 +474,7 @@ module.exports = {
   GetDevisListParClient,
   GetDevisParPeriode,
   getListePointVente,
-  getInfoUtilisateur
+  getInfoUtilisateur,
+  getListePointVente,
+  getLigneArticle,
 };

@@ -9,6 +9,21 @@ export const getDevisList = createAsyncThunk("slice/getDevisList", async () => {
   return response.data.devisList;
 });
 
+export const getLigneArticle = createAsyncThunk(
+  "slice/getLigneArticle",
+  async (NumBL) => {
+    console.log(NumBL);
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getLigneArticle`,
+      {
+        params: { NumBL },
+      },
+    );
+    console.log(response)
+    return response.data.listeArticle;
+  }
+);
+
 // * Action asynchrone pour ajouter un devis
 export const AjouterDevis = createAsyncThunk(
   "slice/AddDevis",
@@ -169,6 +184,7 @@ export const devisSlice = createSlice({
       comm: "",
       RSREP: "",
       CODEREP: "",
+      TIMBRE:"",
       usera: "",
       RSCLI: "",
       codesecteur: "",
@@ -320,6 +336,20 @@ export const devisSlice = createSlice({
         state.status = "reussi";
       })
       .addCase(getInfoUtilisateur.rejected, (state, action) => {
+        state.erreur = action.payload;
+        state.status = "echoue";
+      })
+
+      .addCase(getLigneArticle.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getLigneArticle.fulfilled, (state, action) => {
+        // state.devisInfo = action.payload[0];
+        state.devisInfo.articles = action.payload;
+        console.log(action.payload);
+        state.status = "reussi";
+      })
+      .addCase(getLigneArticle.rejected, (state, action) => {
         state.erreur = action.payload;
         state.status = "echoue";
       });
