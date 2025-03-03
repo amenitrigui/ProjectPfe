@@ -118,6 +118,7 @@ export const getListeNumbl = createAsyncThunk(
       `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getListeNUMBL`
     );
     console.log(response);
+    return response.data.listeNUMBL;
   }
 );
 
@@ -126,6 +127,7 @@ export const devisSlice = createSlice({
   initialState: {
     // * liste de devis
     DevisList: [],
+    listeNUMBL: [],
     // * informations du formulaire de devis
     devisInfo: {
       NUMBL: "",
@@ -260,6 +262,18 @@ export const devisSlice = createSlice({
         state.status = "reussi";
       })
       .addCase(getDevisParPeriode.rejected, (state, action) => {
+        state.erreur = action.payload;
+        state.status = "echoue";
+      })
+      
+      .addCase(getListeNumbl.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getListeNumbl.fulfilled, (state, action) => {
+        state.listeNUMBL = action.payload;
+        state.status = "reussi";
+      })
+      .addCase(getListeNumbl.rejected, (state, action) => {
         state.erreur = action.payload;
         state.status = "echoue";
       });

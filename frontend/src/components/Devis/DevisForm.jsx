@@ -19,8 +19,8 @@ import {
 function DevisForm() {
   const dispatch = useDispatch();
   const navi = useNavigate();
-  // * tableau contenant la liste des devis
-  const DevisList = useSelector((state) => state.DevisCrud.DevisList);
+  // * tableau contenant la liste des codes des devis
+  const listeNUMBL = useSelector((state) => state.DevisCrud.listeNUMBL);
   // * informations d'un devis provenant des champs de cette formulaire
   const devisInfos = useSelector((state) => state.DevisCrud.devisInfo);
   // * UseEffect #1 : récupérer la liste des codes de devis seulement
@@ -34,8 +34,6 @@ function DevisForm() {
   const handleSelectDevis = (e) => {
     console.log(e.target.value);
     dispatch(getDevisParNUMBL(e.target.value));
-
-    dispatch(setDevisInfoEntiere(DevisList[0]));
   };
   // * boolean pour activer/désactiver champs du formulaire
   // * initialement false (champs désactivé en mode de consultation)
@@ -75,9 +73,9 @@ function DevisForm() {
           disabled={activerChampsForm}
           onChange={(e) => handleSelectDevis(e)}
         >
-          {DevisList.map((devis) => (
-            <option key={devis.NUMBL} value={devis.NUMBL}>
-              {devis.NUMBL}
+          {listeNUMBL.map((codeDevis) => (
+            <option key={codeDevis.NUMBL} value={codeDevis.NUMBL}>
+              {codeDevis.NUMBL}
             </option>
           ))}
         </select>
@@ -229,11 +227,7 @@ function DevisForm() {
           disabled={!activerChampsForm}
           onChange={(e) => handleSelectDevis(e)}
         >
-          {DevisList.map((devis) => (
-            <option key={devis.NUMBL} value={devis.codesecteur}>
-              {devis.codesecteur}
-            </option>
-          ))}
+          
         </select>
 
         <label className="block font-medium">Désignation Secteur :</label>
