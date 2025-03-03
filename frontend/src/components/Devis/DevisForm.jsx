@@ -71,7 +71,7 @@ function DevisForm() {
 
         <label className="block font-medium">Point de vente :</label>
         <select
-          className="select select-bordered w-full max-w-xs"
+           className="select select-bordered w-full max-w-xs"
           disabled={!activerChampsForm}
         >
           <option>SIEGE LOCAL</option>

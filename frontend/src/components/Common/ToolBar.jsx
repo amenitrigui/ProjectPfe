@@ -246,6 +246,14 @@ const HandleRecherche =async()=>{
             </button>
           )}
         </div>
+        <nav className="w-full h-[250px] border-b border-gray-700 flex items-center px-1 mt-1">
+  <div className="flex space-x-4">
+    {/* Vos autres boutons ici */}
+  </div>
+ 
+</nav>
+
+
       </nav>
 
       {toolbarTable == "devis" && (
