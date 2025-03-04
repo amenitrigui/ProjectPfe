@@ -136,7 +136,6 @@ function DevisFormTout() {
               ))}
             </tbody>
           </table>
-          <ArticlesDevis />
         </div>
       </div>
       <div className="bg-gray-300 p-4 sticky bottom-0 w-full">

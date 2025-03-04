@@ -29,7 +29,8 @@ const {
   GetDevisParPeriode,
   getInfoUtilisateur,
   getListePointVente,
-  getLigneArticle
+  getLigneArticle,
+  getDevisCreator
 } = require("../controllers/devisController");
 //devis controller mt3na
 router.post("/:dbName/create", creerDevis);
@@ -46,6 +47,7 @@ router.get("/:dbName/getDevisParMontant", getDevisParMontant);
 router.get("/:dbName/getInfoUtilisateur", getInfoUtilisateur);
 router.get("/:dbName/getListePointVente", getListePointVente);
 router.get("/:dbName/getLigneArticle", getLigneArticle);
+router.get("/:dbName/getDevisCreator", getDevisCreator);
 
 
 //////////////////////////////////////////////

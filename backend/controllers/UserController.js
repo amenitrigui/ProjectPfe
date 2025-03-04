@@ -134,11 +134,7 @@ const loginUser = async (req, res) => {
     return res.status(200).json({
       message: "Connexion réussie.",
       token,
-      user: {
-        codeuser: user.codeuser,
-        nom: user.nom,
-        email: user.email,
-      },
+      codeuser: user.codeuser,
       societies: societies.map((s) => ({
         societe: s.societe, // Code de la société
         rsoc: s.rsoc, // Nom de la société

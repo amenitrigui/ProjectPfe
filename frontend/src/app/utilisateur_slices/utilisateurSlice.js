@@ -7,7 +7,8 @@ export const utilisateurSlice = createSlice({
     name: "utilisateurSlice",
     initialState: {
         dbName: "",
-        token: ""
+        token: "",
+        codeuser: "",
     },
     reducers: {
         setDbName: (state, action) => {
@@ -15,10 +16,13 @@ export const utilisateurSlice = createSlice({
         },
         setToken: (state, action) => {
             state.token = action.payload
+        },
+        setCodeUser: (state, action) => {
+            state.codeuser = action.payload;
         }
     }
 
 })
 
-export const { setDbName, setToekn } = utilisateurSlice.actions;
+export const { setDbName, setToken, setCodeUser } = utilisateurSlice.actions;
 export default utilisateurSlice.reducer;

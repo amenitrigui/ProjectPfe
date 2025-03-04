@@ -64,11 +64,13 @@ export const getTotalChifre = createAsyncThunk(
 export const getDevisParNUMBL = createAsyncThunk(
   "Slice/getDevisParNUMBL",
   async (NUMBL) => {
+    const codeuser = localStorage.getItem("codeuser");
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getDevisParNUMBL`,
       {
         params: {
           NUMBL,
+          codeuser
         },
       }
     );
@@ -79,11 +81,13 @@ export const getDevisParNUMBL = createAsyncThunk(
 export const getDevisParMontant = createAsyncThunk(
   "devisSlice/getDevisParMontant",
   async (montant) => {
+    const codeuser = localStorage.getItem("codeuser");
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getDevisParMontant`,
       {
         params: {
           montant,
+          codeuser
         },
       }
     );
@@ -95,11 +99,13 @@ export const getDevisParMontant = createAsyncThunk(
 export const getDevisParCodeClient = createAsyncThunk(
   "slice/getDevisParCodeClient",
   async (CODECLI) => {
+    const codeuser = localStorage.getItem("codeuser");
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getDevisParClient`,
       {
         params: {
           CODECLI,
+          codeuser
         },
       }
     );
@@ -126,12 +132,13 @@ export const getInfoUtilisateur = createAsyncThunk(
 export const getDevisParPeriode = createAsyncThunk(
   "slice/getDevisParPeriode",
   async (DATEBL) => {
-    console.log(DATEBL);
+    const codeuser = localStorage.getItem("codeuser");
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getDevisParPeriode`,
       {
         params: {
           DATEBL,
+          codeuser
         },
       }
     );
@@ -178,7 +185,7 @@ export const devisSlice = createSlice({
       ADRCLI: "",
       CODECLI: "",
       cp: "",
-      DATEBL: "",
+      DATEBL: new Date().toLocaleDateString("fr-FR"),
       MREMISE: "",
       MTTC: "",
       comm: "",

@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { setDbName } from "../../app/utilisateur_slices/utilisateurSlice";
 
 const SocietiesList = () => {
   const [societies, setSocieties] = useState([]);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -56,7 +59,7 @@ const SocietiesList = () => {
         localStorage.setItem("selectedDatabase", society);
         // localStorage.setItem("selectedNumbl", JSON.stringify(selectedNumbl));
         localStorage.setItem("selectedRsoc", society.rsoc);
-
+        dispatch(setDbName(society));
         navigate("/Dashboard");
       }
     } catch (error) {

@@ -257,7 +257,7 @@ const getLigneArticle = async (req, res) => {
   try {
     const { dbName } = req.params;
     const { NumBL } = req.query;
-    console.log(NumBL)
+    console.log(NumBL);
     const dbConnection = await getDatabaseConnection(dbName, res);
     const listeArticle = await dbConnection.query(
       `Select CodeART,Remise,Unite,QteART,DesART,TauxTVA,famille,PUART from ldfp where NumBL = :NumBL`,
@@ -267,14 +267,12 @@ const getLigneArticle = async (req, res) => {
       }
     );
 
-    return res
-      .status(200)
-      .json({
-        message: "ligne Article regupere avec succe",
-        listeArticle: listeArticle,
-      });
+    return res.status(200).json({
+      message: "ligne Article regupere avec succe",
+      listeArticle: listeArticle,
+    });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res.status(500).json({ message: error.message });
   }
 };
@@ -286,12 +284,13 @@ const GetDevisParPeriode = async (req, res) => {
   try {
     const { dbName } = req.params;
     const { DATEBL } = req.query;
+    const { codeuser } = req.query;
     const dbConnection = await getDatabaseConnection(dbName, res);
 
     const devis = await dbConnection.query(
-      `select  NUMBL, libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where DATE(DATEBL)= :DATEBL`,
+      `select  NUMBL, libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where DATE(DATEBL)= :DATEBL and usera = :codeuser`,
       {
-        replacements: { DATEBL },
+        replacements: { DATEBL, codeuser },
         type: dbConnection.QueryTypes.SELECT,
       }
     );
@@ -310,11 +309,12 @@ const GetDevisListParClient = async (req, res) => {
   try {
     const { dbName } = req.params;
     const { CODECLI } = req.query;
+    const { codeuser } = req.query;
     const dbConnection = await getDatabaseConnection(dbName, res);
     const devis = await dbConnection.query(
-      `select  NUMBL, libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where CODECLI=:CODECLI`,
+      `select  NUMBL, libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where CODECLI=:CODECLI and usera = :codeuser`,
       {
-        replacements: { CODECLI },
+        replacements: { CODECLI, codeuser },
         type: dbConnection.QueryTypes.SELECT,
       }
     );
@@ -356,15 +356,16 @@ const getDevisParNUMBL = async (req, res) => {
   try {
     const { dbName } = req.params;
     const { NUMBL } = req.query;
+    const { codeuser } = req.query;
 
     const dbConnection = await getDatabaseConnection(dbName, res);
-    console.log(NUMBL);
-    if (NUMBL) {
+    console.log(NUMBL, " ", codeuser);
+    if (NUMBL && codeuser) {
       // devis selectionné
       const devis = await dbConnection.query(
-        `SELECT NUMBL,libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP,TIMBRE, usera, RSCLI, codesecteur, MHT from dfp where NUMBL = :NUMBL`,
+        `SELECT NUMBL,libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP,TIMBRE, usera, RSCLI, codesecteur, MHT from dfp where NUMBL = :NUMBL and usera = :codeuser`,
         {
-          replacements: { NUMBL },
+          replacements: { NUMBL, codeuser },
           type: dbConnection.QueryTypes.SELECT,
         }
       );
@@ -380,15 +381,24 @@ const getDevisParNUMBL = async (req, res) => {
 // * récuperer l'utilisateur qui a crée un devis à partir
 // * de la base des données ErpSole
 // * pour une societé donnée
-
+// ! still haven't tested this
 const getDevisCreator = async (req, res) => {
-  const dbConnection = getDatabaseConnection("UserErpSole", res);
-  const result = await dbConnection.query(`SELECT  FROM utlisateur `, {
-    type: QueryTypes.SELECT,
-  });
+  try {
+    const { codea } = req.params;
+    const dbConnection = getDatabaseConnection("UserErpSole", res);
+    const resultat = await dbConnection.query(
+      `SELECT * FROM utlisateur u, dfp d where d.codea = u.codeuser`,
+      {
+        type: QueryTypes.SELECT,
+      }
+    );
 
-  if (result) {
-    return res.status(200).json({ result });
+    if (resultat) {
+      console.log(resultat);
+      return res.status(200).json({ resultat: resultat });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -421,15 +431,15 @@ const getDevisParMontant = async (req, res) => {
   try {
     const { dbName } = req.params;
     const { montant } = req.query;
+    const { codeuser } = req.query;
 
     const dbConnection = await getDatabaseConnection(dbName, res);
-    console.log(montant);
     if (montant) {
       // devis selectionné
       const devis = await dbConnection.query(
-        `SELECT NUMBL,libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where MTTC = :montant`,
+        `SELECT NUMBL,libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where MTTC = :montant and usera = :codeuser`,
         {
-          replacements: { montant },
+          replacements: { montant, codeuser },
           type: dbConnection.QueryTypes.SELECT,
         }
       );
@@ -463,6 +473,18 @@ const getListePointVente = async (req, res) => {
   }
 };
 
+const getDerniereNumbl = async (req, res) => {
+  try {
+    const { dbName } = req.params;
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const derniereNumbl = await dbConnection.query(
+      `SELECT NUMBL from dfp where latest DateBl`
+    );
+  } catch (error) {
+    return res.status(500).json({ messasge: error.message });
+  }
+};
+
 module.exports = {
   getTousDevis,
   getNombreDevis,
@@ -477,4 +499,5 @@ module.exports = {
   getInfoUtilisateur,
   getListePointVente,
   getLigneArticle,
+  getDevisCreator,
 };

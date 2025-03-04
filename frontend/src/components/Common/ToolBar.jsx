@@ -40,6 +40,7 @@ import {
 function ToolBar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
   // * state pour afficher/cacher fenetre de confirmation pour
   // * la suppression
   const [isDeleting, setIsDeleting] = useState(false);
@@ -57,6 +58,7 @@ function ToolBar() {
     dispatch(setActiverChampsForm(true));
     // * vider les champs du formulaires
     if (toolbarTable == "devis") {
+      console.log(devisInfo);
       dispatch(
         setDevisInfoEntiere({
           NUMBL: "",
