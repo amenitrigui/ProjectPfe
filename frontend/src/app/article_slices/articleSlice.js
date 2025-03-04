@@ -17,7 +17,7 @@ export const getCodeArticle = createAsyncThunk(
       `${process.env.REACT_APP_API_URL}/api/article/SOLEVO/codes/famille/${famille}` 
       // $paramettre de la requette
     );
-   console.log(response);
+   // console.log(response);
     return response.data.articles;
   }
 );
@@ -39,14 +39,9 @@ export const articleSlice = createSlice({
   initialState: {
     ListeArticle: [],
     ListeCodeArticles: [],
-    InfoArticles: {},
+    ListeCodeArticlesparLib: {},
   },
-  reducers: {
-    setArticleInfo: (state, action) => {
-      const { collone, valeur } = action.payload;
-      state.InfoArticles[collone] = valeur;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(getArticleFamiles.pending, (state) => {
@@ -67,7 +62,7 @@ export const articleSlice = createSlice({
       })
       .addCase(getCodeArticle.fulfilled, (state, action) => {
         // state.devisInfo = action.payload[0];
-        state.InfoArticles = action.payload;
+        state.ListeCodeArticles = action.payload;
         console.log(action.payload);
         state.status = "reussi";
       })
@@ -83,7 +78,7 @@ export const articleSlice = createSlice({
       })
       .addCase(getTousArticleparcode.fulfilled, (state, action) => {
         // state.devisInfo = action.payload[0];
-        state.InfoArticles = action.payload;
+        state.ListeCodeArticlesparLib = action.payload;
          console.log(action.payload);
         state.status = "reussi";
       })
@@ -93,6 +88,4 @@ export const articleSlice = createSlice({
       });
   },
 });
-export const {setArticleInfo}=articleSlice.actions;
-
 export default articleSlice.reducer;
