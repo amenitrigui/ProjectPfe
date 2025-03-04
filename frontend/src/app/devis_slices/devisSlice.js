@@ -188,6 +188,7 @@ export const devisSlice = createSlice({
       DATEBL: new Date().toLocaleDateString("fr-FR"),
       MREMISE: "",
       MTTC: "",
+      MTVA:"",
       comm: "",
       RSREP: "",
       CODEREP: "",
@@ -269,6 +270,7 @@ export const devisSlice = createSlice({
       .addCase(getDevisParNUMBL.fulfilled, (state, action) => {
         state.devisList = action.payload;
         state.devisInfo = action.payload[0];
+        state.DevisList=action.payload;
         state.status = "reussi";
       })
       .addCase(getDevisParNUMBL.rejected, (state, action) => {
