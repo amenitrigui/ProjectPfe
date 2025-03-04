@@ -15,7 +15,7 @@ import {
   setDevisInfo,
   setDevisInfoEntiere,
   getListePointsVente,
-  getLigneArticle
+  getLigneArticle,
 } from "../../app/devis_slices/devisSlice";
 function DevisForm() {
   const dispatch = useDispatch();
@@ -24,7 +24,7 @@ function DevisForm() {
   const listeNUMBL = useSelector((state) => state.DevisCrud.listeNUMBL);
   // * informations d'un devis provenant des champs de cette formulaire
   const devisInfos = useSelector((state) => state.DevisCrud.devisInfo);
-  console.log(devisInfos)
+  console.log(devisInfos);
   const listePointsVente = useSelector(
     (state) => state.DevisCrud.listePointsVente
   );
@@ -37,12 +37,12 @@ function DevisForm() {
   // * pour afficher ses informations dans les champs
   // * du formulaire
   const handleSelectDevis = (e) => {
-    if (e.target.value != "vide"){
+    if (e.target.value != "vide") {
       dispatch(getDevisParNUMBL(e.target.value));
       dispatch(getLigneArticle(devisInfos.NUMBL));
     }
+    // * vider les champs du formulaire
     else
-      // * vider les champs du formulaire
       dispatch(
         setDevisInfoEntiere({
           NUMBL: "",
@@ -94,12 +94,14 @@ function DevisForm() {
           disabled={activerChampsForm}
           onChange={(e) => handleSelectDevis(e)}
         >
-          {devisInfos.NUMBL == "" && 
-          <option value={devisInfos.NUMBL}>Veuillez sélectionner un devis</option>
-          }
-          {devisInfos.NUMBL && 
-          <option value={devisInfos.NUMBL}>{devisInfos.NUMBL}</option>
-          }
+          {devisInfos.NUMBL == "" && (
+            <option value={devisInfos.NUMBL}>
+              Veuillez sélectionner un devis
+            </option>
+          )}
+          {devisInfos.NUMBL && (
+            <option value={devisInfos.NUMBL}>{devisInfos.NUMBL}</option>
+          )}
           {listeNUMBL.map((codeDevis) => (
             <option key={codeDevis.NUMBL} value={codeDevis.NUMBL}>
               {codeDevis.NUMBL}
