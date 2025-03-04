@@ -48,11 +48,14 @@ router.get("/:dbName/getListePointVente", getListePointVente);
 router.get("/:dbName/getLigneArticle", getLigneArticle);
 
 
+router.get("/:dbName/getListePointVente", getListePointVente);
+
+router.get("/:dbName/getInfoUtilisateur", getInfoUtilisateur);
 //////////////////////////////////////////////
 
 router.get("/:dbName/clients/code/:code", getClientByCode);
 router.get("/:dbName/clients/rsoc/:rsoc", getClientByRsoc);
-router.get("/:dbName/article", getAllcodearticle);
+//router.get("/:dbName/article", getAllcodearticle);
 router.get("/:dbName/devis", getTousDevis);
 router.get("/:dbName/devis/libpv/:numbl", getLibpvByNumbl);
 router.get("/:dbName/devis/details", getDevisWithDetails);

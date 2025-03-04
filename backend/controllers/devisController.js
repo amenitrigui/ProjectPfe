@@ -362,7 +362,7 @@ const getDevisParNUMBL = async (req, res) => {
     if (NUMBL) {
       // devis selectionné
       const devis = await dbConnection.query(
-        `SELECT NUMBL,libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP,TIMBRE, usera, RSCLI, codesecteur, MHT from dfp where NUMBL = :NUMBL`,
+        `SELECT NUMBL,libpv,ADRCLI, CODECLI,MTVA, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP,TIMBRE, usera, RSCLI, codesecteur, MHT from dfp where NUMBL = :NUMBL`,
         {
           replacements: { NUMBL },
           type: dbConnection.QueryTypes.SELECT,

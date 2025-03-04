@@ -24,6 +24,7 @@ const Recherche = () => {
   const devisList = useSelector((state) => state.DevisCrud.DevisList);
   // * pour obtenir les informations de dévis séléctionné
   const handleselecteddevis = ({ selectedRows }) => {
+    console.log(selectedRows[0])
     dispatch(setDevisInfoEntiere(selectedRows[0]));
   };
   // * pour filtrer la liste des devis

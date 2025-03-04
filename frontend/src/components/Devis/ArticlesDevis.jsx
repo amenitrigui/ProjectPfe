@@ -5,8 +5,38 @@ import {
   PrinterIcon,
   TrashIcon,
 } from "@heroicons/react/20/solid";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import {
+  getArticleFamiles,
+  getCodeArticle,
+  getTousArticleparcode,
+  setArticleInfo,
+} from "../../app/article_slices/articleSlice";
 
 function ArticlesDevis() {
+  const dispatch = useDispatch();
+  const ListeArticle = useSelector((state) => state.ArticlesDevis.ListeArticle);
+  const ListeCodeArticle = useSelector(
+    (state) => state.ArticlesDevis.ListeCodeArticles
+  );
+  const codeTousArticleParCode = useSelector(
+    (state) => state.ArticlesDevis.InfoArticles
+  );
+  console.log(codeTousArticleParCode);
+  const handlecodeFamilleChange = (codeFamille) => {
+    dispatch(getCodeArticle(codeFamille));
+  };
+  const handleSubmiparcode = (CodeArticle) => {
+    dispatch(getTousArticleparcode(CodeArticle));
+  };
+  const hadlesubmitquantiteparcode = (e) => {
+    dispatch(setArticleInfo({collone:"QteArt",valeur: e.target.value}));
+  };
+  useEffect(() => {
+    dispatch(getArticleFamiles());
+  }, []);
+
   return (
     <div className="space-y-4 p-4 border rounded-md mt-4">
       <div className="space-y-4 p-4 border rounded-md mt-4">
@@ -15,19 +45,32 @@ function ArticlesDevis() {
         <div className="grid grid-cols-6 gap-4 items-center">
           <div>
             <label className="block font-medium">FAMILLE</label>
-            <Select
-              isClearable
+            <select
+              className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="Sélectionner ou taper une famille"
-            />
+              onChange={(e) => {
+                handlecodeFamilleChange(e.target.value);
+              }}
+            >
+              {ListeArticle.map((famille) => (
+                <option key={famille}>{famille}</option>
+              ))}
+            </select>
           </div>
 
           <div>
             <label className="block font-medium">CODE ARTICLE</label>
-            <input
-              type="text"
-              placeholder="Sélectionner un code article"
+            <select
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
+              placeholder="Sélectionner ou taper une famille"
+              onChange={(e) => {
+                handleSubmiparcode(e);
+              }}
+            >
+              {ListeCodeArticle.map((article) => (
+                <option key={article.code}>{article.code}</option>
+              ))}
+            </select>
           </div>
           <div>
             <label className="block font-medium">LIBELLE</label>
@@ -35,6 +78,7 @@ function ArticlesDevis() {
               type="text"
               placeholder="Sélectionner un code article"
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              defaultValue={codeTousArticleParCode.libelle}
             />
           </div>
 
@@ -44,6 +88,7 @@ function ArticlesDevis() {
               type="text"
               placeholder="Sélectionner un code article"
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              defaultValue={codeTousArticleParCode.unite}
             />
           </div>
 
@@ -53,15 +98,16 @@ function ArticlesDevis() {
               type="text"
               placeholder="Sélectionner un code article"
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              onKeyUp={(e) => hadlesubmitquantiteparcode(e.target.value)}
             />
           </div>
 
           <div>
             <label className="block font-medium">CONFIG</label>
-            <input
-              type="text"
+            <textarea
               placeholder="Sélectionner un code article"
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              defaultValue={codeTousArticleParCode.CONFIG}
             />
           </div>
         </div>
@@ -83,6 +129,7 @@ function ArticlesDevis() {
             type="text"
             placeholder="tauxtva"
             className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            defaultValue={codeTousArticleParCode.tauxtva}
           />
         </div>
 
@@ -110,6 +157,7 @@ function ArticlesDevis() {
             type="text"
             placeholder="nbrunite"
             className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            defaultValue={codeTousArticleParCode.nbrunite}
           />
         </div>
         <div className="flex space-x-4">
@@ -119,15 +167,7 @@ function ArticlesDevis() {
               type="text"
               step="0.001"
               placeholder="prix1"
-              className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-
-          <div className="flex-1">
-            <label className="block font-medium">Collisage</label>
-            <input
-              type="text"
-              placeholder=""
+              defaultValue={codeTousArticleParCode.prix1}
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
@@ -156,8 +196,6 @@ function ArticlesDevis() {
           </button>
         </div>
       </div>
-
-     
     </div>
   );
 }

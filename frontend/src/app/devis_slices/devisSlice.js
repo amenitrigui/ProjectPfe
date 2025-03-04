@@ -181,6 +181,7 @@ export const devisSlice = createSlice({
       DATEBL: "",
       MREMISE: "",
       MTTC: "",
+      MTVA:"",
       comm: "",
       RSREP: "",
       CODEREP: "",
@@ -260,8 +261,8 @@ export const devisSlice = createSlice({
         state.status = "chargeement";
       })
       .addCase(getDevisParNUMBL.fulfilled, (state, action) => {
-        state.DevisList = action.payload;
         state.devisInfo = action.payload[0];
+        state.DevisList=action.payload;
         state.status = "reussi";
       })
       .addCase(getDevisParNUMBL.rejected, (state, action) => {
@@ -314,6 +315,18 @@ export const devisSlice = createSlice({
       })
       .addCase(getListeNumbl.rejected, (state, action) => {
         state.erreur = action.payload;
+        state.status = "echoue";
+      })
+
+      .addCase(getListePointsVente.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getListePointsVente.fulfilled, (state, action) => {
+        state.listePointsVente = action.payload;
+        state.status = "reussi";
+      })
+      .addCase(getListePointsVente.rejected, (state, action) => {
+        state.error = action.payload;
         state.status = "echoue";
       })
 

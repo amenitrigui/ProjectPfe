@@ -22,6 +22,7 @@ import {
   ajouterClient,
   getListeClient,
   majClient,
+  setClientInfosEntiere,
 } from "../../app/client_slices/clientSlice";
 import {
   setAfficherAlertModal,
@@ -31,7 +32,10 @@ import {
   setActiverChampsForm,
   setActiverBoutonsValiderAnnuler,
 } from "../../app/interface_slices/uiSlice";
-import { AjouterDevis } from "../../app/devis_slices/devisSlice";
+import {
+  AjouterDevis,
+  setDevisInfoEntiere,
+} from "../../app/devis_slices/devisSlice";
 
 function ToolBar() {
   const dispatch = useDispatch();
@@ -51,7 +55,43 @@ function ToolBar() {
   const handleAjout = async () => {
     dispatch(setActiverBoutonsValiderAnnuler(true));
     dispatch(setActiverChampsForm(true));
-    //validerAjout();
+    // * vider les champs du formulaires
+    if (toolbarTable == "devis") {
+      dispatch(
+        setDevisInfoEntiere({
+          NUMBL: "",
+          libpv: "",
+          ADRCLI: "",
+          CODECLI: "",
+          cp: "",
+          DATEBL: "",
+          MREMISE: "",
+          MTTC: "",
+          comm: "",
+          RSREP: "",
+          CODEREP: "",
+          usera: "",
+          RSCLI: "",
+          codesecteur: "",
+          MHT: "",
+          articles: [],
+        })
+      );
+    }
+
+    if (toolbarTable == "client") {
+      dispatch(
+        setClientInfosEntiere({
+          code: "",
+          rsoc: "",
+          adresse: "",
+          cp: "",
+          email: "",
+          telephone: "",
+          desrep: "",
+        })
+      );
+    }
   };
   const HandleRecherche = async () => {
     navigate("/recherche");
@@ -174,11 +214,13 @@ function ToolBar() {
             <>
               <div className="border-r border-gray-300 h-8"></div>
 
-              <button className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100" onClick={() => navigate("/recherche")}>
+              <button
+                className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
+                onClick={() => navigate("/recherche")}
+              >
                 <FontAwesomeIcon
                   icon={faSearch}
                   className="text-blue-600 text-3xl"
-                 
                 />
                 <span className="text-sm font-semibold text-gray-700">
                   Rechercher
@@ -252,13 +294,8 @@ function ToolBar() {
           )}
         </div>
         <nav className="w-full h-[250px] border-b border-gray-700 flex items-center px-1 mt-1">
-  <div className="flex space-x-4">
-    {/* Vos autres boutons ici */}
-  </div>
- 
-</nav>
-
-
+          <div className="flex space-x-4">{/* Vos autres boutons ici */}</div>
+        </nav>
       </nav>
 
       {toolbarTable == "devis" && (

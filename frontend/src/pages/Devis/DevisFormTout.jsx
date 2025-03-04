@@ -9,6 +9,8 @@ import {
 
 import DevisForm from "../../components/Devis/DevisForm";
 import ArticlesDevis from "../../components/Devis/ArticlesDevis";
+import { getArticleFamiles } from "../../app/article_slices/articleSlice";
+
 
 function DevisFormTout() {
   const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
@@ -19,7 +21,9 @@ function DevisFormTout() {
   useEffect(() => {
     dispatch(setToolbarTable("devis"));
     dispatch(setActiverChampsForm(false));
+   
   }, []);
+  
 
   return (
     <div className="bg-gray-100 min-h-screen p-6">
@@ -167,6 +171,8 @@ function DevisFormTout() {
             <input
               type="text"
               name="netHtGlobal"
+              
+
               className="w-full border rounded-md p-2"
               readOnly
             />
@@ -176,7 +182,7 @@ function DevisFormTout() {
             <input
               type="text"
               name="taxe"
-           //   defaultValue={devisInfo.}
+             defaultValue={devisInfo.MTVA}
               className="w-full border rounded-md p-2"
               readOnly
             />
