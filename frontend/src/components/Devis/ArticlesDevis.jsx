@@ -11,18 +11,16 @@ import {
   getArticleFamiles,
   getCodeArticle,
   getTousArticleparcode,
-  setArticleInfo,
 } from "../../app/article_slices/articleSlice";
+import { useState } from "react";
 
 function ArticlesDevis() {
   const dispatch = useDispatch();
+  const [Quantite,setQauntite]=useState("")
+  const [remise,setRemise]=useState("")
   const ListeArticle = useSelector((state) => state.ArticlesDevis.ListeArticle);
-  const ListeCodeArticle = useSelector(
-    (state) => state.ArticlesDevis.ListeCodeArticles
-  );
-  const codeTousArticleParCode = useSelector(
-    (state) => state.ArticlesDevis.InfoArticles
-  );
+  const ListeCodeArticle = useSelector((state) => state.ArticlesDevis.ListeCodeArticles);
+  const codeTousArticleParCode = useSelector((state) => state.ArticlesDevis.ListeCodeArticlesparLib);
   console.log(codeTousArticleParCode);
   const handlecodeFamilleChange = (codeFamille) => {
     dispatch(getCodeArticle(codeFamille));
@@ -30,12 +28,15 @@ function ArticlesDevis() {
   const handleSubmiparcode = (CodeArticle) => {
     dispatch(getTousArticleparcode(CodeArticle));
   };
-  const hadlesubmitquantiteparcode = (e) => {
-    dispatch(setArticleInfo({collone:"QteArt",valeur: e.target.value}));
-  };
+  const hadlesubmitquantiteparcode = () => {};
   useEffect(() => {
     dispatch(getArticleFamiles());
   }, []);
+
+  console.log(Quantite)
+  console.log(remise)
+
+
 
   return (
     <div className="space-y-4 p-4 border rounded-md mt-4">
@@ -64,7 +65,7 @@ function ArticlesDevis() {
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="Sélectionner ou taper une famille"
               onChange={(e) => {
-                handleSubmiparcode(e);
+                handleSubmiparcode(e.target.value);
               }}
             >
               {ListeCodeArticle.map((article) => (
@@ -98,7 +99,7 @@ function ArticlesDevis() {
               type="text"
               placeholder="Sélectionner un code article"
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              onKeyUp={(e) => hadlesubmitquantiteparcode(e.target.value)}
+                onKeyUp={(e)=>setQauntite(e.target.value)}
             />
           </div>
 
@@ -120,6 +121,7 @@ function ArticlesDevis() {
             step="0.001"
             placeholder="Remise"
             className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            onKeyUp={(e)=>setRemise(e.target.value)}
           />
         </div>
 
