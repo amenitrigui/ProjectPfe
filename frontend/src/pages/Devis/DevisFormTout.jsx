@@ -22,6 +22,12 @@ function DevisFormTout() {
     dispatch(setActiverChampsForm(false));
    
   }, []);
+  const NETHTGLOBAL= devisInfo.MHT-devisInfo.MREMISE||0
+  console.log(NETHTGLOBAL)
+  const taxe= devisInfo.MTTC-NETHTGLOBAL||0
+  console.log(taxe)
+  const apayer =devisInfo.MTTC+devisInfo.TIMBRE||0
+  console.log(apayer)
   
 
   return (
@@ -170,6 +176,7 @@ function DevisFormTout() {
             <input
               type="text"
               name="netHtGlobal"
+              value={NETHTGLOBAL}
               
 
               className="w-full border rounded-md p-2"
@@ -181,7 +188,8 @@ function DevisFormTout() {
             <input
               type="text"
               name="taxe"
-             defaultValue={devisInfo.MTVA}
+            
+             value={taxe}
               className="w-full border rounded-md p-2"
               readOnly
             />
@@ -211,6 +219,7 @@ function DevisFormTout() {
             <input
               type="text"
               name="aPayer"
+              value={apayer}
               className="w-full border rounded-md p-2"
               readOnly
             />

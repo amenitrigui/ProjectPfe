@@ -16,11 +16,15 @@ import { useState } from "react";
 
 function ArticlesDevis() {
   const dispatch = useDispatch();
-  const [Quantite,setQauntite]=useState("")
-  const [remise,setRemise]=useState("")
+  const [Quantite, setQauntite] = useState(0);
+  const [remise, setRemise] = useState(0);
   const ListeArticle = useSelector((state) => state.ArticlesDevis.ListeArticle);
-  const ListeCodeArticle = useSelector((state) => state.ArticlesDevis.ListeCodeArticles);
-  const codeTousArticleParCode = useSelector((state) => state.ArticlesDevis.ListeCodeArticlesparLib);
+  const ListeCodeArticle = useSelector(
+    (state) => state.ArticlesDevis.ListeCodeArticles
+  );
+  const codeTousArticleParCode = useSelector(
+    (state) => state.ArticlesDevis.ListeCodeArticlesparLib
+  );
   console.log(codeTousArticleParCode);
   const handlecodeFamilleChange = (codeFamille) => {
     dispatch(getCodeArticle(codeFamille));
@@ -33,10 +37,17 @@ function ArticlesDevis() {
     dispatch(getArticleFamiles());
   }, []);
 
-  console.log(Quantite)
-  console.log(remise)
+  console.log(Quantite);
+  console.log(remise);
+
+const netHt=  Quantite * codeTousArticleParCode.prix1 * (1 - remise / 100)||0;
 
 
+  console.log(netHt);
+
+  const puttc = codeTousArticleParCode.prix1 * (1 + codeTousArticleParCode.tauxtva / 100) ||
+    0;
+  console.log(puttc);
 
   return (
     <div className="space-y-4 p-4 border rounded-md mt-4">
@@ -99,7 +110,9 @@ function ArticlesDevis() {
               type="text"
               placeholder="Sélectionner un code article"
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                onKeyUp={(e)=>setQauntite(e.target.value)}
+              onChange={(e) => {
+                setQauntite(e.target.value);
+              }}
             />
           </div>
 
@@ -121,7 +134,9 @@ function ArticlesDevis() {
             step="0.001"
             placeholder="Remise"
             className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            onKeyUp={(e)=>setRemise(e.target.value)}
+            onChange={(e) => {
+              setRemise(e.target.value);
+            }}
           />
         </div>
 
@@ -141,6 +156,8 @@ function ArticlesDevis() {
             type="text"
             step="0.001"
             placeholder="puttc"
+            value={puttc}
+            readOnly
             className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
@@ -150,6 +167,8 @@ function ArticlesDevis() {
             type="text"
             placeholder="netHt"
             className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            value={netHt}
+            readOnly
           />
         </div>
         <div className="flex-1">

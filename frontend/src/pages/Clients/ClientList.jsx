@@ -107,7 +107,7 @@ function ClientList() {
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
-      <SideBar className="w-64 bg-white shadow-lg h-screen fixed left-0 top-0" />
+      {/* <SideBar className="w-64 bg-white shadow-lg h-screen fixed left-0 top-0" /> */}
 
       {/* Contenu principal */}
       <div className="flex-1 ml-64 p-6">
