@@ -1,14 +1,14 @@
 const { Sequelize, QueryTypes } = require("sequelize");
-const defineClientModel = require("../models/client");
-const defineDevisModel = require("../models/Devis");
+const defineClientModel = require("../models/societe/client");
+
 const { getSequelizeConnection } = require("../db/config");
 
-const jwt = require("jsonwebtoken");
-const defineArticleModel = require("../models/article");
 
-const defineDfpModel = require("../models/Dfp");
 
-const defineLdfpModel = require("../models/Ldfp ");
+
+const defineDfpModel = require("../models/societe/dfp");
+
+const defineLdfpModel = require("../models/societe/ldfp");
 
 const getAllClients = async (req, res) => {
   const { dbName } = req.params;

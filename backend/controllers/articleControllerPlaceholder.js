@@ -1,6 +1,6 @@
 const { Sequelize } = require("sequelize");
-const defineArticleModel = require("../models/article");
-const defineLdfpModel = require("../models/Ldfp");
+const defineArticleModel = require("../models/societe/article");
+const defineLdfpModel = require("../models/societe/ldfp");
 const { getSequelizeConnection } = require("../db/config");
 
 

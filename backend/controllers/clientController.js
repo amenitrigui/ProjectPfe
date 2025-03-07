@@ -1,4 +1,4 @@
-const defineClientModel = require("../models/client");
+const defineClientModel = require("../models/societe/client");
 const {
   getDatabaseConnection,
   verifyTokenValidity,
@@ -45,28 +45,32 @@ const filtrerListeClients = async (req, res) => {
     whereClauses.push("code like :code");
     replacements.code = `%${filters.code}%`;
   }
-  if (filters.cp) {
-    whereClauses.push("cp like :cp");
-    replacements.cp = `%${filters.cp}%`;
+  if (filters.Matricule) {
+    whereClauses.push("Matricule like :Matricule");
+    replacements.Matricule = `%${filters.Matricule}%`;
   }
-  if (filters.adresse) {
-    whereClauses.push("adresse like :adresse");
-    replacements.adresse = `%${filters.adresse}%`;
+  if (filters.telephone) {
+    whereClauses.push("telephone like :telephone");
+    replacements.telephone = `%${filters.telephone}%`;
   }
-  if (filters.email) {
-    whereClauses.push("email like :email");
-    replacements.email = `%${filters.email}%`;
+  if (filters.fax) {
+    whereClauses.push("fax like :fax");
+    replacements.fax = `%${filters.fax}%`;
   }
   if (filters.rsoc) {
     whereClauses.push("rsoc like :rsoc");
     replacements.rsoc = `%${filters.rsoc}%`;
+  }
+  if (filters.desrep) {
+    whereClauses.push("desrep like :desrep");
+    replacements.desrep = `%${filters.desrep}%`;
   }
 
   // ? concatenation de l'opérateur logique après chaque ajout d'un nouvelle condition
   let whereCondition = whereClauses.join(" AND ");
 
   // ? Si on on a aucune condition on effectue une requete de select * from dfp
-  let query = `SELECT code, rsoc, email, cp, adresse 
+  let query = `SELECT code, rsoc, desrep, fax, telephone, Matricule
      FROM client 
       ${whereCondition ? "WHERE " + whereCondition : ""}`;
 
@@ -96,13 +100,38 @@ const AjouterClient = async (req, res) => {
       code: clientInfos.code,
       typecli: clientInfos.typecli, // add this to the model
       cin: clientInfos.cin, // add this to model
-      
-      email: clientInfos.email,
+       email: clientInfos.email,
       rsoc: clientInfos.rsoc,
       cp: clientInfos.cp,
       telephone: clientInfos.telephone,
       desrep: clientInfos.desrep,
       adresse: clientInfos.adresse,
+     aval2: clientInfos.aval2,
+      aval1: clientInfos.aval1,
+      Commentaire: clientInfos.Commentaire,
+      datemaj: clientInfos.datemaj,
+      userm: clientInfos.userm,
+      usera: clientInfos.usera,
+      fact: clientInfos.fact,
+      timbref: clientInfos.timbref,
+      cltexport: clientInfos.cltexport,
+      suspfodec: clientInfos.suspfodec,
+      regime: clientInfos.regime,
+      exon: clientInfos.exon,
+      majotva: clientInfos.majotva,
+      fidel: clientInfos.fidel,
+      datefinaut: clientInfos.datefinaut,
+      datedebaut: clientInfos.datedebaut,
+      decision: clientInfos.decision,
+      matriculef: clientInfos.matriculef,
+      reference: clientInfos.reference,
+      srisque: clientInfos.srisque,
+      scredit: clientInfos.scredit,
+      delregBL: clientInfos.delregBL,
+      delregFT: clientInfos.delregFT,
+      delregFC: clientInfos.delregFC,
+      remise: clientInfos.remise,
+      activite:clientInfos.activite,
       
     });
 
@@ -172,12 +201,42 @@ const majClient = async (req, res) => {
     if (client) {
       await Client.update(
         {
+          code: clientUpdate.code,
+          typecli: clientUpdate.typecli, // add this to the model
+          cin: clientUpdate.cin, // add this to model
+           email: clientUpdate.email,
           rsoc: clientUpdate.rsoc,
-          adresse: clientUpdate.adresse,
           cp: clientUpdate.cp,
-          email: clientUpdate.email,
           telephone: clientUpdate.telephone,
           desrep: clientUpdate.desrep,
+          adresse: clientUpdate.adresse,
+         aval2: clientUpdate.aval2,
+          aval1: clientUpdate.aval1,
+          Commentaire: clientUpdate.Commentaire,
+          datemaj: clientUpdate.datemaj,
+          userm: clientUpdate.userm,
+          usera: clientUpdate.usera,
+          fact: clientUpdate.fact,
+          timbref: clientUpdate.timbref,
+          cltexport: clientUpdate.cltexport,
+          suspfodec: clientUpdate.suspfodec,
+          regime: clientUpdate.regime,
+          exon: clientUpdate.exon,
+          majotva: clientUpdate.majotva,
+          fidel: clientUpdate.fidel,
+          datefinaut: clientUpdate.datefinaut,
+          datedebaut: clientUpdate.datedebaut,
+          decision: clientUpdate.decision,
+          matriculef: clientUpdate.matriculef,
+          reference: clientUpdate.reference,
+          srisque: clientUpdate.srisque,
+          scredit: clientUpdate.scredit,
+          delregBL: clientUpdate.delregBL,
+          delregFT: clientUpdate.delregFT,
+          delregFC: clientUpdate.delregFC,
+          remise: clientUpdate.remise,
+          activite:clientUpdate.activite,
+          
         },
         { where: { code: clientUpdate.code } }
       );
@@ -192,6 +251,31 @@ const majClient = async (req, res) => {
     });
   }
 };
+const { Sequelize } = require("sequelize"); // Importation de Sequelize
+
+const getListeCodeClient = async (req, res) => {
+  try {
+    const { dbName } = req.params;
+    const dbConnection = await getDatabaseConnection(dbName, res);
+
+    const liteCode = await dbConnection.query(
+      `SELECT code FROM client ORDER BY code`,
+      {
+        type: Sequelize.QueryTypes.SELECT, // Correction de QueryTypes
+      }
+    );
+
+    return res.status(200).json({
+      message: "Code client récupéré avec succès",
+      liteCode: liteCode, // Correction de la structure JSON
+    });
+
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+
 
 module.exports = {
   getListeClients,
@@ -200,4 +284,5 @@ module.exports = {
   supprimerClient,
   getClientParCode,
   majClient,
+  getListeCodeClient,
 };

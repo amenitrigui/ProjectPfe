@@ -326,9 +326,13 @@ function ToolBar() {
         </h2>
       )}
       {toolbarTable == "client" && (
-        <h2 className="text-black font-bold italic text-3xl">
-          client
-        </h2>
+        <h2
+        style={{ color: "rgb(48, 60, 123)", fontWeight: "bold", fontStyle: "italic" }}
+        className="text-3xl"
+      >
+      FICHE CLIENT 
+      </h2>
+      
       )}
     </>
   );

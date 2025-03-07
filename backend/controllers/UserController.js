@@ -1,8 +1,8 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-const Representant = require("../models/representant");
-const User = require("../models/User");
+// const Representant = require("../models/representant");
+const User = require("../models/utilisateur/utilisateur");
 const { sequelizeUserERP } = require("../db/config");
 const { Sequelize } = require("sequelize");
 const nodeMailer = require("nodemailer");

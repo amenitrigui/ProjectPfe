@@ -5,9 +5,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { setDevisInfo } from "../../app/devis_slices/devisSlice";
 import {
   getListeCodeClient,
+  getListeparCode,
   setClientInfos,
   setClientInfosEntiere,
 } from "../../app/client_slices/clientSlice";
+import { setClearAppele } from "../../app/interface_slices/uiSlice";
 
 function ClientForm() {
   const dispatch = useDispatch();
@@ -18,39 +20,37 @@ function ClientForm() {
   // Sélection du booléen pour effacer les champs du formulaire
   const clearApelle = useSelector((state) => state.uiStates.clearAppele);
   // liste de client
-  const listeClientsParCode=useSelector((state)=>state.ClientCrud.listeClientsParCode );
+  const listeClientsParCode = useSelector(
+    (state) => state.ClientCrud.listeClientsParCode
+  );
   console.log(listeClientsParCode);
 
   // Sélection du booléen pour détecter si l'insertion est faite depuis le formulaire de devis
   const insertionDepuisDevisForm = useSelector(
     (state) => state.ClientCrud.insertionDepuisDevisForm
   );
-  
+  useEffect(() => {
+    dispatch(getListeparCode());
+  }, []);
 
   // Fonction pour gérer les changements dans les champs du formulaire
   const handleChange = (e, colonne) => {
-    dispatch(setClientInfos({ colonne, valeur: e.target.value }));
-    if (insertionDepuisDevisForm) {
-      dispatch(setDevisInfo({ colonne, valeur: e.target.value }));
-
+    if (e.target.value == "") dispatch(setClearAppele(true));
+    else {
+      dispatch(setClearAppele(false));
+      dispatch(setClientInfos({ colonne, valeur: e.target.value }));
+      if (insertionDepuisDevisForm) {
+        dispatch(setDevisInfo({ colonne, valeur: e.target.value }));
+      }
+      dispatch(getListeCodeClient(e.target.value));
     }
-    dispatch(getListeCodeClient(e.target.value));
   };
 
   // Effet pour réinitialiser les champs du formulaire lorsque clearApelle change
   useEffect(() => {
     if (clearApelle) {
-      dispatch(
-        setClientInfosEntiere({
-          code: "",
-          rsoc: "",
-          adresse: "",
-          cp: "",
-          email: "",
-          telephone: "",
-          desrep: "",
-        })
-      );
+      dispatch(setClientInfosEntiere({}));
+      dispatch(getListeparCode());
     }
   }, [clearApelle]);
   return (
@@ -72,24 +72,20 @@ function ClientForm() {
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
                   list="browsers"
-                  defaultValue={clientInfos.code}
+                  //defaultValue={clientInfos.code}
                   onChange={(e) => handleChange(e, "code")}
-
                 />
-                {!clientInfos.code && (
-                  <option value="">Veuillez sélectionner un client</option>
-                )}
 
-                {clientInfos.code && (
-                  <option value={clientInfos.code}>{clientInfos.code}</option>
-                )}
-
-              <datalist id="browsers">
-                  
-                    <option  value={listeClientsParCode.code}>
-                      {listeClientsParCode.code}
-                    </option>
-                  
+                <datalist id="browsers">
+                  {listeClientsParCode.length > 0 ? (
+                    listeClientsParCode.map((client) => (
+                      <option key={client.code} value={client.code}>
+                        {client.code}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled>Aucun client trouvé</option>
+                  )}
                 </datalist>
               </div>
               <div className="flex flex-col w-1/3">
@@ -100,7 +96,7 @@ function ClientForm() {
                   Type Client
                 </label>
                 <select className="border border-gray-300 rounded-md p-2">
-                  <option value="Local">Local</option>
+                  <option value={clientInfos.typecli}>LOCAL</option>
                 </select>
               </div>
               <div className="flex flex-col w-1/3">

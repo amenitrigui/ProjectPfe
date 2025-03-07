@@ -42,7 +42,7 @@ router.get("/:dbName/getListeNUMBL", getCodesDevis);
 router.get("/:dbName/getDevisParMontant", getDevisParMontant);
 router.get("/:dbName/getDevisParClient", GetDevisListParClient);
 router.get("/:dbName/getDevisParPeriode", GetDevisParPeriode);
-router.get("/:dbName/getListeNUMBL", getCodesDevis);
+
 router.get("/:dbName/getDevisParMontant", getDevisParMontant);
 router.get("/:dbName/getInfoUtilisateur", getInfoUtilisateur);
 router.get("/:dbName/getListePointVente", getListePointVente);

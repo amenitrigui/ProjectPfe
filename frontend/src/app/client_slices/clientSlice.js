@@ -69,6 +69,16 @@ export const filtrerClients = createAsyncThunk(
     return response.data.data; // Retourner la réponse
   }
 );
+export const getListeparCode = createAsyncThunk(
+  "devisSlice/getListeparCode",
+  async () => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/getListCode`
+    );
+    console.log(response)
+    return response.data.liteCode;
+  }
+);
 
 // * Thunk pour supprimer des clients par leurs codes
 // * slice/supprimerClient identifiant unique pour la methode
@@ -86,6 +96,7 @@ export const supprimerClient = createAsyncThunk(
     return response.data;
   }
 );
+
 
 export const clientSlice = createSlice({
   name: "slice",
@@ -126,8 +137,23 @@ export const clientSlice = createSlice({
       delregFT: "",
       delregFC: "",
       remise: "",
+      activite:"",
+      typecli:"L",
+      cin:"",
 
-      secteur: {},
+      secteur: {
+        codesec:"",
+        desisec:"",
+
+      },
+      region: {
+        codergg:"",
+        desirgg:"",
+      },
+      cpostal: {
+        CODEp:"",
+        desicp:"",
+      },
     }, // * informations de formulaire de client
     listeClientsParCode: [],
     clientsASupprimer: [], // * tableau des codes de clients a supprimer. id reeelement code.
@@ -247,6 +273,21 @@ export const clientSlice = createSlice({
         state.status = "réussi";
       })
       .addCase(getListeCodeClient.rejected, (state, action) => {
+        console.log(action);
+        state.status = "échoué";
+        state.erreur = action.payload;
+      })
+
+      .addCase(getListeparCode.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getListeparCode.fulfilled, (state, action) => {
+        console.log(action.payload);
+        state.listeClientsParCode=action.payload;
+        //state.clientInfos=action.payload;
+        state.status = "réussi";
+      })
+      .addCase(getListeparCode.rejected, (state, action) => {
         console.log(action);
         state.status = "échoué";
         state.erreur = action.payload;

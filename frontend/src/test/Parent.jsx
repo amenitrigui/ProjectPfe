@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Sidebar } from "react-feather";
+import { useDispatch, useSelector } from "react-redux";
+import { setClientInfos, setClientInfosEntiere } from "../app/client_slices/clientSlice";
+import { setDevisInfo } from "../app/devis_slices/devisSlice";
 
 function Parent() {
   const dispatch = useDispatch();
