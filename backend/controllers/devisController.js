@@ -1,8 +1,7 @@
 const { QueryTypes } = require("sequelize");
-const defineDevisModel = require("../models/Devis");
 const { getSequelizeConnection } = require("../db/config");
-const defineDfpModel = require("../models/Dfp");
-const defineLdfpModel = require("../models/Ldfp ");
+const defineDfpModel = require("../models/societe/dfp");
+const defineLdfpModel = require("../models/societe/ldfp");
 const { getDatabaseConnection } = require("../common/commonMethods");
 
 // * récuperer la liste des dévis d'une societé donnée (dbName)
@@ -56,7 +55,7 @@ const getTotalChifre = async (req, res) => {
   }
   try {
     const dynamicSequelize = getSequelizeConnection(dbName);
-    const Devis = defineDevisModel(dynamicSequelize);
+    const Devis = defineDfpModel(dynamicSequelize);
     const totalchifre = await Devis.sum("MTTC");
     return res.status(200).json({
       message: "Total de chifre  de devis récupéré avec succès.",
@@ -87,7 +86,7 @@ const getNombreDevis = async (req, res) => {
 
   try {
     const dynamicSequelize = getSequelizeConnection(dbName);
-    const Devis = defineDevisModel(dynamicSequelize);
+    const Devis = defineDfpModel(dynamicSequelize);
 
     const devisCount = await Devis.count({
       distinct: true,

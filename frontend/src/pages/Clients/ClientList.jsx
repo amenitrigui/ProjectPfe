@@ -1,18 +1,5 @@
 import React, { useEffect } from "react";
 import DataTable from "react-data-table-component";
-import ClientForm from "../../components/Client/ClientForm";
-import ToolBar from "../../components/Common/ToolBar";
-import Alert from "../../components/Common/Alert";
-import { Link } from "react-router-dom";
-import {
-  FiHome,
-  FiLogOut,
-  FiShoppingCart,
-  FiUser,
-  FiBox,
-  FiSettings,
-  FiTruck,
-} from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getListeClient,
@@ -21,12 +8,12 @@ import {
   setClientsASupprimer,
   setClientInfosEntiere,
 } from "../../app/client_slices/clientSlice";
-import AlertModalD from "../../components/Common/AlertModalD";
 import {
   setClearAppele,
   setToolbarTable,
 } from "../../app/interface_slices/uiSlice";
-import SideBar from "../../components/Common/SideBar";
+import { Link } from "react-router-dom";
+import { ArrowLeft } from "react-feather";
 
 function ClientList() {
   const dispatch = useDispatch();
@@ -106,17 +93,7 @@ function ClientList() {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
-      {/* <SideBar className="w-64 bg-white shadow-lg h-screen fixed left-0 top-0" /> */}
-
-      {/* Contenu principal */}
-      <div className="flex-1 ml-64 p-6">
-        <ToolBar />
-        <Alert />
-        <AlertModalD />
-        <ClientForm />
-        <br />
-
+      <div className="flex-1 p-6">
         <div className="grid grid-cols-3 gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
           {Object.keys(filters).map((column, index) => (
             <input

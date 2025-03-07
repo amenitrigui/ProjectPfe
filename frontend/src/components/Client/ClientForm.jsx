@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-
-import { setDevisInfo } from "../app/devis_slices/devisSlice";
-import { setClientInfos, setClientInfosEntiere } from "../app/client_slices/clientSlice";
 import { useDispatch, useSelector } from "react-redux";
 import ToolBar from "../Common/ToolBar";
+import { setDevisInfo } from "../../app/devis_slices/devisSlice";
+import { setClientInfos, setClientInfosEntiere } from "../../app/client_slices/clientSlice";
 
 
 function ClientForm() {
@@ -47,7 +46,6 @@ function ClientForm() {
   }, [clearApelle]);
   return (
     <>
-<ToolBar></ToolBar>
       <form className="grid grid-cols-1 space-y-2 items-center bg-base-300">
         <div className="flex w-full">
           <div className="card bg-base-300 rounded-box p-6 w-1/3 space-y-2">
@@ -83,7 +81,9 @@ function ClientForm() {
                 >
                   Type Client
                 </label>
-                <select className="border border-gray-300 rounded-md p-2" />
+                <select className="border border-gray-300 rounded-md p-2">
+                  <option value="Local">Local</option>
+                </select>
               </div>
               <div className="flex flex-col w-1/3">
                 <label
