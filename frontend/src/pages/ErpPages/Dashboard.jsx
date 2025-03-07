@@ -263,6 +263,8 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+      
+    <script src="%PUBLIC_URL%/assets/js/main.js"></script>
     </div>
   );
 };

@@ -4,15 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheck,
-  faPencil,
-  faPrint,
-  faTrash,
   faSearch,
   faArrowLeft,
   faArrowRight,
   faList,
   faSignOutAlt,
-  faTimes,
   faFolderPlus,
   faEdit,
   faTrashAlt,
@@ -20,6 +16,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import {
   ajouterClient,
+  getDerniereCodeClient,
   getListeClient,
   majClient,
   setClientInfosEntiere,
@@ -41,6 +38,7 @@ function ToolBar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
+  const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
   // * state pour afficher/cacher fenetre de confirmation pour
   // * la suppression
   const [isDeleting, setIsDeleting] = useState(false);
@@ -51,25 +49,23 @@ function ToolBar() {
   const activerBoutonsValiderAnnuler = useSelector(
     (state) => state.uiStates.activerBoutonsValiderAnnuler
   );
- const handleSubmitListe=async()=>
- {
-  if (toolbarTable == "devis")
-  {
-    navigate("/DevisList")
-  }
-  if( (toolbarTable == "client"))
-  {
-    navigate("/ClientList")
-  }
-
- }
+  const handleSubmitListe = async () => {
+    if (toolbarTable == "devis") {
+      navigate("/DevisList");
+    }
+    if (toolbarTable == "client") {
+      navigate("/ClientList");
+    }
+  };
   // * ajout d'un client/devi
   const handleAjout = async () => {
     dispatch(setActiverBoutonsValiderAnnuler(true));
     dispatch(setActiverChampsForm(true));
+
+    dispatch(getDerniereCodeClient());
+    console.log(clientInfos);
     // * vider les champs du formulaires
     if (toolbarTable == "devis") {
-      console.log(devisInfo);
       dispatch(
         setDevisInfoEntiere({
           NUMBL: "",
@@ -146,14 +142,14 @@ function ToolBar() {
   };
 
   const handleNaviguerListe = () => {
-    if(toolbarTable == "devis") {
+    if (toolbarTable == "devis") {
       navigate("/DevisList");
     }
 
-    if(toolbarTable == "client") {
+    if (toolbarTable == "client") {
       navigate("/clientList");
     }
-  }
+  };
   return (
     <>
       <nav className="w-full h-[110px] border-b border-gray-700 flex items-center px-6 mb-1/2">
@@ -327,12 +323,15 @@ function ToolBar() {
       )}
       {toolbarTable == "client" && (
         <h2
-        style={{ color: "rgb(48, 60, 123)", fontWeight: "bold", fontStyle: "italic" }}
-        className="text-3xl"
-      >
-      FICHE CLIENT 
-      </h2>
-      
+          style={{
+            color: "rgb(48, 60, 123)",
+            fontWeight: "bold",
+            fontStyle: "italic",
+          }}
+          className="text-3xl"
+        >
+          FICHE CLIENT
+        </h2>
       )}
     </>
   );

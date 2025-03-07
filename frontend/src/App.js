@@ -41,9 +41,6 @@ function App() {
     });
   };
 
-  const state = useSelector((state) => state);
-  console.log("State redux màj", state);
-
   return (
     <Router>
       <ToastContainer

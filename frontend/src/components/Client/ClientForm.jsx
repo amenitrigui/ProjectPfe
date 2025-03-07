@@ -23,7 +23,11 @@ function ClientForm() {
   const listeClientsParCode = useSelector(
     (state) => state.ClientCrud.listeClientsParCode
   );
-  console.log(listeClientsParCode);
+  // state pour désactiver/activer les champs lors de changement de modes editables (ajout/modification)
+  // vers le mode de consultation respectivement
+  const activerChampsForm = useSelector(
+    (state) => state.uiStates.activerChampsForm
+  );
 
   // Sélection du booléen pour détecter si l'insertion est faite depuis le formulaire de devis
   const insertionDepuisDevisForm = useSelector(
@@ -74,12 +78,12 @@ function ClientForm() {
                   list="browsers"
                   //defaultValue={clientInfos.code}
                   onChange={(e) => handleChange(e, "code")}
+                  disabled={activerChampsForm}
                 />
-
                 <datalist id="browsers">
                   {listeClientsParCode.length > 0 ? (
-                    listeClientsParCode.map((client) => (
-                      <option key={client.code} value={client.code}>
+                    listeClientsParCode.map((client,indice ) => (
+                      <option key={indice} value={indice}>
                         {client.code}
                       </option>
                     ))
@@ -95,7 +99,10 @@ function ClientForm() {
                 >
                   Type Client
                 </label>
-                <select className="border border-gray-300 rounded-md p-2">
+                <select
+                  className="border border-gray-300 rounded-md p-2"
+                  disabled={!activerChampsForm}
+                >
                   <option value={clientInfos.typecli}>LOCAL</option>
                 </select>
               </div>
@@ -111,6 +118,7 @@ function ClientForm() {
                   className="border border-gray-300 rounded-md p-2"
                   defaultValue={clientInfos.cin}
                   onChange={(e) => handleChange(e, "cin")}
+                  disabled={!activerChampsForm}
                 />
               </div>
             </div>
@@ -126,6 +134,7 @@ function ClientForm() {
                 className="border border-gray-300 rounded-md p-2"
                 defaultValue={clientInfos.rsoc}
                 onChange={(e) => handleChange(e, "rsoc")}
+                disabled={!activerChampsForm}
               />
             </div>
             <div className="flex flex-col w-full">
@@ -140,6 +149,7 @@ function ClientForm() {
                 className="border border-gray-300 rounded-md p-2"
                 defaultValue={clientInfos.adresse}
                 onChange={(e) => handleChange(e, "adresse")}
+                disabled={!activerChampsForm}
               />
             </div>
             <div className="flex flex-col w-full">
@@ -154,6 +164,7 @@ function ClientForm() {
                 className="border border-gray-300 rounded-md p-2"
                 defaultValue={clientInfos.activite}
                 onChange={(e) => handleChange(e, "activite")}
+                disabled={!activerChampsForm}
               />
             </div>
 
@@ -169,6 +180,7 @@ function ClientForm() {
                   <input
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
+                    disabled={!activerChampsForm}
                     // defaultValue={clientInfos.cltexport}
                     // onChange={(e) => handleChange(e, "cltexport")} codpv
                   />
@@ -183,12 +195,15 @@ function ClientForm() {
                   <input
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
+                    disabled={!activerChampsForm}
                     // code pv
                   />
                 </div>
                 <div className="flex flex-col w-1/7">
                   <label className="font-medium mb-5"></label>
-                  <button className="btn">PV</button>
+                  <button className="btn" disabled={!activerChampsForm}>
+                    PV
+                  </button>
                 </div>
               </div>
 
@@ -204,6 +219,7 @@ function ClientForm() {
                   className="border border-gray-300 rounded-md p-2"
                   defaultValue={clientInfos.nature}
                   onChange={(e) => handleChange(e, "nature")}
+                  disabled={!activerChampsForm}
                 />
               </div>
 
@@ -220,6 +236,7 @@ function ClientForm() {
                     className="border border-gray-300 rounded-md p-2"
                     defaultValue={clientInfos.cp}
                     onChange={(e) => handleChange(e, "cp")}
+                    disabled={!activerChampsForm}
                   />
                 </div>
                 <div className="flex flex-col w-2/3">
@@ -234,6 +251,7 @@ function ClientForm() {
                     className="border border-gray-300 rounded-md p-2"
                     defaultValue={clientInfos.ville}
                     onChange={(e) => handleChange(e, "ville")}
+                    disabled={!activerChampsForm}
                   />
                 </div>
               </div>
@@ -249,6 +267,7 @@ function ClientForm() {
                   <input
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
+                    disabled={!activerChampsForm}
                     // defaultValue={clientInfos.secteur.codesec}
                     // onChange={(e) => handleChange(e, "codesec")} ///table secteur
                   />
@@ -263,6 +282,7 @@ function ClientForm() {
                   <input
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
+                    disabled={!activerChampsForm}
                   />
                 </div>
               </div>
@@ -278,6 +298,7 @@ function ClientForm() {
                   <input
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
+                    disabled={!activerChampsForm}
                     // table region
                   />
                 </div>
@@ -292,6 +313,7 @@ function ClientForm() {
                   <input
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
+                    disabled={!activerChampsForm}
                   />
                 </div>
               </div>
@@ -304,10 +326,13 @@ function ClientForm() {
               <input
                 type="date"
                 className="border border-gray-300 rounded-md p-2 w-1/3"
+                disabled={!activerChampsForm}
               />
             </div>
             <div className="flex flex-col items-center">
-              <button className="btn">Liste des affaires</button>
+              <button className="btn" disabled={activerChampsForm}>
+                Liste des affaires
+              </button>
             </div>
 
             {/* Conteneur pour Code Client, Type Client et CIN */}
@@ -325,6 +350,7 @@ function ClientForm() {
                   className="border border-gray-300 rounded-md p-2"
                   defaultValue={clientInfos.tel1}
                   onChange={(e) => handleChange(e, "tel1")}
+                  disabled={!activerChampsForm}
                 />
               </div>
               <div className="flex flex-col w-1/3">
@@ -339,6 +365,7 @@ function ClientForm() {
                   className="border border-gray-300 rounded-md p-2"
                   defaultValue={clientInfos.tel2}
                   onChange={(e) => handleChange(e, "tel2")}
+                  disabled={!activerChampsForm}
                 />
               </div>
               <div className="flex flex-col w-1/3">
@@ -353,6 +380,7 @@ function ClientForm() {
                   className="border border-gray-300 rounded-md p-2"
                   defaultValue={clientInfos.telex}
                   onChange={(e) => handleChange(e, "telex")}
+                  disabled={!activerChampsForm}
                 />
               </div>
             </div>
@@ -369,6 +397,7 @@ function ClientForm() {
                   className="border border-gray-300 rounded-md p-2"
                   defaultValue={clientInfos.email}
                   onChange={(e) => handleChange(e, "email")}
+                  disabled={!activerChampsForm}
                 />
               </div>
               <div className="flex flex-col w-2/3">
@@ -383,6 +412,7 @@ function ClientForm() {
                   className="border border-gray-300 rounded-md p-2"
                   defaultValue={clientInfos.fax}
                   onChange={(e) => handleChange(e, "fax")}
+                  disabled={!activerChampsForm}
                 />
               </div>
             </div>
@@ -397,6 +427,7 @@ function ClientForm() {
                 <input
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
+                  disabled={!activerChampsForm}
                   //mafamech
                 />
               </div>
@@ -405,6 +436,7 @@ function ClientForm() {
                 <input
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
+                  disabled={!activerChampsForm}
                 />
               </div>
               <div className="flex flex-col w-1/4">
@@ -419,6 +451,7 @@ function ClientForm() {
                   className="border border-gray-300 rounded-md p-2"
                   defaultValue={clientInfos.desrep}
                   onChange={(e) => handleChange(e, "desrep")}
+                  disabled={!activerChampsForm}
                 />
               </div>
               <div className="flex flex-col w-1/4">
@@ -426,11 +459,14 @@ function ClientForm() {
                 <input
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
+                  disabled={!activerChampsForm}
                 />
               </div>
             </div>
             <div className="flex flex-cols">
-              <button className="btn">Liste clients bloquer</button>
+              <button className="btn" disabled={activerChampsForm}>
+                Liste clients bloquer
+              </button>
             </div>
 
             <table className="table table-xl w-full">
@@ -472,6 +508,7 @@ function ClientForm() {
                       className="border border-gray-300 rounded-md p-2 w-full"
                       defaultValue={clientInfos.Nom1}
                       onChange={(e) => handleChange(e, "Nom1")}
+                      disabled={!activerChampsForm}
                     />
                   </td>
                   <td className="w-1/4">
@@ -480,6 +517,7 @@ function ClientForm() {
                       className="border border-gray-300 rounded-md p-2 w-full"
                       defaultValue={clientInfos.titre1}
                       onChange={(e) => handleChange(e, "titre1")}
+                      disabled={!activerChampsForm}
                     />
                   </td>
                   <td className="w-1/4">
@@ -488,6 +526,7 @@ function ClientForm() {
                       className="border border-gray-300 rounded-md p-2 w-full"
                       defaultValue={clientInfos.gsm1}
                       onChange={(e) => handleChange(e, "gsm1")}
+                      disabled={!activerChampsForm}
                     />
                   </td>
                   <td className="w-1/4">
@@ -496,6 +535,7 @@ function ClientForm() {
                       className="border border-gray-300 rounded-md p-2 w-full"
                       defaultValue={clientInfos.nposte1}
                       onChange={(e) => handleChange(e, "nposte1")}
+                      disabled={!activerChampsForm}
                     />
                   </td>
                 </tr>
@@ -507,6 +547,7 @@ function ClientForm() {
                       className="border border-gray-300 rounded-md p-2 w-full"
                       defaultValue={clientInfos.Nom2}
                       onChange={(e) => handleChange(e, "Nom2")}
+                      disabled={!activerChampsForm}
                     />
                   </td>
                   <td className="w-1/4">
@@ -515,6 +556,7 @@ function ClientForm() {
                       className="border border-gray-300 rounded-md p-2 w-full"
                       defaultValue={clientInfos.titre2}
                       onChange={(e) => handleChange(e, "titre2")}
+                      disabled={!activerChampsForm}
                     />
                   </td>
                   <td className="w-1/4">
@@ -523,6 +565,7 @@ function ClientForm() {
                       className="border border-gray-300 rounded-md p-2 w-full"
                       defaultValue={clientInfos.gsm2}
                       onChange={(e) => handleChange(e, "gsm2")}
+                      disabled={!activerChampsForm}
                     />
                   </td>
                   <td className="w-1/4">
@@ -531,6 +574,7 @@ function ClientForm() {
                       className="border border-gray-300 rounded-md p-2 w-full"
                       defaultValue={clientInfos.nposte2}
                       onChange={(e) => handleChange(e, "nposte2")}
+                      disabled={!activerChampsForm}
                     />
                   </td>
                 </tr>
@@ -542,6 +586,7 @@ function ClientForm() {
                       className="border border-gray-300 rounded-md p-2 w-full"
                       defaultValue={clientInfos.Nom3}
                       onChange={(e) => handleChange(e, "Nom3")}
+                      disabled={!activerChampsForm}
                     />
                   </td>
                   <td className="w-1/4">
@@ -550,6 +595,7 @@ function ClientForm() {
                       className="border border-gray-300 rounded-md p-2 w-full"
                       defaultValue={clientInfos.gsm3}
                       onChange={(e) => handleChange(e, "gsm3")}
+                      disabled={!activerChampsForm}
                     />
                   </td>
                   <td className="w-1/4">
@@ -558,12 +604,14 @@ function ClientForm() {
                       className="border border-gray-300 rounded-md p-2 w-full"
                       defaultValue={clientInfos.nposte3}
                       onChange={(e) => handleChange(e, "nposte3")}
+                      disabled={!activerChampsForm}
                     />
                   </td>
                   <td className="w-1/4">
                     <input
                       type="text"
                       className="border border-gray-300 rounded-md p-2 w-full"
+                      disabled={!activerChampsForm}
                     />
                   </td>
                 </tr>
@@ -592,7 +640,10 @@ function ClientForm() {
                       Tarif
                     </label>
 
-                    <select className="border border-gray-300 rounded-md p-2">
+                    <select
+                      className="border border-gray-300 rounded-md p-2"
+                      disabled={!activerChampsForm}
+                    >
                       <option value="prix1">prix1</option>
                       <option value="prix2">prix2</option>
                       <option value="prix3">prix3</option>
@@ -607,7 +658,10 @@ function ClientForm() {
                     >
                       Régl.
                     </label>
-                    <select className="border border-gray-300 rounded-md p-2">
+                    <select
+                      className="border border-gray-300 rounded-md p-2"
+                      disabled={!activerChampsForm}
+                    >
                       <option value="Chèque">Chèque</option>
                       <option value="Espèce">Espèce</option>
                       <option value="Effet">Effet</option>
@@ -630,6 +684,7 @@ function ClientForm() {
                     className="border border-gray-300 rounded-md p-2"
                     defaultValue={clientInfos.remise}
                     onChange={(e) => handleChange(e, "remise")}
+                    disabled={!activerChampsForm}
                   />
                 </div>
 
@@ -645,6 +700,7 @@ function ClientForm() {
                     className="border border-gray-300 rounded-md p-2"
                     defaultValue={clientInfos.delregFC}
                     onChange={(e) => handleChange(e, "delregFC")}
+                    disabled={!activerChampsForm}
                   />
                 </div>
 
@@ -660,6 +716,7 @@ function ClientForm() {
                     className="border border-gray-300 rounded-md p-2"
                     defaultValue={clientInfos.delregFT}
                     onChange={(e) => handleChange(e, "delregFT")}
+                    disabled={!activerChampsForm}
                   />
                 </div>
 
@@ -675,6 +732,7 @@ function ClientForm() {
                     className="border border-gray-300 rounded-md p-2"
                     defaultValue={clientInfos.delregBL}
                     onChange={(e) => handleChange(e, "delregBL")}
+                    disabled={!activerChampsForm}
                   />
                 </div>
 
@@ -690,6 +748,7 @@ function ClientForm() {
                     className="border border-gray-300 rounded-md p-2"
                     defaultValue={clientInfos.scredit}
                     onChange={(e) => handleChange(e, "scredit")}
+                    disabled={!activerChampsForm}
                   />
                 </div>
 
@@ -705,6 +764,7 @@ function ClientForm() {
                     className="border border-gray-300 rounded-md p-2"
                     defaultValue={clientInfos.srisque}
                     onChange={(e) => handleChange(e, "srisque")}
+                    disabled={!activerChampsForm}
                   />
                 </div>
 
@@ -720,6 +780,7 @@ function ClientForm() {
                     className="border border-gray-300 rounded-md p-2"
                     defaultValue={clientInfos.reference}
                     onChange={(e) => handleChange(e, "reference")}
+                    disabled={!activerChampsForm}
                   />
                 </div>
 
@@ -733,6 +794,7 @@ function ClientForm() {
                   <input
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
+                    disabled={!activerChampsForm}
                     // defaultValue={clientInfos.cltexport}
                     // onChange={(e) => handleChange(e, "cltexport")}
                   />
@@ -746,7 +808,10 @@ function ClientForm() {
                     >
                       Blockage
                     </label>
-                    <select className="border border-gray-300 rounded-md p-2 w-11/12">
+                    <select
+                      className="border border-gray-300 rounded-md p-2 w-11/12"
+                      disabled={!activerChampsForm}
+                    >
                       <option value="O">O</option>
                       <option value="N">N</option>
                     </select>
@@ -758,7 +823,10 @@ function ClientForm() {
                     >
                       Contrat
                     </label>
-                    <select className="border border-gray-300 rounded-md p-2 w-11/12">
+                    <select
+                      className="border border-gray-300 rounded-md p-2 w-11/12"
+                      disabled={!activerChampsForm}
+                    >
                       <option value="O">O</option>
                       <option value="N">N</option>
                     </select>
@@ -790,6 +858,7 @@ function ClientForm() {
                   <input
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
+                    disabled={!activerChampsForm}
                     // defaultValue={clientInfos.banque.banque}
                     //   onChange={(e) => handleChange(e, "nposte1")}
                   />
@@ -805,6 +874,7 @@ function ClientForm() {
                   <input
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
+                    disabled={!activerChampsForm}
                     // defaultValue={clientInfos.banque.ncompte}
                     //   onChange={(e) => handleChange(e, "ncompte")}
                   />
@@ -829,6 +899,7 @@ function ClientForm() {
                     className=" border border-gray-300 rounded-md p-2 "
                     defaultValue={clientInfos.matriculef}
                     onChange={(e) => handleChange(e, "matriculef")}
+                    disabled={!activerChampsForm}
                   />
 
                   <label
@@ -842,6 +913,7 @@ function ClientForm() {
                     className="border border-gray-300 rounded-md p-2 "
                     defaultValue={clientInfos.decision}
                     onChange={(e) => handleChange(e, "decision")}
+                    disabled={!activerChampsForm}
                   />
                   <label
                     className="block"
@@ -855,6 +927,7 @@ function ClientForm() {
                     className="border border-gray-300 rounded-md p-2 "
                     defaultValue={clientInfos.datedebaut}
                     onChange={(e) => handleChange(e, "datedebaut")}
+                    disabled={!activerChampsForm}
                   />
 
                   <label
@@ -869,6 +942,7 @@ function ClientForm() {
                     className="border border-gray-300 rounded-md p-2 "
                     defaultValue={clientInfos.datefinaut}
                     onChange={(e) => handleChange(e, "datefinaut")}
+                    disabled={!activerChampsForm}
                   />
                   <div className="flex flex-nowrap">
                     <input
@@ -876,6 +950,7 @@ function ClientForm() {
                       className="border border-gray-300 rounded-md p-2 "
                       defaultValue={clientInfos.fidel}
                       onChange={(e) => handleChange(e, "fidel")}
+                      disabled={!activerChampsForm}
                     />
                     <label
                       className="block"
@@ -887,6 +962,7 @@ function ClientForm() {
                     <input
                       type="checkbox"
                       className="border border-gray-300 rounded-md p-2 "
+                      disabled={!activerChampsForm}
                       // defaultValue={clientInfos.nposte1}
                       // onChange={(e) => handleChange(e, "nposte1")}
                       ///ma3anch
@@ -899,7 +975,10 @@ function ClientForm() {
                     </label>
                   </div>
                   <div className="flex flex-nowrap">
-                    <select className="border border-gray-300 rounded-md w-1/3 p-2">
+                    <select
+                      className="border border-gray-300 rounded-md w-1/3 p-2"
+                      disabled={!activerChampsForm}
+                    >
                       <option>O</option>
                       <option>N</option>
                     </select>
@@ -916,9 +995,9 @@ function ClientForm() {
                     <div className="flex space-x-2 w-1/2">
                       <input
                         type="checkbox"
-                        checked={clientInfos.majotva=="0"}
+                        checked={clientInfos.majotva == "0"}
                         className="border border-gray-300 rounded-md"
-                       
+                        disabled={!activerChampsForm}
                       />
                       <label style={{ color: "rgb(48, 60, 123)" }}>
                         Majoration de TVA
@@ -927,11 +1006,12 @@ function ClientForm() {
 
                     <div className="flex space-x-2 w-1/2">
                       <input
-                       checked={clientInfos.exon=="0"}
+                        checked={clientInfos.exon == "0"}
                         type="checkbox"
                         className="border border-gray-300 rounded-md"
                         defaultValue={clientInfos.exon}
                         onChange={(e) => handleChange(e, "exon")}
+                        disabled={!activerChampsForm}
                       />
                       <label style={{ color: "rgb(48, 60, 123)" }}>
                         Exonore de TVA
@@ -942,10 +1022,10 @@ function ClientForm() {
                   <div className="flex flex-nowrap">
                     <div className="flex space-x-2 w-1/2">
                       <input
-                       checked={clientInfos.regime=="O"}
+                        disabled={!activerChampsForm}
+                        checked={clientInfos.regime == "O"}
                         type="checkbox"
                         className="border border-gray-300 rounded-md"
-                        
                       />
                       <label style={{ color: "rgb(48, 60, 123)" }}>
                         Regime reele
@@ -954,10 +1034,10 @@ function ClientForm() {
 
                     <div className="flex space-x-2 w-1/2">
                       <input
+                        disabled={!activerChampsForm}
                         type="checkbox"
-                        checked={clientInfos.suspfodec=="0"}
+                        checked={clientInfos.suspfodec == "0"}
                         className="border border-gray-300 rounded-md"
-                       
                       />
                       <label style={{ color: "rgb(48, 60, 123)" }}>
                         Suspendu FODEK
@@ -968,7 +1048,8 @@ function ClientForm() {
                     <div className="flex space-x-2 w-1/2">
                       <input
                         type="checkbox"
-                        checked={clientInfos.cltexport=="0"}
+                        disabled={!activerChampsForm}
+                        checked={clientInfos.cltexport == "0"}
                         className="border border-gray-300 rounded-md"
                         defaultValue={clientInfos.cltexport}
                         onChange={(e) => handleChange(e, "cltexport")}
@@ -981,8 +1062,9 @@ function ClientForm() {
                     <div className="flex space-x-2 w-1/2">
                       <input
                         type="checkbox"
+                        disabled={!activerChampsForm}
                         className="border border-gray-300 rounded-md"
-                        checked={clientInfos.timbref=="O"}
+                        checked={clientInfos.timbref == "O"}
                       />
                       <label style={{ color: "rgb(48, 60, 123)" }}>
                         Timbre fiscale
@@ -993,8 +1075,9 @@ function ClientForm() {
                   <div className="flex space-x-2">
                     <input
                       type="checkbox"
+                      disabled={!activerChampsForm}
                       className="border border-gray-300 rounded-md"
-                      checked={clientInfos.fact=="0"}
+                      checked={clientInfos.fact == "0"}
                     />
                     <label style={{ color: "rgb(48, 60, 123)" }}>
                       Fact ticket de caisse
@@ -1020,10 +1103,19 @@ function ClientForm() {
               </legend>
 
               <div className="flex flex-nowrap w-full items-center space-x-2">
-                <select className="border border-gray-300 rounded-md p-2 w-11/12" />
-                <button className="btn btn-sm "></button>
+                <select
+                  className="border border-gray-300 rounded-md p-2 w-11/12"
+                  disabled={!activerChampsForm}
+                />
+                <button
+                  className="btn btn-sm disabled={!activerChampsForm}"
+                  disabled={!activerChampsForm}
+                ></button>
               </div>
-              <select className="border border-gray-300 rounded-md p-2 w-11/12" />
+              <select
+                className="border border-gray-300 rounded-md p-2 w-11/12"
+                disabled={!activerChampsForm}
+              />
             </fieldset>
 
             {/* Fieldset Informations */}
@@ -1044,6 +1136,7 @@ function ClientForm() {
                     className="border border-gray-300 rounded-md p-2 w-2/3"
                     defaultValue={clientInfos.usera}
                     onChange={(e) => handleChange(e, "usera")}
+                    disabled={!activerChampsForm}
                   />
                 </div>
 
@@ -1060,6 +1153,7 @@ function ClientForm() {
                     className="border border-gray-300 rounded-md p-2 w-2/3"
                     defaultValue={clientInfos.userm}
                     onChange={(e) => handleChange(e, "userm")}
+                    disabled={!activerChampsForm}
                   />
                 </div>
 
@@ -1076,6 +1170,7 @@ function ClientForm() {
                     className="border border-gray-300 rounded-md p-2 w-2/3"
                     defaultValue={clientInfos.datemaj}
                     onChange={(e) => handleChange(e, "datemaj")}
+                    disabled={!activerChampsForm}
                   />
                 </div>
               </div>
@@ -1100,6 +1195,7 @@ function ClientForm() {
                   rows={7}
                   defaultValue={clientInfos.Commentaire}
                   onChange={(e) => handleChange(e, "Commentaire")}
+                  disabled={!activerChampsForm}
                 />
               </div>
 
@@ -1115,12 +1211,14 @@ function ClientForm() {
                   className="w-full border border-gray-300 rounded-md p-2"
                   defaultValue={clientInfos.aval1}
                   onChange={(e) => handleChange(e, "aval1")}
+                  disabled={!activerChampsForm}
                 />
                 <input
                   type="text"
                   className="w-full border border-gray-300 rounded-md p-2"
                   defaultValue={clientInfos.aval2}
                   onChange={(e) => handleChange(e, "aval2")}
+                  disabled={!activerChampsForm}
                 />
               </div>
 
@@ -1134,12 +1232,14 @@ function ClientForm() {
                 <input
                   type="text"
                   className="w-full border border-gray-300 rounded-md p-2"
+                  disabled={!activerChampsForm}
                   // defaultValue={clientInfos.cltexport}
                   // onChange={(e) => handleChange(e, "cltexport")}
                 />
                 <input
                   type="text"
                   className="w-full border border-gray-300 rounded-md p-2"
+                  disabled={!activerChampsForm}
                   // defaultValue={clientInfos.cltexport}
                   // onChange={(e) => handleChange(e, "cltexport")}
                 />

@@ -34,9 +34,9 @@ function ClientList() {
     { name: "Code", selector: (row) => row.code, sortable: true },
     { name: "Raison Sociale", selector: (row) => row.rsoc, sortable: true },
     { name: "Matricule", selector: (row) => row.Matricule },
-    { name: "Telephone", selector: (row) => row.telephone },
+    { name: "Télephone", selector: (row) => row.telephone },
     { name: "Fax", selector: (row) => row.fax },
-    { name: "Responsable", selector: (row) => row.desrep },
+    { name: "Responsable 1", selector: (row) => row.responsable1 },
   ];
 
   // Définition de la couleur principale
