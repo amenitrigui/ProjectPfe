@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 
-
-import { setDevisInfo } from "../app/devis_slices/devisSlice";
-import { setClientInfos, setClientInfosEntiere } from "../app/client_slices/clientSlice";
 import { useDispatch, useSelector } from "react-redux";
-import ToolBar from "../Common/ToolBar";
 
+import { setDevisInfo } from "../../app/devis_slices/devisSlice";
+import {
+  getListeCodeClient,
+  setClientInfos,
+  setClientInfosEntiere,
+} from "../../app/client_slices/clientSlice";
 
 function ClientForm() {
   const dispatch = useDispatch();
@@ -15,18 +17,24 @@ function ClientForm() {
 
   // Sélection du booléen pour effacer les champs du formulaire
   const clearApelle = useSelector((state) => state.uiStates.clearAppele);
+  // liste de client
+  const listeClientsParCode=useSelector((state)=>state.ClientCrud.listeClientsParCode );
+  console.log(listeClientsParCode);
 
   // Sélection du booléen pour détecter si l'insertion est faite depuis le formulaire de devis
   const insertionDepuisDevisForm = useSelector(
     (state) => state.ClientCrud.insertionDepuisDevisForm
   );
+  
 
   // Fonction pour gérer les changements dans les champs du formulaire
   const handleChange = (e, colonne) => {
     dispatch(setClientInfos({ colonne, valeur: e.target.value }));
     if (insertionDepuisDevisForm) {
       dispatch(setDevisInfo({ colonne, valeur: e.target.value }));
+
     }
+    dispatch(getListeCodeClient(e.target.value));
   };
 
   // Effet pour réinitialiser les champs du formulaire lorsque clearApelle change
@@ -47,7 +55,6 @@ function ClientForm() {
   }, [clearApelle]);
   return (
     <>
-<ToolBar></ToolBar>
       <form className="grid grid-cols-1 space-y-2 items-center bg-base-300">
         <div className="flex w-full">
           <div className="card bg-base-300 rounded-box p-6 w-1/3 space-y-2">
@@ -67,13 +74,22 @@ function ClientForm() {
                   list="browsers"
                   defaultValue={clientInfos.code}
                   onChange={(e) => handleChange(e, "code")}
+
                 />
-                <datalist id="browsers">
-                  <option value="Edge"></option>
-                  <option value="Firefox"></option>
-                  <option value="Chrome"></option>
-                  <option value="Opera"></option>
-                  <option value="Safari"></option>
+                {!clientInfos.code && (
+                  <option value="">Veuillez sélectionner un client</option>
+                )}
+
+                {clientInfos.code && (
+                  <option value={clientInfos.code}>{clientInfos.code}</option>
+                )}
+
+              <datalist id="browsers">
+                  
+                    <option  value={listeClientsParCode.code}>
+                      {listeClientsParCode.code}
+                    </option>
+                  
                 </datalist>
               </div>
               <div className="flex flex-col w-1/3">
@@ -157,7 +173,6 @@ function ClientForm() {
                     className="border border-gray-300 rounded-md p-2"
                     // defaultValue={clientInfos.cltexport}
                     // onChange={(e) => handleChange(e, "cltexport")} codpv
-
                   />
                 </div>
                 <div className="flex flex-col w-1/3">
@@ -236,8 +251,8 @@ function ClientForm() {
                   <input
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
-                    defaultValue={clientInfos.secteur}
-                    onChange={(e) => handleChange(e, "secteur")}///table secteur
+                    // defaultValue={clientInfos.secteur.codesec}
+                    // onChange={(e) => handleChange(e, "codesec")} ///table secteur
                   />
                 </div>
                 <div className="flex flex-col w-2/3">
@@ -287,8 +302,11 @@ function ClientForm() {
           {/* <div className="divider lg:divider-horizontal" /> */}
 
           <div className="card bg-base-300 rounded-box p-6 w-1/2 space-y-2">
-          <div className="flex flex-col items-end">
-              <input type="date" className="border border-gray-300 rounded-md p-2 w-1/3" />
+            <div className="flex flex-col items-end">
+              <input
+                type="date"
+                className="border border-gray-300 rounded-md p-2 w-1/3"
+              />
             </div>
             <div className="flex flex-col items-center">
               <button className="btn">Liste des affaires</button>
@@ -426,7 +444,6 @@ function ClientForm() {
                     style={{ color: "rgb(48, 60, 123)" }}
                   >
                     Nom
-                    
                   </th>
                   <th
                     className="w-1/4 text-lg font-bold mb-1"
@@ -614,7 +631,7 @@ function ClientForm() {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     defaultValue={clientInfos.remise}
-                      onChange={(e) => handleChange(e, "remise")}
+                    onChange={(e) => handleChange(e, "remise")}
                   />
                 </div>
 
@@ -629,7 +646,7 @@ function ClientForm() {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     defaultValue={clientInfos.delregFC}
-                      onChange={(e) => handleChange(e, "delregFC")}
+                    onChange={(e) => handleChange(e, "delregFC")}
                   />
                 </div>
 
@@ -659,7 +676,7 @@ function ClientForm() {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     defaultValue={clientInfos.delregBL}
-                      onChange={(e) => handleChange(e, "delregBL")}
+                    onChange={(e) => handleChange(e, "delregBL")}
                   />
                 </div>
 
@@ -674,7 +691,7 @@ function ClientForm() {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     defaultValue={clientInfos.scredit}
-                      onChange={(e) => handleChange(e, "scredit")}
+                    onChange={(e) => handleChange(e, "scredit")}
                   />
                 </div>
 
@@ -689,7 +706,7 @@ function ClientForm() {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     defaultValue={clientInfos.srisque}
-                      onChange={(e) => handleChange(e, "srisque")}
+                    onChange={(e) => handleChange(e, "srisque")}
                   />
                 </div>
 
@@ -704,7 +721,7 @@ function ClientForm() {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     defaultValue={clientInfos.reference}
-                      onChange={(e) => handleChange(e, "reference")}
+                    onChange={(e) => handleChange(e, "reference")}
                   />
                 </div>
 
@@ -813,7 +830,7 @@ function ClientForm() {
                     type="text"
                     className=" border border-gray-300 rounded-md p-2 "
                     defaultValue={clientInfos.matriculef}
-                      onChange={(e) => handleChange(e, "matriculef")}
+                    onChange={(e) => handleChange(e, "matriculef")}
                   />
 
                   <label
@@ -826,7 +843,7 @@ function ClientForm() {
                     type="text"
                     className="border border-gray-300 rounded-md p-2 "
                     defaultValue={clientInfos.decision}
-                      onChange={(e) => handleChange(e, "decision")}
+                    onChange={(e) => handleChange(e, "decision")}
                   />
                   <label
                     className="block"
@@ -839,7 +856,7 @@ function ClientForm() {
                     type="text"
                     className="border border-gray-300 rounded-md p-2 "
                     defaultValue={clientInfos.datedebaut}
-                      onChange={(e) => handleChange(e, "datedebaut")}
+                    onChange={(e) => handleChange(e, "datedebaut")}
                   />
 
                   <label
@@ -875,7 +892,6 @@ function ClientForm() {
                       // defaultValue={clientInfos.nposte1}
                       // onChange={(e) => handleChange(e, "nposte1")}
                       ///ma3anch
-
                     />
                     <label
                       className="block"
@@ -904,7 +920,7 @@ function ClientForm() {
                         type="checkbox"
                         className="border border-gray-300 rounded-md"
                         defaultValue={clientInfos.majotva}
-                      onChange={(e) => handleChange(e, "majotva")}
+                        onChange={(e) => handleChange(e, "majotva")}
                       />
                       <label style={{ color: "rgb(48, 60, 123)" }}>
                         Majoration de TVA
@@ -916,7 +932,7 @@ function ClientForm() {
                         type="checkbox"
                         className="border border-gray-300 rounded-md"
                         defaultValue={clientInfos.exon}
-                      onChange={(e) => handleChange(e, "exon")}
+                        onChange={(e) => handleChange(e, "exon")}
                       />
                       <label style={{ color: "rgb(48, 60, 123)" }}>
                         Exonore de TVA
@@ -930,7 +946,7 @@ function ClientForm() {
                         type="checkbox"
                         className="border border-gray-300 rounded-md"
                         defaultValue={clientInfos.regime}
-                      onChange={(e) => handleChange(e, "regime")}
+                        onChange={(e) => handleChange(e, "regime")}
                       />
                       <label style={{ color: "rgb(48, 60, 123)" }}>
                         Regime reele
@@ -942,7 +958,7 @@ function ClientForm() {
                         type="checkbox"
                         className="border border-gray-300 rounded-md"
                         defaultValue={clientInfos.suspfodec}
-                      onChange={(e) => handleChange(e, "suspfodec")}
+                        onChange={(e) => handleChange(e, "suspfodec")}
                       />
                       <label style={{ color: "rgb(48, 60, 123)" }}>
                         Suspendu FODEK
@@ -955,8 +971,7 @@ function ClientForm() {
                         type="checkbox"
                         className="border border-gray-300 rounded-md"
                         defaultValue={clientInfos.cltexport}
-                      onChange={(e) => handleChange(e, "cltexport")}
-
+                        onChange={(e) => handleChange(e, "cltexport")}
                       />
                       <label style={{ color: "rgb(48, 60, 123)" }}>
                         Client A l'expert

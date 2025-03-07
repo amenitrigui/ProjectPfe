@@ -28,6 +28,7 @@ import Parent from "./test/Parent";
 import DevisFormTout from "./pages/Devis/DevisFormTout";
 import DevisFormPlaceholder from "./components/Devis/DevisFormPlaceholder";
 import Deconnexion from "./pages/authentication/Deconnexion";
+import ClientFormTout from "./pages/Clients/ClientFormTout";
 import { useSelector } from "react-redux";
 
 function App() {
@@ -70,6 +71,8 @@ function App() {
         <Route path="/ClientList" element={<ClientList />}></Route>
         <Route path="/Parent" element={<Parent />}></Route>
         <Route path="/DevisFormTout" element={<DevisFormTout />}></Route>
+        <Route path="/ClientFormTout" element={<ClientFormTout />}></Route>
+        
         <Route path="/DevisFormPlaceholder" element ={<DevisFormPlaceholder></DevisFormPlaceholder>}></Route>
       </Routes>
     </Router>

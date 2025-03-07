@@ -51,7 +51,18 @@ function ToolBar() {
   const activerBoutonsValiderAnnuler = useSelector(
     (state) => state.uiStates.activerBoutonsValiderAnnuler
   );
+ const handleSubmitListe=async()=>
+ {
+  if (toolbarTable == "devis")
+  {
+    navigate("/DevisList")
+  }
+  if( (toolbarTable == "client"))
+  {
+    navigate("/ClientList")
+  }
 
+ }
   // * ajout d'un client/devi
   const handleAjout = async () => {
     dispatch(setActiverBoutonsValiderAnnuler(true));
@@ -136,7 +147,7 @@ function ToolBar() {
 
   return (
     <>
-      <nav className="w-full h-[110px] border-b border-gray-700 flex items-center px-6 mt-6">
+      <nav className="w-full h-[110px] border-b border-gray-700 flex items-center px-6 mb-1/2">
         <div className="flex space-x-4">
           {!activerBoutonsValiderAnnuler && (
             <button
@@ -246,7 +257,7 @@ function ToolBar() {
           {!activerBoutonsValiderAnnuler && (
             <button
               type="button"
-              onClick={() => navigate("/DevisList")}
+              onClick={() => handleSubmitListe()}
               className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
             >
               <FontAwesomeIcon icon={faList} className="text-3xl" />

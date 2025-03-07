@@ -1,18 +1,6 @@
 import React, { useEffect } from "react";
 import DataTable from "react-data-table-component";
-import ClientForm from "../../components/Client/ClientForm";
-import ToolBar from "../../components/Common/ToolBar";
-import Alert from "../../components/Common/Alert";
 import { Link } from "react-router-dom";
-import {
-  FiHome,
-  FiLogOut,
-  FiShoppingCart,
-  FiUser,
-  FiBox,
-  FiSettings,
-  FiTruck,
-} from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getListeClient,
@@ -21,53 +9,46 @@ import {
   setClientsASupprimer,
   setClientInfosEntiere,
 } from "../../app/client_slices/clientSlice";
-import AlertModalD from "../../components/Common/AlertModalD";
 import {
   setClearAppele,
   setToolbarTable,
 } from "../../app/interface_slices/uiSlice";
-import SideBar from "../../components/Common/SideBar";
 
 function ClientList() {
   const dispatch = useDispatch();
-  // * tableau qui contient la liste des clients
   const listeClients = useSelector((store) => store.ClientCrud.listeClients);
 
-  // * UseEffect #1 : Récuperer La liste des clients
   useEffect(() => {
     dispatch(getListeClient());
     dispatch(setToolbarTable("client"));
   }, []);
 
-  // * Utilisé pour spécifier quelle db (societé) on interroge
-  const dbName = localStorage.getItem("selectedDatabase");
-  // * Utilisé pour l'authorization de l'utilisateur à effectuer des opérations
-  const token = localStorage.getItem("token");
-  // * tableau des filtres appliqués par l'utilisateur
   const filters = useSelector((store) => store.ClientCrud.filters);
-  // * Filtrage de la liste des clients par colonne
+
   const handleFilterChange = (e, column) => {
     dispatch(setFiltresSaisient({ valeur: e.target.value, collonne: column }));
     dispatch(filtrerClients());
   };
 
-  // * Colonnes de DataTable
   const columns = [
     { name: "Code", selector: (row) => row.code, sortable: true },
     { name: "Raison Sociale", selector: (row) => row.rsoc, sortable: true },
-    { name: "Adresse", selector: (row) => row.adresse },
-    { name: "Code Postal", selector: (row) => row.cp },
-    { name: "Email", selector: (row) => row.email },
+    { name: "Matricule", selector: (row) => row.Matricule },
+    { name: "Telephone", selector: (row) => row.telephone },
+    { name: "Fax", selector: (row) => row.fax },
+    { name: "Responsable", selector: (row) => row.desrep },
   ];
 
-  // * Style personalisé de DataTable
+  // Définition de la couleur principale
+  const primaryColor = "rgb(48, 60, 123)";
+
   const customStyles = {
     headCells: {
       style: {
         fontWeight: "bold",
         fontSize: "18px",
         backgroundColor: "#e0f2fe",
-        color: "#034694",
+        color: primaryColor, // Appliquer la même couleur que Liste Client
         padding: "12px",
       },
     },
@@ -89,16 +70,12 @@ function ClientList() {
     },
   };
 
-  // * méthode pour séléctionner les clients à supprimer
   const handleSelectionChange = ({ selectedRows }) => {
-    // selectedRows.every(value => console.log(value));
     dispatch(setClearAppele(false));
-    if (selectedRows.length != 0) {
+    if (selectedRows.length !== 0) {
       dispatch(setClientsASupprimer(selectedRows[0].code));
       dispatch(setClientInfosEntiere(selectedRows[0]));
-    }
-
-    if (selectedRows.length == 0) {
+    } else {
       dispatch(setClearAppele(true));
       dispatch(setClientsASupprimer([]));
     }
@@ -106,17 +83,24 @@ function ClientList() {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
-      {/* <SideBar className="w-64 bg-white shadow-lg h-screen fixed left-0 top-0" /> */}
+      <div className="flex-1 p-6">
+        <div className="mt-2 flex items-center relative">
+          <Link
+            to="/ClientFormTout"
+            className="text-lg font-semibold text-[primaryColor] underline hover:text-blue-500 absolute left-0"
+          >
+            ← Retour
+          </Link>
 
-      {/* Contenu principal */}
-      <div className="flex-1 ml-64 p-6">
-        <ToolBar />
-        <Alert />
-        <AlertModalD />
-        <ClientForm />
-        <br />
+          <h1
+            className="text-2xl font-bold text-center flex-1"
+            style={{ color: primaryColor }}
+          >
+            Liste Client
+          </h1>
+        </div>
 
+        {/* Filtres */}
         <div className="grid grid-cols-3 gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
           {Object.keys(filters).map((column, index) => (
             <input
@@ -129,6 +113,7 @@ function ClientList() {
           ))}
         </div>
 
+        {/* Tableau DataTable */}
         <div className="bg-white p-4 rounded-lg shadow-lg mt-4">
           <DataTable
             columns={columns}

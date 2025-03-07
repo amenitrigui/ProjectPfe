@@ -11,7 +11,16 @@ export const getListeClient = createAsyncThunk(
     return response.data.result;
   }
 );
-
+export const getListeCodeClient = createAsyncThunk(
+  "Slice/getListeClient",
+  async (code) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/client/${code}`
+    );
+    console.log(response);
+    return response.data.client;
+  }
+);
 // * Thunk pour ajouter un client
 export const ajouterClient = createAsyncThunk(
   "slice/ajouterClient",
@@ -92,8 +101,35 @@ export const clientSlice = createSlice({
       email: "",
       telephone: "",
       desrep: "",
+      aval2: "",
+      aval1: "",
+      Commentaire: "",
+      datemaj: "",
+      userm: "",
+      usera: "",
+      fact: "",
+      timbref: "",
+      cltexport: "",
+      suspfodec: "",
+      regime: "",
+      exon: "",
+      majotva: "",
+      fidel: "",
+      datefinaut: "",
+      datedebaut: "",
+      decision: "",
+      matriculef: "",
+      reference: "",
+      srisque: "",
+      scredit: "",
+      delregBL: "",
+      delregFT: "",
+      delregFC: "",
+      remise: "",
+
+      secteur: {},
     }, // * informations de formulaire de client
-    listeClients: [],
+    listeClientsParCode: [],
     clientsASupprimer: [], // * tableau des codes de clients a supprimer. id reeelement code.
     status: "inactive",
     erreur: null,
@@ -104,9 +140,10 @@ export const clientSlice = createSlice({
     filters: {
       code: "",
       rsoc: "",
-      adresse: "",
-      cp: "",
-      email: "",
+      Matricule: "",
+      telephone: "",
+      fax: "",
+      desrep: "",
     },
     insertionDepuisDevisForm: false,
   },
@@ -198,7 +235,24 @@ export const clientSlice = createSlice({
         console.log(action);
         state.status = "échoué";
         state.erreur = action.payload;
+      })
+
+      .addCase(getListeCodeClient.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getListeCodeClient.fulfilled, (state, action) => {
+        console.log(action.payload);
+        state.listeClientsParCode=action.payload;
+        state.clientInfos=action.payload;
+        state.status = "réussi";
+      })
+      .addCase(getListeCodeClient.rejected, (state, action) => {
+        console.log(action);
+        state.status = "échoué";
+        state.erreur = action.payload;
       });
+
+
   },
 });
 

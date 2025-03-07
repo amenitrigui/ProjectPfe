@@ -2,62 +2,20 @@ import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import SideBar from "../../components/Common/SideBar";
 import { useDispatch, useSelector } from "react-redux";
 import { getDevisList, setDevisList } from "../../app/devis_slices/devisSlice";
-
+import DevisFormTout from "./DevisFormTout";
 function DevisList() {
-  const [devis, setDevis] = useState([]);
   const [filteredDevis, setFilteredDevis] = useState([]);
   const dataBaseName = localStorage.getItem("selectedDatabase");
-  //Action
+
   const dispatch = useDispatch();
-  // todo lire les donnes de listedevis a partie min devisslice
   const ListeDevis = useSelector((store) => store.DevisCrud.devisList);
-  // todo recuperation de donnes donc on utilise useeffect
+
   useEffect(() => {
     dispatch(getDevisList());
-  }, []); // [] hthii bch may9ahdch f boucle infini
+  }, [dispatch]);
 
-  // useEffect(() => {
-  //   const fetchDevis = async () => {
-  //     try {
-  //       const dbName = localStorage.getItem("selectedDatabase");
-  //       if (!dbName) throw new Error("Aucune base de données sélectionnée.");
-
-  //       const response = await axios.get(
-  //         `${process.env.REACT_APP_API_URL}/api/devis/${dbName}/devis`
-  //       );
-  //       setDevis(response.data.devisList);
-  //       setFilteredDevis(response.data.devisList);
-  //     } catch (error) {
-  //       console.error(error.message);
-  //     }
-  //   };
-
-  //   fetchDevis();
-  // }, []);
-
-  // ! placeholder solution
-  const handleFilterChange = (e, column) => {
-    const value = e.target.value;
-    filters[column] = value;
-
-    axios
-      .get("http://localhost:5000/api/devis/filterDevis", {
-        params: { filters: filters, databaseName: dataBaseName },
-      })
-      .then((res) => {
-        console.log(res.data.data);
-        setFilteredDevis(res.data.data);
-        dispatch(setDevisList(res.data.data));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  // * tableau des filtres appliquées par l'utilisateur
   const [filters, setFilters] = useState({
     NUMBL: "",
     DATT: "",
@@ -68,14 +26,38 @@ function DevisList() {
     MTTC: "",
   });
 
+  const handleFilterChange = (e, column) => {
+    const value = e.target.value;
+
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [column]: value,
+    }));
+
+    if (dataBaseName) {
+      axios
+        .get("http://localhost:5000/api/devis/filterDevis", {
+          params: {
+            filters: { ...filters, [column]: value },
+            databaseName: dataBaseName,
+          },
+        })
+        .then((res) => {
+          setFilteredDevis(res.data.data);
+          dispatch(setDevisList(res.data.data));
+        })
+        .catch((error) => {
+          console.error("Erreur lors du filtrage :", error);
+        });
+    }
+  };
+
   const columns = [
-    { name: "Numéro BL", selector: (row) => row.NUMBL, sortable: true },
-    { name: "Date", selector: (row) => row.datt, sortable: true },
-    { name: "Point de vente", selector: (row) => row.libpv },
-    { name: "Code client", selector: (row) => row.CODECLI },
-    { name: "Adresse", selector: (row) => row.ADRCLI },
-    { name: "RSCLI", selector: (row) => row.RSCLI },
-    { name: "Montant TTC", selector: (row) => row.MTTC },
+    { name: "N°Devis", selector: (row) => row.NUMBL, sortable: true },
+    { name: "Date", selector: (row) => row.DATT, sortable: true },
+    { name: "G.", selector: (row) => row.libpv },
+    { name: "B.L", selector: (row) => row.CODECLI },
+    { name: "Client", selector: (row) => row.ADRCLI },
   ];
 
   const customStyles = {
@@ -83,7 +65,7 @@ function DevisList() {
       style: {
         fontWeight: "bold",
         fontSize: "18px",
-        backgroundColor: "#e0f2fe", // Bleu clair
+        backgroundColor: "#e0f2fe",
         color: "#034694",
         padding: "12px",
       },
@@ -91,9 +73,9 @@ function DevisList() {
     rows: {
       style: {
         fontSize: "16px",
-        backgroundColor: "#f8fafc", // Gris très clair
+        backgroundColor: "#f8fafc",
         "&:hover": {
-          backgroundColor: "#dbeafe", // Bleu clair au survol
+          backgroundColor: "#dbeafe",
         },
       },
     },
@@ -108,14 +90,27 @@ function DevisList() {
 
   return (
     <div className="container mx-auto p-6">
-      {/* Zone de recherche */}
+      <div className="mt-2 flex items-center relative">
+  <Link
+    to="/DevisFormTout"
+    className="text-lg font-semibold underline text-[rgb(48,60,123)] hover:text-blue-500 absolute left-0"
+  >
+    ← Retour
+  </Link>
+
+  <h1 className="text-2xl font-bold text-center flex-1" style={{ color: "rgb(48, 60, 123)" }}>
+    Liste devis
+  </h1>
+</div>
+
+      {/* Barre de filtre */}
       <div className="grid grid-cols-3 gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
-        {Object.keys(filters).map((column, index) => (
+        {columns.map((col, index) => (
           <input
             key={index}
             type="text"
-            onChange={(e) => handleFilterChange(e, column)}
-            placeholder={`🔍 ${columns[index].name}`}
+            onChange={(e) => handleFilterChange(e, col.selector)}
+            placeholder={`🔍 ${col.name}`}
             className="border p-2 rounded-md shadow-sm focus:ring focus:ring-blue-300"
           />
         ))}
@@ -125,7 +120,7 @@ function DevisList() {
       <div className="bg-white p-4 rounded-lg shadow-lg mt-4">
         <DataTable
           columns={columns}
-          data={ListeDevis}
+          data={filteredDevis.length > 0 ? filteredDevis : ListeDevis}
           customStyles={customStyles}
           selectableRows
           fixedHeader

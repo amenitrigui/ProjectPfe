@@ -136,7 +136,7 @@ const supprimerClient = async (req, res) => {
 // * dbName donnée comme paramètre de requete
 // * par son code, aussi donnée comme paramètre de requete
 
-const getClient = async (req, res) => {
+const getClientParCode = async (req, res) => {
   const { dbName } = req.params;
   const { code } = req.params;
   try {
@@ -194,6 +194,6 @@ module.exports = {
   filtrerListeClients,
   AjouterClient,
   supprimerClient,
-  getClient,
+  getClientParCode,
   majClient,
 };
