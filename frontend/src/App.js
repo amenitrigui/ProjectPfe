@@ -30,6 +30,7 @@ import DevisFormPlaceholder from "./components/Devis/DevisFormPlaceholder";
 import Deconnexion from "./pages/authentication/Deconnexion";
 import ClientFormTout from "./pages/Clients/ClientFormTout";
 import { useSelector } from "react-redux";
+import ClientFormTout from "./pages/Clients/ClientFormTout";
 
 function App() {
   const notify = () => {
@@ -69,6 +70,7 @@ function App() {
         <Route path="/ResetPassword" element={<ResetPassword />}></Route>
         <Route path="/EmailEnvoye" element={<EmailEnvoye />}></Route>
         <Route path="/ClientList" element={<ClientList />}></Route>
+        <Route path="/ClientFormTout" element={<ClientFormTout />} />
         <Route path="/Parent" element={<Parent />}></Route>
         <Route path="/DevisFormTout" element={<DevisFormTout />}></Route>
         <Route path="/ClientFormTout" element={<ClientFormTout />}></Route>

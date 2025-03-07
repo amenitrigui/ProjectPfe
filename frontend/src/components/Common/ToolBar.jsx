@@ -145,6 +145,15 @@ function ToolBar() {
     dispatch(setActiverChampsForm(false));
   };
 
+  const handleNaviguerListe = () => {
+    if(toolbarTable == "devis") {
+      navigate("/DevisList");
+    }
+
+    if(toolbarTable == "client") {
+      navigate("/clientList");
+    }
+  }
   return (
     <>
       <nav className="w-full h-[110px] border-b border-gray-700 flex items-center px-6 mb-1/2">
@@ -318,7 +327,7 @@ function ToolBar() {
       )}
       {toolbarTable == "client" && (
         <h2 className="text-black font-bold italic text-3xl">
-          client / Facture Proforma
+          client
         </h2>
       )}
     </>

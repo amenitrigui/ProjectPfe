@@ -53,8 +53,8 @@ function DevisFormTout() {
           <label htmlFor="my-drawer" className="drawer-overlay"></label>
           <SideBar />
         </div>
-        <ToolBar />
       </div>
+      <ToolBar />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <DevisForm />

@@ -94,12 +94,16 @@ const AjouterClient = async (req, res) => {
     const newClient = await Client.create({
       //add + save min base 3ibrt 3ml insert into mn base de donnes
       code: clientInfos.code,
+      typecli: clientInfos.typecli, // add this to the model
+      cin: clientInfos.cin, // add this to model
+      
       email: clientInfos.email,
       rsoc: clientInfos.rsoc,
       cp: clientInfos.cp,
       telephone: clientInfos.telephone,
       desrep: clientInfos.desrep,
       adresse: clientInfos.adresse,
+      
     });
 
     return res.status(200).json({ message: "insertion avec succès" });

@@ -99,7 +99,9 @@ function ClientForm() {
                 >
                   Type Client
                 </label>
-                <select className="border border-gray-300 rounded-md p-2" />
+                <select className="border border-gray-300 rounded-md p-2">
+                  <option value="Local">Local</option>
+                </select>
               </div>
               <div className="flex flex-col w-1/3">
                 <label
