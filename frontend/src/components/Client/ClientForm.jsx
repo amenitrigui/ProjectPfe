@@ -916,9 +916,9 @@ function ClientForm() {
                     <div className="flex space-x-2 w-1/2">
                       <input
                         type="checkbox"
+                        checked={clientInfos.majotva=="0"}
                         className="border border-gray-300 rounded-md"
-                        defaultValue={clientInfos.majotva}
-                        onChange={(e) => handleChange(e, "majotva")}
+                       
                       />
                       <label style={{ color: "rgb(48, 60, 123)" }}>
                         Majoration de TVA
@@ -927,6 +927,7 @@ function ClientForm() {
 
                     <div className="flex space-x-2 w-1/2">
                       <input
+                       checked={clientInfos.exon=="0"}
                         type="checkbox"
                         className="border border-gray-300 rounded-md"
                         defaultValue={clientInfos.exon}
@@ -941,10 +942,10 @@ function ClientForm() {
                   <div className="flex flex-nowrap">
                     <div className="flex space-x-2 w-1/2">
                       <input
+                       checked={clientInfos.regime=="O"}
                         type="checkbox"
                         className="border border-gray-300 rounded-md"
-                        defaultValue={clientInfos.regime}
-                        onChange={(e) => handleChange(e, "regime")}
+                        
                       />
                       <label style={{ color: "rgb(48, 60, 123)" }}>
                         Regime reele
@@ -954,9 +955,9 @@ function ClientForm() {
                     <div className="flex space-x-2 w-1/2">
                       <input
                         type="checkbox"
+                        checked={clientInfos.suspfodec=="0"}
                         className="border border-gray-300 rounded-md"
-                        defaultValue={clientInfos.suspfodec}
-                        onChange={(e) => handleChange(e, "suspfodec")}
+                       
                       />
                       <label style={{ color: "rgb(48, 60, 123)" }}>
                         Suspendu FODEK
@@ -967,6 +968,7 @@ function ClientForm() {
                     <div className="flex space-x-2 w-1/2">
                       <input
                         type="checkbox"
+                        checked={clientInfos.cltexport=="0"}
                         className="border border-gray-300 rounded-md"
                         defaultValue={clientInfos.cltexport}
                         onChange={(e) => handleChange(e, "cltexport")}
@@ -980,8 +982,7 @@ function ClientForm() {
                       <input
                         type="checkbox"
                         className="border border-gray-300 rounded-md"
-                        defaultValue={clientInfos.timbref}
-                        onChange={(e) => handleChange(e, "timbref")}
+                        checked={clientInfos.timbref=="O"}
                       />
                       <label style={{ color: "rgb(48, 60, 123)" }}>
                         Timbre fiscale
@@ -993,8 +994,7 @@ function ClientForm() {
                     <input
                       type="checkbox"
                       className="border border-gray-300 rounded-md"
-                      defaultValue={clientInfos.fact}
-                      onChange={(e) => handleChange(e, "fact")}
+                      checked={clientInfos.fact=="0"}
                     />
                     <label style={{ color: "rgb(48, 60, 123)" }}>
                       Fact ticket de caisse
