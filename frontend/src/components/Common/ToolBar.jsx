@@ -61,9 +61,7 @@ function ToolBar() {
   const handleAjout = async () => {
     dispatch(setActiverBoutonsValiderAnnuler(true));
     dispatch(setActiverChampsForm(true));
-
-    dispatch(getDerniereCodeClient());
-    console.log(clientInfos);
+    dispatch(setClearAppele(false));
     // * vider les champs du formulaires
     if (toolbarTable == "devis") {
       dispatch(
@@ -91,15 +89,10 @@ function ToolBar() {
     if (toolbarTable == "client") {
       dispatch(
         setClientInfosEntiere({
-          code: "",
-          rsoc: "",
-          adresse: "",
-          cp: "",
-          email: "",
-          telephone: "",
-          desrep: "",
         })
       );
+      dispatch(getDerniereCodeClient());
+      console.log(clientInfos);
     }
   };
   const HandleRecherche = async () => {
@@ -135,10 +128,12 @@ function ToolBar() {
   };
 
   // * cacher les bouttons valider/annuler
-  // * et réafficher les autres bouttons
+  // * réafficher les autres bouttons
+  // * vider toutes les champs
   const annulerOperation = () => {
     dispatch(setActiverBoutonsValiderAnnuler(false));
     dispatch(setActiverChampsForm(false));
+    dispatch(setClearAppele(true));
   };
 
   const handleNaviguerListe = () => {

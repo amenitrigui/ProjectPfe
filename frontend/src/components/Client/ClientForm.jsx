@@ -76,14 +76,14 @@ function ClientForm() {
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
                   list="browsers"
-                  //defaultValue={clientInfos.code}
+                  defaultValue={clientInfos.code}
                   onChange={(e) => handleChange(e, "code")}
                   disabled={activerChampsForm}
                 />
                 <datalist id="browsers">
                   {listeClientsParCode.length > 0 ? (
                     listeClientsParCode.map((client,indice ) => (
-                      <option key={indice} value={indice}>
+                      <option key={indice} value={client.code}>
                         {client.code}
                       </option>
                     ))

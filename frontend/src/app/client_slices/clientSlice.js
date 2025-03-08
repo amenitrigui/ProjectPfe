@@ -302,8 +302,8 @@ export const clientSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getDerniereCodeClient.fulfilled, (state, action) => {
+        state.clientInfos.code = (parseInt(action.payload)+1).toString();
         state.status = "réussi";
-        state.clientInfos.code = action.payload;
       })
       .addCase(getDerniereCodeClient.rejected, (state, action) => {
         state.status = "échoué";
