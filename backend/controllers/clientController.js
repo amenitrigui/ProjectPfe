@@ -273,7 +273,7 @@ const getListeCodeClient = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-const getTypeClient = async (req, res) => {
+const getClientParTypecli = async (req, res) => {
   try {
     const { dbName } = req.params;
     const { typecli } = req.params;
@@ -290,7 +290,7 @@ const getTypeClient = async (req, res) => {
 
     return res
       .status(200)
-      .json({ message: "type client  récuperé avec succès", client: client });
+      .json({ message: "type client  récuperé avec succès", clients: client });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -301,7 +301,7 @@ const getClientParCin = async (req, res) => {
     const { cin } = req.query;
     console.log(cin)
     const dbConnection = await getDatabaseConnection(dbName, res);
-    const client = dbConnection.query(
+    const client = await dbConnection.query(
       `SELECT * FROM CLIENT where cin = :cin`,
       {
         type: dbConnection.QueryTypes.SELECT,
@@ -317,7 +317,7 @@ const getClientParCin = async (req, res) => {
 
     return res
       .status(200)
-      .json({ message: "client récuperé avec succès", client: client[0] });
+      .json({ message: "client récuperé avec succès", client: client });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -351,7 +351,7 @@ module.exports = {
   getClientParCode,
   majClient,
   getListeCodeClient,
-  getTypeClient,
+  getClientParTypecli,
   getDerniereCodeClient,
   getClientParCin,
 };

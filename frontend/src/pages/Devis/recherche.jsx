@@ -12,7 +12,7 @@ import {
 } from "../../app/devis_slices/devisSlice";
 import DataTable from "react-data-table-component";
 import { FaArrowLeft } from "react-icons/fa"; // Import de l'icône
-import { getCin, getListeCodeClient, getTypeClient } from "../../app/client_slices/clientSlice";
+import { getClientParCin, getListeCodeClient, getClientParTypecli } from "../../app/client_slices/clientSlice";
 
 const Recherche = () => {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ const Recherche = () => {
   const [filtrerPar, setFiltrerPar] = useState("");
   // * liste de devis récuperer de store
   const devisList = useSelector((state) => state.DevisCrud.devisList);
-  const listeClients = useSelector((state) => state.ClientCrud);
+  const listeClients = useSelector((state) => state.ClientCrud.listeClients);
   console.log(listeClients);
   // * pour obtenir les informations de dévis séléctionné
   const handleselecteddevis = ({ selectedRows }) => {
@@ -70,10 +70,10 @@ const Recherche = () => {
           dispatch(getListeCodeClient(valeurRecherche));
           break;
         case "typecli":
-          dispatch(getTypeClient(valeurRecherche));
+          dispatch(getClientParTypecli(valeurRecherche));
           break;
         case "cin":
-          dispatch(getCin(valeurRecherche));
+          dispatch(getClientParCin(valeurRecherche));
           break;
        
       }
@@ -199,7 +199,7 @@ const Recherche = () => {
       </div>
 
       <DataTable
-        data={devisList}
+        data={listeClients}
         columns={collones}
         pagination
         fixedHeader

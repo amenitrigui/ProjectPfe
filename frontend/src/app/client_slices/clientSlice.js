@@ -11,9 +11,9 @@ export const getListeClient = createAsyncThunk(
     return response.data.result;
   }
 );
- //* recupere type client par client 
-export const getTypeClient = createAsyncThunk(
-  "Slice/getTypeClient",
+ //* recupere client par typecli 
+export const getClientParTypecli = createAsyncThunk(
+  "Slice/getClientParTypecli",
   async (typecli) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/typeclient/${typecli}`
@@ -22,16 +22,15 @@ export const getTypeClient = createAsyncThunk(
   }
 );
 //* recupere la liste des clients par cin 
-export const getCin = createAsyncThunk(
-  "Slice/getCin",
+export const getClientParCin = createAsyncThunk(
+  "Slice/getClientParCin",
   async (cin) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/getCin`, {
+      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/getClientParCin`, {
         params: {cin}
       }
     );
-    console.log(response)
-    return response;
+    return response.data.client;
   }
 );
 export const getListeCodeClient = createAsyncThunk(
@@ -313,6 +312,7 @@ export const clientSlice = createSlice({
       })
       .addCase(getListeparCode.fulfilled, (state, action) => {
         state.listeClientsParCode = action.payload;
+        state.listeClients = action.payload;
         //state.clientInfos=action.payload;
         state.status = "réussi";
       })
@@ -333,26 +333,26 @@ export const clientSlice = createSlice({
         state.erreur = action.payload;
       })
 
-      .addCase(getTypeClient.pending, (state) => {
+      .addCase(getClientParTypecli.pending, (state) => {
         state.status = "chargement";
       })
-      .addCase(getTypeClient.fulfilled, (state, action) => {
-        state.clientInfos.code = action.payload;
+      .addCase(getClientParTypecli.fulfilled, (state, action) => {
+        state.listeClients = action.payload;
         state.status = "réussi";
       })
-      .addCase(getTypeClient.rejected, (state, action) => {
+      .addCase(getClientParTypecli.rejected, (state, action) => {
         state.status = "échoué";
         state.erreur = action.payload;
       })
 
-      .addCase(getCin.pending, (state) => {
+      .addCase(getClientParCin.pending, (state) => {
         state.status = "chargement";
       })
-      .addCase(getCin.fulfilled, (state, action) => {
-        state.clientInfos.code = action.payload;
+      .addCase(getClientParCin.fulfilled, (state, action) => {
+        state.listeClients = action.payload;
         state.status = "réussi";
       })
-      .addCase(getCin.rejected, (state, action) => {
+      .addCase(getClientParCin.rejected, (state, action) => {
         state.status = "échoué";
         state.erreur = action.payload;
       });

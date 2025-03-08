@@ -9,7 +9,7 @@ const {
   majClient,
   getListeCodeClient,
   getDerniereCodeClient,
-  getTypeClient,
+  getClientParTypecli,
   getClientParCin,
 } = require("../controllers/clientController");
 router.get("/:dbName/List", getListeClients);
@@ -20,7 +20,7 @@ router.delete("/:dbName/Delete/", supprimerClient);
 router.put("/:dbName/Update", majClient);
 router.get("/:dbName/getListCode", getListeCodeClient);
 router.get("/:dbName/getDerniereCodeClient", getDerniereCodeClient);
-router.get("/:dbName/typeclient", getTypeClient);
-router.get("/:dbName/getCin", getClientParCin);
+router.get("/:dbName/getClientParTypecli", getClientParTypecli);
+router.get("/:dbName/getClientParCin", getClientParCin);
 
 module.exports = router;
