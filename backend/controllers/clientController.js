@@ -100,13 +100,13 @@ const AjouterClient = async (req, res) => {
       code: clientInfos.code,
       typecli: clientInfos.typecli, // add this to the model
       cin: clientInfos.cin, // add this to model
-       email: clientInfos.email,
+      email: clientInfos.email,
       rsoc: clientInfos.rsoc,
       cp: clientInfos.cp,
       telephone: clientInfos.telephone,
       desrep: clientInfos.desrep,
       adresse: clientInfos.adresse,
-     aval2: clientInfos.aval2,
+      aval2: clientInfos.aval2,
       aval1: clientInfos.aval1,
       Commentaire: clientInfos.Commentaire,
       datemaj: clientInfos.datemaj,
@@ -131,8 +131,7 @@ const AjouterClient = async (req, res) => {
       delregFT: clientInfos.delregFT,
       delregFC: clientInfos.delregFC,
       remise: clientInfos.remise,
-      activite:clientInfos.activite,
-      
+      activite: clientInfos.activite,
     });
 
     return res.status(200).json({ message: "insertion avec succès" });
@@ -204,13 +203,13 @@ const majClient = async (req, res) => {
           code: clientUpdate.code,
           typecli: clientUpdate.typecli, // add this to the model
           cin: clientUpdate.cin, // add this to model
-           email: clientUpdate.email,
+          email: clientUpdate.email,
           rsoc: clientUpdate.rsoc,
           cp: clientUpdate.cp,
           telephone: clientUpdate.telephone,
           desrep: clientUpdate.desrep,
           adresse: clientUpdate.adresse,
-         aval2: clientUpdate.aval2,
+          aval2: clientUpdate.aval2,
           aval1: clientUpdate.aval1,
           Commentaire: clientUpdate.Commentaire,
           datemaj: clientUpdate.datemaj,
@@ -235,8 +234,7 @@ const majClient = async (req, res) => {
           delregFT: clientUpdate.delregFT,
           delregFC: clientUpdate.delregFC,
           remise: clientUpdate.remise,
-          activite:clientUpdate.activite,
-          
+          activite: clientUpdate.activite,
         },
         { where: { code: clientUpdate.code } }
       );
@@ -269,13 +267,32 @@ const getListeCodeClient = async (req, res) => {
       message: "Code client récupéré avec succès",
       liteCode: liteCode, // Correction de la structure JSON
     });
-
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
 
+const getDerniereCodeClient = async (req, res) => {
+  try {
+    const { dbName } = req.params;
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const derniereCodeClient = await dbConnection.query(
+      `SELECT code FROM client order by (code) desc LIMIT 1`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    );
 
+    return res
+      .status(200)
+      .json({
+        message: "dernière code client récuperé avec succès",
+        derniereCodeClient: derniereCodeClient[0],
+      });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 
 module.exports = {
   getListeClients,
@@ -285,4 +302,5 @@ module.exports = {
   getClientParCode,
   majClient,
   getListeCodeClient,
+  getDerniereCodeClient,
 };

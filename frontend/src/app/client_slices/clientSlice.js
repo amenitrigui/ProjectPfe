@@ -75,7 +75,6 @@ export const getListeparCode = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/getListCode`
     );
-    console.log(response)
     return response.data.liteCode;
   }
 );
@@ -97,6 +96,13 @@ export const supprimerClient = createAsyncThunk(
   }
 );
 
+export const getDerniereCodeClient = createAsyncThunk(
+  "clientSlice/getDerniereCodeClient",
+  async() => {
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/client/SOLEVO/getDerniereCodeClient`)
+    return response.data.derniereCodeClient.code;
+  }
+)
 
 export const clientSlice = createSlice({
   name: "slice",
@@ -282,13 +288,24 @@ export const clientSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getListeparCode.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.listeClientsParCode=action.payload;
         //state.clientInfos=action.payload;
         state.status = "réussi";
       })
       .addCase(getListeparCode.rejected, (state, action) => {
         console.log(action);
+        state.status = "échoué";
+        state.erreur = action.payload;
+      })
+
+      .addCase(getDerniereCodeClient.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getDerniereCodeClient.fulfilled, (state, action) => {
+        state.clientInfos.code = (parseInt(action.payload)+1).toString();
+        state.status = "réussi";
+      })
+      .addCase(getDerniereCodeClient.rejected, (state, action) => {
         state.status = "échoué";
         state.erreur = action.payload;
       });

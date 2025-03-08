@@ -54,10 +54,11 @@ function DevisList() {
 
   const columns = [
     { name: "N°Devis", selector: (row) => row.NUMBL, sortable: true },
-    { name: "Date", selector: (row) => row.DATT, sortable: true },
-    { name: "G.", selector: (row) => row.libpv },
+    { name: "Date", selector: (row) => row.DATEBL, sortable: true },
+    { name: "G.", selector: (row) => row.CODEFACTURE},
     { name: "B.L", selector: (row) => row.CODECLI },
-    { name: "Client", selector: (row) => row.ADRCLI },
+    { name: "Client", selector: (row) => row.RSCLI },
+    { name: "MTTC", selector: (row) => row.MTTC },
   ];
 
   const customStyles = {

@@ -21,7 +21,7 @@ const getTousDevis = async (req, res) => {
     console.log(`Connecté à la base de données : ${dbName}`);
 
     const result = await dynamicSequelize.query(
-      `SELECT NUMBL, libpv, datt,CODECLI,ADRCLI,RSCLI,MTTC,usera,RSREP,codesecteur FROM dfp `,
+      `SELECT NUMBL, DATEBL,libpv, datt,CODECLI,ADRCLI,RSCLI,MTTC,CODEFACTURE,usera,RSREP,codesecteur FROM dfp `,
       { type: QueryTypes.SELECT }
     );
 
