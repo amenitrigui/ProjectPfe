@@ -12,7 +12,6 @@ import {
 } from "../../app/devis_slices/devisSlice";
 import DataTable from "react-data-table-component";
 import { FaArrowLeft } from "react-icons/fa"; // Import de l'icône
-import { setToolbarTable } from "../../app/interface_slices/uiSlice";
 import { getCin, getListeCodeClient, getTypeClient } from "../../app/client_slices/clientSlice";
 
 const Recherche = () => {
@@ -24,6 +23,8 @@ const Recherche = () => {
   const [filtrerPar, setFiltrerPar] = useState("");
   // * liste de devis récuperer de store
   const devisList = useSelector((state) => state.DevisCrud.devisList);
+  const listeClients = useSelector((state) => state.ClientCrud);
+  console.log(listeClients);
   // * pour obtenir les informations de dévis séléctionné
   const handleselecteddevis = ({ selectedRows }) => {
     console.log(selectedRows[0]);
@@ -33,6 +34,7 @@ const Recherche = () => {
 
   // * pour filtrer la liste des devis
   const handleSearch = () => {
+
     if (!valeurRecherche) {
       alert("Veuillez entrer une valeur pour la recherche.");
       return;
@@ -42,8 +44,7 @@ const Recherche = () => {
       return;
     }
   
-    if (toolbarTable == "devis") {
-      dispatch(setToolbarTable());
+    if (toolbarTable.toLowerCase() == "devis") {
     switch (filtrerPar) {
       case "client":
         dispatch(getDevisParCodeClient(valeurRecherche));
@@ -62,13 +63,13 @@ const Recherche = () => {
       default:
         console.log("Valeur de filtre non définie");
     }}
-    if (toolbarTable == "client") {
-    
+    if (toolbarTable.toLowerCase() == "client") {
       switch (filtrerPar) {
-        case "Code":
+        case "code":
+          console.log("case code");
           dispatch(getListeCodeClient(valeurRecherche));
           break;
-        case "type client":
+        case "typecli":
           dispatch(getTypeClient(valeurRecherche));
           break;
         case "cin":
@@ -188,7 +189,7 @@ const Recherche = () => {
               placeholder="Entrez votre recherche..."
             />
             <button
-              onClick={handleSearch }
+              onClick={handleSearch}
               className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition duration-200"
             >
               Rechercher

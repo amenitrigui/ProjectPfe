@@ -23,5 +23,4 @@ router.get("/:dbName/getDerniereCodeClient", getDerniereCodeClient);
 router.get("/:dbName/typeclient", getTypeClient);
 router.get("/:dbName/getCin", getClientParCin);
 
-
 module.exports = router;

@@ -171,6 +171,8 @@ const supprimerClient = async (req, res) => {
 const getClientParCode = async (req, res) => {
   const { dbName } = req.params;
   const { code } = req.params;
+
+  console.log(code);
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const Client = defineClientModel(dbConnection);

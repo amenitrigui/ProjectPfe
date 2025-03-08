@@ -19,10 +19,6 @@ function ClientForm() {
 
   // Sélection du booléen pour effacer les champs du formulaire
   const clearApelle = useSelector((state) => state.uiStates.clearAppele);
-  // liste de client
-  const listeClientsParCode = useSelector(
-    (state) => state.ClientCrud.listeClientsParCode
-  );
   // state pour désactiver/activer les champs lors de changement de modes editables (ajout/modification)
   // vers le mode de consultation respectivement
   const activerChampsForm = useSelector(
@@ -36,6 +32,11 @@ function ClientForm() {
   useEffect(() => {
     dispatch(getListeparCode());
   }, []);
+
+  // liste de client
+  const listeClientsParCode = useSelector(
+    (state) => state.ClientCrud.listeClientsParCode
+  );
 
   // Fonction pour gérer les changements dans les champs du formulaire
   const handleChange = (e, colonne) => {

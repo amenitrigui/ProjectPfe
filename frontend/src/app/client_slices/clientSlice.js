@@ -21,13 +21,14 @@ export const getTypeClient = createAsyncThunk(
     return response;
   }
 );
-//* recu^pere le cin par client 
+//* recupere la liste des clients par cin 
 export const getCin = createAsyncThunk(
   "Slice/getCin",
-  async () => {
+  async (cin) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/getCin`
-      
+      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/getCin`, {
+        params: {cin}
+      }
     );
     console.log(response)
     return response;
@@ -170,7 +171,6 @@ export const clientSlice = createSlice({
       activite: "",
       typecli: "L",
       cin: "",
-
       secteur: {
         codesec: "",
         desisec: "",
@@ -186,6 +186,7 @@ export const clientSlice = createSlice({
     }, // * informations de formulaire de client
     listeClientsParCode: [],
     clientsASupprimer: [], // * tableau des codes de clients a supprimer. id reeelement code.
+    listeClients: [],
     status: "inactive",
     erreur: null,
     // todo: change this to french
@@ -316,7 +317,6 @@ export const clientSlice = createSlice({
         state.status = "réussi";
       })
       .addCase(getListeparCode.rejected, (state, action) => {
-        console.log(action);
         state.status = "échoué";
         state.erreur = action.payload;
       })

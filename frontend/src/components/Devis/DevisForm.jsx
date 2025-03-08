@@ -24,7 +24,6 @@ function DevisForm() {
   const listeNUMBL = useSelector((state) => state.DevisCrud.listeNUMBL);
   // * informations d'un devis provenant des champs de cette formulaire
   const devisInfos = useSelector((state) => state.DevisCrud.devisInfo);
-  console.log(devisInfos);
   const listePointsVente = useSelector(
     (state) => state.DevisCrud.listePointsVente
   );
