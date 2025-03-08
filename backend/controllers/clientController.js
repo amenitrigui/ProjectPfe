@@ -176,7 +176,9 @@ const getClientParCode = async (req, res) => {
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const Client = defineClientModel(dbConnection);
-    const client = await Client.findOne({ where: { code: code } });
+    // const client = await Client.findOne({ where: { code: code } });
+    const client = await dbConnection.query(`select * from client where code = ${code}`)
+    console.log(client);
     if (client) return res.status(200).json({ client });
 
     return res.status(404).json({ message: "Client introuvable" });

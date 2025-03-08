@@ -39,7 +39,6 @@ export const getListeCodeClient = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/client/${code}`
     );
-    console.log(response);
     return response.data.client;
   }
 );
@@ -223,6 +222,9 @@ export const clientSlice = createSlice({
     setInsertionDepuisDevisForm: (state, action) => {
       state.insertionDepuisDevisForm = action.payload;
     },
+    setClientList: (state, action) => {
+      state.listeClients = action.payload;
+    }
   },
   // * on utilise l'objet builder pour replacer l'opérateur switch case ...
   // * l'objet builder nous permet d'écrire des cas plus lisibles et flexibles
@@ -365,5 +367,6 @@ export const {
   setClientsASupprimer,
   setClientInfosEntiere,
   setInsertionDepuisDevisForm,
+  setClientList
 } = clientSlice.actions;
 export default clientSlice.reducer;

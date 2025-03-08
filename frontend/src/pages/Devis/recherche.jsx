@@ -12,7 +12,12 @@ import {
 } from "../../app/devis_slices/devisSlice";
 import DataTable from "react-data-table-component";
 import { FaArrowLeft } from "react-icons/fa"; // Import de l'icône
-import { getClientParCin, getListeCodeClient, getClientParTypecli } from "../../app/client_slices/clientSlice";
+import {
+  getClientParCin,
+  getListeCodeClient,
+  getClientParTypecli,
+  setClientList,
+} from "../../app/client_slices/clientSlice";
 
 const Recherche = () => {
   const navigate = useNavigate();
@@ -34,7 +39,6 @@ const Recherche = () => {
 
   // * pour filtrer la liste des devis
   const handleSearch = () => {
-
     if (!valeurRecherche) {
       alert("Veuillez entrer une valeur pour la recherche.");
       return;
@@ -43,26 +47,25 @@ const Recherche = () => {
       alert("Veuillez sélectionner un filtre de recherche.");
       return;
     }
-  
+
     if (toolbarTable.toLowerCase() == "devis") {
-    switch (filtrerPar) {
-      case "client":
-        dispatch(getDevisParCodeClient(valeurRecherche));
-        break;
-      case "devis":
-        dispatch(getDevisParNUMBL(valeurRecherche));
-        break;
-      case "montant":
-        dispatch(getDevisParMontant(valeurRecherche));
-        break;
-      case "periode":
-        dispatch(getDevisParPeriode(valeurRecherche));
-        break;
-      case "utilisateur":
-        dispatch(getInfoUtilisateur(valeurRecherche));
-      default:
-        console.log("Valeur de filtre non définie");
-    }}
+      switch (filtrerPar) {
+        case "client":
+          dispatch(getDevisParCodeClient(valeurRecherche));
+          break;
+        case "devis":
+          dispatch(getDevisParNUMBL(valeurRecherche));
+          break;
+        case "montant":
+          dispatch(getDevisParMontant(valeurRecherche));
+          break;
+        case "periode":
+          dispatch(getDevisParPeriode(valeurRecherche));
+          break;
+        default:
+          console.log("Valeur de filtre non définie");
+      }
+    }
     if (toolbarTable.toLowerCase() == "client") {
       switch (filtrerPar) {
         case "code":
@@ -75,9 +78,7 @@ const Recherche = () => {
         case "cin":
           dispatch(getClientParCin(valeurRecherche));
           break;
-       
       }
-
     }
   };
 
@@ -111,10 +112,11 @@ const Recherche = () => {
 
   const handleValidate = () => {
     dispatch(setDevisList([]));
+    dispatch(setClientList([]))
     navigate("/DevisFormTout");
   };
 
-  const collones = [
+  const collonesDevis = [
     { name: "Numéro de devis", selector: (row) => row.NUMBL, sortable: true },
     { name: "Code client", selector: (row) => row.CODECLI, sortable: true },
     { name: "Raison Sociale", selector: (row) => row.RSCLI },
@@ -126,6 +128,11 @@ const Recherche = () => {
 
     { name: "RS Représentant", selector: (row) => row.RSREP },
     { name: "Code secteur", selector: (row) => row.codesecteur },
+  ];
+
+  const collonesClient = [
+    { name: "Code", selector: (row) => row.code, sortable: true },
+    { name: "Raison Sociale", selector: (row) => row.rsoc, sortable: true },
   ];
 
   return (
@@ -147,9 +154,23 @@ const Recherche = () => {
           </h3>
 
           <div className="space-y-2">
-
-            {toolbarTable=="devis"&&(["devis", "client", "montant", "periode", "article"].map(
-              (filtre) => (
+            {toolbarTable == "devis" &&
+              ["devis", "client", "montant", "periode", "article"].map(
+                (filtre) => (
+                  <label key={filtre} className="flex items-center">
+                    <input
+                      type="radio"
+                      name="filtres"
+                      value={filtre}
+                      className="mr-2"
+                      onChange={() => setFiltrerPar(filtre)}
+                    />
+                    {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
+                  </label>
+                )
+              )}
+            {toolbarTable == "client" &&
+              ["code", "typecli", "cin"].map((filtre) => (
                 <label key={filtre} className="flex items-center">
                   <input
                     type="radio"
@@ -160,22 +181,7 @@ const Recherche = () => {
                   />
                   {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                 </label>
-              )
-            ))}
-              {toolbarTable=="client"&&(["code", "typecli", "cin"].map(
-              (filtre) => (
-                <label key={filtre} className="flex items-center">
-                  <input
-                    type="radio"
-                    name="filtres"
-                    value={filtre}
-                    className="mr-2"
-                    onChange={() => setFiltrerPar(filtre)}
-                  />
-                  {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
-                </label>
-              )
-            ))}
+              ))}
           </div>
         </div>
 
@@ -197,17 +203,30 @@ const Recherche = () => {
           </div>
         </div>
       </div>
-
-      <DataTable
-        data={listeClients}
-        columns={collones}
-        pagination
-        fixedHeader
-        customStyles={customStyles}
-        striped
-        selectableRows
-        onSelectedRowsChange={handleselecteddevis}
-      />
+      {toolbarTable == "client" && (
+        <DataTable
+          data={listeClients}
+          columns={collonesClient}
+          pagination
+          fixedHeader
+          customStyles={customStyles}
+          striped
+          selectableRows
+          onSelectedRowsChange={handleselecteddevis}
+        />
+      )}
+      {toolbarTable == "devis" && (
+        <DataTable
+          data={devisList}
+          columns={collonesDevis}
+          pagination
+          fixedHeader
+          customStyles={customStyles}
+          striped
+          selectableRows
+          onSelectedRowsChange={handleselecteddevis}
+        />
+      )}
 
       <button
         onClick={handleValidate}
