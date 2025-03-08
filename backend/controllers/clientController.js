@@ -271,6 +271,55 @@ const getListeCodeClient = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+const getTypeClient = async (req, res) => {
+  try {
+    const { dbName } = req.params;
+    const { typecli } = req.params;
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const client = dbConnection.query(
+      `SELECT * FROM CLIENT where typecli = :typecli`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+        replacements: {
+          typecli,
+        },
+      }
+    );
+
+    return res
+      .status(200)
+      .json({ message: "type client  récuperé avec succès", client: client });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+const getClientParCin = async (req, res) => {
+  try {
+    const { dbName } = req.params;
+    const { cin } = req.query;
+    console.log(cin)
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const client = dbConnection.query(
+      `SELECT * FROM CLIENT where cin = :cin`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+        replacements: {
+          cin:cin
+        },
+
+      }
+
+
+    );
+    console.log(client)
+
+    return res
+      .status(200)
+      .json({ message: "client récuperé avec succès", client: client[0] });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 
 const getDerniereCodeClient = async (req, res) => {
   try {
@@ -283,12 +332,10 @@ const getDerniereCodeClient = async (req, res) => {
       }
     );
 
-    return res
-      .status(200)
-      .json({
-        message: "dernière code client récuperé avec succès",
-        derniereCodeClient: derniereCodeClient[0],
-      });
+    return res.status(200).json({
+      message: "dernière code client récuperé avec succès",
+      derniereCodeClient: derniereCodeClient[0],
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -302,5 +349,7 @@ module.exports = {
   getClientParCode,
   majClient,
   getListeCodeClient,
+  getTypeClient,
   getDerniereCodeClient,
+  getClientParCin,
 };
