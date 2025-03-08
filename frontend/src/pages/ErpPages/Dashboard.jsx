@@ -39,7 +39,7 @@ const Dashboard = () => {
 
           {[
             { name: "Dashboard", icon: "home-outline", path: "/dashboard" },
-            { name: "Clients", icon: "people-outline", path: "/ClientList" },
+            { name: "Clients", icon: "people-outline", path: "/ClientFormTout" },
             { name: "devis", icon: "chatbubble-outline", path: "/DevisList" },
             {
               name: "devistout",
