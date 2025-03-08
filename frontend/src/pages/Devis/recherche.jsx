@@ -12,6 +12,8 @@ import {
 } from "../../app/devis_slices/devisSlice";
 import DataTable from "react-data-table-component";
 import { FaArrowLeft } from "react-icons/fa"; // Import de l'icône
+import { setToolbarTable } from "../../app/interface_slices/uiSlice";
+import { getCin, getListeCodeClient, getTypeClient } from "../../app/client_slices/clientSlice";
 
 const Recherche = () => {
   const navigate = useNavigate();
@@ -24,9 +26,11 @@ const Recherche = () => {
   const devisList = useSelector((state) => state.DevisCrud.devisList);
   // * pour obtenir les informations de dévis séléctionné
   const handleselecteddevis = ({ selectedRows }) => {
-    console.log(selectedRows[0])
+    console.log(selectedRows[0]);
     dispatch(setDevisInfoEntiere(selectedRows[0]));
   };
+  const toolbarTable = useSelector((state) => state.uiStates.toolbarTable);
+
   // * pour filtrer la liste des devis
   const handleSearch = () => {
     if (!valeurRecherche) {
@@ -37,7 +41,9 @@ const Recherche = () => {
       alert("Veuillez sélectionner un filtre de recherche.");
       return;
     }
-
+  
+    if (toolbarTable == "devis") {
+      dispatch(setToolbarTable());
     switch (filtrerPar) {
       case "client":
         dispatch(getDevisParCodeClient(valeurRecherche));
@@ -52,9 +58,25 @@ const Recherche = () => {
         dispatch(getDevisParPeriode(valeurRecherche));
         break;
       case "utilisateur":
-        dispatch(getInfoUtilisateur(valeurRecherche))
+        dispatch(getInfoUtilisateur(valeurRecherche));
       default:
         console.log("Valeur de filtre non définie");
+    }}
+    if (toolbarTable == "client") {
+    
+      switch (filtrerPar) {
+        case "Code":
+          dispatch(getListeCodeClient(valeurRecherche));
+          break;
+        case "type client":
+          dispatch(getTypeClient(valeurRecherche));
+          break;
+        case "cin":
+          dispatch(getCin(valeurRecherche));
+          break;
+       
+      }
+
     }
   };
 
@@ -96,7 +118,7 @@ const Recherche = () => {
     { name: "Code client", selector: (row) => row.CODECLI, sortable: true },
     { name: "Raison Sociale", selector: (row) => row.RSCLI },
     { name: "Point de vente", selector: (row) => row.cp },
- 
+
     { name: "Montant", selector: (row) => row.MTTC },
     { name: "Date", selector: (row) => row.DATEBL },
     { name: "Vendeur", selector: (row) => row.usera },
@@ -122,20 +144,37 @@ const Recherche = () => {
           <h3 className="text-lg font-medium text-gray-700 mb-4">
             Rechercher Devis Par
           </h3>
+
           <div className="space-y-2">
-            {["devis", "client", "montant", "periode", "article","utilisateur"].map(
+
+            {toolbarTable=="devis"&&(["devis", "client", "montant", "periode", "article"].map(
               (filtre) => (
                 <label key={filtre} className="flex items-center">
                   <input
                     type="radio"
                     name="filtres"
+                    value={filtre}
                     className="mr-2"
-                    onClick={() => setFiltrerPar(filtre)}
+                    onChange={() => setFiltrerPar(filtre)}
                   />
                   {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                 </label>
               )
-            )}
+            ))}
+              {toolbarTable=="client"&&(["code", "typecli", "cin"].map(
+              (filtre) => (
+                <label key={filtre} className="flex items-center">
+                  <input
+                    type="radio"
+                    name="filtres"
+                    value={filtre}
+                    className="mr-2"
+                    onChange={() => setFiltrerPar(filtre)}
+                  />
+                  {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
+                </label>
+              )
+            ))}
           </div>
         </div>
 
@@ -149,7 +188,7 @@ const Recherche = () => {
               placeholder="Entrez votre recherche..."
             />
             <button
-              onClick={handleSearch}
+              onClick={handleSearch }
               className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition duration-200"
             >
               Rechercher

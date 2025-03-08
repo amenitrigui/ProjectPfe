@@ -11,6 +11,28 @@ export const getListeClient = createAsyncThunk(
     return response.data.result;
   }
 );
+ //* recupere type client par client 
+export const getTypeClient = createAsyncThunk(
+  "Slice/getTypeClient",
+  async (typecli) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/typeclient/${typecli}`
+    );
+    return response;
+  }
+);
+//* recu^pere le cin par client 
+export const getCin = createAsyncThunk(
+  "Slice/getCin",
+  async () => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/getCin`
+      
+    );
+    console.log(response)
+    return response;
+  }
+);
 export const getListeCodeClient = createAsyncThunk(
   "Slice/getListeClient",
   async (code) => {
@@ -98,11 +120,13 @@ export const supprimerClient = createAsyncThunk(
 
 export const getDerniereCodeClient = createAsyncThunk(
   "clientSlice/getDerniereCodeClient",
-  async() => {
-    const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/client/SOLEVO/getDerniereCodeClient`)
+  async () => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/getDerniereCodeClient`
+    );
     return response.data.derniereCodeClient.code;
   }
-)
+);
 
 export const clientSlice = createSlice({
   name: "slice",
@@ -143,22 +167,21 @@ export const clientSlice = createSlice({
       delregFT: "",
       delregFC: "",
       remise: "",
-      activite:"",
-      typecli:"L",
-      cin:"",
+      activite: "",
+      typecli: "L",
+      cin: "",
 
       secteur: {
-        codesec:"",
-        desisec:"",
-
+        codesec: "",
+        desisec: "",
       },
       region: {
-        codergg:"",
-        desirgg:"",
+        codergg: "",
+        desirgg: "",
       },
       cpostal: {
-        CODEp:"",
-        desicp:"",
+        CODEp: "",
+        desicp: "",
       },
     }, // * informations de formulaire de client
     listeClientsParCode: [],
@@ -274,8 +297,8 @@ export const clientSlice = createSlice({
       })
       .addCase(getListeCodeClient.fulfilled, (state, action) => {
         console.log(action.payload);
-        state.listeClientsParCode=action.payload;
-        state.clientInfos=action.payload;
+        state.listeClientsParCode = action.payload;
+        state.clientInfos = action.payload;
         state.status = "réussi";
       })
       .addCase(getListeCodeClient.rejected, (state, action) => {
@@ -288,7 +311,7 @@ export const clientSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getListeparCode.fulfilled, (state, action) => {
-        state.listeClientsParCode=action.payload;
+        state.listeClientsParCode = action.payload;
         //state.clientInfos=action.payload;
         state.status = "réussi";
       })
@@ -302,15 +325,37 @@ export const clientSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getDerniereCodeClient.fulfilled, (state, action) => {
-        state.clientInfos.code = (parseInt(action.payload)+1).toString();
+        state.clientInfos.code = (parseInt(action.payload) + 1).toString();
         state.status = "réussi";
       })
       .addCase(getDerniereCodeClient.rejected, (state, action) => {
         state.status = "échoué";
         state.erreur = action.payload;
+      })
+
+      .addCase(getTypeClient.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getTypeClient.fulfilled, (state, action) => {
+        state.clientInfos.code = action.payload;
+        state.status = "réussi";
+      })
+      .addCase(getTypeClient.rejected, (state, action) => {
+        state.status = "échoué";
+        state.erreur = action.payload;
+      })
+
+      .addCase(getCin.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getCin.fulfilled, (state, action) => {
+        state.clientInfos.code = action.payload;
+        state.status = "réussi";
+      })
+      .addCase(getCin.rejected, (state, action) => {
+        state.status = "échoué";
+        state.erreur = action.payload;
       });
-
-
   },
 });
 
