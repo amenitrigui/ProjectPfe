@@ -46,7 +46,7 @@ const getTousDevis = async (req, res) => {
 
 // * récuperer la somme de colonne MTTC pour une societé donnée (dbName)
 
-const getTotalChifre = async (req, res) => {
+const getTotalChiffres = async (req, res) => {
   const { dbName } = req.params;
   if (!dbName) {
     return res.status(400).json({
@@ -252,7 +252,7 @@ const creerDevis = async (req, res) => {
   }
 };
 //* recupere la ligne d'article
-const getLigneArticle = async (req, res) => {
+const getLignesDevis = async (req, res) => {
   try {
     const { dbName } = req.params;
     const { NumBL } = req.query;
@@ -487,7 +487,7 @@ const getDerniereNumbl = async (req, res) => {
 module.exports = {
   getTousDevis,
   getNombreDevis,
-  getTotalChifre,
+  getTotalChiffres,
   creerDevis,
   getDevisParNUMBL,
   getCodesDevis,
@@ -497,6 +497,6 @@ module.exports = {
   getListePointVente,
   getInfoUtilisateur,
   getListePointVente,
-  getLigneArticle,
+  getLignesDevis,
   getDevisCreator,
 };

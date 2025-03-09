@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { FaUser, FaCog, FaCreditCard, FaSignOutAlt } from "react-icons/fa";
 import {
-  getNombrededevis,
-  getTotalChifre,
+  getNombreTotalDevis,
+  getTotalChiffres,
 } from "../../app/devis_slices/devisSlice";
 
 const Dashboard = () => {
@@ -16,14 +16,12 @@ const Dashboard = () => {
   };
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getNombrededevis());
-    dispatch(getTotalChifre());
+    dispatch(getNombreTotalDevis());
+    dispatch(getTotalChiffres());
   }, []);
 
   const nombredevis = useSelector((state) => state.DevisCrud.nombreDeDevis);
-  console.log(nombredevis);
   const totalchifre = useSelector((state) => state.DevisCrud.totalchifre);
-  console.log(totalchifre);
   return (
     <div className="container">
       <div className={`navigation ${isSidebarOpen ? "active" : ""}`}>

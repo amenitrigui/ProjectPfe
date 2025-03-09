@@ -173,8 +173,10 @@ const getClientParCode = async (req, res) => {
   const { code } = req.params;
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
-    const Client = defineClientModel(dbConnection);
-    const client = await Client.findOne({ where: { code: code } });
+    const client = await dbConnection.query(
+      `select * from client where code = ${code}`
+    );
+    console.log(client);
     if (client) return res.status(200).json({ client });
 
     return res.status(404).json({ message: "Client introuvable" });
@@ -251,12 +253,13 @@ const majClient = async (req, res) => {
 };
 const { Sequelize } = require("sequelize"); // Importation de Sequelize
 
-const getListeCodeClient = async (req, res) => {
+// * récupere la liste de codes de clients
+const getToutCodesClient = async (req, res) => {
   try {
     const { dbName } = req.params;
     const dbConnection = await getDatabaseConnection(dbName, res);
 
-    const liteCode = await dbConnection.query(
+    const listeCodesClients = await dbConnection.query(
       `SELECT code FROM client ORDER BY code`,
       {
         type: Sequelize.QueryTypes.SELECT, // Correction de QueryTypes
@@ -265,17 +268,16 @@ const getListeCodeClient = async (req, res) => {
 
     return res.status(200).json({
       message: "Code client récupéré avec succès",
-      liteCode: liteCode, // Correction de la structure JSON
+      listeCodesClients: listeCodesClients, // Correction de la structure JSON
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
-const getClientParTypeClient = async (req, res) => {
+const getClientParTypecli = async (req, res) => {
   try {
     const { dbName } = req.params;
-    const { typecli } = req.params;
-    console.log(typecli)
+    const { typecli } = req.query;
     const dbConnection = await getDatabaseConnection(dbName, res);
     const client = await dbConnection.query(
       `SELECT * FROM CLIENT where typecli = :typecli`,
@@ -286,11 +288,11 @@ const getClientParTypeClient = async (req, res) => {
         },
       }
     );
-    console.log(client)
+    console.log(client);
 
     return res
       .status(200)
-      .json({ message: "type client  récuperé avec succès", client: client });
+      .json({ message: "type client  récuperé avec succès", clients: client });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -299,24 +301,21 @@ const getClientParCin = async (req, res) => {
   try {
     const { dbName } = req.params;
     const { cin } = req.params;
-    console.log(cin)
+    console.log(cin);
     const dbConnection = await getDatabaseConnection(dbName, res);
     const client = await dbConnection.query(
       `SELECT * FROM CLIENT where cin = :cin`,
       {
         type: dbConnection.QueryTypes.SELECT,
         replacements: {
-          cin:cin
+          cin: cin,
         },
-
       }
-
-
     );
-  
+
     return res
       .status(200)
-      .json({ message: "client récuperé avec succès", client: client[0] });
+      .json({ message: "client récuperé avec succès", client: client });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -349,8 +348,8 @@ module.exports = {
   supprimerClient,
   getClientParCode,
   majClient,
-  getListeCodeClient,
-  getClientParTypeClient,
+  getClientParTypecli,
   getDerniereCodeClient,
   getClientParCin,
+  getToutCodesClient,
 };

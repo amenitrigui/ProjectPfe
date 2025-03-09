@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setDbName } from "../../app/utilisateur_slices/utilisateurSlice";
 
@@ -7,14 +7,13 @@ const SocietiesList = () => {
   const [societies, setSocieties] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const token = useSelector((state) => state.UtilisateurInfo.token);
+
+  if (token == "") {
+    navigate("/");
+  }
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      navigate("/login");
-      return;
-    }
 
     const societiesFromStorage = JSON.parse(localStorage.getItem("societies"));
     if (societiesFromStorage) {
@@ -26,11 +25,9 @@ const SocietiesList = () => {
 
   const handleSelect = async (society) => {
     try {
-      const token = localStorage.getItem("token");
 
       if (!token) {
-        navigate("/login");
-        return;
+        navigate("/");
       }
 
       const response = await fetch(
@@ -55,9 +52,8 @@ const SocietiesList = () => {
 
         // const selectedNumbl = devisList.map((devis) => devis.numbl);
         // console.log("Tous les numbl récupérés :", selectedNumbl);
-
+        dispatch(setDbName(society));
         localStorage.setItem("selectedDatabase", society);
-        // localStorage.setItem("selectedNumbl", JSON.stringify(selectedNumbl));
         localStorage.setItem("selectedRsoc", society.rsoc);
         dispatch(setDbName(society));
         navigate("/Dashboard");

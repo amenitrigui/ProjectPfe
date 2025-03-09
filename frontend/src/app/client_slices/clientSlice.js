@@ -4,41 +4,57 @@ import axios from "axios";
 // * Thunk pour récupérer la liste des clients
 export const getListeClient = createAsyncThunk(
   "slice/getListeClient",
-  async () => {
+  async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/List`
+      `${process.env.REACT_APP_API_URL}/api/client/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/List`
     );
     return response.data.result;
   }
 );
-//* recupere la liste client par type client
-export const getClientParTypeClient = createAsyncThunk(
-  "Slice/getClientParTypeClient",
-  async (typecli) => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/typeclient/${typecli}`
+
+//* recupere client la liste des client par typecli
+export const getClientParTypecli = createAsyncThunk(
+  "Slice/getClientParTypecli",
+  async (typecli, thunkAPI) => {
+    console.log(
+      `${process.env.REACT_APP_API_URL}/api/client/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getClientParTypecli`
     );
-    console.log(response);
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/client/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getClientParTypecli`,
+      {
+        params: { typecli },
+      }
+    );
+    return response.data.clients;
+  }
+);
+
+//* recupere un client par cin
+export const getClientParCin = createAsyncThunk(
+  "Slice/getClientParCin",
+  async (cin, thunkAPI) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/client/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getClientParCin/${cin}`
+    );
     return response.data.client;
   }
 );
-//* recu^pere la liste client par cin
-export const getClientParCin = createAsyncThunk(
-  "Slice/getClientParCin",
-  async (cin) => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/getClientParCin/${cin}`
-    );
-    console.log(response);
-    return response.data.client
-
-  }
-);
-export const getListeCodeClient = createAsyncThunk(
+// * récupere un client par son code
+export const getClientParCode = createAsyncThunk(
   "Slice/getListeClient",
-  async (code) => {
+  async (code, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/client/${code}`
+      `${process.env.REACT_APP_API_URL}/api/client/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/client/${code}`
     );
     console.log(response);
     return response.data.client;
@@ -47,17 +63,19 @@ export const getListeCodeClient = createAsyncThunk(
 // * Thunk pour ajouter un client
 export const ajouterClient = createAsyncThunk(
   "slice/ajouterClient",
-  async (_, thunkApi) => {
-    const clientInfos = thunkApi.getState().ClientCrud.clientInfos;
-
+  async (_, thunkAPI) => {
+    const clientInfos = thunkAPI.getState().ClientCrud.clientInfos;
+    console.log(clientInfos);
     const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/Add`,
+      `${process.env.REACT_APP_API_URL}/api/client/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/Add`,
       {
         clientInfos,
       }
     );
-
-    thunkApi.getState().uiStates.setAlertMessage(response.data.message);
+    console.log(response);
+    thunkAPI.getState().uiStates.setAlertMessage(response.data.message);
     return response.data;
   }
 );
@@ -69,7 +87,9 @@ export const majClient = createAsyncThunk(
     const clientUpdate = thunkAPI.getState().ClientCrud.clientInfos;
 
     const response = await axios.put(
-      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/Update`,
+      `${process.env.REACT_APP_API_URL}/api/client/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/Update`,
       { clientUpdate } // htha y3niii bch tjib les donnes il kol htha body, ya3ni objet kamel mesh bel champ bel champ
     );
     return response.message;
@@ -82,7 +102,9 @@ export const filtrerClients = createAsyncThunk(
   async (_, thunkAPI) => {
     // Passer `filters` en paramètre
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/filterClient`,
+      `${process.env.REACT_APP_API_URL}/api/client/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/filterClient`,
       {
         params: {
           filters: thunkAPI.getState().ClientCrud.filters, // Utiliser filters ici
@@ -92,14 +114,18 @@ export const filtrerClients = createAsyncThunk(
     return response.data.data; // Retourner la réponse
   }
 );
-export const getListeparCode = createAsyncThunk(
-  "devisSlice/getListeparCode",
-  async () => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/getListCode`
-    );
 
-    return response.data.liteCode;
+// * récupere la liste de toutes les codes des clients
+// * utilisé pour remplir la liste déroulante
+export const getToutCodesClient = createAsyncThunk(
+  "devisSlice/getToutCodesClient",
+  async (_, thunkAPI) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/client/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getToutCodesClient`
+    );
+    return response.data.listeCodesClients;
   }
 );
 
@@ -107,26 +133,31 @@ export const getListeparCode = createAsyncThunk(
 // * slice/supprimerClient identifiant unique pour la methode
 export const supprimerClient = createAsyncThunk(
   "slice/supprimerClient",
-  async (code) => {
-    console.log("code= ",code)
+  async (code, thunkAPI) => {
+    console.log("code= ", code);
     const response = await axios.delete(
-      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/Delete/${code}`,
+      `${process.env.REACT_APP_API_URL}/api/client/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/Delete/${code}`,
       {
         // data: {
         //   clients: thunkAPI.getState().ClientCrud.clientsASupprimer,
         // },
       }
     );
-    console.log(response)
+    console.log(response);
     return response.data.message;
   }
 );
 
+// * récupere le code de dernier client
 export const getDerniereCodeClient = createAsyncThunk(
   "clientSlice/getDerniereCodeClient",
-  async () => {
+  async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/getDerniereCodeClient`
+      `${process.env.REACT_APP_API_URL}/api/client/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getDerniereCodeClient`
     );
     return response.data.derniereCodeClient.code;
   }
@@ -174,7 +205,6 @@ export const clientSlice = createSlice({
       activite: "",
       typecli: "L",
       cin: "",
-
       secteur: {
         codesec: "",
         desisec: "",
@@ -188,9 +218,9 @@ export const clientSlice = createSlice({
         desicp: "",
       },
     }, // * informations de formulaire de client
-    listeClientsParCode: [],
-    clientList: [],
+    listeToutCodesClients: [],
     clientsASupprimer: [], // * tableau des codes de clients a supprimer. id reeelement code.
+    listeClients: [],
     status: "inactive",
     erreur: null,
     // todo: change this to french
@@ -205,7 +235,6 @@ export const clientSlice = createSlice({
       fax: "",
       desrep: "",
     },
-    
 
     insertionDepuisDevisForm: false,
   },
@@ -215,9 +244,8 @@ export const clientSlice = createSlice({
       const { valeur, collonne } = action.payload;
       state.filters[collonne] = valeur; // Correction ici
     },
-    setClientList:(state,action)=>
-    {
-      state.clientList=action.payload;
+    setClientList: (state, action) => {
+      state.clientList = action.payload;
     },
     setClientInfos: (state, action) => {
       // * actions fiha les donnes (payload)
@@ -228,8 +256,8 @@ export const clientSlice = createSlice({
     setClientInfosEntiere: (state, action) => {
       state.clientInfos = action.payload;
     },
-    viderChampsClientInfo:(state)=>{
-      state.clientInfos={
+    viderChampsClientInfo: (state) => {
+      state.clientInfos = {
         code: "",
         rsoc: "",
         adresse: "",
@@ -265,7 +293,7 @@ export const clientSlice = createSlice({
         activite: "",
         typecli: "L",
         cin: "",
-  
+
         secteur: {
           codesec: "",
           desisec: "",
@@ -278,8 +306,7 @@ export const clientSlice = createSlice({
           CODEp: "",
           desicp: "",
         },
-      }
-      
+      };
     },
 
     setClientsASupprimer: (state, action) => {
@@ -287,6 +314,9 @@ export const clientSlice = createSlice({
     },
     setInsertionDepuisDevisForm: (state, action) => {
       state.insertionDepuisDevisForm = action.payload;
+    },
+    setListeClients: (state, action) => {
+      state.listeClients = action.payload;
     },
   },
   // * on utilise l'objet builder pour replacer l'opérateur switch case ...
@@ -322,7 +352,6 @@ export const clientSlice = createSlice({
       })
       .addCase(supprimerClient.fulfilled, (state, action) => {
         state.status = "réussi";
-        
       })
       .addCase(supprimerClient.rejected, (state, action) => {
         state.status = "échoué";
@@ -354,31 +383,26 @@ export const clientSlice = createSlice({
         state.erreur = action.payload;
       })
 
-      .addCase(getListeCodeClient.pending, (state) => {
+      .addCase(getClientParCode.pending, (state) => {
         state.status = "chargement";
       })
-      .addCase(getListeCodeClient.fulfilled, (state, action) => {
-        state.listeClientsParCode = action.payload;
-        state.clientInfos = action.payload;
-        state.clientList[0] = action.payload;
-        console.log(action.payload);
+      .addCase(getClientParCode.fulfilled, (state, action) => {
+        state.listeClients = action.payload;
         state.status = "réussi";
       })
-      .addCase(getListeCodeClient.rejected, (state, action) => {
+      .addCase(getClientParCode.rejected, (state, action) => {
         state.status = "échoué";
         state.erreur = action.payload;
       })
 
-      .addCase(getListeparCode.pending, (state) => {
+      .addCase(getToutCodesClient.pending, (state) => {
         state.status = "chargement";
       })
-      .addCase(getListeparCode.fulfilled, (state, action) => {
-        state.listeClientsParCode = action.payload;
-        state.clientList = action.payload;
-        //state.clientInfos=action.payload;
+      .addCase(getToutCodesClient.fulfilled, (state, action) => {
+        state.listeToutCodesClients = action.payload;
         state.status = "réussi";
       })
-      .addCase(getListeparCode.rejected, (state, action) => {
+      .addCase(getToutCodesClient.rejected, (state, action) => {
         state.status = "échoué";
         state.erreur = action.payload;
       })
@@ -395,15 +419,14 @@ export const clientSlice = createSlice({
         state.erreur = action.payload;
       })
 
-      .addCase(getClientParTypeClient.pending, (state) => {
+      .addCase(getClientParTypecli.pending, (state) => {
         state.status = "chargement";
       })
-      .addCase(getClientParTypeClient.fulfilled, (state, action) => {
-        state.clientList = action.payload;
-        console.log(action.payload);
+      .addCase(getClientParTypecli.fulfilled, (state, action) => {
+        state.listeClients = action.payload;
         state.status = "réussi";
       })
-      .addCase(getClientParTypeClient.rejected, (state, action) => {
+      .addCase(getClientParTypecli.rejected, (state, action) => {
         state.status = "échoué";
         state.erreur = action.payload;
       })
@@ -412,7 +435,7 @@ export const clientSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getClientParCin.fulfilled, (state, action) => {
-        state.clientList[0] = action.payload;
+        state.listeClients = action.payload;
         state.status = "réussi";
       })
       .addCase(getClientParCin.rejected, (state, action) => {
@@ -429,6 +452,6 @@ export const {
   setClientInfosEntiere,
   viderChampsClientInfo,
   setInsertionDepuisDevisForm,
-  setClientList
+  setListeClients,
 } = clientSlice.actions;
 export default clientSlice.reducer;

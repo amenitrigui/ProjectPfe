@@ -2,9 +2,9 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 export const getArticleFamiles = createAsyncThunk(
   "Slice/getArticleFamiles",
-  async () => {
+  async (_,thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/article/SOLEVO/familles`
+      `${process.env.REACT_APP_API_URL}/api/article/${thunkAPI.getState().UtilisateurInfo.dbName}/familles`
     );
 
     return response.data.familles;
@@ -12,9 +12,9 @@ export const getArticleFamiles = createAsyncThunk(
 );
 export const getCodeArticle = createAsyncThunk(
   "Slice/getCodeArticle",
-  async (famille) => {
+  async (famille, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/article/SOLEVO/codes/famille/${famille}` 
+      `${process.env.REACT_APP_API_URL}/api/article/${thunkAPI.getState().UtilisateurInfo.dbName}/codes/famille/${famille}` 
       // $paramettre de la requette
     );
    // console.log(response);
@@ -23,11 +23,9 @@ export const getCodeArticle = createAsyncThunk(
 );
 export const getTousArticleparcode = createAsyncThunk(
   "Slice/getArticleLibeleparcode",
-  async (code) => {
-    
-
+  async (code,thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/article/SOLEVO/articles/details/${code}`
+      `${process.env.REACT_APP_API_URL}/api/article/${thunkAPI.getState().UtilisateurInfo.dbName}/articles/details/${code}`
     );
     console.log(response)
     return response.data.article;

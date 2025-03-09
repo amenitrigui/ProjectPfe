@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { setDevisInfo } from "../../app/devis_slices/devisSlice";
 import {
-  getListeCodeClient,
-  getListeparCode,
+  getClientParCode,
+  getToutCodesClient,
   setClientInfos,
   setClientInfosEntiere,
   viderChampsClientInfo,
@@ -17,14 +17,10 @@ function ClientForm() {
 
   // Sélection des informations du client depuis le state Redux
   const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
-  console.log(clientInfos)
+  console.log(clientInfos);
 
   // Sélection du booléen pour effacer les champs du formulaire
   const clearApelle = useSelector((state) => state.uiStates.clearAppele);
-  // liste de client
-  const listeClientsParCode = useSelector(
-    (state) => state.ClientCrud.listeClientsParCode
-  );
   // state pour désactiver/activer les champs lors de changement de modes editables (ajout/modification)
   // vers le mode de consultation respectivement
   const activerChampsForm = useSelector(
@@ -35,22 +31,25 @@ function ClientForm() {
   const insertionDepuisDevisForm = useSelector(
     (state) => state.ClientCrud.insertionDepuisDevisForm
   );
-  // useEffect(() => {
-  //   dispatch(getListeparCode());
-   
-  // }, []);
+  useEffect(() => {
+    dispatch(getToutCodesClient());
+  }, []);
+
+  // liste de client
+  const listeToutCodesClients = useSelector(
+    (state) => state.ClientCrud.listeToutCodesClients
+  );
 
   // Fonction pour gérer les changements dans les champs du formulaire
   const handleChange = (e, colonne) => {
-    if (e.target.value == "")
-       dispatch(setClearAppele(true));
+    if (e.target.value == "") dispatch(setClearAppele(true));
     else {
       dispatch(setClearAppele(false));
       dispatch(setClientInfos({ colonne, valeur: e.target.value }));
       if (insertionDepuisDevisForm) {
         dispatch(setDevisInfo({ colonne, valeur: e.target.value }));
       }
-      dispatch(getListeCodeClient(e.target.value));
+      dispatch(getClientParCode(e.target.value));
     }
   };
 
@@ -58,7 +57,7 @@ function ClientForm() {
   useEffect(() => {
     if (clearApelle) {
       dispatch(viderChampsClientInfo());
-      dispatch(getListeparCode());
+      dispatch(getToutCodesClient());
     }
   }, [clearApelle]);
   return (
@@ -85,8 +84,8 @@ function ClientForm() {
                   disabled={activerChampsForm}
                 />
                 <datalist id="browsers">
-                  {listeClientsParCode.length > 0 ? (
-                    listeClientsParCode.map((client,indice ) => (
+                  {listeToutCodesClients.length > 0 ? (
+                    listeToutCodesClients.map((client, indice) => (
                       <option key={indice} value={client.code}>
                         {client.code}
                       </option>

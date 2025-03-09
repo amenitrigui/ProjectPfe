@@ -5,23 +5,23 @@ const {
   filtrerListeClients,
   AjouterClient,
   supprimerClient,
-  getClientParCode,
   majClient,
-  getListeCodeClient,
+  getClientParCode,
   getDerniereCodeClient,
-  getClientParTypeClient,
+  getClientParTypecli,
   getClientParCin,
+  getToutCodesClient,
 } = require("../controllers/clientController");
 router.get("/:dbName/List", getListeClients);
 router.get("/:dbName/filterClient", filtrerListeClients);
-router.get("/:dbName/client/:code", getClientParCode);
 router.post("/:dbName/Add", AjouterClient);
 router.delete("/:dbName/Delete/:code", supprimerClient);
 router.put("/:dbName/Update", majClient);
-router.get("/:dbName/getListCode", getListeCodeClient);
+router.get("/:dbName/getClientParTypecli", getClientParTypecli);
 router.get("/:dbName/getDerniereCodeClient", getDerniereCodeClient);
-router.get("/:dbName/typeclient/:typecli", getClientParTypeClient);
 router.get("/:dbName/getClientParCin/:cin", getClientParCin);
 
+router.get("/:dbName/getToutCodesClient", getToutCodesClient);
+router.get("/:dbName/client/:code", getClientParCode);
 
 module.exports = router;

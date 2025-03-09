@@ -23,11 +23,8 @@ function DevisFormTout() {
    
   }, []);
   const NETHTGLOBAL= devisInfo.MHT-devisInfo.MREMISE||0
-  console.log(NETHTGLOBAL)
   const taxe= devisInfo.MTTC-NETHTGLOBAL||0
-  console.log(taxe)
   const apayer =devisInfo.MTTC+devisInfo.TIMBRE||0
-  console.log(apayer)
   
 
   return (

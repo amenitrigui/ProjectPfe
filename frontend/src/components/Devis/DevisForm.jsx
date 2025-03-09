@@ -15,7 +15,7 @@ import {
   setDevisInfo,
   setDevisInfoEntiere,
   getListePointsVente,
-  getLigneArticle,
+  getLignesDevis,
 } from "../../app/devis_slices/devisSlice";
 function DevisForm() {
   const dispatch = useDispatch();
@@ -24,7 +24,6 @@ function DevisForm() {
   const listeNUMBL = useSelector((state) => state.DevisCrud.listeNUMBL);
   // * informations d'un devis provenant des champs de cette formulaire
   const devisInfos = useSelector((state) => state.DevisCrud.devisInfo);
-  console.log(devisInfos);
   const listePointsVente = useSelector(
     (state) => state.DevisCrud.listePointsVente
   );
@@ -39,7 +38,7 @@ function DevisForm() {
   const handleSelectDevis = (e) => {
     if (e.target.value != "vide") {
       dispatch(getDevisParNUMBL(e.target.value));
-      dispatch(getLigneArticle(devisInfos.NUMBL));
+      dispatch(getLignesDevis(devisInfos.NUMBL));
     }
     // * vider les champs du formulaire
     else

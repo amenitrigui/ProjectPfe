@@ -20,7 +20,7 @@ const { getAllcodearticle } = require("../controllers/articleController");
 const {
   getTousDevis,
   getNombreDevis,
-  getTotalChifre,
+  getTotalChiffres,
   creerDevis,
   getDevisParNUMBL,
   getCodesDevis,
@@ -29,14 +29,14 @@ const {
   GetDevisParPeriode,
   getInfoUtilisateur,
   getListePointVente,
-  getLigneArticle,
+  getLignesDevis,
   getDevisCreator
 } = require("../controllers/devisController");
 //devis controller mt3na
 router.post("/:dbName/create", creerDevis);
 router.get("/:dbName/clients", getAllClients);
 router.get("/:dbName/devis/total", getNombreDevis);
-router.get("/:dbName/devis/totalchiffre", getTotalChifre);
+router.get("/:dbName/devis/totalchiffre", getTotalChiffres);
 router.get("/:dbName/getDevisParNUMBL", getDevisParNUMBL);
 router.get("/:dbName/getListeNUMBL", getCodesDevis);
 router.get("/:dbName/getDevisParMontant", getDevisParMontant);
@@ -46,7 +46,7 @@ router.get("/:dbName/getDevisParPeriode", GetDevisParPeriode);
 router.get("/:dbName/getDevisParMontant", getDevisParMontant);
 router.get("/:dbName/getInfoUtilisateur", getInfoUtilisateur);
 router.get("/:dbName/getListePointVente", getListePointVente);
-router.get("/:dbName/getLigneArticle", getLigneArticle);
+router.get("/:dbName/getLignesDevis", getLignesDevis);
 router.get("/:dbName/getDevisCreator", getDevisCreator);
 
 

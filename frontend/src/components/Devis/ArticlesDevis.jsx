@@ -25,7 +25,6 @@ function ArticlesDevis() {
   const codeTousArticleParCode = useSelector(
     (state) => state.ArticlesDevis.ListeCodeArticlesparLib
   );
-
   const handlecodeFamilleChange = (codeFamille) => {
     dispatch(getCodeArticle(codeFamille));
   };
@@ -37,15 +36,12 @@ function ArticlesDevis() {
     dispatch(getArticleFamiles());
   }, []);
 
+  const netHt =
+    Quantite * codeTousArticleParCode.prix1 * (1 - remise / 100) || 0;
 
-
-const netHt=  Quantite * codeTousArticleParCode.prix1 * (1 - remise / 100)||0;
-
-
-
-  const puttc = codeTousArticleParCode.prix1 * (1 + codeTousArticleParCode.tauxtva / 100) ||
+  const puttc =
+    codeTousArticleParCode.prix1 * (1 + codeTousArticleParCode.tauxtva / 100) ||
     0;
-
 
   return (
     <div className="space-y-4 p-4 border rounded-md mt-4">

@@ -8,17 +8,16 @@ import {
   getDevisParPeriode,
   setDevisInfoEntiere,
   setDevisList,
-  getInfoUtilisateur,
+
 } from "../../app/devis_slices/devisSlice";
 import DataTable from "react-data-table-component";
 import { FaArrowLeft } from "react-icons/fa"; // Import de l'icône
-import { setToolbarTable } from "../../app/interface_slices/uiSlice";
 import {
   getClientParCin,
-  getListeCodeClient,
-  getClientParTypeClient,
+  getClientParCode,
+  getClientParTypecli,
   setClientInfosEntiere,
-  setClientList,
+  setListeClients,
 } from "../../app/client_slices/clientSlice";
 
 const Recherche = () => {
@@ -30,8 +29,8 @@ const Recherche = () => {
   const [filtrerPar, setFiltrerPar] = useState("");
   // * liste de devis récuperer de store
   const devisList = useSelector((state) => state.DevisCrud.devisList);
-  const clientList = useSelector((state) => state.ClientCrud.clientList);
-  console.log(clientList);
+  const listeClients = useSelector((state) => state.ClientCrud.listeClients);
+  console.log(listeClients);
   // * pour obtenir les informations de dévis séléctionné
   const handleselecteddevis = ({ selectedRows }) => {
     console.log(selectedRows[0]);
@@ -77,10 +76,10 @@ const Recherche = () => {
     if (toolbarTable == "client") {
       switch (filtrerPar) {
         case "code":
-          dispatch(getListeCodeClient(valeurRecherche));
+          dispatch(getClientParCode(valeurRecherche));
           break;
         case "typecli":
-          dispatch(getClientParTypeClient(valeurRecherche));
+          dispatch(getClientParTypecli(valeurRecherche));
           break;
         case "cin":
           dispatch(getClientParCin(valeurRecherche));
@@ -125,12 +124,12 @@ const Recherche = () => {
       navigate("/DevisFormTout");
     }
     if (toolbarTable == "client") {
-      dispatch(setClientList([]));
+      dispatch(setListeClients([]));
       navigate("/ClientFormTout");
     }
   };
 
-  const collonesdevis = [
+  const collonesDevis = [
     { name: "Numéro de devis", selector: (row) => row.NUMBL, sortable: true },
     { name: "Code client", selector: (row) => row.CODECLI, sortable: true },
     { name: "Raison Sociale", selector: (row) => row.RSCLI },
@@ -143,20 +142,29 @@ const Recherche = () => {
     { name: "RS Représentant", selector: (row) => row.RSREP },
     { name: "Code secteur", selector: (row) => row.codesecteur },
   ];
+
   const collonesClient = [
+    { name: "Code", selector: (row) => row.code, sortable: true },
     { name: "Raison Sociale", selector: (row) => row.rsoc, sortable: true },
-    { name: "code", selector: (row) => row.code, sortable: true },
   ];
+
+  const handleRetourBtnClick = () => {
+    console.log("ok");
+    if (toolbarTable == "devis") {
+      dispatch(setDevisList([]));
+    }
+    if (toolbarTable == "client") {
+      dispatch(setListeClients([]));
+    }
+
+    navigate(-1);
+  };
 
   return (
     <div className="container mx-auto p-6">
       {/* Bouton de retour */}
       <button
-        onClick={() => {
-          navigate(-1);
-          dispatch(setClientList([]));
-          dispatch(setDevisList([]));
-        }}
+        onClick={handleRetourBtnClick}
         className="flex items-center text-blue-600 hover:text-blue-800 transition duration-200 mb-4"
       >
         <FaArrowLeft className="mr-2" /> Retour
@@ -221,11 +229,10 @@ const Recherche = () => {
           </div>
         </div>
       </div>
-
-      {toolbarTable == "devis" && (
+      {toolbarTable == "client" && (
         <DataTable
-          data={devisList}
-          columns={collonesdevis}
+          data={listeClients}
+          columns={collonesClient}
           pagination
           fixedHeader
           customStyles={customStyles}
@@ -234,10 +241,10 @@ const Recherche = () => {
           onSelectedRowsChange={handleselecteddevis}
         />
       )}
-      {toolbarTable == "client" && (
+      {toolbarTable == "devis" && (
         <DataTable
-          data={clientList}
-          columns={collonesClient}
+          data={devisList}
+          columns={collonesDevis}
           pagination
           fixedHeader
           customStyles={customStyles}
