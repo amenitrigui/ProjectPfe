@@ -147,12 +147,12 @@ const AjouterClient = async (req, res) => {
 const supprimerClient = async (req, res) => {
   const { dbName } = req.params;
   // ? tableau contenant les codes des clients à supprimer
-  const { clients } = req.body;
+  const { code } = req.params;
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const Client = defineClientModel(dbConnection);
 
-    await Client.destroy({ where: { code: clients } });
+    await Client.destroy({ where: { code: code } });
 
     return res
       .status(200)
@@ -271,12 +271,13 @@ const getListeCodeClient = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-const getTypeClient = async (req, res) => {
+const getClientParTypeClient = async (req, res) => {
   try {
     const { dbName } = req.params;
     const { typecli } = req.params;
+    console.log(typecli)
     const dbConnection = await getDatabaseConnection(dbName, res);
-    const client = dbConnection.query(
+    const client = await dbConnection.query(
       `SELECT * FROM CLIENT where typecli = :typecli`,
       {
         type: dbConnection.QueryTypes.SELECT,
@@ -285,6 +286,7 @@ const getTypeClient = async (req, res) => {
         },
       }
     );
+    console.log(client)
 
     return res
       .status(200)
@@ -296,10 +298,10 @@ const getTypeClient = async (req, res) => {
 const getClientParCin = async (req, res) => {
   try {
     const { dbName } = req.params;
-    const { cin } = req.query;
+    const { cin } = req.params;
     console.log(cin)
     const dbConnection = await getDatabaseConnection(dbName, res);
-    const client = dbConnection.query(
+    const client = await dbConnection.query(
       `SELECT * FROM CLIENT where cin = :cin`,
       {
         type: dbConnection.QueryTypes.SELECT,
@@ -311,8 +313,7 @@ const getClientParCin = async (req, res) => {
 
 
     );
-    console.log(client)
-
+  
     return res
       .status(200)
       .json({ message: "client récuperé avec succès", client: client[0] });
@@ -349,7 +350,7 @@ module.exports = {
   getClientParCode,
   majClient,
   getListeCodeClient,
-  getTypeClient,
+  getClientParTypeClient,
   getDerniereCodeClient,
   getClientParCin,
 };

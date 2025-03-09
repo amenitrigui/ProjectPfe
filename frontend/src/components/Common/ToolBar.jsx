@@ -20,6 +20,8 @@ import {
   getListeClient,
   majClient,
   setClientInfosEntiere,
+  supprimerClient,
+  viderChampsClientInfo,
 } from "../../app/client_slices/clientSlice";
 import {
   setAfficherAlertModal,
@@ -39,6 +41,7 @@ function ToolBar() {
   const navigate = useNavigate();
   const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
   const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
+  console.log(clientInfos);
   // * state pour afficher/cacher fenetre de confirmation pour
   // * la suppression
   const [isDeleting, setIsDeleting] = useState(false);
@@ -64,33 +67,12 @@ function ToolBar() {
     dispatch(setClearAppele(false));
     // * vider les champs du formulaires
     if (toolbarTable == "devis") {
-      dispatch(
-        setDevisInfoEntiere({
-          NUMBL: "",
-          libpv: "",
-          ADRCLI: "",
-          CODECLI: "",
-          cp: "",
-          DATEBL: "",
-          MREMISE: "",
-          MTTC: "",
-          comm: "",
-          RSREP: "",
-          CODEREP: "",
-          usera: "",
-          RSCLI: "",
-          codesecteur: "",
-          MHT: "",
-          articles: [],
-        })
-      );
+      dispatch(viderChampsClientInfo());
     }
 
     if (toolbarTable == "client") {
-      dispatch(
-        setClientInfosEntiere({
-        })
-      );
+      dispatch(viderChampsClientInfo());
+
       dispatch(getDerniereCodeClient());
       console.log(clientInfos);
     }
@@ -108,7 +90,7 @@ function ToolBar() {
   // * pour supprimer un ou plusieurs clients/devis
   const afficherModel = async () => {
     dispatch(
-      setMessageAlertModal("Etes vouz sur de suprimer ce(s) client(s)?")
+      setMessageAlertModal("Etes vouz sur de suprimer ce client?")
     );
     dispatch(setAfficherAlertModal(true));
   };

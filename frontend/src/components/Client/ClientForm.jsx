@@ -8,6 +8,7 @@ import {
   getListeparCode,
   setClientInfos,
   setClientInfosEntiere,
+  viderChampsClientInfo,
 } from "../../app/client_slices/clientSlice";
 import { setClearAppele } from "../../app/interface_slices/uiSlice";
 
@@ -16,6 +17,7 @@ function ClientForm() {
 
   // Sélection des informations du client depuis le state Redux
   const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
+  console.log(clientInfos)
 
   // Sélection du booléen pour effacer les champs du formulaire
   const clearApelle = useSelector((state) => state.uiStates.clearAppele);
@@ -33,13 +35,15 @@ function ClientForm() {
   const insertionDepuisDevisForm = useSelector(
     (state) => state.ClientCrud.insertionDepuisDevisForm
   );
-  useEffect(() => {
-    dispatch(getListeparCode());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(getListeparCode());
+   
+  // }, []);
 
   // Fonction pour gérer les changements dans les champs du formulaire
   const handleChange = (e, colonne) => {
-    if (e.target.value == "") dispatch(setClearAppele(true));
+    if (e.target.value == "")
+       dispatch(setClearAppele(true));
     else {
       dispatch(setClearAppele(false));
       dispatch(setClientInfos({ colonne, valeur: e.target.value }));
@@ -53,7 +57,7 @@ function ClientForm() {
   // Effet pour réinitialiser les champs du formulaire lorsque clearApelle change
   useEffect(() => {
     if (clearApelle) {
-      dispatch(setClientInfosEntiere({}));
+      dispatch(viderChampsClientInfo());
       dispatch(getListeparCode());
     }
   }, [clearApelle]);

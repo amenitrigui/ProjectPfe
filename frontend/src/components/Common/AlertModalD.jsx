@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   supprimerClient,
   getListeClient,
+  viderChampsClientInfo,
 } from "../../app/client_slices/clientSlice";
 import {
   setAfficherAlertModal,
@@ -17,14 +18,16 @@ function AlertModalD() {
   const afficherAlerteModel = useSelector(
     (state) => state.uiStates.afficherAlertModal
   );
+  const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
   const dispatch = useDispatch();
   // * suprimer clients
   const handlesuprimer = async () => {
-    dispatch(setAfficherAlertModal(false));
-    dispatch(supprimerClient());
-    dispatch(getListeClient());
+    
+    dispatch(supprimerClient(clientInfos.code));
+    dispatch(viderChampsClientInfo());
     // ! s'exécute une seule fois, puis reste true
-    dispatch(setClearAppele(true));
+    // dispatch(setClearAppele(true));
+    dispatch(setAfficherAlertModal(false));
   };
   useEffect(() => {
     if (afficherAlerteModel) {

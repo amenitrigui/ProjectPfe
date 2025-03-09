@@ -25,7 +25,7 @@ function ArticlesDevis() {
   const codeTousArticleParCode = useSelector(
     (state) => state.ArticlesDevis.ListeCodeArticlesparLib
   );
-  console.log(codeTousArticleParCode);
+
   const handlecodeFamilleChange = (codeFamille) => {
     dispatch(getCodeArticle(codeFamille));
   };
@@ -37,17 +37,15 @@ function ArticlesDevis() {
     dispatch(getArticleFamiles());
   }, []);
 
-  console.log(Quantite);
-  console.log(remise);
+
 
 const netHt=  Quantite * codeTousArticleParCode.prix1 * (1 - remise / 100)||0;
 
 
-  console.log(netHt);
 
   const puttc = codeTousArticleParCode.prix1 * (1 + codeTousArticleParCode.tauxtva / 100) ||
     0;
-  console.log(puttc);
+
 
   return (
     <div className="space-y-4 p-4 border rounded-md mt-4">

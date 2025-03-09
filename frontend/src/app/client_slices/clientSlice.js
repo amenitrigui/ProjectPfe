@@ -11,26 +11,27 @@ export const getListeClient = createAsyncThunk(
     return response.data.result;
   }
 );
- //* recupere type client par client 
-export const getTypeClient = createAsyncThunk(
-  "Slice/getTypeClient",
+//* recupere la liste client par type client
+export const getClientParTypeClient = createAsyncThunk(
+  "Slice/getClientParTypeClient",
   async (typecli) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/typeclient/${typecli}`
     );
-    return response;
+    console.log(response);
+    return response.data.client;
   }
 );
-//* recu^pere le cin par client 
-export const getCin = createAsyncThunk(
-  "Slice/getCin",
-  async () => {
+//* recu^pere la liste client par cin
+export const getClientParCin = createAsyncThunk(
+  "Slice/getClientParCin",
+  async (cin) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/getCin`
-      
+      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/getClientParCin/${cin}`
     );
-    console.log(response)
-    return response;
+    console.log(response);
+    return response.data.client
+
   }
 );
 export const getListeCodeClient = createAsyncThunk(
@@ -48,14 +49,14 @@ export const ajouterClient = createAsyncThunk(
   "slice/ajouterClient",
   async (_, thunkApi) => {
     const clientInfos = thunkApi.getState().ClientCrud.clientInfos;
-    console.log(clientInfos);
+
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/Add`,
       {
         clientInfos,
       }
     );
-    console.log(response);
+
     thunkApi.getState().uiStates.setAlertMessage(response.data.message);
     return response.data;
   }
@@ -97,6 +98,7 @@ export const getListeparCode = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/getListCode`
     );
+
     return response.data.liteCode;
   }
 );
@@ -105,16 +107,18 @@ export const getListeparCode = createAsyncThunk(
 // * slice/supprimerClient identifiant unique pour la methode
 export const supprimerClient = createAsyncThunk(
   "slice/supprimerClient",
-  async (_, thunkAPI) => {
+  async (code) => {
+    console.log("code= ",code)
     const response = await axios.delete(
-      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/Delete/`,
+      `${process.env.REACT_APP_API_URL}/api/client/SOLEVO/Delete/${code}`,
       {
-        data: {
-          clients: thunkAPI.getState().ClientCrud.clientsASupprimer,
-        },
+        // data: {
+        //   clients: thunkAPI.getState().ClientCrud.clientsASupprimer,
+        // },
       }
     );
-    return response.data;
+    console.log(response)
+    return response.data.message;
   }
 );
 
@@ -185,6 +189,7 @@ export const clientSlice = createSlice({
       },
     }, // * informations de formulaire de client
     listeClientsParCode: [],
+    clientList: [],
     clientsASupprimer: [], // * tableau des codes de clients a supprimer. id reeelement code.
     status: "inactive",
     erreur: null,
@@ -200,6 +205,8 @@ export const clientSlice = createSlice({
       fax: "",
       desrep: "",
     },
+    
+
     insertionDepuisDevisForm: false,
   },
   reducers: {
@@ -207,6 +214,10 @@ export const clientSlice = createSlice({
     setFiltresSaisient: (state, action) => {
       const { valeur, collonne } = action.payload;
       state.filters[collonne] = valeur; // Correction ici
+    },
+    setClientList:(state,action)=>
+    {
+      state.clientList=action.payload;
     },
     setClientInfos: (state, action) => {
       // * actions fiha les donnes (payload)
@@ -217,6 +228,60 @@ export const clientSlice = createSlice({
     setClientInfosEntiere: (state, action) => {
       state.clientInfos = action.payload;
     },
+    viderChampsClientInfo:(state)=>{
+      state.clientInfos={
+        code: "",
+        rsoc: "",
+        adresse: "",
+        cp: "",
+        email: "",
+        telephone: "",
+        desrep: "",
+        aval2: "",
+        aval1: "",
+        Commentaire: "",
+        datemaj: "",
+        userm: "",
+        usera: "",
+        fact: "",
+        timbref: "",
+        cltexport: "",
+        suspfodec: "",
+        regime: "",
+        exon: "",
+        majotva: "",
+        fidel: "",
+        datefinaut: "",
+        datedebaut: "",
+        decision: "",
+        matriculef: "",
+        reference: "",
+        srisque: "",
+        scredit: "",
+        delregBL: "",
+        delregFT: "",
+        delregFC: "",
+        remise: "",
+        activite: "",
+        typecli: "L",
+        cin: "",
+  
+        secteur: {
+          codesec: "",
+          desisec: "",
+        },
+        region: {
+          codergg: "",
+          desirgg: "",
+        },
+        cpostal: {
+          CODEp: "",
+          desicp: "",
+        },
+      }
+      
+    },
+
     setClientsASupprimer: (state, action) => {
       state.clientsASupprimer.push(action.payload);
     },
@@ -254,17 +319,14 @@ export const clientSlice = createSlice({
 
       .addCase(supprimerClient.pending, (state) => {
         state.status = "chargement";
-        console.log(state.status);
       })
       .addCase(supprimerClient.fulfilled, (state, action) => {
         state.status = "réussi";
-        console.log(action.payload);
-        console.log(state.status);
+        
       })
       .addCase(supprimerClient.rejected, (state, action) => {
         state.status = "échoué";
         state.erreur = action.erreur;
-        console.log(state.status);
       })
 
       .addCase(ajouterClient.pending, (state) => {
@@ -296,13 +358,13 @@ export const clientSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getListeCodeClient.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.listeClientsParCode = action.payload;
         state.clientInfos = action.payload;
+        state.clientList[0] = action.payload;
+        console.log(action.payload);
         state.status = "réussi";
       })
       .addCase(getListeCodeClient.rejected, (state, action) => {
-        console.log(action);
         state.status = "échoué";
         state.erreur = action.payload;
       })
@@ -312,11 +374,11 @@ export const clientSlice = createSlice({
       })
       .addCase(getListeparCode.fulfilled, (state, action) => {
         state.listeClientsParCode = action.payload;
+        state.clientList = action.payload;
         //state.clientInfos=action.payload;
         state.status = "réussi";
       })
       .addCase(getListeparCode.rejected, (state, action) => {
-        console.log(action);
         state.status = "échoué";
         state.erreur = action.payload;
       })
@@ -333,26 +395,27 @@ export const clientSlice = createSlice({
         state.erreur = action.payload;
       })
 
-      .addCase(getTypeClient.pending, (state) => {
+      .addCase(getClientParTypeClient.pending, (state) => {
         state.status = "chargement";
       })
-      .addCase(getTypeClient.fulfilled, (state, action) => {
-        state.clientInfos.code = action.payload;
+      .addCase(getClientParTypeClient.fulfilled, (state, action) => {
+        state.clientList = action.payload;
+        console.log(action.payload);
         state.status = "réussi";
       })
-      .addCase(getTypeClient.rejected, (state, action) => {
+      .addCase(getClientParTypeClient.rejected, (state, action) => {
         state.status = "échoué";
         state.erreur = action.payload;
       })
 
-      .addCase(getCin.pending, (state) => {
+      .addCase(getClientParCin.pending, (state) => {
         state.status = "chargement";
       })
-      .addCase(getCin.fulfilled, (state, action) => {
-        state.clientInfos.code = action.payload;
+      .addCase(getClientParCin.fulfilled, (state, action) => {
+        state.clientList[0] = action.payload;
         state.status = "réussi";
       })
-      .addCase(getCin.rejected, (state, action) => {
+      .addCase(getClientParCin.rejected, (state, action) => {
         state.status = "échoué";
         state.erreur = action.payload;
       });
@@ -364,6 +427,8 @@ export const {
   setClientInfos,
   setClientsASupprimer,
   setClientInfosEntiere,
+  viderChampsClientInfo,
   setInsertionDepuisDevisForm,
+  setClientList
 } = clientSlice.actions;
 export default clientSlice.reducer;
