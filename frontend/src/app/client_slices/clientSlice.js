@@ -287,7 +287,6 @@ export const clientSlice = createSlice({
         activite: "",
         typecli: "L",
         cin: "",
-
         secteur: {
           codesec: "",
           desisec: "",
@@ -356,11 +355,9 @@ export const clientSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(ajouterClient.fulfilled, (state, action) => {
-        console.log(action);
         state.status = "réussi";
       })
       .addCase(ajouterClient.rejected, (state, action) => {
-        console.log(action);
         state.status = "échoué";
         state.erreur = action.payload;
       })
@@ -373,7 +370,6 @@ export const clientSlice = createSlice({
         state.status = "réussi";
       })
       .addCase(majClient.rejected, (state, action) => {
-        console.log(action);
         state.status = "échoué";
         state.erreur = action.payload;
       })
@@ -382,6 +378,7 @@ export const clientSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getClientParCode.fulfilled, (state, action) => {
+        console.log(action.payload);
         state.listeClients = action.payload;
         //objet client bch tit3aba il formulaire 
         state.clientInfos=action.payload[0];

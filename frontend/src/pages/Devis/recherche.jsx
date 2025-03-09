@@ -30,14 +30,17 @@ const Recherche = () => {
   const devisList = useSelector((state) => state.DevisCrud.devisList);
   const listeClients = useSelector((state) => state.ClientCrud.listeClients);
   console.log(listeClients);
+  const [datatableSelection, setDatatableSelection] = useState({});
   // * pour obtenir les informations de dévis séléctionné
   const handleselecteddevis = ({ selectedRows }) => {
-    console.log(selectedRows[0]);
-    if (toolbarTable == "devis") {
-      dispatch(setDevisInfoEntiere(selectedRows[0]));
-    }
-    if (toolbarTable == "client") {
-      dispatch(setClientInfosEntiere(selectedRows[0]));
+    setDatatableSelection(selectedRows[0])
+    if (selectedRows[0]) {
+      if (toolbarTable == "devis") {
+        dispatch(setDevisInfoEntiere(selectedRows[0]));
+      }
+      if (toolbarTable == "client") {
+        dispatch(setClientInfosEntiere(selectedRows[0]));
+      }
     }
   };
   const toolbarTable = useSelector((state) => state.uiStates.toolbarTable);
@@ -51,7 +54,7 @@ const Recherche = () => {
     if (!filtrerPar) {
       alert("Veuillez sélectionner un filtre de recherche.");
       return;
-    }
+    } 
 
     if (toolbarTable == "devis") {
       switch (filtrerPar) {
@@ -252,10 +255,11 @@ const Recherche = () => {
           onSelectedRowsChange={handleselecteddevis}
         />
       )}
-
+      // todo: disable/enable the valider button according to wether or not the user has selected an item from the datatable
       <button
         onClick={handleValidate}
         className="bg-green-600 text-white p-2 rounded-lg hover:bg-green-700 transition duration-200 mt-4"
+        disabled={datatableSelection}
       >
         Valider
       </button>
