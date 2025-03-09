@@ -10,7 +10,6 @@ import {
   setClientInfosEntiere,
 } from "../../app/client_slices/clientSlice";
 import {
-  setClearAppele,
   setToolbarTable,
 } from "../../app/interface_slices/uiSlice";
 
@@ -71,12 +70,10 @@ function ClientList() {
   };
 
   const handleSelectionChange = ({ selectedRows }) => {
-    dispatch(setClearAppele(false));
     if (selectedRows.length !== 0) {
       dispatch(setClientsASupprimer(selectedRows[0].code));
       dispatch(setClientInfosEntiere(selectedRows[0]));
     } else {
-      dispatch(setClearAppele(true));
       dispatch(setClientsASupprimer([]));
     }
   };

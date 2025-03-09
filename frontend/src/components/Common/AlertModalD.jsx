@@ -2,12 +2,10 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   supprimerClient,
-  getListeClient,
   viderChampsClientInfo,
 } from "../../app/client_slices/clientSlice";
 import {
   setAfficherAlertModal,
-  setClearAppele,
 } from "../../app/interface_slices/uiSlice";
 
 function AlertModalD() {
@@ -24,8 +22,6 @@ function AlertModalD() {
   const handlesuprimer = async () => {
     dispatch(supprimerClient(clientInfos.code));
     dispatch(viderChampsClientInfo());
-    // ! s'exécute une seule fois, puis reste true
-    // dispatch(setClearAppele(true));
     dispatch(setAfficherAlertModal(false));
   };
   useEffect(() => {

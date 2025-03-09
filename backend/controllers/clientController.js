@@ -174,7 +174,12 @@ const getClientParCode = async (req, res) => {
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const client = await dbConnection.query(
-      `select * from client where code = ${code}`
+      `select * from client where code = :code`, {
+        type: dbConnection.QueryTypes.SELECT, 
+        replacements: {
+          code
+        }
+      }
     );
     console.log(client);
     if (client) return res.status(200).json({ client });
@@ -251,7 +256,6 @@ const majClient = async (req, res) => {
     });
   }
 };
-const { Sequelize } = require("sequelize"); // Importation de Sequelize
 
 // * récupere la liste de codes de clients
 const getToutCodesClient = async (req, res) => {
@@ -262,13 +266,13 @@ const getToutCodesClient = async (req, res) => {
     const listeCodesClients = await dbConnection.query(
       `SELECT code FROM client ORDER BY code`,
       {
-        type: Sequelize.QueryTypes.SELECT, // Correction de QueryTypes
+        type: dbConnection.QueryTypes.SELECT,
       }
     );
 
     return res.status(200).json({
       message: "Code client récupéré avec succès",
-      listeCodesClients: listeCodesClients, // Correction de la structure JSON
+      listeCodesClients: listeCodesClients,
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });

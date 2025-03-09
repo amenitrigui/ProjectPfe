@@ -7,20 +7,19 @@ import {
   getClientParCode,
   getToutCodesClient,
   setClientInfos,
-  setClientInfosEntiere,
   viderChampsClientInfo,
 } from "../../app/client_slices/clientSlice";
-import { setClearAppele } from "../../app/interface_slices/uiSlice";
 
 function ClientForm() {
   const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getToutCodesClient());
+  }, []);
 
   // Sélection des informations du client depuis le state Redux
   const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
   console.log(clientInfos);
 
-  // Sélection du booléen pour effacer les champs du formulaire
-  const clearApelle = useSelector((state) => state.uiStates.clearAppele);
   // state pour désactiver/activer les champs lors de changement de modes editables (ajout/modification)
   // vers le mode de consultation respectivement
   const activerChampsForm = useSelector(
@@ -31,9 +30,6 @@ function ClientForm() {
   const insertionDepuisDevisForm = useSelector(
     (state) => state.ClientCrud.insertionDepuisDevisForm
   );
-  useEffect(() => {
-    dispatch(getToutCodesClient());
-  }, []);
 
   // liste de client
   const listeToutCodesClients = useSelector(
@@ -42,24 +38,26 @@ function ClientForm() {
 
   // Fonction pour gérer les changements dans les champs du formulaire
   const handleChange = (e, colonne) => {
-    if (e.target.value == "") dispatch(setClearAppele(true));
-    else {
-      dispatch(setClearAppele(false));
-      dispatch(setClientInfos({ colonne, valeur: e.target.value }));
-      if (insertionDepuisDevisForm) {
-        dispatch(setDevisInfo({ colonne, valeur: e.target.value }));
-      }
+    // * si aucun code client est selectionné
+    // * vider les champs
+    if (e.target.value == "") {
+      dispatch(viderChampsClientInfo());
+    }
+    // * on va récuperer les informations de client
+    // * à partir de son code
+    if (
+      colonne == "code" &&
+      e.target.value != "" &&
+      e.target.value.length == 8 &&
+      !isNaN(e.target.value)
+    ) {
       dispatch(getClientParCode(e.target.value));
     }
-  };
-
-  // Effet pour réinitialiser les champs du formulaire lorsque clearApelle change
-  useEffect(() => {
-    if (clearApelle) {
-      dispatch(viderChampsClientInfo());
-      dispatch(getToutCodesClient());
+    dispatch(setClientInfos({ colonne, valeur: e.target.value }));
+    if (insertionDepuisDevisForm) {
+      dispatch(setDevisInfo({ colonne, valeur: e.target.value }));
     }
-  }, [clearApelle]);
+  };
   return (
     <>
       <form className="grid grid-cols-1 space-y-2 items-center bg-base-300">

@@ -27,7 +27,6 @@ import {
   setAfficherAlertModal,
   setMessageAlertModal,
   setAlertMessage,
-  setClearAppele,
   setActiverChampsForm,
   setActiverBoutonsValiderAnnuler,
 } from "../../app/interface_slices/uiSlice";
@@ -41,7 +40,6 @@ function ToolBar() {
   const navigate = useNavigate();
   const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
   const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
-  console.log(clientInfos);
   // * state pour afficher/cacher fenetre de confirmation pour
   // * la suppression
   const [isDeleting, setIsDeleting] = useState(false);
@@ -64,7 +62,6 @@ function ToolBar() {
   const handleAjout = async () => {
     dispatch(setActiverBoutonsValiderAnnuler(true));
     dispatch(setActiverChampsForm(true));
-    dispatch(setClearAppele(false));
     // * vider les champs du formulaires
     if (toolbarTable == "devis") {
       dispatch(viderChampsClientInfo());
@@ -82,8 +79,8 @@ function ToolBar() {
   };
   // * méthode pour mettre à jour un client/devis
   const handleupdate = async () => {
-    dispatch(majClient());
-    dispatch(getListeClient());
+    //dispatch(majClient());
+    dispatch(setActiverBoutonsValiderAnnuler(true));
   };
 
   // * afficher la fenetre de confirmation
@@ -99,7 +96,6 @@ function ToolBar() {
       dispatch(ajouterClient());
       dispatch(getListeClient());
       dispatch(setAlertMessage("Ajouté avec succès"));
-      dispatch(setClearAppele(true));
     }
     if (toolbarTable == "devis") {
       dispatch(AjouterDevis());
@@ -113,7 +109,6 @@ function ToolBar() {
   const annulerOperation = () => {
     dispatch(setActiverBoutonsValiderAnnuler(false));
     dispatch(setActiverChampsForm(false));
-    dispatch(setClearAppele(true));
   };
 
   const handleNaviguerListe = () => {

@@ -138,9 +138,8 @@ export const supprimerClient = createAsyncThunk(
     const response = await axios.delete(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/Delete/`
+      }/Delete/${code}`
     );
-    console.log(response);
     return response.data.message;
   }
 );
@@ -383,6 +382,7 @@ export const clientSlice = createSlice({
       })
       .addCase(getClientParCode.fulfilled, (state, action) => {
         state.listeClients = action.payload;
+        state.clientInfos = action.payload[0];
         state.status = "réussi";
       })
       .addCase(getClientParCode.rejected, (state, action) => {

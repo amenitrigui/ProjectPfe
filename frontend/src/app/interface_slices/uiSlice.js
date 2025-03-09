@@ -13,10 +13,6 @@ export const uiSlice = createSlice({
     // *state alerte model
     afficherAlertModal: false,
     messageAlertModal: "",
-    // * state pour vider les champs de clientInfos:
-    // * false : ne pas appeler la fonction qui vide les champs
-    // * true : appeler la fonction qui vide les champs
-    clearAppele: false,
     // * state pour déterminer quelle table on utilise
     // * puisque toolbar est un composant common de
     // * client et devis pour le moment
@@ -46,10 +42,6 @@ export const uiSlice = createSlice({
     setAfficherAlertModal: (state, action) => {
       state.afficherAlertModal = action.payload;
     },
-
-    setClearAppele: (state, action) => {
-      state.clearAppele = action.payload;
-    },
     setToolbarTable: (state, action) => {
       state.toolbarTable = action.payload;
     },
@@ -67,7 +59,6 @@ export const {
   setTypeAlert,
   setMessageAlertModal,
   setAfficherAlertModal,
-  setClearAppele,
   setToolbarTable,
   setActiverChampsForm,
   setActiverBoutonsValiderAnnuler,
