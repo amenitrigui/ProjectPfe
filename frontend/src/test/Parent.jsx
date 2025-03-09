@@ -6,9 +6,9 @@ const notify = () => {
   toast.warn(
     ({ closeToast }) => (
       <div>
-        <p>vous etes sur de supprimer ce client</p>
-        <button className="btn btn-warning" onClick={() => handleDelete(closeToast)}>Supprimer</button>
-        <button className="btn" onClick={closeToast}>Annuler</button>
+        <p>vous etes sur de supprimer ce client?</p>
+        <button className="btn btn-soft btn-warning" onClick={() => handleDelete(closeToast)}>Supprimer</button>
+        <button className="btn btn-soft" onClick={closeToast}>Annuler</button>
       </div>
     ),
     {
