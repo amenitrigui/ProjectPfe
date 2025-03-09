@@ -35,6 +35,7 @@ import {
   AjouterDevis,
   setDevisInfoEntiere,
 } from "../../app/devis_slices/devisSlice";
+import AlertModalD from "../Common/AlertModalD";
 
 function ToolBar() {
   const dispatch = useDispatch();
@@ -82,16 +83,16 @@ function ToolBar() {
   };
   // * méthode pour mettre à jour un client/devis
   const handleupdate = async () => {
-    dispatch(majClient());
-    dispatch(getListeClient());
+   // dispatch(majClient());
+    dispatch(setActiverBoutonsValiderAnnuler(true))
+    dispatch(setActiverChampsForm(true))
+   
+   // dispatch(getListeClient());
   };
 
   // * afficher la fenetre de confirmation
   // * pour supprimer un ou plusieurs clients/devis
   const afficherModel = async () => {
-    dispatch(
-      setMessageAlertModal("Etes vouz sur de suprimer ce client?")
-    );
     dispatch(setAfficherAlertModal(true));
   };
 
@@ -170,7 +171,7 @@ function ToolBar() {
 
               <button
                 type="button"
-                onClick={afficherModel}
+                onClick={() => afficherModel()}
                 className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
               >
                 <FontAwesomeIcon

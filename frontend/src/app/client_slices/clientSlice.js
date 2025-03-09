@@ -375,6 +375,7 @@ export const clientSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(majClient.fulfilled, (state, action) => {
+        state.clientInfos=action.payload;
         state.status = "réussi";
       })
       .addCase(majClient.rejected, (state, action) => {
@@ -388,6 +389,8 @@ export const clientSlice = createSlice({
       })
       .addCase(getClientParCode.fulfilled, (state, action) => {
         state.listeClients = action.payload;
+        //objet client bch tit3aba il formulaire 
+        state.clientInfos=action.payload[0];
         state.status = "réussi";
       })
       .addCase(getClientParCode.rejected, (state, action) => {

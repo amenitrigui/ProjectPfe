@@ -1,70 +1,57 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   supprimerClient,
-  getListeClient,
   viderChampsClientInfo,
 } from "../../app/client_slices/clientSlice";
-import {
-  setAfficherAlertModal,
-  setClearAppele,
-} from "../../app/interface_slices/uiSlice";
+import { setAfficherAlertModal } from "../../app/interface_slices/uiSlice";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function AlertModalD() {
-  // ! cette composant va etre remplacé par react toastify
-  // * message d'alert
-  const message = useSelector((state) => state.uiStates.alerteModelMessage);
-  // * boolean pour afficher/cacher cet alert
-  const afficherAlerteModel = useSelector(
-    (state) => state.uiStates.afficherAlertModal
-  );
   const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
   const dispatch = useDispatch();
-  // * suprimer clients
-  const handlesuprimer = async () => {
-    
+  const afficherAlertModal = useSelector((state) => state.uiStates.afficherAlertModal);
+
+  const handlesuprimer = async (closeToast) => {
     dispatch(supprimerClient(clientInfos.code));
     dispatch(viderChampsClientInfo());
-    // ! s'exécute une seule fois, puis reste true
-    // dispatch(setClearAppele(true));
     dispatch(setAfficherAlertModal(false));
+    console.log("client supprimé");
+    closeToast(); // Ferme le toast après la suppression
   };
-  useEffect(() => {
-    if (afficherAlerteModel) {
-      document.getElementById("my_modal_1").showModal();
-    }
-  }, [afficherAlerteModel]); // Runs when afficherAlerteModel changes
 
-  return (
-    <dialog id="my_modal_1" className="modal">
-      <div className="modal-box">
-        <h3 className="font-bold text-lg">Confirmez</h3>
-        <p className="py-4">
-          {message || "Press ESC key or click the button below to close"}
-        </p>
-        <div className="modal-action">
-          <form method="dialog">
+  useEffect(() => {
+    if (afficherAlertModal) {
+      toast.warn(
+        ({ closeToast }) => (
+          <div>
+            <p>Êtes-vous sûr de vouloir supprimer ce client ?</p>
             <button
-              className="btn btn-error"
-              onClick={() => {
-                handlesuprimer();
-              }}
+              className="btn btn-soft btn-warning"
+              onClick={() => handlesuprimer(closeToast)}
             >
               Supprimer
             </button>
-            <button
-              className="btn"
-              onClick={() => {
-                dispatch(setAfficherAlertModal(false));
-              }}
-            >
-              Close
+            <button className="btn btn-soft" onClick={() => {dispatch(setAfficherAlertModal(false));closeToast()}}>
+              Annuler
             </button>
-          </form>
-        </div>
-      </div>
-    </dialog>
-  );
+          </div>
+        ),
+        {
+          position: "top-center",
+          autoClose: false, // Désactiver la fermeture automatique
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "light",
+        }
+      );
+    }
+  }, [afficherAlertModal]);
+
+  return <ToastContainer limit={1} />;
 }
 
 export default AlertModalD;
