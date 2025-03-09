@@ -255,11 +255,12 @@ const Recherche = () => {
           onSelectedRowsChange={handleselecteddevis}
         />
       )}
-      // todo: disable/enable the valider button according to wether or not the user has selected an item from the datatable
+      
       <button
+        // todo: disable/enable the valider button according to wether or not the user has selected an item from the datatable
         onClick={handleValidate}
         className="bg-green-600 text-white p-2 rounded-lg hover:bg-green-700 transition duration-200 mt-4"
-        disabled={datatableSelection}
+        disabled={!datatableSelection}
       >
         Valider
       </button>
