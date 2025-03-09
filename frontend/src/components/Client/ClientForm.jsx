@@ -8,6 +8,7 @@ import {
   getToutCodesClient,
   setClientInfos,
   setClientInfosEntiere,
+  viderChampsClientInfo,
 } from "../../app/client_slices/clientSlice";
 import { setClearAppele } from "../../app/interface_slices/uiSlice";
 
@@ -16,6 +17,7 @@ function ClientForm() {
 
   // Sélection des informations du client depuis le state Redux
   const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
+  console.log(clientInfos);
 
   // Sélection du booléen pour effacer les champs du formulaire
   const clearApelle = useSelector((state) => state.uiStates.clearAppele);
@@ -54,7 +56,7 @@ function ClientForm() {
   // Effet pour réinitialiser les champs du formulaire lorsque clearApelle change
   useEffect(() => {
     if (clearApelle) {
-      dispatch(setClientInfosEntiere({}));
+      dispatch(viderChampsClientInfo());
       dispatch(getToutCodesClient());
     }
   }, [clearApelle]);
@@ -83,7 +85,7 @@ function ClientForm() {
                 />
                 <datalist id="browsers">
                   {listeToutCodesClients.length > 0 ? (
-                    listeToutCodesClients.map((client,indice ) => (
+                    listeToutCodesClients.map((client, indice) => (
                       <option key={indice} value={client.code}>
                         {client.code}
                       </option>

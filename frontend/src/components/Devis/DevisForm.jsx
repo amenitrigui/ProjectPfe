@@ -77,7 +77,7 @@ function DevisForm() {
   const handleAjoutClientRedirect = () => {
     dispatch(setInsertionDepuisDevisForm(true));
 
-    navi("/ClientList");
+    navi("/ClientFormTout");
   };
 
   return (

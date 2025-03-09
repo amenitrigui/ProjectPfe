@@ -10,17 +10,16 @@ const {
   getDerniereCodeClient,
   getClientParTypecli,
   getClientParCin,
-  getToutCodesClient
+  getToutCodesClient,
 } = require("../controllers/clientController");
 router.get("/:dbName/List", getListeClients);
 router.get("/:dbName/filterClient", filtrerListeClients);
 router.post("/:dbName/Add", AjouterClient);
-router.delete("/:dbName/Delete/", supprimerClient);
+router.delete("/:dbName/Delete/:code", supprimerClient);
 router.put("/:dbName/Update", majClient);
 router.get("/:dbName/getClientParTypecli", getClientParTypecli);
 router.get("/:dbName/getDerniereCodeClient", getDerniereCodeClient);
-router.get("/:dbName/getClientParCin", getClientParCin);
-
+router.get("/:dbName/getClientParCin/:cin", getClientParCin);
 
 router.get("/:dbName/getToutCodesClient", getToutCodesClient);
 router.get("/:dbName/client/:code", getClientParCode);

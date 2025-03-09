@@ -147,12 +147,12 @@ const AjouterClient = async (req, res) => {
 const supprimerClient = async (req, res) => {
   const { dbName } = req.params;
   // ? tableau contenant les codes des clients à supprimer
-  const { clients } = req.body;
+  const { code } = req.params;
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const Client = defineClientModel(dbConnection);
 
-    await Client.destroy({ where: { code: clients } });
+    await Client.destroy({ where: { code: code } });
 
     return res
       .status(200)
@@ -173,7 +173,9 @@ const getClientParCode = async (req, res) => {
   const { code } = req.params;
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
-    const client = await dbConnection.query(`select * from client where code = ${code}`)
+    const client = await dbConnection.query(
+      `select * from client where code = ${code}`
+    );
     console.log(client);
     if (client) return res.status(200).json({ client });
 
@@ -286,6 +288,7 @@ const getClientParTypecli = async (req, res) => {
         },
       }
     );
+    console.log(client);
 
     return res
       .status(200)
@@ -297,22 +300,17 @@ const getClientParTypecli = async (req, res) => {
 const getClientParCin = async (req, res) => {
   try {
     const { dbName } = req.params;
-    const { cin } = req.query;
-    console.log(cin)
+    const { cin } = req.params;
     const dbConnection = await getDatabaseConnection(dbName, res);
     const client = await dbConnection.query(
       `SELECT * FROM CLIENT where cin = :cin`,
       {
         type: dbConnection.QueryTypes.SELECT,
         replacements: {
-          cin:cin
+          cin: cin,
         },
-
       }
-
-
     );
-    console.log(client)
 
     return res
       .status(200)
@@ -352,5 +350,5 @@ module.exports = {
   getClientParTypecli,
   getDerniereCodeClient,
   getClientParCin,
-  getToutCodesClient
+  getToutCodesClient,
 };

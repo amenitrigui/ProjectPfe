@@ -8,7 +8,6 @@ import {
   getDevisParPeriode,
   setDevisInfoEntiere,
   setDevisList,
-  getInfoUtilisateur,
 } from "../../app/devis_slices/devisSlice";
 import DataTable from "react-data-table-component";
 import { FaArrowLeft } from "react-icons/fa"; // Import de l'icône
@@ -16,6 +15,7 @@ import {
   getClientParCin,
   getClientParCode,
   getClientParTypecli,
+  setClientInfosEntiere,
   setListeClients,
 } from "../../app/client_slices/clientSlice";
 
@@ -33,7 +33,12 @@ const Recherche = () => {
   // * pour obtenir les informations de dévis séléctionné
   const handleselecteddevis = ({ selectedRows }) => {
     console.log(selectedRows[0]);
-    dispatch(setDevisInfoEntiere(selectedRows[0]));
+    if (toolbarTable == "devis") {
+      dispatch(setDevisInfoEntiere(selectedRows[0]));
+    }
+    if (toolbarTable == "client") {
+      dispatch(setClientInfosEntiere(selectedRows[0]));
+    }
   };
   const toolbarTable = useSelector((state) => state.uiStates.toolbarTable);
 
@@ -48,7 +53,7 @@ const Recherche = () => {
       return;
     }
 
-    if (toolbarTable.toLowerCase() == "devis") {
+    if (toolbarTable == "devis") {
       switch (filtrerPar) {
         case "client":
           dispatch(getDevisParCodeClient(valeurRecherche));
@@ -62,14 +67,14 @@ const Recherche = () => {
         case "periode":
           dispatch(getDevisParPeriode(valeurRecherche));
           break;
+
         default:
           console.log("Valeur de filtre non définie");
       }
     }
-    if (toolbarTable.toLowerCase() == "client") {
+    if (toolbarTable == "client") {
       switch (filtrerPar) {
         case "code":
-          console.log("case code");
           dispatch(getClientParCode(valeurRecherche));
           break;
         case "typecli":
@@ -78,6 +83,8 @@ const Recherche = () => {
         case "cin":
           dispatch(getClientParCin(valeurRecherche));
           break;
+        default:
+          console.log("Valeur de filtre non définie");
       }
     }
   };
