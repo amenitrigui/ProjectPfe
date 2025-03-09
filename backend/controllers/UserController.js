@@ -2,9 +2,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 // const Representant = require("../models/representant");
-const User = require("../models/utilisateur/utilisateur");
+const defineUserModel = require("../models/utilisateur/utilisateur");
 const { sequelizeUserERP } = require("../db/config");
-const { Sequelize } = require("sequelize");
 const nodeMailer = require("nodemailer");
 const { google } = require("googleapis");
 const handlebars = require("handlebars");
@@ -86,6 +85,9 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   const { nom, motpasse } = req.body;
+
+  const User = defineUserModel(sequelizeUserERP);
+  console.log(User);
 
   try {
     // Vérification que tous les champs sont remplis

@@ -6,12 +6,12 @@ import utilisateurSlice from "./utilisateur_slices/utilisateurSlice";
 import articleSlice from "./article_slices/articleSlice";
 import { combineReducers } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
-import storage from "redux-persist/lib/storage";
+import localforage from 'localforage';
 
 const persistConfig = {
   key: "root",
-  storage, // pour utiliser LocalStorage
-  whitelist: [
+  storage: localforage, // pour utiliser LocalStorage
+  whitelist: [ // pour specifier quelles slices on persiste
     "ClientCrud",
     "UtilisateurInfo",
     "uiStates",

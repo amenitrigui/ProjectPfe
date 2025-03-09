@@ -14,9 +14,9 @@ import DataTable from "react-data-table-component";
 import { FaArrowLeft } from "react-icons/fa"; // Import de l'icône
 import {
   getClientParCin,
-  getListeCodeClient,
+  getClientParCode,
   getClientParTypecli,
-  setClientList,
+  setListeClients,
 } from "../../app/client_slices/clientSlice";
 
 const Recherche = () => {
@@ -70,7 +70,7 @@ const Recherche = () => {
       switch (filtrerPar) {
         case "code":
           console.log("case code");
-          dispatch(getListeCodeClient(valeurRecherche));
+          dispatch(getClientParCode(valeurRecherche));
           break;
         case "typecli":
           dispatch(getClientParTypecli(valeurRecherche));
@@ -111,9 +111,14 @@ const Recherche = () => {
   };
 
   const handleValidate = () => {
-    dispatch(setDevisList([]));
-    dispatch(setClientList([]))
-    navigate("/DevisFormTout");
+    if (toolbarTable == "devis") {
+      dispatch(setDevisList([]));
+      navigate("/DevisFormTout");
+    }
+    if (toolbarTable == "client") {
+      dispatch(setListeClients([]));
+      navigate("/ClientFormTout");
+    }
   };
 
   const collonesDevis = [
@@ -135,11 +140,23 @@ const Recherche = () => {
     { name: "Raison Sociale", selector: (row) => row.rsoc, sortable: true },
   ];
 
+  const handleRetourBtnClick = () => {
+    console.log("ok");
+    if (toolbarTable == "devis") {
+      dispatch(setDevisList([]));
+    }
+    if (toolbarTable == "client") {
+      dispatch(setListeClients([]));
+    }
+
+    navigate(-1);
+  };
+
   return (
     <div className="container mx-auto p-6">
       {/* Bouton de retour */}
       <button
-        onClick={() => navigate(-1)}
+        onClick={handleRetourBtnClick}
         className="flex items-center text-blue-600 hover:text-blue-800 transition duration-200 mb-4"
       >
         <FaArrowLeft className="mr-2" /> Retour
@@ -150,7 +167,8 @@ const Recherche = () => {
       <div className="flex space-x-6">
         <div className="w-1/3 bg-white p-4 rounded-lg shadow-lg">
           <h3 className="text-lg font-medium text-gray-700 mb-4">
-            Rechercher Devis Par
+            Rechercher {toolbarTable == "devis" && <span>Devis</span>}{" "}
+            {toolbarTable == "client" && <span>Client</span>} Par
           </h3>
 
           <div className="space-y-2">

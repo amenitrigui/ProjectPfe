@@ -171,12 +171,8 @@ const supprimerClient = async (req, res) => {
 const getClientParCode = async (req, res) => {
   const { dbName } = req.params;
   const { code } = req.params;
-
-  console.log(code);
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
-    const Client = defineClientModel(dbConnection);
-    // const client = await Client.findOne({ where: { code: code } });
     const client = await dbConnection.query(`select * from client where code = ${code}`)
     console.log(client);
     if (client) return res.status(200).json({ client });
@@ -255,12 +251,13 @@ const majClient = async (req, res) => {
 };
 const { Sequelize } = require("sequelize"); // Importation de Sequelize
 
-const getListeCodeClient = async (req, res) => {
+// * récupere la liste de codes de clients
+const getToutCodesClient = async (req, res) => {
   try {
     const { dbName } = req.params;
     const dbConnection = await getDatabaseConnection(dbName, res);
 
-    const liteCode = await dbConnection.query(
+    const listeCodesClients = await dbConnection.query(
       `SELECT code FROM client ORDER BY code`,
       {
         type: Sequelize.QueryTypes.SELECT, // Correction de QueryTypes
@@ -269,7 +266,7 @@ const getListeCodeClient = async (req, res) => {
 
     return res.status(200).json({
       message: "Code client récupéré avec succès",
-      liteCode: liteCode, // Correction de la structure JSON
+      listeCodesClients: listeCodesClients, // Correction de la structure JSON
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -278,9 +275,9 @@ const getListeCodeClient = async (req, res) => {
 const getClientParTypecli = async (req, res) => {
   try {
     const { dbName } = req.params;
-    const { typecli } = req.params;
+    const { typecli } = req.query;
     const dbConnection = await getDatabaseConnection(dbName, res);
-    const client = dbConnection.query(
+    const client = await dbConnection.query(
       `SELECT * FROM CLIENT where typecli = :typecli`,
       {
         type: dbConnection.QueryTypes.SELECT,
@@ -352,8 +349,8 @@ module.exports = {
   supprimerClient,
   getClientParCode,
   majClient,
-  getListeCodeClient,
   getClientParTypecli,
   getDerniereCodeClient,
   getClientParCin,
+  getToutCodesClient
 };

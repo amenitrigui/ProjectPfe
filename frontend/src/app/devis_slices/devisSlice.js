@@ -2,24 +2,30 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // * Action asynchrone pour récupérer la liste des devis
-export const getDevisList = createAsyncThunk("slice/getDevisList", async () => {
-  const response = await axios.get(
-    `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/devis`
-  );
-  return response.data.devisList;
-});
+export const getDevisList = createAsyncThunk(
+  "slice/getDevisList",
+  async (_, thunkAPI) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/devis/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/devis`
+    );
+    return response.data.devisList;
+  }
+);
 
-export const getLigneArticle = createAsyncThunk(
-  "slice/getLigneArticle",
-  async (NumBL) => {
+// * Action asynchrone pour récupérer les lignes d'articles d'un devis
+export const getLignesDevis = createAsyncThunk(
+  "slice/getLignesDevis",
+  async (NumBL,thunkAPI) => {
     console.log(NumBL);
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getLigneArticle`,
+      `${process.env.REACT_APP_API_URL}/api/devis/${thunkAPI.getState().UtilisateurInfo.dbName}/getLignesDevis`,
       {
         params: { NumBL },
-      },
+      }
     );
-    console.log(response)
+    console.log(response);
     return response.data.listeArticle;
   }
 );
@@ -31,63 +37,68 @@ export const AjouterDevis = createAsyncThunk(
     console.log("ddd");
     const devisInfo = thunkAPI.getState().DevisCrud.devisInfo;
     const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/create`,
+      `${process.env.REACT_APP_API_URL}/api/devis/${thunkAPI.getState().UtilisateurInfo.dbName}/create`,
       { devisInfo }
     );
     console.log(response);
     return response.data.devis;
   }
 );
+
 // * Action asynchrone pour récupérer le nombre des devis générées
-export const getNombrededevis = createAsyncThunk(
+export const getNombreTotalDevis = createAsyncThunk(
   "Slice/getNmobredevis",
-  async () => {
+  async (_,thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/devis/total`
+      `${process.env.REACT_APP_API_URL}/api/devis/${thunkAPI.getState().UtilisateurInfo.dbName}/devis/total`
     );
     return response.data.totalDevis;
   }
 );
 
-// * Action asynchrone pour récupérer la totalité des chiffres des devis
-export const getTotalChifre = createAsyncThunk(
+// * Action asynchrone pour récupérer la totalité des chiffres générés par des devis
+export const getTotalChiffres = createAsyncThunk(
   "slice/getNombreTotal",
-  async () => {
+  async (_,thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/devis/totalchiffre`
+      `${process.env.REACT_APP_API_URL}/api/devis/${thunkAPI.getState().UtilisateurInfo.dbName}/devis/totalchiffre`
     );
-    console.log(response);
     return response.data.totalchifre;
   }
 );
+
 // * Action asynchrone pour récupérer un devis par son code
 export const getDevisParNUMBL = createAsyncThunk(
   "Slice/getDevisParNUMBL",
-  async (NUMBL) => {
+  async (NUMBL,thunkAPI) => {
     const codeuser = localStorage.getItem("codeuser");
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getDevisParNUMBL`,
+      `${process.env.REACT_APP_API_URL}/api/devis/${thunkAPI.getState().UtilisateurInfo.dbName}/getDevisParNUMBL`,
       {
         params: {
           NUMBL,
-          codeuser
+          codeuser,
         },
       }
     );
     return response.data.devis;
   }
 );
+
 // * Action asynchrone pour récupérer la liste des devis par montant
+// ! on peut retourner des devis dont le montant est
+// ! presque celle qu'on recherche
+// ! exemple: si on cherche par le montant 3205, on peut retourner des résultat pour 3205.7 et ainsi de suite
 export const getDevisParMontant = createAsyncThunk(
   "devisSlice/getDevisParMontant",
-  async (montant) => {
+  async (montant,thunkAPI) => {
     const codeuser = localStorage.getItem("codeuser");
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getDevisParMontant`,
+      `${process.env.REACT_APP_API_URL}/api/devis/${thunkAPI.getState().UtilisateurInfo.dbName}/getDevisParMontant`,
       {
         params: {
           montant,
-          codeuser
+          codeuser,
         },
       }
     );
@@ -95,17 +106,18 @@ export const getDevisParMontant = createAsyncThunk(
     return response.data.devis;
   }
 );
+
 // * Action asynchrone pour récupérer la liste des devis pour un client
 export const getDevisParCodeClient = createAsyncThunk(
   "slice/getDevisParCodeClient",
-  async (CODECLI) => {
+  async (CODECLI,thunkAPI) => {
     const codeuser = localStorage.getItem("codeuser");
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getDevisParClient`,
+      `${process.env.REACT_APP_API_URL}/api/devis/${thunkAPI.getState().UtilisateurInfo.dbName}/getDevisParClient`,
       {
         params: {
           CODECLI,
-          codeuser
+          codeuser,
         },
       }
     );
@@ -113,11 +125,13 @@ export const getDevisParCodeClient = createAsyncThunk(
     return response.data.devis;
   }
 );
+
+// * Action asynchrone pour récuperer les informations d'utilisateur courament connecté
 export const getInfoUtilisateur = createAsyncThunk(
   "slice/getInfoUtilisateur",
-  async (usera) => {
+  async (usera,thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getInfoUtilisateur`,
+      `${process.env.REACT_APP_API_URL}/api/devis/${thunkAPI.getState().UtilisateurInfo.dbName}/getInfoUtilisateur`,
       {
         params: {
           usera,
@@ -128,17 +142,18 @@ export const getInfoUtilisateur = createAsyncThunk(
     return response.data.utilisateur;
   }
 );
+
 // * Action asynchrone pour récupérer la liste des devis pendant une période spécifique
 export const getDevisParPeriode = createAsyncThunk(
   "slice/getDevisParPeriode",
-  async (DATEBL) => {
+  async (DATEBL,thunkAPI) => {
     const codeuser = localStorage.getItem("codeuser");
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getDevisParPeriode`,
+      `${process.env.REACT_APP_API_URL}/api/devis/${thunkAPI.getState().UtilisateurInfo.dbName}/getDevisParPeriode`,
       {
         params: {
           DATEBL,
-          codeuser
+          codeuser,
         },
       }
     );
@@ -149,9 +164,9 @@ export const getDevisParPeriode = createAsyncThunk(
 // * Action asynchrone pour récupérer la liste des codes des devis
 export const getListeNumbl = createAsyncThunk(
   "devisSlice/getListeNUMBL",
-  async () => {
+  async (_,thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getListeNUMBL`
+      `${process.env.REACT_APP_API_URL}/api/devis/${thunkAPI.getState().UtilisateurInfo.dbName}/getListeNUMBL`
     );
     return response.data.listeNUMBL;
   }
@@ -160,9 +175,9 @@ export const getListeNumbl = createAsyncThunk(
 // * Action asynchrone pour récupérer la liste des points de vente d'une societé
 export const getListePointsVente = createAsyncThunk(
   "devisSlice/getListePointsVente",
-  async () => {
+  async (_,thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/devis/SOLEVO/getListePointVente`
+      `${process.env.REACT_APP_API_URL}/api/devis/${thunkAPI.getState().UtilisateurInfo.dbName}/getListePointVente`
     );
 
     return response.data.pointsVenteDistincts;
@@ -188,11 +203,11 @@ export const devisSlice = createSlice({
       DATEBL: new Date().toLocaleDateString("fr-FR"),
       MREMISE: "",
       MTTC: "",
-      MTVA:"",
+      MTVA: "",
       comm: "",
       RSREP: "",
       CODEREP: "",
-      TIMBRE:"",
+      TIMBRE: "",
       usera: "",
       RSCLI: "",
       codesecteur: "",
@@ -240,26 +255,26 @@ export const devisSlice = createSlice({
         state.erreur = action.payload;
         state.status = "echoue";
       })
-      .addCase(getNombrededevis.pending, (state) => {
+      .addCase(getNombreTotalDevis.pending, (state) => {
         state.status = "chargeement";
       })
-      .addCase(getNombrededevis.fulfilled, (state, action) => {
+      .addCase(getNombreTotalDevis.fulfilled, (state, action) => {
         state.nombreDeDevis = action.payload;
         state.status = "reussi";
       })
-      .addCase(getNombrededevis.rejected, (state, action) => {
+      .addCase(getNombreTotalDevis.rejected, (state, action) => {
         state.erreur = action.payload;
         state.status = "echoue";
       })
 
-      .addCase(getTotalChifre.pending, (state) => {
+      .addCase(getTotalChiffres.pending, (state) => {
         state.status = "chargeement";
       })
-      .addCase(getTotalChifre.fulfilled, (state, action) => {
+      .addCase(getTotalChiffres.fulfilled, (state, action) => {
         state.totalchifre = action.payload;
         state.status = "reussi";
       })
-      .addCase(getTotalChifre.rejected, (state, action) => {
+      .addCase(getTotalChiffres.rejected, (state, action) => {
         state.erreur = action.payload;
         state.status = "echoue";
       })
@@ -270,7 +285,7 @@ export const devisSlice = createSlice({
       .addCase(getDevisParNUMBL.fulfilled, (state, action) => {
         state.devisList = action.payload;
         state.devisInfo = action.payload[0];
-        state.DevisList=action.payload;
+        state.DevisList = action.payload;
         state.status = "reussi";
       })
       .addCase(getDevisParNUMBL.rejected, (state, action) => {
@@ -350,16 +365,16 @@ export const devisSlice = createSlice({
         state.status = "echoue";
       })
 
-      .addCase(getLigneArticle.pending, (state) => {
+      .addCase(getLignesDevis.pending, (state) => {
         state.status = "chargement";
       })
-      .addCase(getLigneArticle.fulfilled, (state, action) => {
+      .addCase(getLignesDevis.fulfilled, (state, action) => {
         // state.devisInfo = action.payload[0];
         state.devisInfo.articles = action.payload;
         console.log(action.payload);
         state.status = "reussi";
       })
-      .addCase(getLigneArticle.rejected, (state, action) => {
+      .addCase(getLignesDevis.rejected, (state, action) => {
         state.erreur = action.payload;
         state.status = "echoue";
       });

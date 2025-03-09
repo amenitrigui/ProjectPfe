@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { setDevisInfo } from "../../app/devis_slices/devisSlice";
 import {
-  getListeCodeClient,
-  getListeparCode,
+  getClientParCode,
+  getToutCodesClient,
   setClientInfos,
   setClientInfosEntiere,
 } from "../../app/client_slices/clientSlice";
@@ -30,12 +30,12 @@ function ClientForm() {
     (state) => state.ClientCrud.insertionDepuisDevisForm
   );
   useEffect(() => {
-    dispatch(getListeparCode());
+    dispatch(getToutCodesClient());
   }, []);
 
   // liste de client
-  const listeClientsParCode = useSelector(
-    (state) => state.ClientCrud.listeClientsParCode
+  const listeToutCodesClients = useSelector(
+    (state) => state.ClientCrud.listeToutCodesClients
   );
 
   // Fonction pour gérer les changements dans les champs du formulaire
@@ -47,7 +47,7 @@ function ClientForm() {
       if (insertionDepuisDevisForm) {
         dispatch(setDevisInfo({ colonne, valeur: e.target.value }));
       }
-      dispatch(getListeCodeClient(e.target.value));
+      dispatch(getClientParCode(e.target.value));
     }
   };
 
@@ -55,7 +55,7 @@ function ClientForm() {
   useEffect(() => {
     if (clearApelle) {
       dispatch(setClientInfosEntiere({}));
-      dispatch(getListeparCode());
+      dispatch(getToutCodesClient());
     }
   }, [clearApelle]);
   return (
@@ -82,8 +82,8 @@ function ClientForm() {
                   disabled={activerChampsForm}
                 />
                 <datalist id="browsers">
-                  {listeClientsParCode.length > 0 ? (
-                    listeClientsParCode.map((client,indice ) => (
+                  {listeToutCodesClients.length > 0 ? (
+                    listeToutCodesClients.map((client,indice ) => (
                       <option key={indice} value={client.code}>
                         {client.code}
                       </option>

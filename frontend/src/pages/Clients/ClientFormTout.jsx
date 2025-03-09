@@ -7,18 +7,8 @@ import { setToolbarTable } from "../../app/interface_slices/uiSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 function ClientFormTout() {
-  const InfoClient = useSelector((state) => state.ClientCrud.clientInfos);
   const dispatch = useDispatch();
-
-  // * UseEffect #1 : Récuperer La liste des clients
-  useEffect(() => {
-    dispatch(setToolbarTable("client"));
-  }, []);
-
-  // * Utilisé pour spécifier quelle db (societé) on interroge
-  const dbName = localStorage.getItem("selectedDatabase");
-  // * Utilisé pour l'authorization de l'utilisateur à effectuer des opérations
-  const token = localStorage.getItem("token");
+  dispatch(setToolbarTable("client"));
 
   return (
     <div className="flex min-h-screen bg-gray-100">
