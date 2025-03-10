@@ -27,9 +27,11 @@ import {
   setActiverChampsForm,
   setActiverBoutonsValiderAnnuler,
   setToolbarMode,
+  setAfficherAlert,
 } from "../../app/interface_slices/uiSlice";
 import {
   AjouterDevis,
+  getDerniereNumbl,
   viderChampsDevisInfo,
 } from "../../app/devis_slices/devisSlice";
 import { getUtilisateurCourantInfos } from "../../app/utilisateur_slices/utilisateurSlice";
@@ -66,7 +68,10 @@ function ToolBar() {
     dispatch(setToolbarMode("ajout"));
     // * vider les champs du formulaires
     if (toolbarTable == "devis") {
-      dispatch(viderChampsClientInfo());
+      dispatch(viderChampsDevisInfo());
+     dispatch(getDerniereNumbl());
+
+     console.log(devisInfo)
     }
 
     if (toolbarTable == "client") {
@@ -107,7 +112,7 @@ function ToolBar() {
 
   // * afficher la fenetre de confirmation
   // * pour supprimer un ou plusieurs clients/devis
-  const afficherModel = async () => {
+  const afficherSuppToast = async () => {
     if (toolbarTable == "devis") {
       if (!devisInfo.NUMBL) {
         // ! a remplacer par toast
@@ -119,6 +124,7 @@ function ToolBar() {
       if (!clientInfos.code) {
         // ! a remplacer par toast
         alert("aucun client est selectionné pour la suppression");
+
       }
     }
 
@@ -134,9 +140,8 @@ function ToolBar() {
   const handleValiderBtnClick = () => {
     if (toolbarTable == "client") {
       if (toolbarMode == "ajout") {
-        //dispatch(ajouterClient());
-        dispatch(setAfficherAlertModal(true));
-
+        //afficherModel();
+        dispatch(setAfficherAlert(true));
       }
 
       if (toolbarMode == "modification") {
@@ -231,7 +236,7 @@ function ToolBar() {
 
               <button
                 type="button"
-                onClick={() => afficherModel()}
+                onClick={() => afficherSuppToast()}
                 className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
               >
                 <FontAwesomeIcon

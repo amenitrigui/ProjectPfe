@@ -396,7 +396,7 @@ export const clientSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getClientParCode.fulfilled, (state, action) => {
-        console.log(action.payload);
+        // ! danger
         state.listeClients = action.payload;
         //objet client bch tit3aba il formulaire 
         state.clientInfos=action.payload[0];

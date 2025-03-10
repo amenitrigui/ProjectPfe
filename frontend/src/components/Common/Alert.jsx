@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
-import { setAfficherAlertModal, setAlertMessage } from "../../app/interface_slices/uiSlice";
+import { setAfficherAlert } from "../../app/interface_slices/uiSlice";
 import { ajouterClient } from "../../app/client_slices/clientSlice";
 function Alert() {
   // ! cette composant va etre remplacé par react toastify
@@ -9,15 +9,15 @@ function Alert() {
   const dispatch = useDispatch();
   const message = useSelector((state) => state.uiStates.message);
   // * boolean pour afficher/cacher cet alert
-  const afficherAlertModal = useSelector((state) => state.uiStates.afficherAlertModal);
+  const afficherAlert = useSelector((state) => state.uiStates.afficherAlert);
   const handleAjout = async (closeToast) => {
     dispatch(ajouterClient())
-    dispatch(setAfficherAlertModal(false));
+    dispatch(setAfficherAlert(false));
     closeToast();
   };
   useEffect(() => {
-    if (afficherAlertModal) {
-      toast.success(
+    if (afficherAlert) {
+      toast.info(
         ({ closeToast }) => (
           <div>
             <p>Êtes-vous sûr de vouloir Ajouter client ?</p>
@@ -30,7 +30,7 @@ function Alert() {
             <button
               className="btn btn-soft"
               onClick={() => {
-                dispatch(setAfficherAlertModal(false));
+                dispatch(setAfficherAlert(false));
                 closeToast();
               }}
             >
@@ -51,7 +51,7 @@ function Alert() {
         }
       );
     }
-  }, [afficherAlertModal]);
+  }, [afficherAlert]);
   return (
     <>
       <ToastContainer

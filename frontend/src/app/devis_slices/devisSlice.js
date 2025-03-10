@@ -79,7 +79,6 @@ export const getTotalChiffres = createAsyncThunk(
 export const getDevisParNUMBL = createAsyncThunk(
   "Slice/getDevisParNUMBL",
   async (NUMBL, thunkAPI) => {
-    const codeuser = localStorage.getItem("codeuser");
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().UtilisateurInfo.dbName
@@ -87,7 +86,7 @@ export const getDevisParNUMBL = createAsyncThunk(
       {
         params: {
           NUMBL,
-          codeuser,
+          codeuser: thunkAPI.getState().UtilisateurInfo.codeuser,
         },
       }
     );
@@ -206,6 +205,20 @@ export const getListePointsVente = createAsyncThunk(
   }
 );
 
+export const getDerniereNumbl = createAsyncThunk(
+  "devisSlice/getDerniereNumbl",
+  async(_,thunkAPI) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/devis/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getDerniereNumbl`
+    );
+
+    console.log(response.data.derniereNumbl);
+    return response.data.derniereNumbl
+  }
+)
+
 export const devisSlice = createSlice({
   name: "devisSlice",
   initialState: {
@@ -259,7 +272,7 @@ export const devisSlice = createSlice({
         ADRCLI: "",
         CODECLI: "",
         cp: "",
-        DATEBL: new Date().toLocaleDateString("fr-FR"),
+        DATEBL: new Date().toISOString().split("T")[0],
         MREMISE: "",
         MTTC: "",
         MTVA: "",
@@ -419,6 +432,21 @@ export const devisSlice = createSlice({
         state.status = "reussi";
       })
       .addCase(getLignesDevis.rejected, (state, action) => {
+        state.erreur = action.payload;
+        state.status = "echoue";
+      })
+      
+      .addCase(getDerniereNumbl.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getDerniereNumbl.fulfilled, (state, action) => {
+        console.log(action.payload.NUMBL.substring(2, 9));
+        state.devisInfo.NUMBL = 'DV' + (parseInt(action.payload.NUMBL.substring(2, 9)) + 1).toString();
+
+        console.log(state.devisInfo.NUMBL);
+        state.status = "reussi";
+      })
+      .addCase(getDerniereNumbl.rejected, (state, action) => {
         state.erreur = action.payload;
         state.status = "echoue";
       });

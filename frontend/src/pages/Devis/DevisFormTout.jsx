@@ -14,6 +14,7 @@ import { getArticleFamiles } from "../../app/article_slices/articleSlice";
 
 function DevisFormTout() {
   const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
+  const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
   // * useEffect #1 : désactiver tous les champs
   // * et indiquer qu'on va utiliser la table de devis
   const dispatch = useDispatch();
@@ -39,7 +40,7 @@ function DevisFormTout() {
       </div>
 
       {/* Table des articles */}
-      <ArticlesDevis></ArticlesDevis>
+      {toolbarMode === "ajout" && <ArticlesDevis />}
       <div className="mt-6">
         <div className="p-4 sticky bottom-0 w-full">
           <table className="min-w-full table-auto border-collapse border border-gray-300">
