@@ -36,7 +36,7 @@ function DevisForm() {
   // * pour afficher ses informations dans les champs
   // * du formulaire
   const handleSelectDevis = (e) => {
-    if (e.target.value != "vide") {
+    if (e.target.value != "") {
       console.log(devisInfos);
       dispatch(getDevisParNUMBL(e.target.value));
       dispatch(getLignesDevis(devisInfos.NUMBL));

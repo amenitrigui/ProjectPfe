@@ -22,6 +22,7 @@ function ClientForm() {
 
   const infosUtilisateur = useSelector((state) => state.UtilisateurInfo.infosUtilisateur);
 
+
   // state pour désactiver/activer les champs lors de changement de modes editables (ajout/modification)
   // vers le mode de consultation respectivement
   const activerChampsForm = useSelector(
