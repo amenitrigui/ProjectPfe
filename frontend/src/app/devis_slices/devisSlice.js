@@ -17,10 +17,12 @@ export const getDevisList = createAsyncThunk(
 // * Action asynchrone pour récupérer les lignes d'articles d'un devis
 export const getLignesDevis = createAsyncThunk(
   "slice/getLignesDevis",
-  async (NumBL,thunkAPI) => {
+  async (NumBL, thunkAPI) => {
     console.log(NumBL);
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/devis/${thunkAPI.getState().UtilisateurInfo.dbName}/getLignesDevis`,
+      `${process.env.REACT_APP_API_URL}/api/devis/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getLignesDevis`,
       {
         params: { NumBL },
       }
@@ -37,7 +39,9 @@ export const AjouterDevis = createAsyncThunk(
     console.log("ddd");
     const devisInfo = thunkAPI.getState().DevisCrud.devisInfo;
     const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/devis/${thunkAPI.getState().UtilisateurInfo.dbName}/create`,
+      `${process.env.REACT_APP_API_URL}/api/devis/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/create`,
       { devisInfo }
     );
     console.log(response);
@@ -48,9 +52,11 @@ export const AjouterDevis = createAsyncThunk(
 // * Action asynchrone pour récupérer le nombre des devis générées
 export const getNombreTotalDevis = createAsyncThunk(
   "Slice/getNmobredevis",
-  async (_,thunkAPI) => {
+  async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/devis/${thunkAPI.getState().UtilisateurInfo.dbName}/devis/total`
+      `${process.env.REACT_APP_API_URL}/api/devis/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/devis/total`
     );
     return response.data.totalDevis;
   }
@@ -59,9 +65,11 @@ export const getNombreTotalDevis = createAsyncThunk(
 // * Action asynchrone pour récupérer la totalité des chiffres générés par des devis
 export const getTotalChiffres = createAsyncThunk(
   "slice/getNombreTotal",
-  async (_,thunkAPI) => {
+  async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/devis/${thunkAPI.getState().UtilisateurInfo.dbName}/devis/totalchiffre`
+      `${process.env.REACT_APP_API_URL}/api/devis/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/devis/totalchiffre`
     );
     return response.data.totalchifre;
   }
@@ -70,10 +78,12 @@ export const getTotalChiffres = createAsyncThunk(
 // * Action asynchrone pour récupérer un devis par son code
 export const getDevisParNUMBL = createAsyncThunk(
   "Slice/getDevisParNUMBL",
-  async (NUMBL,thunkAPI) => {
+  async (NUMBL, thunkAPI) => {
     const codeuser = localStorage.getItem("codeuser");
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/devis/${thunkAPI.getState().UtilisateurInfo.dbName}/getDevisParNUMBL`,
+      `${process.env.REACT_APP_API_URL}/api/devis/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getDevisParNUMBL`,
       {
         params: {
           NUMBL,
@@ -91,10 +101,12 @@ export const getDevisParNUMBL = createAsyncThunk(
 // ! exemple: si on cherche par le montant 3205, on peut retourner des résultat pour 3205.7 et ainsi de suite
 export const getDevisParMontant = createAsyncThunk(
   "devisSlice/getDevisParMontant",
-  async (montant,thunkAPI) => {
+  async (montant, thunkAPI) => {
     const codeuser = localStorage.getItem("codeuser");
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/devis/${thunkAPI.getState().UtilisateurInfo.dbName}/getDevisParMontant`,
+      `${process.env.REACT_APP_API_URL}/api/devis/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getDevisParMontant`,
       {
         params: {
           montant,
@@ -110,10 +122,12 @@ export const getDevisParMontant = createAsyncThunk(
 // * Action asynchrone pour récupérer la liste des devis pour un client
 export const getDevisParCodeClient = createAsyncThunk(
   "slice/getDevisParCodeClient",
-  async (CODECLI,thunkAPI) => {
+  async (CODECLI, thunkAPI) => {
     const codeuser = localStorage.getItem("codeuser");
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/devis/${thunkAPI.getState().UtilisateurInfo.dbName}/getDevisParClient`,
+      `${process.env.REACT_APP_API_URL}/api/devis/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getDevisParClient`,
       {
         params: {
           CODECLI,
@@ -129,9 +143,11 @@ export const getDevisParCodeClient = createAsyncThunk(
 // * Action asynchrone pour récuperer les informations d'utilisateur courament connecté
 export const getInfoUtilisateur = createAsyncThunk(
   "slice/getInfoUtilisateur",
-  async (usera,thunkAPI) => {
+  async (usera, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/devis/${thunkAPI.getState().UtilisateurInfo.dbName}/getInfoUtilisateur`,
+      `${process.env.REACT_APP_API_URL}/api/devis/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getInfoUtilisateur`,
       {
         params: {
           usera,
@@ -146,10 +162,12 @@ export const getInfoUtilisateur = createAsyncThunk(
 // * Action asynchrone pour récupérer la liste des devis pendant une période spécifique
 export const getDevisParPeriode = createAsyncThunk(
   "slice/getDevisParPeriode",
-  async (DATEBL,thunkAPI) => {
+  async (DATEBL, thunkAPI) => {
     const codeuser = localStorage.getItem("codeuser");
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/devis/${thunkAPI.getState().UtilisateurInfo.dbName}/getDevisParPeriode`,
+      `${process.env.REACT_APP_API_URL}/api/devis/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getDevisParPeriode`,
       {
         params: {
           DATEBL,
@@ -164,9 +182,11 @@ export const getDevisParPeriode = createAsyncThunk(
 // * Action asynchrone pour récupérer la liste des codes des devis
 export const getListeNumbl = createAsyncThunk(
   "devisSlice/getListeNUMBL",
-  async (_,thunkAPI) => {
+  async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/devis/${thunkAPI.getState().UtilisateurInfo.dbName}/getListeNUMBL`
+      `${process.env.REACT_APP_API_URL}/api/devis/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getListeNUMBL`
     );
     return response.data.listeNUMBL;
   }
@@ -175,9 +195,11 @@ export const getListeNumbl = createAsyncThunk(
 // * Action asynchrone pour récupérer la liste des points de vente d'une societé
 export const getListePointsVente = createAsyncThunk(
   "devisSlice/getListePointsVente",
-  async (_,thunkAPI) => {
+  async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/devis/${thunkAPI.getState().UtilisateurInfo.dbName}/getListePointVente`
+      `${process.env.REACT_APP_API_URL}/api/devis/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getListePointVente`
     );
 
     return response.data.pointsVenteDistincts;
@@ -229,6 +251,28 @@ export const devisSlice = createSlice({
     },
     setDevisInfoEntiere: (state, action) => {
       state.devisInfo = action.payload;
+    },
+    viderChampsDevisInfo: (state) => {
+      state.devisInfo = {
+        NUMBL: "",
+        libpv: "",
+        ADRCLI: "",
+        CODECLI: "",
+        cp: "",
+        DATEBL: new Date().toLocaleDateString("fr-FR"),
+        MREMISE: "",
+        MTTC: "",
+        MTVA: "",
+        comm: "",
+        RSREP: "",
+        CODEREP: "",
+        TIMBRE: "",
+        usera: "",
+        RSCLI: "",
+        codesecteur: "",
+        MHT: "",
+        articles: [],
+      };
     },
   },
 
@@ -380,7 +424,11 @@ export const devisSlice = createSlice({
       });
   },
 });
-export const { setDevisInfo, setDevisList, setDevisInfoEntiere } =
-  devisSlice.actions;
+export const {
+  setDevisInfo,
+  setDevisList,
+  setDevisInfoEntiere,
+  viderChampsDevisInfo,
+} = devisSlice.actions;
 
 export default devisSlice.reducer;

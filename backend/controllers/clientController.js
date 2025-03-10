@@ -194,7 +194,7 @@ const getClientParCode = async (req, res) => {
 };
 
 // * mettre à jour un client d'une societé donnée comme paramètre de requete (dbName)
-
+// ! AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 const majClient = async (req, res) => {
   const { dbName } = req.params;
   const { clientUpdate } = req.body;
@@ -329,7 +329,7 @@ const getDerniereCodeClient = async (req, res) => {
     const { dbName } = req.params;
     const dbConnection = await getDatabaseConnection(dbName, res);
     const derniereCodeClient = await dbConnection.query(
-      `SELECT code FROM client order by (code) desc LIMIT 1`,
+      `SELECT code FROM CLIENT ORDER BY CAST(code AS UNSIGNED) DESC LIMIT 1`,
       {
         type: dbConnection.QueryTypes.SELECT,
       }

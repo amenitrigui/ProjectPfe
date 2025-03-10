@@ -170,6 +170,9 @@ export const clientSlice = createSlice({
       cp: "",
       email: "",
       telephone: "",
+      tel1: "",
+      tel2: "",
+      telex: "",
       desrep: "",
       aval2: "",
       aval1: "",
@@ -199,6 +202,7 @@ export const clientSlice = createSlice({
       activite: "",
       typecli: "L",
       cin: "",
+      fax:"",
       secteur: {
         codesec: "",
         desisec: "",
@@ -253,7 +257,20 @@ export const clientSlice = createSlice({
     viderChampsClientInfo: (state) => {
       state.clientInfos = {
         code: "",
+        nature: "",
         rsoc: "",
+        nom1: "",
+        nom2: "",
+        nom3: "",
+        titre1: "",
+        titre2: "",
+        titre3: "",
+        gsm1: "",
+        gsm2: "",
+        gsm3: "",
+        nposte1: "",
+        nposte2: "",
+        nposte3: "",
         adresse: "",
         cp: "",
         email: "",
@@ -261,6 +278,7 @@ export const clientSlice = createSlice({
         desrep: "",
         aval2: "",
         aval1: "",
+        tarif: "",
         Commentaire: "",
         datemaj: "",
         userm: "",
@@ -273,6 +291,7 @@ export const clientSlice = createSlice({
         exon: "",
         majotva: "",
         fidel: "",
+        banque: "",
         datefinaut: "",
         datedebaut: "",
         decision: "",
@@ -366,7 +385,6 @@ export const clientSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(majClient.fulfilled, (state, action) => {
-        state.clientInfos=action.payload;
         state.status = "réussi";
       })
       .addCase(majClient.rejected, (state, action) => {
