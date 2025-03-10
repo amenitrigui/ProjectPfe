@@ -22,7 +22,7 @@ export const uiSlice = createSlice({
     activerChampsForm: false,
     // * state pour afficher/cacher les boutons de validation/annulation
     activerBoutonsValiderAnnuler: false,
-    // * mode de toolbar: editable/consultation
+    // * mode de toolbar: insertion/modification/consultation
     toolbarMode: "",
   },
 

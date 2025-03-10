@@ -134,28 +134,24 @@ function ToolBar() {
   const handleValiderBtnClick = () => {
     if (toolbarTable == "client") {
       if (toolbarMode == "ajout") {
-        console.log("ajout d'un nouveau client");
         dispatch(ajouterClient());
-        dispatch(setAlertMessage("Ajouté avec succès"));
       }
 
-      if(toolbarMode == "modification") {
-        console.log("modification d'un client");
-        dispatch(majClient()); 
-        dispatch(viderChampsClientInfo());
+      if (toolbarMode == "modification") {
+        dispatch(majClient());
         dispatch(setActiverChampsForm(false));
         dispatch(setActiverBoutonsValiderAnnuler(false));
+        dispatch(viderChampsClientInfo());
       }
     }
     if (toolbarTable == "devis") {
       if (toolbarMode == "ajout") {
-        console.log("ajout d'un nouveau devis");
         dispatch(AjouterDevis());
         dispatch(setActiverChampsForm(true));
       }
 
-      if(toolbarMode == "modification") {
-        console.log("modification d'un devis")
+      if (toolbarMode == "modification") {
+        console.log("modification d'un devis");
         // dispatch(majDevis())
       }
     }
@@ -182,6 +178,14 @@ function ToolBar() {
       navigate("/clientList");
     }
   };
+
+  const handleNaviguerVersPrecedent =() => {
+    console.log("naviguer ver l'élèment précedent")
+  }
+
+  const handleNaviguerVersSuivant = () => {
+    console.log("naviguer vers l'élèment suivant");
+  }
   return (
     <>
       <nav className="w-full h-[110px] border-b border-gray-700 flex items-center px-6 mb-1/2">
@@ -280,13 +284,13 @@ function ToolBar() {
           )}
 
           {!activerBoutonsValiderAnnuler && (
-            <button className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100">
+            <button className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100" onClick={handleNaviguerVersPrecedent}>
               <FontAwesomeIcon icon={faArrowLeft} className="text-3xl" />
             </button>
           )}
 
           {!activerBoutonsValiderAnnuler && (
-            <button className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100">
+            <button className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100" onClick={handleNaviguerVersSuivant}>
               <FontAwesomeIcon icon={faArrowRight} className="text-3xl" />
             </button>
           )}
