@@ -28,33 +28,14 @@ function DevisFormTout() {
   
 
   return (
-    <div className="bg-gray-100 min-h-screen p-6">
+    <div className="bg-gray-100 min-h-screen p-1 mb-1/2">
       {/* Toolbar et Sidebar */}
 
-      <div className="drawer">
-        <input type="checkbox" id="my-drawer" className="drawer-toggle" />
-
-        <div className="drawer-content">
-          {/* Contenu principal ici */}
-          <div className="flex justify-end">
-            <label
-              htmlFor="my-drawer"
-              className="btn btn-primary drawer-button m-4 w-40 flex items-center justify-center"
-            >
-              <img src="enter.png" alt="enter Icon" className="w-6 h-6 mr-2" />
-              Entrer
-            </label>
-          </div>
-        </div>
-        <div className="drawer-side">
-          <label htmlFor="my-drawer" className="drawer-overlay"></label>
-          <SideBar />
-        </div>
-      </div>
+      
       <ToolBar />
-
+      <DevisForm />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <DevisForm />
+       
       </div>
 
       {/* Table des articles */}

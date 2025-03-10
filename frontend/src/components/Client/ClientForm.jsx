@@ -66,6 +66,7 @@ function ClientForm() {
         <div className="flex w-full">
           <div className="card bg-base-300 rounded-box p-6 w-1/3 space-y-2">
             {/* Conteneur pour Code Client, Type Client et CIN */}
+            <fieldset className="fieldset bg-base-300 border border-base-100 p-2 rounded-box">
 
             <div className="flex flex-wrap">
               <div className="flex flex-col w-1/3">
@@ -321,10 +322,12 @@ function ClientForm() {
                 </div>
               </div>
             </div>
+            </fieldset>
           </div>
           {/* <div className="divider lg:divider-horizontal" /> */}
 
           <div className="card bg-base-300 rounded-box p-6 w-1/2 space-y-2">
+          
             <div className="flex flex-col items-end">
               <input
                 type="date"
@@ -620,6 +623,7 @@ function ClientForm() {
                 </tr>
               </tbody>
             </table>
+     
           </div>
 
           {/* <div className="divider lg:divider-horizontal" /> */}

@@ -82,216 +82,430 @@ function DevisForm() {
 
   return (
     <>
-      <div className="space-y-4 p-6 border rounded-lg shadow-md bg-white">
-        <h3 className="text-lg font-bold flex items-center space-x-2">
-          <FaFileInvoice className="text-blue-500" />
-          <span>Identifiants Devis</span>
-        </h3>
-        <label className="block font-medium">N° Devis :</label>
-        <select
-          className="select select-bordered w-full max-w-xs"
-          disabled={activerChampsForm}
-          onChange={(e) => handleSelectDevis(e)}
-        >
-          {devisInfos.NUMBL == "" && (
-            <option value={devisInfos.NUMBL}>
-              Veuillez sélectionner un devis
-            </option>
-          )}
-          {devisInfos.NUMBL && (
-            <option value={devisInfos.NUMBL}>{devisInfos.NUMBL}</option>
-          )}
-          {listeNUMBL.map((codeDevis) => (
-            <option key={codeDevis.NUMBL} value={codeDevis.NUMBL}>
-              {codeDevis.NUMBL}
-            </option>
-          ))}
-        </select>
+    <form className="grid grid-cols-1 space-y-2 items-center bg-base-300" style={{ backgroundColor: "rgb(209, 213, 219)" }}>
 
-        <label className="block font-medium">Point de vente :</label>
-        <select
-          className="select select-bordered w-full max-w-xs"
-          disabled={!activerChampsForm}
-        >
-          {listePointsVente.map((pointVente) => (
-            <option key={pointVente.libpv} value={pointVente.libpv}>
-              {pointVente.libpv}
-            </option>
-          ))}
-        </select>
-      </div>
+        <div className="flex w-full">
 
-      {/* Information Client */}
-      <div className="space-y-4 p-6 border rounded-lg shadow-md bg-white">
-        <h3 className="text-lg font-bold flex items-center space-x-2">
-          <FaUser className="text-green-500" />
-          <span>Information Client</span>
-          <button
-            className="btn btn-outline btn-accent"
-            onClick={() => handleAjoutClientRedirect()}
-          >
-            {" "}
-            <i className="fas fa-plus-circle"></i>
-          </button>
-        </h3>
-        <label className="block font-medium">Code Client :</label>
-        <input
-          type="text"
-          className="w-full border border-gray-300 rounded-md p-2"
-          disabled={!activerChampsForm}
-          defaultValue={devisInfos.CODECLI} // Assurez-vous d'avoir cet état dans votre composant
-          onChange={(e) =>
-            setDevisInfo({ collone: "CODECLI", valeur: e.target.value })
-          } // Mettez à jour l'état
-        />
+        <div className="card bg-base-300 rounded-box p-6 w-1/3 space-y-2" style={{ backgroundColor: "rgb(209, 213, 219)" }}>
 
-        <label className="block font-medium">Raison Sociale :</label>
-        <input
-          type="text"
-          className="w-full border border-gray-300 rounded-md p-2"
-          disabled={!activerChampsForm}
-          defaultValue={devisInfos.RSCLI} // Assurez-vous d'avoir cet état dans votre composant
-          onChange={(e) =>
-            setDevisInfo({ collone: "RSCLI", valeur: e.target.value })
-          } // Mettez à jour l'état
-        />
+            {/* Conteneur pour Code Client, Type Client et CIN */}
+            <fieldset className="fieldset bg-base-300 border border-base-100 p-2 rounded-box">
+            <h3 className="text-lg font-bold flex items-center space-x-2">
+              <FaFileInvoice className="text-blue-500" />
+              <span>Identifiants Devis</span>
+            </h3>
+            <div className="flex flex-wrap">
+              <div className="flex flex-col w-1/2">
+                <label
+                  className="font-bold mb-1"
+                  style={{ color: "rgb(48, 60, 123)" }}
+                >
+                  N° Devis :
+                </label>
+                <select
+                  className="select select-bordered w-full max-w-xs"
+                  disabled={activerChampsForm}
+                  onChange={(e) => handleSelectDevis(e)}
+                >
+                  {devisInfos.NUMBL == "" && (
+                    <option value={devisInfos.NUMBL}>
+                      Veuillez sélectionner un devis
+                    </option>
+                  )}
+                  {devisInfos.NUMBL && (
+                    <option value={devisInfos.NUMBL}>{devisInfos.NUMBL}</option>
+                  )}
+                  {listeNUMBL.map((codeDevis) => (
+                    <option key={codeDevis.NUMBL} value={codeDevis.NUMBL}>
+                      {codeDevis.NUMBL}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col w-1/2">
+                <label
+                  className="font-bold mb-1"
+                  style={{ color: "rgb(48, 60, 123)" }}
+                >
+                  Point de vente :
+                </label>
+                <select
+                  className="select select-bordered w-full max-w-xs"
+                  disabled={!activerChampsForm}
+                >
+                  {listePointsVente.map((pointVente) => (
+                    <option key={pointVente.libpv} value={pointVente.libpv}>
+                      {pointVente.libpv}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </fieldset></div>
+          {/* <div className="divider lg:divider-horizontal" /> */}
+{/* 2eme */}
+<div className="card bg-base-300 rounded-box p-6 w-1/3 space-y-2">
+            <fieldset className="fieldset bg-base-300 border border-base-100 p-2 rounded-box">
+              <h3 className="text-lg font-bold flex items-center space-x-2">
+                <FaUser className="text-green-500" />
+                <span>Information Client</span>
+                <button
+                  className="btn btn-outline btn-accent"
+                  onClick={() => handleAjoutClientRedirect()}
+                >
+                  {" "}
+                  <i className="fas fa-plus-circle"></i>
+                </button>
+              </h3>
+              <div className="w-full min-w-md">
+                <div className="flex flex-nowrap">
+                  <div className="flex flex-col w-1/2">
+                    <label
+                      className="font-bold"
+                      style={{ color: "rgb(48, 60, 123)" }}
+                    >
+                      Code Client : :
+                    </label>
 
-        <label className="block font-medium">Adresse :</label>
-        <input
-          type="text"
-          className="w-full border border-gray-300 rounded-md p-2"
-          disabled={!activerChampsForm}
-          defaultValue={devisInfos.ADRCLI} // Assurez-vous d'avoir cet état dans votre composant
-          onChange={(e) =>
-            setDevisInfo({ collone: "ADRCLI", valeur: e.target.value })
-          } // Mettez à jour l'état
-        />
+                    <input
+                      type="text"
+                      className="w-full border border-gray-300 rounded-md p-2"
+                      disabled={!activerChampsForm}
+                      defaultValue={devisInfos.CODECLI} // Assurez-vous d'avoir cet état dans votre composant
+                      onChange={(e) =>
+                        setDevisInfo({
+                          collone: "CODECLI",
+                          valeur: e.target.value,
+                        })
+                      } // Mettez à jour l'état
+                    />
+                  </div>
 
-        <label className="block font-medium">Code Postal :</label>
-        <input
-          type="text"
-          className="w-full border border-gray-300 rounded-md p-2"
-          disabled={!activerChampsForm}
-          defaultValue={devisInfos.cp} // Assurez-vous d'avoir cet état dans votre composant
-          onChange={(e) =>
-            setDevisInfo({ collone: "cp", valeur: e.target.value })
-          } // Mettez à jour l'état
-        />
+                  <div className="flex flex-col w-1/2">
+                    <label
+                      className="font-bold"
+                      style={{ color: "rgb(48, 60, 123)" }}
+                    >
+                      Raison Sociale :.
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full border border-gray-300 rounded-md p-2"
+                      disabled={!activerChampsForm}
+                      defaultValue={devisInfos.RSCLI} // Assurez-vous d'avoir cet état dans votre composant
+                      onChange={(e) =>
+                        setDevisInfo({
+                          collone: "RSCLI",
+                          valeur: e.target.value,
+                        })
+                      } // Mettez à jour l'état
+                    />
+                  </div>
+                </div>
 
-        <label className="block font-medium">Email :</label>
-        <input
-          type="email"
-          className="w-full border border-gray-300 rounded-md p-2"
-          disabled={!activerChampsForm}
-        />
+                <div className="flex flex-col">
+                  <label
+                    className="font-bold"
+                    style={{ color: "rgb(48, 60, 123)" }}
+                  >
+                    Adresse : :
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full border border-gray-300 rounded-md p-2"
+                    disabled={!activerChampsForm}
+                    defaultValue={devisInfos.ADRCLI} // Assurez-vous d'avoir cet état dans votre composant
+                    onChange={(e) =>
+                      setDevisInfo({
+                        collone: "ADRCLI",
+                        valeur: e.target.value,
+                      })
+                    } // Mettez à jour l'état
+                  />
+                </div>
 
-        <label className="block font-medium">Téléphone :</label>
-        <input
-          type="text"
-          className="w-full border border-gray-300 rounded-md p-2"
-          disabled={!activerChampsForm}
-        />
-      </div>
+                <div className="flex flex-col">
+                  <label
+                    className="font-bold"
+                    style={{ color: "rgb(48, 60, 123)" }}
+                  >
+                    Code Postal :
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full border border-gray-300 rounded-md p-2"
+                    disabled={!activerChampsForm}
+                    defaultValue={devisInfos.cp} // Assurez-vous d'avoir cet état dans votre composant
+                    onChange={(e) =>
+                      setDevisInfo({ collone: "cp", valeur: e.target.value })
+                    } // Mettez à jour l'état
+                  />
+                </div>
 
-      {/* Détails Devis */}
-      <div className="space-y-4 p-6 border rounded-lg shadow-md bg-white">
-        <h3 className="text-lg font-bold flex items-center space-x-2">
-          <FaClipboardList className="text-purple-500" />
-          <span>Détails Devis</span>
-        </h3>
-        <label className="block font-medium">Date :</label>
-        <input
-          type="date"
-          className="w-full border border-gray-300 rounded-md p-2"
-          disabled={!activerChampsForm}
-          defaultValue={devisInfos.DATEBL} // Assurez-vous d'avoir cet état dans votre composant
-          onChange={(e) =>
-            setDevisInfo({ collone: "DATEBL", valeur: e.target.value })
-          } // Mettez à jour l'état
-        />
-        <label className="block font-medium">Transport :</label>
-        <input
-          type="text"
-          className="w-full border border-gray-300 rounded-md p-2"
-          disabled={!activerChampsForm}
-        />
+                <div className="flex flex-col">
+                  <label
+                    className="font-bold"
+                    style={{ color: "rgb(48, 60, 123)" }}
+                  >
+                    Email :
+                  </label>
+                  <input
+                    type="email"
+                    className="w-full border border-gray-300 rounded-md p-2"
+                    disabled={!activerChampsForm}
+                  />
+                </div>
 
-        <label className="block font-medium">À l'attention de :</label>
-        <input
-          type="text"
-          className="w-full border border-gray-300 rounded-md p-2"
-          disabled={!activerChampsForm}
-        />
+                <div className="flex flex-col">
+                  <label
+                    className="font-bold"
+                    style={{ color: "rgb(48, 60, 123)" }}
+                  >
+                    Téléphone :
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full border border-gray-300 rounded-md p-2"
+                    disabled={!activerChampsForm}
+                  />
+                </div>
 
-        <label className="block font-medium">Délai de livraison :</label>
-        <input
-          type="text"
-          className="w-full border border-gray-300 rounded-md p-2"
-          disabled={!activerChampsForm}
-        />
-      </div>
+                
 
-      {/* Informations de l'Utilisateur */}
-      <div className="space-y-4 p-6 border rounded-lg shadow-md bg-white">
-        <h3 className="text-lg font-bold flex items-center space-x-2">
-          <FaUsers className="text-red-500" />
-          <span>Informations de l'Utilisateur</span>
-        </h3>
+               
 
-        <label className="block font-medium">Vendeur :</label>
-        <input
-          type="text"
-          className="w-full border border-gray-300 rounded-md p-2"
-          disabled={!activerChampsForm}
-          defaultValue={devisInfos.usera} // Assurez-vous d'avoir cet état dans votre composant
-          onChange={(e) =>
-            setDevisInfo({ collone: "usera", valeur: e.target.value })
-          } // Mettez à jour l'état
-        />
+                
 
-        <label className="block font-medium">RSREP :</label>
-        <input
-          type="text"
-          className="w-full border border-gray-300 rounded-md p-2"
-          disabled={!activerChampsForm}
-          defaultValue={devisInfos.RSREP} // Assurez-vous d'avoir cet état dans votre composant
-          onChange={(e) =>
-            setDevisInfo({ collone: "RSREP", valeur: e.target.value })
-          } // Mettez à jour l'état
-        />
-        <label className="block font-medium">Code Secteur :</label>
-        <input
-          type="text"
-          className="w-full border border-gray-300 rounded-md p-2"
-          disabled={!activerChampsForm}
-          defaultValue={devisInfos.codesecteur} // Assurez-vous d'avoir cet état dans votre composant
-          onChange={(e) =>
-            setDevisInfo({ collone: "codesecteur", valeur: e.target.value })
-          } // Mettez à jour l'état
-        />
+               
 
-        <label className="block font-medium">Désignation Secteur :</label>
-        <input
-          type="text"
-          className="w-full border border-gray-300 rounded-md p-2"
-          disabled={!activerChampsForm}
-        />
+               
+              </div>
+            </fieldset>
+          </div>
 
-        <label className="block font-medium mt-4">Commentaire :</label>
-        <textarea
-          rows="3"
-          className="w-full border border-gray-300 rounded-md p-2"
-          defaultValue={devisInfos.comm}
-          disabled={!activerChampsForm}
-        ></textarea>
 
-        <label className="block font-medium mt-4">Affaire :</label>
-        <input
-          type="text"
-          className="w-full border border-gray-300 rounded-md p-2"
-          disabled={!activerChampsForm}
-        />
-      </div>
+
+
+         
+
+          {/* <div className="divider lg:divider-horizontal" /> */}
+
+          <div className="card bg-base-300 rounded-box p-6 w-1/3 space-y-2">
+            <fieldset className="fieldset bg-base-300 border border-base-100 p-2 rounded-box">
+              <h3 className="text-lg font-bold flex items-center space-x-2">
+                <FaClipboardList className="text-purple-500" />
+                <span>Détails Devis</span>
+              </h3>
+
+              <div className="w-full min-w-md">
+                <div className="flex flex-nowrap">
+                  <div className="flex flex-col w-1/2">
+                    <label
+                      className="font-bold"
+                      style={{ color: "rgb(48, 60, 123)" }}
+                    >
+                      Date :
+                    </label>
+
+                    <input
+                      type="date"
+                      className="w-full border border-gray-300 rounded-md p-2"
+                      disabled={!activerChampsForm}
+                      defaultValue={devisInfos.DATEBL} // Assurez-vous d'avoir cet état dans votre composant
+                      onChange={(e) =>
+                        setDevisInfo({
+                          collone: "DATEBL",
+                          valeur: e.target.value,
+                        })
+                      } // Mettez à jour l'état
+                    />
+                  </div>
+
+                  <div className="flex flex-col w-1/2">
+                    <label
+                      className="font-bold"
+                      style={{ color: "rgb(48, 60, 123)" }}
+                    >
+                      Transport.
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full border border-gray-300 rounded-md p-2"
+                      disabled={!activerChampsForm}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-col">
+                  <label
+                    className="font-bold"
+                    style={{ color: "rgb(48, 60, 123)" }}
+                  >
+                    À l'attention de :
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full border border-gray-300 rounded-md p-2"
+                    disabled={!activerChampsForm}
+                  />
+                </div>
+
+                <div className="flex flex-col">
+                  <label
+                    className="font-bold"
+                    style={{ color: "rgb(48, 60, 123)" }}
+                  >
+                    Délai de livraison :
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full border border-gray-300 rounded-md p-2"
+                    disabled={!activerChampsForm}
+                  />
+                </div>
+
+               
+
+                
+
+               
+
+                
+
+                
+
+                
+
+               
+              </div>
+            </fieldset>
+          </div>
+
+          {/* 4eme  */}
+          <div className="card bg-base-300 rounded-box p-6 w-1/3 space-y-2">
+          <fieldset className="fieldset bg-base-300 border border-base-100 p-2 rounded-box">
+            <h3 className="text-lg font-bold flex items-center space-x-2">
+              <FaUsers className="text-red-500" />
+              <span>Informations de l'Utilisateur</span>
+            </h3>
+
+            {/* Conteneur pour Code Client, Type Client et CIN */}
+            <div className="flex flex-wrap">
+              <div className="flex flex-col w-1/3">
+                <label
+                  className="font-bold mb-1"
+                  style={{ color: "rgb(48, 60, 123)" }}
+                >
+                  Vendeur :
+                </label>
+
+                <input
+                  type="text"
+                  className="w-full border border-gray-300 rounded-md p-2"
+                  disabled={!activerChampsForm}
+                  defaultValue={devisInfos.usera} // Assurez-vous d'avoir cet état dans votre composant
+                  onChange={(e) =>
+                    setDevisInfo({ collone: "usera", valeur: e.target.value })
+                  }
+                />
+              </div>
+              <div className="flex flex-col w-2/3">
+                <label
+                  className="font-bold mb-1"
+                  style={{ color: "rgb(48, 60, 123)" }}
+                >
+                  RSREP :
+                </label>
+                <input
+                  type="text"
+                  className="w-full border border-gray-300 rounded-md p-2"
+                  disabled={!activerChampsForm}
+                  defaultValue={devisInfos.RSREP} // Assurez-vous d'avoir cet état dans votre composant
+                  onChange={(e) =>
+                    setDevisInfo({ collone: "RSREP", valeur: e.target.value })
+                  }
+                />
+              </div>
+              
+
+            </div>
+            <div className="flex flex-wrap">
+            <div className="flex flex-col w-1/4">
+                <label
+                  className="font-bold mb-1"
+                  style={{ color: "rgb(48, 60, 123)" }}
+                >
+                  CodeSec :
+                </label>
+                <input
+                  type="text"
+                  className="w-full border border-gray-300 rounded-md p-2"
+                  disabled={!activerChampsForm}
+                  defaultValue={devisInfos.codesecteur} // Assurez-vous d'avoir cet état dans votre composant
+                  onChange={(e) =>
+                    setDevisInfo({
+                      collone: "codesecteur",
+                      valeur: e.target.value,
+                    })
+                  }
+                />
+                
+
+
+              </div>
+              <div className="flex flex-col w-3/4">
+                <label
+                  className="font-bold mb-1"
+                  style={{ color: "rgb(48, 60, 123)" }}
+                >
+                  Désignation Secteur :
+                </label>
+                <input
+                  type="text"
+                  className="w-full border border-gray-300 rounded-md p-2"
+                  disabled={!activerChampsForm}
+                />
+              </div>
+              </div>
+
+            <div className="flex flex-wrap">
+              
+              <div className="flex flex-col w-full">
+                <label
+                  className="font-bold mb-1"
+                  style={{ color: "rgb(48, 60, 123)" }}
+                >
+                  Commentaire :
+                </label>
+                <textarea
+                  rows={4}
+                  cols={50}
+                  className="w-full border border-gray-300 rounded-md p-2"
+                  defaultValue={devisInfos.comm}
+                  disabled={!activerChampsForm}
+                ></textarea>
+              </div>
+            </div>
+            <div className="flex flex-nowrap">
+              <div className="flex flex-col w-full">
+                <label
+                  className="font-bold mb-1"
+                  style={{ color: "rgb(48, 60, 123)" }}
+                >
+                  Affaire :
+                </label>
+                <input
+                  type="text"
+                  className="w-full border border-gray-300 rounded-md p-2"
+                  disabled={!activerChampsForm}
+                />
+              </div>
+            </div>
+         </fieldset>
+          </div>
+         
+        </div>
+      </form>
     </>
   );
 }

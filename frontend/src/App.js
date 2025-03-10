@@ -29,27 +29,15 @@ import DevisFormTout from "./pages/Devis/DevisFormTout";
 import DevisFormPlaceholder from "./components/Devis/DevisFormPlaceholder";
 import Deconnexion from "./pages/authentication/Deconnexion";
 import ClientFormTout from "./pages/Clients/ClientFormTout";
+import Test from "./test/Test"
 import { useSelector } from "react-redux";
 
-
 function App() {
-  const notify = () => {
-    toast.success("Bienvenue sur la page d'accueil !", {
-      position: "top-center",
-      autoClose: 3000,
-      hideProgressBar: true,
-    });
-  };
+
 
   return (
     <Router>
-      <ToastContainer
-        position="top-center"
-        autoClose={3000}
-        hideProgressBar
-        closeOnClick
-        pauseOnHover
-      />
+     
 
       <Routes>
         <Route path="/" element={<SignInPage />} />
@@ -70,7 +58,7 @@ function App() {
         <Route path="/ClientFormTout" element={<ClientFormTout />} />
         <Route path="/Parent" element={<Parent />}></Route>
         <Route path="/DevisFormTout" element={<DevisFormTout />}></Route>
-      
+        <Route path="/Test" element={<Test />}></Route>
         
         <Route path="/DevisFormPlaceholder" element ={<DevisFormPlaceholder></DevisFormPlaceholder>}></Route>
       </Routes>

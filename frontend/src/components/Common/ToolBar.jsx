@@ -63,6 +63,7 @@ function ToolBar() {
   const handleAjout = async () => {
     dispatch(setActiverBoutonsValiderAnnuler(true));
     dispatch(setActiverChampsForm(true));
+
     // * vider les champs du formulaires
     if (toolbarTable == "devis") {
       dispatch(viderChampsClientInfo());
@@ -80,11 +81,11 @@ function ToolBar() {
   };
   // * méthode pour mettre à jour un client/devis
   const handleupdate = async () => {
-   // dispatch(majClient());
-    dispatch(setActiverBoutonsValiderAnnuler(true))
-    dispatch(setActiverChampsForm(true))
-   
-   // dispatch(getListeClient());
+    // dispatch(majClient());
+    dispatch(setActiverBoutonsValiderAnnuler(true));
+    dispatch(setActiverChampsForm(true));
+
+    // dispatch(getListeClient());
   };
 
   // * afficher la fenetre de confirmation
@@ -94,11 +95,9 @@ function ToolBar() {
   };
 
   // * méthode pour valider l'ajout d'un client/devis
-  const validerAjout = () => {
+  const validerAjout = async () => {
     if (toolbarTable == "client") {
-      dispatch(ajouterClient());
-      dispatch(getListeClient());
-      dispatch(setAlertMessage("Ajouté avec succès"));
+      dispatch(setAfficherAlertModal(true));
     }
     if (toolbarTable == "devis") {
       dispatch(AjouterDevis());
@@ -125,7 +124,7 @@ function ToolBar() {
   };
   return (
     <>
-      <nav className="w-full h-[110px] border-b border-gray-700 flex items-center px-6 mb-1/2">
+      <nav className="w-full h-[110px] border-b border-gray-700 flex items-center px-6">
         <div className="flex space-x-4">
           {!activerBoutonsValiderAnnuler && (
             <button
@@ -290,7 +289,14 @@ function ToolBar() {
       </nav>
 
       {toolbarTable == "devis" && (
-        <h2 className="text-black font-bold italic text-3xl">
+        <h2
+          style={{
+            color: "rgb(48, 60, 123)",
+            fontWeight: "bold",
+            fontStyle: "italic",
+          }}
+          className="text-3xl"
+        >
           Devis / Facture Proforma
         </h2>
       )}
@@ -303,7 +309,7 @@ function ToolBar() {
           }}
           className="text-3xl"
         >
-          FICHE CLIENT
+          Client / Facture Proforma
         </h2>
       )}
     </>

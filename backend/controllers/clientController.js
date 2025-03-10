@@ -329,7 +329,7 @@ const getDerniereCodeClient = async (req, res) => {
     const { dbName } = req.params;
     const dbConnection = await getDatabaseConnection(dbName, res);
     const derniereCodeClient = await dbConnection.query(
-      `SELECT code FROM client order by (code) desc LIMIT 1`,
+      `SELECT code FROM client order by CAST(code AS unsigned )DESC limit 1`,
       {
         type: dbConnection.QueryTypes.SELECT,
       }
