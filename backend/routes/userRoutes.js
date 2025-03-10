@@ -9,6 +9,7 @@ const {
   getAllSectors,
   sendPasswordResetEmail,
   passwordReset,
+  getUtilisateurParCode
 } = require("../controllers/UserController");
 const {
   getDevisDetails,
@@ -33,5 +34,7 @@ router.get("/get-devis-details/:databaseName", getLatestDevisByYear);
 router.get("/:databaseName/clients", getAllClients);
 // * récuperer la liste des secteurs ?
 router.get("/secteurs/:databaseName", getAllSectors);
+// * récuperer un utilisateur par son code
+router.get("/:dbName/getUtilisateurParCode", getUtilisateurParCode);
 
 module.exports = router;

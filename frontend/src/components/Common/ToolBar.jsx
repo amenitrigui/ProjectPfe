@@ -19,22 +19,20 @@ import {
   getDerniereCodeClient,
   getListeClient,
   majClient,
-  setClientInfosEntiere,
-  supprimerClient,
   viderChampsClientInfo,
 } from "../../app/client_slices/clientSlice";
 import {
   setAfficherAlertModal,
-  setMessageAlertModal,
   setAlertMessage,
   setActiverChampsForm,
   setActiverBoutonsValiderAnnuler,
+  setToolbarMode,
 } from "../../app/interface_slices/uiSlice";
 import {
   AjouterDevis,
-  setDevisInfoEntiere,
+  viderChampsDevisInfo,
 } from "../../app/devis_slices/devisSlice";
-import AlertModalD from "../Common/AlertModalD";
+import { getUtilisateurCourantInfos } from "../../app/utilisateur_slices/utilisateurSlice";
 
 function ToolBar() {
   const dispatch = useDispatch();
@@ -51,7 +49,9 @@ function ToolBar() {
   const activerBoutonsValiderAnnuler = useSelector(
     (state) => state.uiStates.activerBoutonsValiderAnnuler
   );
-  const handleSubmitListe = async () => {
+
+  const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
+  const handleNaviguerVersListe = async () => {
     if (toolbarTable == "devis") {
       navigate("/DevisList");
     }
@@ -60,10 +60,10 @@ function ToolBar() {
     }
   };
   // * ajout d'un client/devi
-  const handleAjout = async () => {
+  const handleAjoutBtnClick = async () => {
     dispatch(setActiverBoutonsValiderAnnuler(true));
     dispatch(setActiverChampsForm(true));
-
+    dispatch(setToolbarMode("ajout"));
     // * vider les champs du formulaires
     if (toolbarTable == "devis") {
       dispatch(viderChampsClientInfo());
@@ -71,38 +71,93 @@ function ToolBar() {
 
     if (toolbarTable == "client") {
       dispatch(viderChampsClientInfo());
-
       dispatch(getDerniereCodeClient());
-      console.log(clientInfos);
+      // * dispatch une action pour récuperer le code + nom d'utilisateur courant
+      dispatch(getUtilisateurCourantInfos());
     }
   };
   const HandleRecherche = async () => {
     navigate("/recherche");
   };
   // * méthode pour mettre à jour un client/devis
-  const handleupdate = async () => {
-    // dispatch(majClient());
-    dispatch(setActiverBoutonsValiderAnnuler(true));
-    dispatch(setActiverChampsForm(true));
+  const handleModifierBtnClick = async () => {
+    if (toolbarTable == "devis") {
+      if (!devisInfo.NUMBL) {
+        // ! a remplacer par toast
+        alert("aucune devis est selectionné pour la modification");
+      }
+    }
 
-    // dispatch(getListeClient());
+    if (toolbarTable == "client") {
+      if (!clientInfos.code) {
+        // ! a remplacer par toast
+        alert("aucun client est selectionné pour la modification");
+      }
+    }
+
+    if (
+      (toolbarTable == "client" && clientInfos.code) ||
+      (toolbarTable == "devis" && devisInfo.NUMBL)
+    ) {
+      dispatch(setToolbarMode("modification"));
+      dispatch(setActiverBoutonsValiderAnnuler(true));
+      dispatch(setActiverChampsForm(true));
+    }
   };
 
   // * afficher la fenetre de confirmation
   // * pour supprimer un ou plusieurs clients/devis
   const afficherModel = async () => {
-    dispatch(setAfficherAlertModal(true));
+    if (toolbarTable == "devis") {
+      if (!devisInfo.NUMBL) {
+        // ! a remplacer par toast
+        alert("aucune devis est selectionné pour la suppression");
+      }
+    }
+
+    if (toolbarTable == "client") {
+      if (!clientInfos.code) {
+        // ! a remplacer par toast
+        alert("aucun client est selectionné pour la suppression");
+      }
+    }
+
+    if (
+      (toolbarTable == "client" && clientInfos.code) ||
+      (toolbarTable == "devis" && devisInfo.NUMBL)
+    ) {
+      dispatch(setAfficherAlertModal(true));
+    }
   };
 
   // * méthode pour valider l'ajout d'un client/devis
-  const validerAjout = async () => {
+  const handleValiderBtnClick = () => {
     if (toolbarTable == "client") {
-      dispatch(setAfficherAlertModal(true));
+      if (toolbarMode == "ajout") {
+        //dispatch(ajouterClient());
+        dispatch(setAfficherAlertModal(true));
+
+      }
+
+      if (toolbarMode == "modification") {
+        dispatch(majClient());
+        dispatch(setActiverChampsForm(false));
+        dispatch(setActiverBoutonsValiderAnnuler(false));
+        dispatch(viderChampsClientInfo());
+      }
     }
     if (toolbarTable == "devis") {
-      dispatch(AjouterDevis());
-      dispatch(setActiverChampsForm(true));
+      if (toolbarMode == "ajout") {
+        dispatch(AjouterDevis());
+        dispatch(setActiverChampsForm(true));
+      }
+
+      if (toolbarMode == "modification") {
+        console.log("modification d'un devis");
+        // dispatch(majDevis())
+      }
     }
+    dispatch(setToolbarMode("consultation"));
   };
 
   // * cacher les bouttons valider/annuler
@@ -111,6 +166,9 @@ function ToolBar() {
   const annulerOperation = () => {
     dispatch(setActiverBoutonsValiderAnnuler(false));
     dispatch(setActiverChampsForm(false));
+    dispatch(viderChampsClientInfo());
+    dispatch(viderChampsDevisInfo());
+    dispatch(setToolbarMode("consultation"));
   };
 
   const handleNaviguerListe = () => {
@@ -122,6 +180,14 @@ function ToolBar() {
       navigate("/clientList");
     }
   };
+
+  const handleNaviguerVersPrecedent =() => {
+    console.log("naviguer ver l'élèment précedent")
+  }
+
+  const handleNaviguerVersSuivant = () => {
+    console.log("naviguer vers l'élèment suivant");
+  }
   return (
     <>
       <nav className="w-full h-[110px] border-b border-gray-700 flex items-center px-6">
@@ -129,7 +195,7 @@ function ToolBar() {
           {!activerBoutonsValiderAnnuler && (
             <button
               type="button"
-              onClick={handleAjout}
+              onClick={handleAjoutBtnClick}
               className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
             >
               <FontAwesomeIcon
@@ -147,7 +213,7 @@ function ToolBar() {
               <button
                 type="button"
                 className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
-                onClick={() => handleupdate()}
+                onClick={() => handleModifierBtnClick()}
               >
                 <FontAwesomeIcon
                   icon={faEdit}
@@ -220,13 +286,13 @@ function ToolBar() {
           )}
 
           {!activerBoutonsValiderAnnuler && (
-            <button className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100">
+            <button className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100" onClick={handleNaviguerVersPrecedent}>
               <FontAwesomeIcon icon={faArrowLeft} className="text-3xl" />
             </button>
           )}
 
           {!activerBoutonsValiderAnnuler && (
-            <button className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100">
+            <button className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100" onClick={handleNaviguerVersSuivant}>
               <FontAwesomeIcon icon={faArrowRight} className="text-3xl" />
             </button>
           )}
@@ -234,7 +300,7 @@ function ToolBar() {
           {!activerBoutonsValiderAnnuler && (
             <button
               type="button"
-              onClick={() => handleSubmitListe()}
+              onClick={() => handleNaviguerVersListe()}
               className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
             >
               <FontAwesomeIcon icon={faList} className="text-3xl" />
@@ -260,7 +326,7 @@ function ToolBar() {
           {activerBoutonsValiderAnnuler && (
             <button
               type="button"
-              onClick={() => validerAjout()}
+              onClick={() => handleValiderBtnClick()}
               className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
             >
               <FontAwesomeIcon icon={faCheck} className="text-3xl" />

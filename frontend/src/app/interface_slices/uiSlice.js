@@ -22,6 +22,8 @@ export const uiSlice = createSlice({
     activerChampsForm: false,
     // * state pour afficher/cacher les boutons de validation/annulation
     activerBoutonsValiderAnnuler: false,
+    // * mode de toolbar: insertion/modification/consultation
+    toolbarMode: "",
   },
 
   reducers: {
@@ -51,6 +53,9 @@ export const uiSlice = createSlice({
     setActiverBoutonsValiderAnnuler: (state, action) => {
       state.activerBoutonsValiderAnnuler = action.payload;
     },
+    setToolbarMode: (state, action) => {
+      state.toolbarMode = action.payload;
+    }
   },
 });
 export const {
@@ -62,5 +67,6 @@ export const {
   setToolbarTable,
   setActiverChampsForm,
   setActiverBoutonsValiderAnnuler,
+  setToolbarMode
 } = uiSlice.actions;
 export default uiSlice.reducer;

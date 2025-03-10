@@ -152,7 +152,7 @@ const loginUser = async (req, res) => {
 
 // * Recupère la liste de devis pour une sociète donnée
 // ! this does not belong in here
-selectDatabase = async (req, res) => {
+const selectDatabase = async (req, res) => {
   const { databaseName } = req.body;
 
   if (!databaseName) {
@@ -603,6 +603,33 @@ const passwordReset = async (req, res) => {
   }
 };
 
+// * 
+const getUtilisateurParCode = async(req, res) => {
+  try{
+    const {dbName} = req.params;
+    const { codeuser } = req.query;
+
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const utilisateur = await dbConnection.query(
+      `SELECT codeuser, nom FROM utilisateur WHERE codeuser = :codeuser`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+        replacements: {
+          codeuser: codeuser
+        }
+      }
+    )
+
+    console.log(utilisateur);
+
+    if(utilisateur) {
+      return res.status(200).json({message: "utilisateur récuperé avec succès", utilisateur:utilisateur})
+    }
+  }catch(error) {
+    return res.status(500).json({message: error.message})
+  }
+}
+
 // Exporter la méthode
 module.exports = {
   registerUser,
@@ -614,4 +641,5 @@ module.exports = {
   getAllSectors,
   sendPasswordResetEmail,
   passwordReset,
+  getUtilisateurParCode
 };
