@@ -10,14 +10,17 @@ import localforage from 'localforage';
 
 const persistConfig = {
   key: "root",
+  // 🤢🤢🤢
   storage: localforage, // pour utiliser LocalStorage
-  whitelist: [ // pour specifier quelles slices on persiste
-    "ClientCrud",
-    "UtilisateurInfo",
-    "uiStates",
-    "DevisCrud",
-    "ArticlesDevis",
-  ],
+  // ! le magique au chocolat
+  // whitelist: [ // pour specifier quelles slices on persiste
+  //   "ClientCrud",
+  //   "UtilisateurInfo",
+  //   "uiStates",
+  //   "DevisCrud",
+  //   "ArticlesDevis",
+  // ],
+  whitelist: ["UtilisateurInfo"]
 };
 
 const rootReducer = combineReducers({

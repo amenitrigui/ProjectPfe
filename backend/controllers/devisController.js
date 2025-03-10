@@ -477,8 +477,14 @@ const getDerniereNumbl = async (req, res) => {
     const { dbName } = req.params;
     const dbConnection = await getDatabaseConnection(dbName, res);
     const derniereNumbl = await dbConnection.query(
-      `SELECT NUMBL from dfp where latest DateBl`
+      `SELECT NUMBL from dfp where DateBl = (SELECT MAX(DATEBL) from dfp) ORDER BY (NUMBL) DESC LIMIT 1`, {
+        type: dbConnection.QueryTypes.SELECT
+      }
     );
+    // ? derniereNumbl: derniereNumbl[0] || {}
+    // ? pour que le backend ne plantera pas si derniereNumbl retourne aucune résultat
+    // ? c'est à dire un tableau vide: []
+    return res.status(200).json({message: "dernièr numbl récuperé avec succès", derniereNumbl: derniereNumbl[0] || {}})
   } catch (error) {
     return res.status(500).json({ messasge: error.message });
   }
@@ -499,4 +505,5 @@ module.exports = {
   getListePointVente,
   getLignesDevis,
   getDevisCreator,
+  getDerniereNumbl
 };

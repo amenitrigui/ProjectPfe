@@ -23,7 +23,7 @@ export const uiSlice = createSlice({
     // * state pour afficher/cacher les boutons de validation/annulation
     activerBoutonsValiderAnnuler: false,
     // * mode de toolbar: insertion/modification/consultation
-    toolbarMode: "",
+    toolbarMode: "consultation",
   },
 
   reducers: {
@@ -41,8 +41,8 @@ export const uiSlice = createSlice({
     setMessageAlertModal: (state, action) => {
       state.messageAlertModal = action.payload;
     },
-    setAfficherAlertModal: (state, action) => {
-      state.afficherAlertModal = action.payload;
+    setAfficherAlert: (state, action) => {
+      state.afficherAlert = action.payload; 
     },
     setToolbarTable: (state, action) => {
       state.toolbarTable = action.payload;
@@ -64,6 +64,7 @@ export const {
   setTypeAlert,
   setMessageAlertModal,
   setAfficherAlertModal,
+  setAfficherAlert,
   setToolbarTable,
   setActiverChampsForm,
   setActiverBoutonsValiderAnnuler,

@@ -27,9 +27,11 @@ import {
   setActiverChampsForm,
   setActiverBoutonsValiderAnnuler,
   setToolbarMode,
+  setAfficherAlert,
 } from "../../app/interface_slices/uiSlice";
 import {
   AjouterDevis,
+  getDerniereNumbl,
   viderChampsDevisInfo,
 } from "../../app/devis_slices/devisSlice";
 import { getUtilisateurCourantInfos } from "../../app/utilisateur_slices/utilisateurSlice";
@@ -66,7 +68,8 @@ function ToolBar() {
     dispatch(setToolbarMode("ajout"));
     // * vider les champs du formulaires
     if (toolbarTable == "devis") {
-      dispatch(viderChampsClientInfo());
+      dispatch(viderChampsDevisInfo());
+      dispatch(getDerniereNumbl());
     }
 
     if (toolbarTable == "client") {
@@ -126,7 +129,7 @@ function ToolBar() {
       (toolbarTable == "client" && clientInfos.code) ||
       (toolbarTable == "devis" && devisInfo.NUMBL)
     ) {
-      dispatch(setAfficherAlertModal(true));
+      dispatch(setAfficherAlert(true));
     }
   };
 
@@ -134,7 +137,7 @@ function ToolBar() {
   const handleValiderBtnClick = () => {
     if (toolbarTable == "client") {
       if (toolbarMode == "ajout") {
-        dispatch(ajouterClient());
+        afficherModel();
       }
 
       if (toolbarMode == "modification") {
@@ -188,7 +191,7 @@ function ToolBar() {
   }
   return (
     <>
-      <nav className="w-full h-[110px] border-b border-gray-700 flex items-center px-6 mb-1/2">
+      <nav className="w-full h-[110px] border-b border-gray-700 flex items-center px-6">
         <div className="flex space-x-4">
           {!activerBoutonsValiderAnnuler && (
             <button
@@ -353,7 +356,14 @@ function ToolBar() {
       </nav>
 
       {toolbarTable == "devis" && (
-        <h2 className="text-black font-bold italic text-3xl">
+        <h2
+          style={{
+            color: "rgb(48, 60, 123)",
+            fontWeight: "bold",
+            fontStyle: "italic",
+          }}
+          className="text-3xl"
+        >
           Devis / Facture Proforma
         </h2>
       )}
@@ -366,7 +376,7 @@ function ToolBar() {
           }}
           className="text-3xl"
         >
-          FICHE CLIENT
+          Client / Facture Proforma
         </h2>
       )}
     </>

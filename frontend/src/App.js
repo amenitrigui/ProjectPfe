@@ -1,13 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
-import { ToastContainer, toast } from "react-toastify";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import DevisForm from "./components/Devis/DevisForm";
 import HomePage from "./pages/ErpPages/HomePage";
@@ -29,28 +23,25 @@ import DevisFormTout from "./pages/Devis/DevisFormTout";
 import DevisFormPlaceholder from "./components/Devis/DevisFormPlaceholder";
 import Deconnexion from "./pages/authentication/Deconnexion";
 import ClientFormTout from "./pages/Clients/ClientFormTout";
-import { useSelector } from "react-redux";
-
+import Test from "./test/Test";
+import { useDispatch } from "react-redux";
+import { setActiverBoutonsValiderAnnuler } from "./app/interface_slices/uiSlice";
+import { viderChampsClientInfo } from "./app/client_slices/clientSlice";
+import { viderChampsDevisInfo } from "./app/devis_slices/devisSlice";
+import { persistStore } from "redux-persist";
+import { store } from "./app/store";
 
 function App() {
-  const notify = () => {
-    toast.success("Bienvenue sur la page d'accueil !", {
-      position: "top-center",
-      autoClose: 3000,
-      hideProgressBar: true,
-    });
-  };
+  const dispatch = useDispatch();
 
+  // ! thou art a man of feeble spirit
+  // const persistor = persistStore(store);
+  // // ! whomst has awakened the ancient one
+  // useEffect(() => {
+  //   persistor.purge();
+  // }, [dispatch]);
   return (
     <Router>
-      <ToastContainer
-        position="top-center"
-        autoClose={3000}
-        hideProgressBar
-        closeOnClick
-        pauseOnHover
-      />
-
       <Routes>
         <Route path="/" element={<SignInPage />} />
         <Route path="/deconnexion" element={<Deconnexion />} />
@@ -70,9 +61,12 @@ function App() {
         <Route path="/ClientFormTout" element={<ClientFormTout />} />
         <Route path="/Parent" element={<Parent />}></Route>
         <Route path="/DevisFormTout" element={<DevisFormTout />}></Route>
-      
-        
-        <Route path="/DevisFormPlaceholder" element ={<DevisFormPlaceholder></DevisFormPlaceholder>}></Route>
+        <Route path="/Test" element={<Test />}></Route>
+
+        <Route
+          path="/DevisFormPlaceholder"
+          element={<DevisFormPlaceholder></DevisFormPlaceholder>}
+        ></Route>
       </Routes>
     </Router>
   );

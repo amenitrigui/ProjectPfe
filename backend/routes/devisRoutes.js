@@ -30,7 +30,8 @@ const {
   getInfoUtilisateur,
   getListePointVente,
   getLignesDevis,
-  getDevisCreator
+  getDevisCreator,
+  getDerniereNumbl
 } = require("../controllers/devisController");
 //devis controller mt3na
 router.post("/:dbName/create", creerDevis);
@@ -48,6 +49,7 @@ router.get("/:dbName/getInfoUtilisateur", getInfoUtilisateur);
 router.get("/:dbName/getListePointVente", getListePointVente);
 router.get("/:dbName/getLignesDevis", getLignesDevis);
 router.get("/:dbName/getDevisCreator", getDevisCreator);
+router.get("/:dbName/getDerniereNumbl", getDerniereNumbl);
 
 
 router.get("/:dbName/getListePointVente", getListePointVente);
