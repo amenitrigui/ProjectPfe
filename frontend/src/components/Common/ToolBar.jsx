@@ -32,6 +32,7 @@ import {
 import {
   AjouterDevis,
   getDerniereNumbl,
+  setDevisClientInfos,
   viderChampsDevisInfo,
 } from "../../app/devis_slices/devisSlice";
 import { getUtilisateurCourantInfos } from "../../app/utilisateur_slices/utilisateurSlice";
@@ -110,7 +111,7 @@ function ToolBar() {
 
   // * afficher la fenetre de confirmation
   // * pour supprimer un ou plusieurs clients/devis
-  const afficherModel = async () => {
+  const afficherSuppToast = async () => {
     if (toolbarTable == "devis") {
       if (!devisInfo.NUMBL) {
         // ! a remplacer par toast
@@ -129,7 +130,7 @@ function ToolBar() {
       (toolbarTable == "client" && clientInfos.code) ||
       (toolbarTable == "devis" && devisInfo.NUMBL)
     ) {
-      dispatch(setAfficherAlert(true));
+      dispatch(setAfficherAlertModal(true));
     }
   };
 
@@ -137,7 +138,7 @@ function ToolBar() {
   const handleValiderBtnClick = () => {
     if (toolbarTable == "client") {
       if (toolbarMode == "ajout") {
-        afficherModel();
+        dispatch(setAfficherAlert(true));
       }
 
       if (toolbarMode == "modification") {
@@ -182,13 +183,13 @@ function ToolBar() {
     }
   };
 
-  const handleNaviguerVersPrecedent =() => {
-    console.log("naviguer ver l'élèment précedent")
-  }
+  const handleNaviguerVersPrecedent = () => {
+    console.log("naviguer ver l'élèment précedent");
+  };
 
   const handleNaviguerVersSuivant = () => {
     console.log("naviguer vers l'élèment suivant");
-  }
+  };
   return (
     <>
       <nav className="w-full h-[110px] border-b border-gray-700 flex items-center px-6">
@@ -232,7 +233,7 @@ function ToolBar() {
 
               <button
                 type="button"
-                onClick={() => afficherModel()}
+                onClick={() => afficherSuppToast()}
                 className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
               >
                 <FontAwesomeIcon
@@ -287,13 +288,19 @@ function ToolBar() {
           )}
 
           {!activerBoutonsValiderAnnuler && (
-            <button className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100" onClick={handleNaviguerVersPrecedent}>
+            <button
+              className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100"
+              onClick={handleNaviguerVersPrecedent}
+            >
               <FontAwesomeIcon icon={faArrowLeft} className="text-3xl" />
             </button>
           )}
 
           {!activerBoutonsValiderAnnuler && (
-            <button className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100" onClick={handleNaviguerVersSuivant}>
+            <button
+              className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100"
+              onClick={handleNaviguerVersSuivant}
+            >
               <FontAwesomeIcon icon={faArrowRight} className="text-3xl" />
             </button>
           )}

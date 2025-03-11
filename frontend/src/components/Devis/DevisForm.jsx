@@ -6,7 +6,11 @@ import {
   FaUsers,
 } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { setInsertionDepuisDevisForm } from "../../app/client_slices/clientSlice";
+import {
+  getClientParCode,
+  getToutCodesClient,
+  setInsertionDepuisDevisForm,
+} from "../../app/client_slices/clientSlice";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import {
@@ -16,6 +20,8 @@ import {
   setDevisInfoEntiere,
   getListePointsVente,
   getLignesDevis,
+  viderChampsDevisInfo,
+  setDevisClientInfos,
 } from "../../app/devis_slices/devisSlice";
 function DevisForm() {
   const dispatch = useDispatch();
@@ -32,37 +38,48 @@ function DevisForm() {
     dispatch(getListeNumbl());
     dispatch(getListePointsVente());
   }, []);
+
+  const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
+  const listeToutCodesClients = useSelector(
+    (state) => state.ClientCrud.listeToutCodesClients
+  );
+  const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
+  useEffect(() => {
+    if (toolbarMode == "ajout") dispatch(getToutCodesClient());
+  }, [toolbarMode]);
+
   // * WIP : sélectionne un dévis de la liste des devis
   // * pour afficher ses informations dans les champs
   // * du formulaire
+
   const handleSelectDevis = (e) => {
-    if (e.target.value != "") {
-      console.log(devisInfos);
+    if (
+      e.target.value != "" &&
+      e.target.value.length == 9
+    ) {
       dispatch(getDevisParNUMBL(e.target.value));
-      dispatch(getLignesDevis(devisInfos.NUMBL));
+      dispatch(getLignesDevis(e.target.value));
     }
     // * vider les champs du formulaire
     else
-      dispatch(
-        setDevisInfoEntiere({
-          NUMBL: "",
-          libpv: "",
-          ADRCLI: "",
-          CODECLI: "",
-          cp: "",
-          DATEBL: "",
-          MREMISE: "",
-          MTTC: "",
-          comm: "",
-          RSREP: "",
-          CODEREP: "",
-          usera: "",
-          RSCLI: "",
-          codesecteur: "",
-          MHT: "",
-          articles: [],
-        })
-      );
+      dispatch(viderChampsDevisInfo());
+  };
+
+  const handleChange = (e, col) => {
+    dispatch(
+      setDevisInfo({
+        collone: col,
+        valeur: e.target.value,
+      })
+    );
+    if (
+      col == "CODECLI" &&
+      e.target.value != "" &&
+      e.target.value.length == 8 &&
+      !isNaN(e.target.value)
+    ) {
+      dispatch(getClientParCode(e.target.value));
+    }
   };
   // * boolean pour activer/désactiver champs du formulaire
   // * initialement false (champs désactivé en mode de consultation)
@@ -106,27 +123,25 @@ function DevisForm() {
                   >
                     N° Devis :
                   </label>
-                  <select
-                    className="select select-bordered w-full max-w-xs"
+                  <input
+                    type="text"
+                    className="border border-gray-300 rounded-md p-2"
+                    list="browsers"
+                    value={devisInfos.NUMBL || ""}
                     disabled={activerChampsForm}
                     onChange={(e) => handleSelectDevis(e)}
-                  >
-                    {devisInfos.NUMBL == "" && (
-                      <option value={devisInfos.NUMBL}>
-                        Veuillez sélectionner un devis
-                      </option>
+                  />
+                  <datalist id="browsers">
+                    {listeNUMBL.length > 0 ? (
+                      listeNUMBL.map((codeDevis) => (
+                        <option key={codeDevis.NUMBL} value={codeDevis.NUMBL}>
+                          {codeDevis.NUMBL}
+                        </option>
+                      ))
+                    ) : (
+                      <option disabled>Aucun client trouvé</option>
                     )}
-                    {devisInfos.NUMBL && (
-                      <option value={devisInfos.NUMBL}>
-                        {devisInfos.NUMBL}
-                      </option>
-                    )}
-                    {listeNUMBL.map((codeDevis) => (
-                      <option key={codeDevis.NUMBL} value={codeDevis.NUMBL}>
-                        {codeDevis.NUMBL}
-                      </option>
-                    ))}
-                  </select>
+                  </datalist>
                 </div>
                 <div className="flex flex-col w-1/2">
                   <label
@@ -171,21 +186,35 @@ function DevisForm() {
                       className="font-bold"
                       style={{ color: "rgb(48, 60, 123)" }}
                     >
-                      Code Client : :
+                      Code Client :
                     </label>
 
                     <input
                       type="text"
                       className="w-full border border-gray-300 rounded-md p-2"
+                      list="client"
                       disabled={!activerChampsForm}
-                      defaultValue={devisInfos.CODECLI} // Assurez-vous d'avoir cet état dans votre composant
-                      onChange={(e) =>
-                        setDevisInfo({
-                          collone: "CODECLI",
-                          valeur: e.target.value,
-                        })
-                      } // Mettez à jour l'état
+                      value={
+                        toolbarMode == "ajout"
+                          ? clientInfos.code
+                          : devisInfos.CODECLI
+                      } // Assurez-vous d'avoir cet état dans votre composant
+                      onChange={(e) => {
+                        handleChange(e,"CODECLI");
+                      }}
+                      // Mettez à jour l'état
                     />
+                    <datalist id="client">
+                      {listeToutCodesClients.length > 0 ? (
+                        listeToutCodesClients.map((codeClinet) => (
+                          <option key={codeClinet.code} value={codeClinet.code}>
+                            {codeClinet.code}
+                          </option>
+                        ))
+                      ) : (
+                        <option disabled>Aucun client trouvé</option>
+                      )}
+                    </datalist>
                   </div>
 
                   <div className="flex flex-col w-1/2">
@@ -193,13 +222,17 @@ function DevisForm() {
                       className="font-bold"
                       style={{ color: "rgb(48, 60, 123)" }}
                     >
-                      Raison Sociale :.
+                      Raison Sociale :
                     </label>
                     <input
                       type="text"
                       className="w-full border border-gray-300 rounded-md p-2"
                       disabled={!activerChampsForm}
-                      defaultValue={devisInfos.RSCLI} // Assurez-vous d'avoir cet état dans votre composant
+                      value={
+                        toolbarMode == "ajout"
+                          ? clientInfos.rsoc
+                          : devisInfos.RSCLI
+                      } // Assurez-vous d'avoir cet état dans votre composant
                       onChange={(e) =>
                         setDevisInfo({
                           collone: "RSCLI",
@@ -215,13 +248,17 @@ function DevisForm() {
                     className="font-bold"
                     style={{ color: "rgb(48, 60, 123)" }}
                   >
-                    Adresse : :
+                    Adresse :
                   </label>
                   <input
                     type="text"
                     className="w-full border border-gray-300 rounded-md p-2"
                     disabled={!activerChampsForm}
-                    defaultValue={devisInfos.ADRCLI} // Assurez-vous d'avoir cet état dans votre composant
+                    value={
+                      toolbarMode == "ajout"
+                        ? clientInfos.adresse
+                        : devisInfos.ADRCLI
+                    } // Assurez-vous d'avoir cet état dans votre composant
                     onChange={(e) =>
                       setDevisInfo({
                         collone: "ADRCLI",
@@ -242,7 +279,9 @@ function DevisForm() {
                     type="text"
                     className="w-full border border-gray-300 rounded-md p-2"
                     disabled={!activerChampsForm}
-                    defaultValue={devisInfos.cp} // Assurez-vous d'avoir cet état dans votre composant
+                    value={
+                      toolbarMode == "ajout" ? clientInfos.cp : devisInfos.cp
+                    }
                     onChange={(e) =>
                       setDevisInfo({ collone: "cp", valeur: e.target.value })
                     } // Mettez à jour l'état
@@ -260,6 +299,7 @@ function DevisForm() {
                     type="email"
                     className="w-full border border-gray-300 rounded-md p-2"
                     disabled={!activerChampsForm}
+                    value={toolbarMode == "ajout" ? clientInfos.email : ""}
                   />
                 </div>
 
@@ -274,6 +314,7 @@ function DevisForm() {
                     type="text"
                     className="w-full border border-gray-300 rounded-md p-2"
                     disabled={!activerChampsForm}
+                    value={toolbarMode == "ajout" ? clientInfos.telephone : ""}
                   />
                 </div>
               </div>
@@ -303,7 +344,7 @@ function DevisForm() {
                       type="date"
                       className="w-full border border-gray-300 rounded-md p-2"
                       disabled={!activerChampsForm}
-                      defaultValue={devisInfos.DATEBL} // Assurez-vous d'avoir cet état dans votre composant
+                      value={devisInfos.DATEBL} // Assurez-vous d'avoir cet état dans votre composant
                       onChange={(e) =>
                         setDevisInfo({
                           collone: "DATEBL",

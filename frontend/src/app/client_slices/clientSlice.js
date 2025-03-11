@@ -56,7 +56,6 @@ export const getClientParCode = createAsyncThunk(
         thunkAPI.getState().UtilisateurInfo.dbName
       }/client/${code}`
     );
-    console.log(response);
     return response.data.client;
   }
 );
@@ -90,7 +89,7 @@ export const majClient = createAsyncThunk(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().UtilisateurInfo.dbName
       }/Update`,
-      { clientUpdate } // htha y3niii bch tjib les donnes il kol htha body, ya3ni objet kamel mesh bel champ bel champ
+      { clientUpdate } // htha y3niii bch tjib les donds il kol htha body, ya3ni objet kamel mesh bel champ bel champ
     );
     return response.message;
   }
@@ -396,7 +395,7 @@ export const clientSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getClientParCode.fulfilled, (state, action) => {
-        console.log(action.payload);
+        // ! danger
         state.listeClients = action.payload;
         //objet client bch tit3aba il formulaire 
         state.clientInfos=action.payload[0];

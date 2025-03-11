@@ -11,25 +11,34 @@ import {
   getArticleFamiles,
   getCodeArticle,
   getTousArticleparcode,
+  setArticleInfos,
 } from "../../app/article_slices/articleSlice";
 import { useState } from "react";
+import { setDevisArticles } from "../../app/devis_slices/devisSlice";
 
 function ArticlesDevis() {
   const dispatch = useDispatch();
   const [Quantite, setQauntite] = useState(0);
   const [remise, setRemise] = useState(0);
   const ListeArticle = useSelector((state) => state.ArticlesDevis.ListeArticle);
+  const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
   const ListeCodeArticle = useSelector(
     (state) => state.ArticlesDevis.ListeCodeArticles
   );
   const codeTousArticleParCode = useSelector(
     (state) => state.ArticlesDevis.ListeCodeArticlesparLib
   );
+
+  const articleInfos = useSelector((state) => state.ArticlesDevis.articleInfos)
+  console.log(articleInfos);
+
   const handlecodeFamilleChange = (codeFamille) => {
+    dispatch(setArticleInfos({colonne: "famille", valeur: codeFamille}))
     dispatch(getCodeArticle(codeFamille));
   };
-  const handleSubmiparcode = (CodeArticle) => {
-    dispatch(getTousArticleparcode(CodeArticle));
+  const handleSubmiparcode = (codeArticle) => {
+    dispatch(setArticleInfos({colonne: "code", valeur: codeArticle}))
+    dispatch(getTousArticleparcode(codeArticle));
   };
   const hadlesubmitquantiteparcode = () => {};
   useEffect(() => {
@@ -37,12 +46,19 @@ function ArticlesDevis() {
   }, []);
 
   const netHt =
-    Quantite * codeTousArticleParCode.prix1 * (1 - remise / 100) || 0;
+    articleInfos.quantite * codeTousArticleParCode.prix1 * (1 - remise / 100).toFixed(3) || 0;
 
   const puttc =
-    codeTousArticleParCode.prix1 * (1 + codeTousArticleParCode.tauxtva / 100) ||
+    codeTousArticleParCode.prix1 * (1 + codeTousArticleParCode.tauxtva / 100).toFixed(3) ||
     0;
 
+  const handleChangementChamp = (colonne, e) => {
+    console.log("changed the value of ",colonne," to: ",e.target.value);
+    dispatch(setArticleInfos({colonne: colonne, valeur: e.target.value}))
+  }
+  const handleValiderLDFPBtnClick = () => {
+    dispatch(setDevisArticles(articleInfos))
+  }
   return (
     <div className="space-y-4 p-4 border rounded-md mt-4">
       <div className="space-y-4 p-4 border rounded-md mt-4">
@@ -84,7 +100,9 @@ function ArticlesDevis() {
               type="text"
               placeholder="Sélectionner un code article"
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              defaultValue={codeTousArticleParCode.libelle}
+              value={codeTousArticleParCode.libelle || ""}
+              onChange={(e) => handleChangementChamp("libelle",e)}
+              readOnly
             />
           </div>
 
@@ -94,7 +112,9 @@ function ArticlesDevis() {
               type="text"
               placeholder="Sélectionner un code article"
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              defaultValue={codeTousArticleParCode.unite}
+              value={codeTousArticleParCode.unite || ""}
+              readOnly
+              onChange={(e) => handleChangementChamp("unite",e)}
             />
           </div>
 
@@ -104,9 +124,7 @@ function ArticlesDevis() {
               type="text"
               placeholder="Sélectionner un code article"
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              onChange={(e) => {
-                setQauntite(e.target.value);
-              }}
+              onChange={(e) => handleChangementChamp("quantite",e)}
             />
           </div>
 
@@ -115,7 +133,8 @@ function ArticlesDevis() {
             <textarea
               placeholder="Sélectionner un code article"
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              defaultValue={codeTousArticleParCode.CONFIG}
+              value={codeTousArticleParCode.CONFIG}
+              onChange={(e) => handleChangementChamp("CONFIG",e)}
             />
           </div>
         </div>
@@ -128,9 +147,7 @@ function ArticlesDevis() {
             step="0.001"
             placeholder="Remise"
             className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            onChange={(e) => {
-              setRemise(e.target.value);
-            }}
+            onChange={(e) => handleChangementChamp("DREMISE",e)}
           />
         </div>
 
@@ -140,7 +157,8 @@ function ArticlesDevis() {
             type="text"
             placeholder="tauxtva"
             className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            defaultValue={codeTousArticleParCode.tauxtva}
+            value={codeTousArticleParCode.tauxtva || ""}
+            onChange={(e) => handleChangementChamp("tauxtva",e)}
           />
         </div>
 
@@ -150,7 +168,7 @@ function ArticlesDevis() {
             type="text"
             step="0.001"
             placeholder="puttc"
-            value={puttc}
+            value={puttc.toFixed(3)}
             readOnly
             className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
@@ -172,7 +190,8 @@ function ArticlesDevis() {
             type="text"
             placeholder="nbrunite"
             className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            defaultValue={codeTousArticleParCode.nbrunite}
+            value={codeTousArticleParCode.nbrunite || ""}
+            readOnly
           />
         </div>
         <div className="flex space-x-4">
@@ -182,7 +201,8 @@ function ArticlesDevis() {
               type="text"
               step="0.001"
               placeholder="prix1"
-              defaultValue={codeTousArticleParCode.prix1}
+              value={codeTousArticleParCode.prix1 || ""}
+              readOnly
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
@@ -192,6 +212,7 @@ function ArticlesDevis() {
           <button
             className="text-green-500 p-2 border rounded-lg hover:bg-green-100"
             title="Valider"
+            onClick={handleValiderLDFPBtnClick}
           >
             <CheckIcon className="h-6 w-6" />
           </button>

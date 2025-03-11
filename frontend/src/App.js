@@ -34,7 +34,6 @@ import { store } from "./app/store";
 function App() {
   const dispatch = useDispatch();
   const usera = useSelector((state) => state.UtilisateurInfo.codeuser);
-  console.log(usera);
   dispatch(setDevisInfo("usera",usera))
   // ! thou art a man of feeble spirit
   // const persistor = persistStore(store);

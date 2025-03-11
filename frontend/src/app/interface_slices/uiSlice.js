@@ -44,6 +44,9 @@ export const uiSlice = createSlice({
     setAfficherAlert: (state, action) => {
       state.afficherAlert = action.payload; 
     },
+    setAfficherAlertModal: (state, action) => {
+      state.afficherAlertModal = action.payload; 
+    },
     setToolbarTable: (state, action) => {
       state.toolbarTable = action.payload;
     },

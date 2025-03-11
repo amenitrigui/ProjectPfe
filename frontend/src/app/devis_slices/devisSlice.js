@@ -18,7 +18,6 @@ export const getDevisList = createAsyncThunk(
 export const getLignesDevis = createAsyncThunk(
   "slice/getLignesDevis",
   async (NumBL, thunkAPI) => {
-    console.log(NumBL);
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().UtilisateurInfo.dbName
@@ -27,7 +26,6 @@ export const getLignesDevis = createAsyncThunk(
         params: { NumBL },
       }
     );
-    console.log(response);
     return response.data.listeArticle;
   }
 );
@@ -185,7 +183,12 @@ export const getListeNumbl = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/getListeNUMBL`
+      }/getListeNUMBL`,
+      {
+        params: {
+          usera: thunkAPI.getState().UtilisateurInfo.codeuser,
+        },
+      }
     );
     return response.data.listeNUMBL;
   }
@@ -207,17 +210,16 @@ export const getListePointsVente = createAsyncThunk(
 
 export const getDerniereNumbl = createAsyncThunk(
   "devisSlice/getDerniereNumbl",
-  async(_,thunkAPI) => {
+  async (_, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().UtilisateurInfo.dbName
       }/getDerniereNumbl`
     );
-
-    console.log(response.data.derniereNumbl);
-    return response.data.derniereNumbl
+    console.log(response)
+    return response.data.derniereNumbl;
   }
-)
+);
 
 export const devisSlice = createSlice({
   name: "devisSlice",
@@ -235,7 +237,7 @@ export const devisSlice = createSlice({
       ADRCLI: "",
       CODECLI: "",
       cp: "",
-      DATEBL: new Date().toLocaleDateString("fr-FR"),
+      DATEBL: new Date().toISOString().split("T")[0],
       MREMISE: "",
       MTTC: "",
       MTVA: "",
@@ -272,7 +274,7 @@ export const devisSlice = createSlice({
         ADRCLI: "",
         CODECLI: "",
         cp: "",
-        DATEBL: new Date().toLocaleDateString("fr-FR"),
+        DATEBL: new Date().toISOString().split("T")[0],
         MREMISE: "",
         MTTC: "",
         MTVA: "",
@@ -286,6 +288,17 @@ export const devisSlice = createSlice({
         MHT: "",
         articles: [],
       };
+    },
+    setDevisClientInfos: (state, action) => {
+      const { ADRCLI, CODECLI, cp, RSCLI } = action.payload;
+      state.devisInfo.CODECLI = CODECLI;
+      console.log(state.devisInfo);
+      state.devisInfo.ADRCLI = ADRCLI;
+      state.devisInfo.cp = cp;
+      state.devisInfo = RSCLI;
+    },
+    setDevisArticles: (state, action) => {
+      state.devisInfo.articles = [...state.devisInfo.articles,action.payload];
     },
   },
 
@@ -427,20 +440,20 @@ export const devisSlice = createSlice({
       .addCase(getLignesDevis.fulfilled, (state, action) => {
         // state.devisInfo = action.payload[0];
         state.devisInfo.articles = action.payload;
-        console.log(action.payload);
         state.status = "reussi";
       })
       .addCase(getLignesDevis.rejected, (state, action) => {
         state.erreur = action.payload;
         state.status = "echoue";
       })
-      
+
       .addCase(getDerniereNumbl.pending, (state) => {
         state.status = "chargement";
       })
       .addCase(getDerniereNumbl.fulfilled, (state, action) => {
-        console.log(action.payload.NUMBL);
-        state.devisInfo.NUMBL = action.payload.NUMBL;
+        state.devisInfo.NUMBL =
+          "DV" +
+          (parseInt(action.payload.NUMBL.substring(2, 9)) + 1).toString();
         state.status = "reussi";
       })
       .addCase(getDerniereNumbl.rejected, (state, action) => {
@@ -454,6 +467,8 @@ export const {
   setDevisList,
   setDevisInfoEntiere,
   viderChampsDevisInfo,
+  setDevisClientInfos,
+  setDevisArticles,
 } = devisSlice.actions;
 
 export default devisSlice.reducer;

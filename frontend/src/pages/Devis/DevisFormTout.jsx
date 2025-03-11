@@ -9,35 +9,30 @@ import {
 
 import DevisForm from "../../components/Devis/DevisForm";
 import ArticlesDevis from "../../components/Devis/ArticlesDevis";
-import { getArticleFamiles } from "../../app/article_slices/articleSlice";
-
 
 function DevisFormTout() {
   const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
   const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
+  const toobarTable = useSelector((state) => state.uiStates.toolbarTable);
+  console.log(devisInfo)
   // * useEffect #1 : désactiver tous les champs
   // * et indiquer qu'on va utiliser la table de devis
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setToolbarTable("devis"));
     dispatch(setActiverChampsForm(false));
-   
   }, []);
-  const NETHTGLOBAL= devisInfo.MHT-devisInfo.MREMISE||0
-  const taxe= devisInfo.MTTC-NETHTGLOBAL||0
-  const apayer =devisInfo.MTTC+devisInfo.TIMBRE||0
-  
+  const NETHTGLOBAL = devisInfo.MHT - devisInfo.MREMISE || 0;
+  const taxe = devisInfo.MTTC - NETHTGLOBAL || 0;
+  const apayer = devisInfo.MTTC + devisInfo.TIMBRE || 0;
 
   return (
     <div className="bg-gray-100 min-h-screen p-1 mb-1/2">
       {/* Toolbar et Sidebar */}
 
-      
       <ToolBar />
       <DevisForm />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-       
-      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
 
       {/* Table des articles */}
       {toolbarMode === "ajout" && <ArticlesDevis />}
@@ -115,9 +110,7 @@ function DevisFormTout() {
                   <td className="p-3 border border-gray-300">
                     {article.PUART}
                   </td>
-                  
-                 
-                 
+
                   {/* <td className="p-3 border border-gray-300">A001</td>
                   <td className="p-3 border border-gray-300">A001</td>
                   <td className="p-3 border border-gray-300">A001</td> */}
@@ -155,9 +148,7 @@ function DevisFormTout() {
             <input
               type="text"
               name="netHtGlobal"
-              value={NETHTGLOBAL}
-              
-
+              value={NETHTGLOBAL.toFixed(3)}
               className="w-full border rounded-md p-2"
               readOnly
             />
@@ -167,8 +158,7 @@ function DevisFormTout() {
             <input
               type="text"
               name="taxe"
-            
-             value={taxe}
+              value={taxe.toFixed(3)}
               className="w-full border rounded-md p-2"
               readOnly
             />
@@ -178,7 +168,7 @@ function DevisFormTout() {
             <input
               type="text"
               name="MTTC"
-              defaultValue={devisInfo.MTTC}
+              defaultValue={devisInfo.MTTC ? devisInfo.MTTC.toFixed(3) : ""}
               className="w-full border rounded-md p-2"
               readOnly
             />
@@ -189,8 +179,8 @@ function DevisFormTout() {
               type="text"
               name="timbre"
               defaultValue={devisInfo.TIMBRE}
+              readOnly={!(toolbarMode == "ajout" && toobarTable == "devis")}
               className="w-full border rounded-md p-2"
-              readOnly
             />
           </div>
           <div className="flex-1 min-w-[150px]">
@@ -198,7 +188,7 @@ function DevisFormTout() {
             <input
               type="text"
               name="aPayer"
-              value={apayer}
+              value={apayer.toFixed(3)}
               className="w-full border rounded-md p-2"
               readOnly
             />

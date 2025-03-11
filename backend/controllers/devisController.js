@@ -140,30 +140,19 @@ const creerDevis = async (req, res) => {
   console.log("NUMBL reçu:", NUMBL);
   console.log("Code client reçu:", CODECLI);
   console.log("Articles reçus :", articles);
+  console.log("CODECLI: ", CODECLI);
+  console.log("ADRCLI: ", ADRCLI);
 
-  if (!NUMBL || NUMBL.trim() === "") {
-    return res.status(400).json({ message: "Le champ NUMBL est manquant." });
-  }
-  if (!CODECLI || CODECLI.trim() === "") {
-    return res.status(400).json({ message: "Le code client est manquant." });
-  }
-  if (!ADRCLI || ADRCLI.trim() === "") {
-    return res
-      .status(400)
-      .json({ message: "L'adresse du client est manquante ou vide." });
-  }
-  // if (!Array.isArray(articles)) {
-  //   return res
-  //     .status(400)
-  //     .json({ message: "Le champ 'articles' doit être un tableau." });
-  // }
+  articles.map((article) => 
+  {
+    article.NumBL = NUMBL
+  })
 
   try {
-    const dynamicSequelize = getSequelizeConnection(dbName);
-    await dynamicSequelize.authenticate();
+    const dbConnection = await getDatabaseConnection(dbName, res);
 
-    const Dfp = defineDfpModel(dynamicSequelize);
-    const Ldfp = defineLdfpModel(dynamicSequelize);
+    const Dfp = defineDfpModel(dbConnection);
+    const ldfp = defineLdfpModel(dbConnection);
 
     const existingDevis = await Dfp.findOne({ where: { NUMBL } });
     if (existingDevis) {
@@ -172,11 +161,9 @@ const creerDevis = async (req, res) => {
       });
     }
 
-    const transaction = await dynamicSequelize.transaction();
-
-    const creationDate = new Date();
-    const formattedDate = creationDate.toISOString().split("T")[0];
-    const mlettre = `Devis En Cours -- crée le : ${formattedDate} / par : ${
+    const dateCreation = new Date();
+    const dateFormatte = dateCreation.toISOString().split("T")[0];
+    const mlettre = `Devis En Cours -- crée le : ${dateFormatte} / par : ${
       usera || "N/A"
     }`;
 
@@ -198,49 +185,17 @@ const creerDevis = async (req, res) => {
       MLETTRE: mlettre,
     };
 
-    const devis = await Dfp.create(dfpData, { transaction });
-
-    // const insertedArticles = [];
-
-    // for (const article of articles) {
-    //   if (
-    //     !article.code ||
-    //     !article.libelle ||
-    //     !article.nbrunite ||
-    //     !article.prix1 ||
-    //     !article.tauxtva
-    //   ) {
-    //     await transaction.rollback();
-    //     return res.status(400).json({
-    //       message:
-    //         "Tous les champs nécessaires pour l'article doivent être fournis.",
-    //     });
-    //   }
-
-    //   const articleData = {
-    //     NUMBL,
-    //     CodeART: article.code,
-    //     DesART: article.libelle,
-    //     QteART: article.nbrunite,
-    //     PUART: article.prix1,
-
-    //     TauxTVA: article.tauxtva,
-    //     Unite: article.unite || "unité",
-    //     Conf: article.CONFIG || "",
-    //     famille: article.famille || "",
-    //     nbun: article.nbrunite,
-    //   };
-
-    //   const insertedArticle = await Ldfp.create(articleData, { transaction });
-    //   insertedArticles.push(insertedArticle);
-    // }
-
-    await transaction.commit();
+    const devis = await Dfp.create(dfpData);
+    articles.map(async (article) => {
+      article.NLigne = articles.length
+      article.CodeART = article.code;
+      const ligneDevis = await ldfp.create(article);
+      console.log(ligneDevis);
+    })
 
     return res.status(201).json({
       message: "Devis créé avec succès.",
       devis,
-      // articles: insertedArticles,
       mlettre,
     });
   } catch (error) {
@@ -331,11 +286,15 @@ const GetDevisListParClient = async (req, res) => {
 const getCodesDevis = async (req, res) => {
   try {
     const { dbName } = req.params;
+    const { usera } = req.query;
     const dbConnection = await getDatabaseConnection(dbName, res);
     const listeNUMBL = await dbConnection.query(
-      `SELECT NUMBL from dfp order by CAST(NUMBL AS UNSIGNED)`,
+      `SELECT NUMBL from dfp where usera = :usera order by CAST(NUMBL AS UNSIGNED) ASC`,
       {
         type: dbConnection.QueryTypes.SELECT,
+        replacements: {
+          usera: usera,
+        },
       }
     );
 
@@ -477,14 +436,21 @@ const getDerniereNumbl = async (req, res) => {
     const { dbName } = req.params;
     const dbConnection = await getDatabaseConnection(dbName, res);
     const derniereNumbl = await dbConnection.query(
-      `SELECT NUMBL from dfp where DateBl = (SELECT MAX(DATEBL) from dfp) ORDER BY (NUMBL) DESC LIMIT 1`, {
-        type: dbConnection.QueryTypes.SELECT
+      `SELECT NUMBL from dfp where DateBl = (SELECT MAX(DATEBL) from dfp) ORDER BY (NUMBL) DESC LIMIT 1`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
       }
     );
+    console.log(derniereNumbl[0]);
     // ? derniereNumbl: derniereNumbl[0] || {}
     // ? pour que le backend ne plantera pas si derniereNumbl retourne aucune résultat
     // ? c'est à dire un tableau vide: []
-    return res.status(200).json({message: "dernièr numbl récuperé avec succès", derniereNumbl: derniereNumbl[0] || {}})
+    return res
+      .status(200)
+      .json({
+        message: "dernièr numbl récuperé avec succès",
+        derniereNumbl: derniereNumbl[0] || {},
+      });
   } catch (error) {
     return res.status(500).json({ messasge: error.message });
   }
@@ -505,5 +471,5 @@ module.exports = {
   getListePointVente,
   getLignesDevis,
   getDevisCreator,
-  getDerniereNumbl
+  getDerniereNumbl,
 };
