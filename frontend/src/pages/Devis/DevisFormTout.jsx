@@ -32,86 +32,11 @@ function DevisFormTout() {
 
      
       <DevisForm />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
 
-      {/* Table des articles */}
-      {toolbarMode === "ajout" && <ArticlesDevis />}
+
+  
       
-      {/* <div className="bg-gray-300 p-4 sticky bottom-0 w-full">
-        <div className="flex flex-wrap gap-4">
-          <div className="flex-1 min-w-[150px]">
-            <label className="block  font-bold">Montant HT :</label>
-
-            <input
-              type="text"
-              name="totalHt"
-              defaultValue={devisInfo.MHT}
-              className="w-full border rounded-md p-2"
-              readOnly
-            />
-          </div>
-          <div className="flex-1 min-w-[150px]">
-            <label className="block font-medium">Remise Totale :</label>
-            <input
-              type="text"
-              name="Remise"
-              defaultValue={devisInfo.MREMISE}
-              className="w-full border rounded-md p-2"
-              readOnly
-            />
-          </div>
-          <div className="flex-1 min-w-[150px]">
-            <label className="block font-medium">Net HT Global :</label>
-            <input
-              type="text"
-              name="netHtGlobal"
-              value={NETHTGLOBAL.toFixed(3)}
-              className="w-full border rounded-md p-2"
-              readOnly
-            />
-          </div>
-          <div className="flex-1 min-w-[150px]">
-            <label className="block font-medium">Taxe :</label>
-            <input
-              type="text"
-              name="taxe"
-              value={taxe.toFixed(3)}
-              className="w-full border rounded-md p-2"
-              readOnly
-            />
-          </div>
-          <div className="flex-1 min-w-[150px]">
-            <label className="block font-medium">Montant TTC :</label>
-            <input
-              type="text"
-              name="MTTC"
-              defaultValue={devisInfo.MTTC ? devisInfo.MTTC.toFixed(3) : ""}
-              className="w-full border rounded-md p-2"
-              readOnly
-            />
-          </div>
-          <div className="flex-1 min-w-[150px]">
-            <label className="block font-medium">Timbre :</label>
-            <input
-              type="text"
-              name="timbre"
-              defaultValue={devisInfo.TIMBRE}
-              readOnly={!(toolbarMode == "ajout" && toobarTable == "devis")}
-              className="w-full border rounded-md p-2"
-            />
-          </div>
-          <div className="flex-1 min-w-[150px]">
-            <label className="block font-medium">À Payer :</label>
-            <input
-              type="text"
-              name="aPayer"
-              value={apayer.toFixed(3)}
-              className="w-full border rounded-md p-2"
-              readOnly
-            />
-          </div>
-        </div>
-      </div> */}
+      
     </div>
   );
 }
