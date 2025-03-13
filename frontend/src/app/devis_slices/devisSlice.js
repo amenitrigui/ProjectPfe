@@ -216,8 +216,20 @@ export const getDerniereNumbl = createAsyncThunk(
         thunkAPI.getState().UtilisateurInfo.dbName
       }/getDerniereNumbl`
     );
-    console.log(response)
+    console.log(response);
     return response.data.derniereNumbl;
+  }
+);
+export const deleteDevis = createAsyncThunk(
+  "devisSlice/deleteDevis",
+  async (NUMBL, thunkAPI) => {
+    const response = await axios.delete(
+      `${process.env.REACT_APP_API_URL}/api/devis/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/devis/${NUMBL}/deleteDevis`
+    );
+    console.log(response);
+    return response;
   }
 );
 
@@ -298,7 +310,7 @@ export const devisSlice = createSlice({
       state.devisInfo = RSCLI;
     },
     setDevisArticles: (state, action) => {
-      state.devisInfo.articles = [...state.devisInfo.articles,action.payload];
+      state.devisInfo.articles = [...state.devisInfo.articles, action.payload];
     },
   },
 

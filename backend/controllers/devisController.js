@@ -456,6 +456,54 @@ const getDerniereNumbl = async (req, res) => {
   }
 };
 
+//* suprimer devis 
+const deleteDevis = async (req, res) => {
+  const { dbName, NUMBL } = req.params;
+
+  if (!NUMBL || NUMBL.trim() === "") {
+    return res
+      .status(400)
+      .json({ message: "Le numéro du devis (NUMBL) est requis." });
+  }
+  try {
+    const dynamicSequelize = getSequelizeConnection(dbName);
+    await dynamicSequelize.authenticate();
+
+    const Dfp = defineDfpModel(dynamicSequelize);
+    const Ldfp = defineLdfpModel(dynamicSequelize);
+
+    const existingDevis = await Dfp.findOne({ where: { NUMBL } });
+    if (!existingDevis) {
+      return res
+        .status(404)
+        .json({ message: `Aucun devis trouvé avec le numéro ${NUMBL}.` });
+    }
+
+    const transaction = await dynamicSequelize.transaction();
+
+    try {
+      await Ldfp.destroy({ where: { NUMBL }, transaction });
+
+      await Dfp.destroy({ where: { NUMBL }, transaction });
+
+      await transaction.commit();
+
+      return res
+        .status(200)
+        .json({ message: `Le devis ${NUMBL} a été supprimé avec succès.` });
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
+    }
+  } catch (error) {
+    console.error("Erreur lors de la suppression du devis :", error);
+    return res.status(500).json({
+      message: "Erreur lors de la suppression du devis.",
+      error: error.errors ? error.errors : error.message,
+    });
+  }
+};
+
 module.exports = {
   getTousDevis,
   getNombreDevis,
@@ -472,4 +520,5 @@ module.exports = {
   getLignesDevis,
   getDevisCreator,
   getDerniereNumbl,
+  deleteDevis
 };

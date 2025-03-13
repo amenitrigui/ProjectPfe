@@ -22,7 +22,7 @@ function ClientFormTout() {
     <div className="flex min-h-screen bg-gray-100">
       <div className="flex-1 ">
         <Alert />
-        <ToolBar />
+      
         <AlertModalD />
         <ClientForm />
         <br />

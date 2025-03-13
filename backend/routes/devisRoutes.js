@@ -12,7 +12,7 @@ const {
 
   getCodeRepAndRsRep,
   updateDevis,
-  deleteDevis,
+  
   filterDevis,
 } = require("../controllers/devisControllerPlaceholder");
 const { getAllcodearticle } = require("../controllers/articleController");
@@ -31,7 +31,8 @@ const {
   getListePointVente,
   getLignesDevis,
   getDevisCreator,
-  getDerniereNumbl
+  getDerniereNumbl,
+  deleteDevis
 } = require("../controllers/devisController");
 //devis controller mt3na
 router.post("/:dbName/create", creerDevis);
@@ -50,6 +51,7 @@ router.get("/:dbName/getListePointVente", getListePointVente);
 router.get("/:dbName/getLignesDevis", getLignesDevis);
 router.get("/:dbName/getDevisCreator", getDevisCreator);
 router.get("/:dbName/getDerniereNumbl", getDerniereNumbl);
+router.delete("/:dbName/devis/:NUMBL", deleteDevis);
 
 
 router.get("/:dbName/getListePointVente", getListePointVente);
@@ -74,7 +76,7 @@ router.get(
   getCodeRepAndRsRep
 );
 router.put("/:dbName/:numbl", updateDevis);
-router.delete("/:dbName/devis/:NUMBL", deleteDevis);
+// router.delete("/:dbName/devis/:NUMBL", deleteDevis);
 router.get("/filterDevis", filterDevis);
 
 module.exports = router;

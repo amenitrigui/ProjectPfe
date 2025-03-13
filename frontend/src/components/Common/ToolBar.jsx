@@ -14,6 +14,7 @@ import {
   faTrashAlt,
   faCancel,
 } from "@fortawesome/free-solid-svg-icons";
+import SideBar from "../Common/SideBar"
 import {
   ajouterClient,
   getDerniereCodeClient,
@@ -192,7 +193,7 @@ function ToolBar() {
   };
   return (
     <>
-      <nav className="w-full h-[110px] border-b border-gray-700 flex items-center px-6">
+      <nav className="w-full h-[110px] sm:h-[80px] md:h-[90px] border-b border-gray-700 flex items-center px-6 sm:px-4 md:px-5 overflow-x-auto">
         <div className="flex space-x-4">
           {!activerBoutonsValiderAnnuler && (
             <button
@@ -356,36 +357,10 @@ function ToolBar() {
               </span>
             </button>
           )}
+
         </div>
-        <nav className="w-full h-[250px] border-b border-gray-700 flex items-center px-1 mt-1">
-          <div className="flex space-x-4">{/* Vos autres boutons ici */}</div>
-        </nav>
       </nav>
 
-      {toolbarTable == "devis" && (
-        <h2
-          style={{
-            color: "rgb(48, 60, 123)",
-            fontWeight: "bold",
-            fontStyle: "italic",
-          }}
-          className="text-3xl"
-        >
-          Devis / Facture Proforma
-        </h2>
-      )}
-      {toolbarTable == "client" && (
-        <h2
-          style={{
-            color: "rgb(48, 60, 123)",
-            fontWeight: "bold",
-            fontStyle: "italic",
-          }}
-          className="text-3xl"
-        >
-          Client / Facture Proforma
-        </h2>
-      )}
     </>
   );
 }
