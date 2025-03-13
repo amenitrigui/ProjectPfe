@@ -343,6 +343,40 @@ const getDerniereCodeClient = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+const getCodePostalDesignationParCode = async (req, res) => {
+  const { dbName } = req.params;
+  const { cp } = req.query;
+  const { codeClient } = req.query;
+
+  try {
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const cpInfos = await dbConnection.query(
+      `
+      SELECT 
+    cpost.CODEp, 
+    cpost.desicp
+    FROM CLIENT clt
+      JOIN CPOSTAL cpost ON clt.cp = cpost.codep
+    where clt.code = :codeClient and clt.cp = :cp`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+        replacements: {
+          codeClient: codeClient,
+          cp: cp,
+        },
+      }
+    );
+
+    console.log(cpInfos);
+
+    return res.status(200).json({
+      message: "informations code postale récuperés",
+      cpInfos: cpInfos,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 
 module.exports = {
   getListeClients,
@@ -355,4 +389,5 @@ module.exports = {
   getDerniereCodeClient,
   getClientParCin,
   getToutCodesClient,
+  getCodePostalDesignationParCode
 };

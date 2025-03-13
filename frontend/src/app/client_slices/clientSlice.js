@@ -56,6 +56,7 @@ export const getClientParCode = createAsyncThunk(
         thunkAPI.getState().UtilisateurInfo.dbName
       }/client/${code}`
     );
+    console.log(response.data)
     return response.data.client;
   }
 );
@@ -155,6 +156,23 @@ export const getDerniereCodeClient = createAsyncThunk(
     return response.data.derniereCodeClient.code;
   }
 );
+export const getCodePostalDesignationParCode= createAsyncThunk(
+  "clientSlice/getCodePostalDesignationParCode",
+  async(tab,thunkAPI)=>{
+    const response=await axios.get(`${process.env.REACT_APP_API_URL}/api/client/${
+        thunkAPI.getState().UtilisateurInfo.dbName}/getCpInfos`,
+        {
+          params: {
+            cp: tab[0],
+            codeClient: tab[1]
+          }
+        }
+      )
+      console.log(response)
+      return response.data.cpInfos
+
+  }
+)
 
 export const clientSlice = createSlice({
   name: "slice",
@@ -395,10 +413,13 @@ export const clientSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getClientParCode.fulfilled, (state, action) => {
+        console.log(action.payload)
         // ! danger
         state.listeClients = action.payload;
         //objet client bch tit3aba il formulaire 
-        state.clientInfos=action.payload[0];
+        state.clientInfos.cpostal.CODEp=action.payload[0].cp;
+        state.clientInfos=action.payload[0]; 
+
         state.status = "réussi";
       })
       .addCase(getClientParCode.rejected, (state, action) => {
@@ -450,6 +471,20 @@ export const clientSlice = createSlice({
         state.status = "réussi";
       })
       .addCase(getClientParCin.rejected, (state, action) => {
+        state.status = "échoué";
+        state.erreur = action.payload;
+      })
+
+      .addCase(getCodePostalDesignationParCode.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getCodePostalDesignationParCode.fulfilled, (state, action) => {
+        state.clientInfos.cpostal.CODEp = action.payload[0].CODEp;
+        state.clientInfos.cpostal.desicp = action.payload[0].desicp;
+
+        state.status = "réussi";
+      })
+      .addCase(getCodePostalDesignationParCode.rejected, (state, action) => {
         state.status = "échoué";
         state.erreur = action.payload;
       });

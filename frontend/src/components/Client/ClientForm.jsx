@@ -11,6 +11,7 @@ import {
 import { setDevisInfo } from "../../app/devis_slices/devisSlice";
 import {
   getClientParCode,
+  getCodePostalDesignationParCode,
   getToutCodesClient,
   setClientInfos,
   viderChampsClientInfo,
@@ -85,6 +86,9 @@ const ClientForm = () => {
       dispatch(setDevisInfo({ colonne, valeur: e.target.value }));
     }
   };
+  useEffect(()=>{
+    dispatch(getCodePostalDesignationParCode(['2052','41102752']))
+  },[])
 
   const nombredevis = useSelector((state) => state.DevisCrud.nombreDeDevis);
   const totalchifre = useSelector((state) => state.DevisCrud.totalchifre);
@@ -382,6 +386,7 @@ const ClientForm = () => {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     value={clientInfos.cp || ""}
+                    // value={clientInfos.cpostal.CODEp || ""}
                     onChange={(e) => handleChange(e, "cp")}
                     disabled={!activerChampsForm}
                   />
@@ -396,7 +401,7 @@ const ClientForm = () => {
                   <input
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
-                    value={clientInfos.ville || ""}
+                    // value={clientInfos.cpostal.desicp || ""}
                     onChange={(e) => handleChange(e, "ville")}
                     disabled={!activerChampsForm}
                   />
