@@ -11,6 +11,7 @@ const {
   getClientParTypecli,
   getClientParCin,
   getToutCodesClient,
+  getCodePostalDesignationParCode
 } = require("../controllers/clientController");
 router.get("/:dbName/List", getListeClients);
 router.get("/:dbName/filterClient", filtrerListeClients);
@@ -23,5 +24,7 @@ router.get("/:dbName/getClientParCin/:cin", getClientParCin);
 
 router.get("/:dbName/getToutCodesClient", getToutCodesClient);
 router.get("/:dbName/client/:code", getClientParCode);
+
+router.get("/:dbName/getCpInfos", getCodePostalDesignationParCode);
 
 module.exports = router;
