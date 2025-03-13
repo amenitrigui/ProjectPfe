@@ -32,7 +32,8 @@ const {
   getLignesDevis,
   getDevisCreator,
   getDerniereNumbl,
-  deleteDevis
+  deleteDevis,
+  getCodePostalDesignationParCode
 } = require("../controllers/devisController");
 //devis controller mt3na
 router.post("/:dbName/create", creerDevis);
@@ -52,6 +53,7 @@ router.get("/:dbName/getLignesDevis", getLignesDevis);
 router.get("/:dbName/getDevisCreator", getDevisCreator);
 router.get("/:dbName/getDerniereNumbl", getDerniereNumbl);
 router.delete("/:dbName/devis/:NUMBL", deleteDevis);
+router.get("/:dbName/getCpInfos", getCodePostalDesignationParCode);
 
 
 router.get("/:dbName/getListePointVente", getListePointVente);
