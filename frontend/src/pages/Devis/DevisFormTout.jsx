@@ -30,97 +30,14 @@ function DevisFormTout() {
     <div className="bg-gray-100 min-h-screen p-1 mb-1/2">
       {/* Toolbar et Sidebar */}
 
-      <ToolBar />
+     
       <DevisForm />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
 
       {/* Table des articles */}
       {toolbarMode === "ajout" && <ArticlesDevis />}
-      <div className="mt-6">
-        <div className="p-4 sticky bottom-0 w-full">
-          <table className="min-w-full table-auto border-collapse border border-gray-300">
-            <thead className="bg-gray-300">
-              {/* Ajout du fond gris pour l'en-tête */}
-              <tr>
-                <th className="p-3 text-left text-sm font-medium text-gray-600 border">
-                  Famille
-                </th>
-                <th className="p-3 text-left text-sm font-medium text-gray-600 border">
-                  Code Article
-                </th>
-                <th className="p-3 text-left text-sm font-medium text-gray-600 border">
-                  Unité
-                </th>
-                <th className="p-3 text-left text-sm font-medium text-gray-600 border">
-                  Quantite
-                </th>
-                <th className="p-3 text-left text-sm font-medium text-gray-600 border">
-                  Remise
-                </th>
-                <th className="p-3 text-left text-sm font-medium text-gray-600 border">
-                  Libelle
-                </th>
-                <th className="p-3 text-left text-sm font-medium text-gray-600 border">
-                  TVA
-                </th>
-                <th className="p-3 text-left text-sm font-medium text-gray-600 border">
-                  PUHT
-                </th>
-                <th className="p-3 text-left text-sm font-medium text-gray-600 border">
-                  PUTTC
-                </th>
-                <th className="p-3 text-left text-sm font-medium text-gray-600 border">
-                  NET HT
-                </th>
-              </tr>
-            </thead>
-            <tbody className="text-sm">
-              {devisInfo.articles?.map((article) => (
-                <tr
-                  key={`${article.famille}-${article.CodeART}`}
-                  className="hover:bg-indigo-100 transition-all duration-150 ease-in-out"
-                >
-                  <td className="p-3 border border-gray-300">
-                    {article.famille}
-                  </td>
-                  <td className="p-3 border border-gray-300">
-                    {article.CodeART}
-                  </td>
-                  <td className="p-3 border border-gray-300">
-                    {article.Unite}
-                  </td>
-                  <td className="p-3 border border-gray-300">
-                    {article.QteART}
-                  </td>
-                  <td className="p-3 border border-gray-300">
-                    {article.Remise}%
-                  </td>
-                  <td className="p-3 border border-gray-300">
-                    {article.DesART}
-                  </td>
-                  <td className="p-3 border border-gray-300">
-                    {article.TauxTVA}%
-                  </td>
-                  <td className="p-3 border border-gray-300">
-                    {article.PUART}
-                  </td>
-                  <td className="p-3 border border-gray-300">
-                    {article.PUART}
-                  </td>
-                  <td className="p-3 border border-gray-300">
-                    {article.PUART}
-                  </td>
-
-                  {/* <td className="p-3 border border-gray-300">A001</td>
-                  <td className="p-3 border border-gray-300">A001</td>
-                  <td className="p-3 border border-gray-300">A001</td> */}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div className="bg-gray-300 p-4 sticky bottom-0 w-full">
+      
+      {/* <div className="bg-gray-300 p-4 sticky bottom-0 w-full">
         <div className="flex flex-wrap gap-4">
           <div className="flex-1 min-w-[150px]">
             <label className="block  font-bold">Montant HT :</label>
@@ -194,7 +111,7 @@ function DevisFormTout() {
             />
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

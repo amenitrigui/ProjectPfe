@@ -1,6 +1,12 @@
-import React, { useEffect } from "react";
-
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { FaUser, FaCog, FaCreditCard, FaSignOutAlt } from "react-icons/fa";
+
+import {
+  getNombreTotalDevis,
+  getTotalChiffres,
+} from "../../app/devis_slices/devisSlice";
 
 import { setDevisInfo } from "../../app/devis_slices/devisSlice";
 import {
@@ -10,8 +16,20 @@ import {
   viderChampsClientInfo,
 } from "../../app/client_slices/clientSlice";
 
-function ClientForm() {
+import ToolBar from "../Common/ToolBar";
+
+const ClientForm = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  // Fonction pour basculer la visibilité de la sidebar
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
   const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getNombreTotalDevis());
+    dispatch(getTotalChiffres());
+  }, []);
   useEffect(() => {
     dispatch(getToutCodesClient());
   }, []);
@@ -20,8 +38,9 @@ function ClientForm() {
   const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
   console.log(clientInfos);
 
-  const infosUtilisateur = useSelector((state) => state.UtilisateurInfo.infosUtilisateur);
-
+  const infosUtilisateur = useSelector(
+    (state) => state.UtilisateurInfo.infosUtilisateur
+  );
 
   // state pour désactiver/activer les champs lors de changement de modes editables (ajout/modification)
   // vers le mode de consultation respectivement
@@ -66,16 +85,132 @@ function ClientForm() {
       dispatch(setDevisInfo({ colonne, valeur: e.target.value }));
     }
   };
-  // ! hateful fields : Exonore de tva, client a l'expert, autre tva, fidele
-  console.log(clientInfos.code);
-  return (
-    <>
-      <form className="grid grid-cols-1 space-y-2 items-center bg-base-300">
-        <div className="flex w-full">
-          <div className="card bg-base-300 rounded-box p-6 w-1/3 space-y-2">
-            {/* Conteneur pour Code Client, Type Client et CIN */}
-            <fieldset className="fieldset bg-base-300 border border-base-100 p-2 rounded-box">
 
+  const nombredevis = useSelector((state) => state.DevisCrud.nombreDeDevis);
+  const totalchifre = useSelector((state) => state.DevisCrud.totalchifre);
+  return (
+    <div className="container">
+      <div className={`navigation ${isSidebarOpen ? "active" : ""}`}>
+        <ul>
+          <li>
+            <a href="#">
+              <span className="icon">
+                <ion-icon name="speedometer-outline"></ion-icon>
+              </span>
+              <span className="title">ERP Logicom</span>
+            </a>
+          </li>
+
+          {[
+            { name: "Dashboard", icon: "home-outline", path: "/dashboard" },
+            {
+              name: "Clients",
+              icon: "people-outline",
+              path: "/ClientFormTout",
+            },
+            { name: "devis", icon: "chatbubble-outline", path: "/DevisList" },
+            {
+              name: "devistout",
+              icon: "lock-closed-outline",
+              path: "/DevisFormTout",
+            },
+            {
+              name: "les societes",
+              icon: "help-outline",
+              path: "/SocietiesList",
+            },
+            { name: "Settings", icon: "settings-outline", path: "/" },
+            {
+              name: "Deconnexion",
+              icon: "log-out-outline",
+              path: "/deconnexion",
+            },
+          ].map((item, index) => (
+            <li key={index}>
+              {/* Use Link instead of <a> */}
+              <Link to={item.path}>
+                <span className="icon">
+                  <ion-icon name={item.icon}></ion-icon>
+                </span>
+                <span className="title">{item.name}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className={`main ${isSidebarOpen ? "active" : ""}`}>
+        <div className="topbar">
+          <div className="toggle" onClick={toggleSidebar}>
+            <ion-icon name="menu-outline"></ion-icon>
+          </div>
+
+          <ToolBar></ToolBar>
+
+          <div className="relative inline-block text-left">
+            {/* Avatar avec événement de clic */}
+            <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
+              <img
+                src="assets/imgs/customer01.jpg"
+                alt="User"
+                className="w-10 h-10 rounded-full border-2 border-white shadow-md"
+              />
+              {/* Indicateur de statut en ligne */}
+              <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+            </div>
+
+            {/* Menu déroulant */}
+            {isOpen && (
+              <div className="absolute right-0 mt-3 w-56 bg-white border rounded-lg shadow-lg z-50">
+                <div className="p-4 flex items-center border-b">
+                  <img
+                    src="assets/imgs/customer01.jpg"
+                    alt="User"
+                    className="w-10 h-10 rounded-full mr-3"
+                  />
+                  <div>
+                    <p className="font-semibold">John Doe</p>
+                    <p className="text-sm text-gray-500">Admin</p>
+                  </div>
+                </div>
+                <ul className="py-2">
+                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
+                    <FaUser className="mr-3" /> My Profile
+                  </li>
+                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
+                    <FaCog className="mr-3" /> Settings
+                  </li>
+                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer relative">
+                    <FaCreditCard className="mr-3" /> Billing
+                    <span className="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                      4
+                    </span>
+                  </li>
+                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer border-t">
+                    <FaSignOutAlt className="mr-3" /> Log Out
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="details">
+          <div className="recentOrders gap-y-0.5">
+            <div className="cardHeader">
+              <h2
+                style={{
+                  color: "rgb(48, 60, 123)",
+                  fontWeight: "bold",
+                  fontStyle: "italic",
+                }}
+                className="text-3xl"
+              >
+                Client / Facture Proforma
+              </h2>
+              <a href="#" className="btn">
+                View All
+              </a>
+            </div>
             <div className="flex flex-wrap">
               <div className="flex flex-col w-1/3">
                 <label
@@ -149,7 +284,7 @@ function ClientForm() {
                 disabled={!activerChampsForm}
               />
             </div>
-            <div className="flex flex-col w-full">
+            <div className="flex flex-col w-full mb-5">
               <label
                 className="font-bold mb-1"
                 style={{ color: "rgb(48, 60, 123)" }}
@@ -164,7 +299,7 @@ function ClientForm() {
                 disabled={!activerChampsForm}
               />
             </div>
-            <div className="flex flex-col w-full">
+            <div className="flex flex-col w-full gap-0">
               <label
                 className="font-bold mb-1"
                 style={{ color: "rgb(48, 60, 123)" }}
@@ -330,538 +465,364 @@ function ClientForm() {
                 </div>
               </div>
             </div>
-            </fieldset>
-          </div>
-          {/* <div className="divider lg:divider-horizontal" /> */}
-
-          <div className="card bg-base-300 rounded-box p-6 w-1/2 space-y-2">
-          
-            <div className="flex flex-col items-end">
-              <input
-                type="date"
-                className="border border-gray-300 rounded-md p-2 w-1/3"
-                disabled={!activerChampsForm}
-              />
-            </div>
-            <div className="flex flex-col items-center">
-              <button className="btn" disabled={activerChampsForm}>
-                Liste des affaires
-              </button>
-            </div>
-
-            {/* Conteneur pour Code Client, Type Client et CIN */}
-            <div className="flex flex-wrap">
-              <div className="flex flex-col w-1/3">
-                <label
-                  className="font-bold mb-1"
-                  style={{ color: "rgb(48, 60, 123)" }}
-                >
-                  Tel 1
-                </label>
-
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2"
-                  value={clientInfos.tel1 || ""}
-                  onChange={(e) => handleChange(e, "tel1")}
-                  disabled={!activerChampsForm}
-                />
-              </div>
-              <div className="flex flex-col w-1/3">
-                <label
-                  className="font-bold mb-1"
-                  style={{ color: "rgb(48, 60, 123)" }}
-                >
-                  Tel 2
-                </label>
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2"
-                  value={clientInfos.tel2 || ""}
-                  onChange={(e) => handleChange(e, "tel2")}
-                  disabled={!activerChampsForm}
-                />
-              </div>
-              <div className="flex flex-col w-1/3">
-                <label
-                  className="font-bold mb-1"
-                  style={{ color: "rgb(48, 60, 123)" }}
-                >
-                  Télex
-                </label>
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2"
-                  value={clientInfos.telex || ""}
-                  onChange={(e) => handleChange(e, "telex")}
-                  disabled={!activerChampsForm}
-                />
-              </div>
-            </div>
-            <div className="flex flex-wrap">
-              <div className="flex flex-col w-1/3">
-                <label
-                  className="font-bold mb-1"
-                  style={{ color: "rgb(48, 60, 123)" }}
-                >
-                  Email
-                </label>
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2"
-                  value={clientInfos.email || ""}
-                  onChange={(e) => handleChange(e, "email")}
-                  disabled={!activerChampsForm}
-                />
-              </div>
-              <div className="flex flex-col w-2/3">
-                <label
-                  className="font-bold mb-1"
-                  style={{ color: "rgb(48, 60, 123)" }}
-                >
-                  Fax
-                </label>
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2"
-                  value={clientInfos.fax || ""}
-                  onChange={(e) => handleChange(e, "fax")}
-                  disabled={!activerChampsForm}
-                />
-              </div>
-            </div>
-            <div className="flex flex-nowrap">
-              <div className="flex flex-col w-1/4">
-                <label
-                  className="font-bold mb-1"
-                  style={{ color: "rgb(48, 60, 123)" }}
-                >
-                  Fournisseur
-                </label>
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2"
-                  disabled={!activerChampsForm}
-                  //mafamech
-                />
-              </div>
-              <div className="flex flex-col w-1/4">
-                <label className="font-medium mb-7"></label>
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2"
-                  disabled={!activerChampsForm}
-                />
-              </div>
-              <div className="flex flex-col w-1/4">
-                <label
-                  className="font-bold mb-1"
-                  style={{ color: "rgb(48, 60, 123)" }}
-                >
-                  Représentant
-                </label>
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2"
-                  value={clientInfos.desrep || ""}
-                  onChange={(e) => handleChange(e, "desrep")}
-                  disabled={!activerChampsForm}
-                />
-              </div>
-              <div className="flex flex-col w-1/4">
-                <label className="font-medium mb-7"></label>
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2"
-                  disabled={!activerChampsForm}
-                />
-              </div>
-            </div>
-            <div className="flex flex-cols">
-              <button className="btn" disabled={activerChampsForm}>
-                Liste clients bloquer
-              </button>
-            </div>
-
-            <table className="table table-xl w-full">
-              {/* head */}
-              <thead>
-                <tr>
-                  <th
-                    className="w-1/4 text-lg font-bold mb-1"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Nom
-                  </th>
-                  <th
-                    className="w-1/4 text-lg font-bold mb-1"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Titre
-                  </th>
-                  <th
-                    className="w-1/4 text-lg font-bold mb-1"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    GSM
-                  </th>
-                  <th
-                    className="w-1/4 text-lg font-bold mb-1"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    N°Poste
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* row 1 */}
-                <tr>
-                  <td className="w-1/4">
-                    <input
-                      type="text"
-                      className="border border-gray-300 rounded-md p-2 w-full"
-                      value={clientInfos.Nom1 || ""}
-                      onChange={(e) => handleChange(e, "Nom1")}
-                      disabled={!activerChampsForm}
-                    />
-                  </td>
-                  <td className="w-1/4">
-                    <input
-                      type="text"
-                      className="border border-gray-300 rounded-md p-2 w-full"
-                      value={clientInfos.titre1 || ""}
-                      onChange={(e) => handleChange(e, "titre1")}
-                      disabled={!activerChampsForm}
-                    />
-                  </td>
-                  <td className="w-1/4">
-                    <input
-                      type="text"
-                      className="border border-gray-300 rounded-md p-2 w-full"
-                      value={clientInfos.gsm1 || ""}
-                      onChange={(e) => handleChange(e, "gsm1")}
-                      disabled={!activerChampsForm}
-                    />
-                  </td>
-                  <td className="w-1/4">
-                    <input
-                      type="text"
-                      className="border border-gray-300 rounded-md p-2 w-full"
-                      value={clientInfos.nposte1 || ""}
-                      onChange={(e) => handleChange(e, "nposte1")}
-                      disabled={!activerChampsForm}
-                    />
-                  </td>
-                </tr>
-                {/* row 2 */}
-                <tr>
-                  <td className="w-1/4">
-                    <input
-                      type="text"
-                      className="border border-gray-300 rounded-md p-2 w-full"
-                      value={clientInfos.Nom2 || ""}
-                      onChange={(e) => handleChange(e, "Nom2")}
-                      disabled={!activerChampsForm}
-                    />
-                  </td>
-                  <td className="w-1/4">
-                    <input
-                      type="text"
-                      className="border border-gray-300 rounded-md p-2 w-full"
-                      value={clientInfos.titre2 || ""}
-                      onChange={(e) => handleChange(e, "titre2")}
-                      disabled={!activerChampsForm}
-                    />
-                  </td>
-                  <td className="w-1/4">
-                    <input
-                      type="text"
-                      className="border border-gray-300 rounded-md p-2 w-full"
-                      value={clientInfos.gsm2 || ""}
-                      onChange={(e) => handleChange(e, "gsm2")}
-                      disabled={!activerChampsForm}
-                    />
-                  </td>
-                  <td className="w-1/4">
-                    <input
-                      type="text"
-                      className="border border-gray-300 rounded-md p-2 w-full"
-                      value={clientInfos.nposte2 || ""}
-                      onChange={(e) => handleChange(e, "nposte2")}
-                      disabled={!activerChampsForm}
-                    />
-                  </td>
-                </tr>
-                {/* row 3 */}
-                <tr>
-                  <td className="w-1/4">
-                    <input
-                      type="text"
-                      className="border border-gray-300 rounded-md p-2 w-full"
-                      value={clientInfos.Nom3 || ""}
-                      onChange={(e) => handleChange(e, "Nom3")}
-                      disabled={!activerChampsForm}
-                    />
-                  </td>
-                  <td className="w-1/4">
-                    <input
-                      type="text"
-                      className="border border-gray-300 rounded-md p-2 w-full"
-                      value={clientInfos.gsm3 || ""}
-                      onChange={(e) => handleChange(e, "gsm3")}
-                      disabled={!activerChampsForm}
-                    />
-                  </td>
-                  <td className="w-1/4">
-                    <input
-                      type="text"
-                      className="border border-gray-300 rounded-md p-2 w-full"
-                      value={clientInfos.nposte3 || ""}
-                      onChange={(e) => handleChange(e, "nposte3")}
-                      disabled={!activerChampsForm}
-                    />
-                  </td>
-                  <td className="w-1/4">
-                    <input
-                      type="text"
-                      className="border border-gray-300 rounded-md p-2 w-full"
-                      disabled={!activerChampsForm}
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-     
           </div>
 
-          {/* <div className="divider lg:divider-horizontal" /> */}
-
-          <div className="card bg-base-300 rounded-box p-6 w-1/5 space-y-2">
-            <fieldset className="fieldset bg-base-300 border border-base-100 p-2 rounded-box">
-              <legend
-                className="font-normal"
-                style={{ color: "rgb(48, 60, 123)" }}
-              >
-                Paramètres Facturation
-              </legend>
-
-              <div className="w-full min-w-md">
-                <div className="flex flex-nowrap">
-                  <div className="flex flex-col w-1/2">
-                    <label
-                      className="font-bold"
-                      style={{ color: "rgb(48, 60, 123)" }}
-                    >
-                      Tarif
-                    </label>
-
-                    <select
-                      className="border border-gray-300 rounded-md p-2"
-                      disabled={!activerChampsForm}
-                    >
-                      <option value="prix1">prix1</option>
-                      <option value="prix2">prix2</option>
-                      <option value="prix3">prix3</option>
-                      <option value="prix4">prix4</option>
-                    </select>
-                  </div>
-
-                  <div className="flex flex-col w-1/2">
-                    <label
-                      className="font-bold"
-                      style={{ color: "rgb(48, 60, 123)" }}
-                    >
-                      Régl.
-                    </label>
-                    <select
-                      className="border border-gray-300 rounded-md p-2"
-                      disabled={!activerChampsForm}
-                    >
-                      <option value="Chèque">Chèque</option>
-                      <option value="Espèce">Espèce</option>
-                      <option value="Effet">Effet</option>
-                      <option value="Retenue">Retenue</option>
-                      <option value="Virement">Virement</option>
-                      <option value="Différence">Différence</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="flex flex-col">
+          <div className="recentCustomers">
+            <div className="cardHeader">
+              <h2>Paramettre de fACTURATION</h2>
+            </div>
+            <div className="card rounded-box p-6 space-y-2">
+              {/* Conteneur pour Code Client, Type Client et CIN */}
+              <div className="flex flex-wrap">
+                <div className="flex flex-col w-1/3">
                   <label
-                    className="font-bold"
+                    className="font-bold mb-1"
                     style={{ color: "rgb(48, 60, 123)" }}
                   >
-                    Remise max
+                    Tel 1
+                  </label>
+
+                  <input
+                    type="text"
+                    className="border border-gray-300 rounded-md p-2"
+                    value={clientInfos.tel1 || ""}
+                    onChange={(e) => handleChange(e, "tel1")}
+                    disabled={!activerChampsForm}
+                  />
+                </div>
+                <div className="flex flex-col w-2/3">
+                  <label
+                    className="font-bold mb-1"
+                    style={{ color: "rgb(48, 60, 123)" }}
+                  >
+                    Tel 2
                   </label>
                   <input
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
-                    value={clientInfos.remise || ""}
-                    onChange={(e) => handleChange(e, "remise")}
+                    value={clientInfos.tel2 || ""}
+                    onChange={(e) => handleChange(e, "tel2")}
                     disabled={!activerChampsForm}
                   />
-                </div>
-
-                <div className="flex flex-col">
-                  <label
-                    className="font-bold"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Délai de Règl F.C
-                  </label>
-                  <input
-                    type="text"
-                    className="border border-gray-300 rounded-md p-2"
-                    value={clientInfos.delregFC || ""}
-                    onChange={(e) => handleChange(e, "delregFC")}
-                    disabled={!activerChampsForm}
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label
-                    className="font-bold"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Délai de Règl Fact
-                  </label>
-                  <input
-                    type="text"
-                    className="border border-gray-300 rounded-md p-2"
-                    value={clientInfos.delregFT || ""}
-                    onChange={(e) => handleChange(e, "delregFT")}
-                    disabled={!activerChampsForm}
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label
-                    className="font-bold"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Délai de Règl BL
-                  </label>
-                  <input
-                    type="text"
-                    className="border border-gray-300 rounded-md p-2"
-                    value={clientInfos.delregBL || ""}
-                    onChange={(e) => handleChange(e, "delregBL")}
-                    disabled={!activerChampsForm}
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label
-                    className="font-bold"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Seuil crédit
-                  </label>
-                  <input
-                    type="text"
-                    className="border border-gray-300 rounded-md p-2"
-                    value={clientInfos.scredit || ""}
-                    onChange={(e) => handleChange(e, "scredit")}
-                    disabled={!activerChampsForm}
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label
-                    className="font-bold"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Seuil Risque
-                  </label>
-                  <input
-                    type="text"
-                    className="border border-gray-300 rounded-md p-2"
-                    value={clientInfos.srisque || ""}
-                    onChange={(e) => handleChange(e, "srisque")}
-                    disabled={!activerChampsForm}
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label
-                    className="font-bold"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Référence
-                  </label>
-                  <input
-                    type="text"
-                    className="border border-gray-300 rounded-md p-2"
-                    value={clientInfos.reference || ""}
-                    onChange={(e) => handleChange(e, "reference")}
-                    disabled={!activerChampsForm}
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <label
-                    className="font-bold"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Date
-                  </label>
-                  <input
-                    type="text"
-                    className="border border-gray-300 rounded-md p-2"
-                    disabled={!activerChampsForm}
-                    // value={clientInfos.cltexport || ""}
-                    // onChange={(e) => handleChange(e, "cltexport")}
-                  />
-                </div>
-
-                <div className="flex flex-nowrap space-x-20">
-                  <div className="flex flex-col">
-                    <label
-                      className="font-bold"
-                      style={{ color: "rgb(48, 60, 123)" }}
-                    >
-                      Blockage
-                    </label>
-                    <select
-                      className="border border-gray-300 rounded-md p-2 w-11/12"
-                      disabled={!activerChampsForm}
-                    >
-                      <option value="O">O</option>
-                      <option value="N">N</option>
-                    </select>
-                  </div>
-                  <div className="flex flex-col">
-                    <label
-                      className="font-bold"
-                      style={{ color: "rgb(48, 60, 123)" }}
-                    >
-                      Contrat
-                    </label>
-                    <select
-                      className="border border-gray-300 rounded-md p-2 w-11/12"
-                      disabled={!activerChampsForm}
-                    >
-                      <option value="O">O</option>
-                      <option value="N">N</option>
-                    </select>
-                  </div>
                 </div>
               </div>
-            </fieldset>
+              <div className="flex flex-wrap">
+                <div className="flex flex-col w-1/3">
+                  <label
+                    className="font-bold mb-1"
+                    style={{ color: "rgb(48, 60, 123)" }}
+                  >
+                    Email
+                  </label>
+                  <input
+                    type="text"
+                    className="border border-gray-300 rounded-md p-2"
+                    value={clientInfos.email || ""}
+                    onChange={(e) => handleChange(e, "email")}
+                    disabled={!activerChampsForm}
+                  />
+                </div>
+                <div className="flex flex-col w-2/3">
+                  <label
+                    className="font-bold mb-1"
+                    style={{ color: "rgb(48, 60, 123)" }}
+                  >
+                    Fax
+                  </label>
+                  <input
+                    type="text"
+                    className="border border-gray-300 rounded-md p-2"
+                    value={clientInfos.fax || ""}
+                    onChange={(e) => handleChange(e, "fax")}
+                    disabled={!activerChampsForm}
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-cols">
+                <button className="btn" disabled={activerChampsForm}>
+                  Liste clients bloquer
+                </button>
+              </div>
+
+              <table className="table table-xl w-full">
+                {/* head */}
+                <thead>
+                  <tr>
+                    <th
+                      className="w-1/4 text-lg font-bold mb-1"
+                      style={{ color: "rgb(48, 60, 123)" }}
+                    >
+                      Nom
+                    </th>
+                    <th
+                      className="w-1/4 text-lg font-bold mb-1"
+                      style={{ color: "rgb(48, 60, 123)" }}
+                    >
+                      Titre
+                    </th>
+                    <th
+                      className="w-1/4 text-lg font-bold mb-1"
+                      style={{ color: "rgb(48, 60, 123)" }}
+                    >
+                      GSM
+                    </th>
+                    <th
+                      className="w-1/4 text-lg font-bold mb-1"
+                      style={{ color: "rgb(48, 60, 123)" }}
+                    >
+                      N°Poste
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/* row 1 */}
+                  <tr>
+                    <td className="w-1/4">
+                      <input
+                        type="text"
+                        className="border border-gray-300 rounded-md p-2 w-full"
+                        value={clientInfos.Nom1 || ""}
+                        onChange={(e) => handleChange(e, "Nom1")}
+                        disabled={!activerChampsForm}
+                      />
+                    </td>
+                    <td className="w-1/4">
+                      <input
+                        type="text"
+                        className="border border-gray-300 rounded-md p-2 w-full"
+                        value={clientInfos.titre1 || ""}
+                        onChange={(e) => handleChange(e, "titre1")}
+                        disabled={!activerChampsForm}
+                      />
+                    </td>
+                    <td className="w-1/4">
+                      <input
+                        type="text"
+                        className="border border-gray-300 rounded-md p-2 w-full"
+                        value={clientInfos.gsm1 || ""}
+                        onChange={(e) => handleChange(e, "gsm1")}
+                        disabled={!activerChampsForm}
+                      />
+                    </td>
+                    <td className="w-1/4">
+                      <input
+                        type="text"
+                        className="border border-gray-300 rounded-md p-2 w-full"
+                        value={clientInfos.nposte1 || ""}
+                        onChange={(e) => handleChange(e, "nposte1")}
+                        disabled={!activerChampsForm}
+                      />
+                    </td>
+                  </tr>
+                  {/* row 2 */}
+                  <tr>
+                    <td className="w-1/4">
+                      <input
+                        type="text"
+                        className="border border-gray-300 rounded-md p-2 w-full"
+                        value={clientInfos.Nom2 || ""}
+                        onChange={(e) => handleChange(e, "Nom2")}
+                        disabled={!activerChampsForm}
+                      />
+                    </td>
+                    <td className="w-1/4">
+                      <input
+                        type="text"
+                        className="border border-gray-300 rounded-md p-2 w-full"
+                        value={clientInfos.titre2 || ""}
+                        onChange={(e) => handleChange(e, "titre2")}
+                        disabled={!activerChampsForm}
+                      />
+                    </td>
+                    <td className="w-1/4">
+                      <input
+                        type="text"
+                        className="border border-gray-300 rounded-md p-2 w-full"
+                        value={clientInfos.gsm2 || ""}
+                        onChange={(e) => handleChange(e, "gsm2")}
+                        disabled={!activerChampsForm}
+                      />
+                    </td>
+                    <td className="w-1/4">
+                      <input
+                        type="text"
+                        className="border border-gray-300 rounded-md p-2 w-full"
+                        value={clientInfos.nposte2 || ""}
+                        onChange={(e) => handleChange(e, "nposte2")}
+                        disabled={!activerChampsForm}
+                      />
+                    </td>
+                  </tr>
+                  {/* row 3 */}
+                  <tr>
+                    <td className="w-1/4">
+                      <input
+                        type="text"
+                        className="border border-gray-300 rounded-md p-2 w-full"
+                        value={clientInfos.Nom3 || ""}
+                        onChange={(e) => handleChange(e, "Nom3")}
+                        disabled={!activerChampsForm}
+                      />
+                    </td>
+                    <td className="w-1/4">
+                      <input
+                        type="text"
+                        className="border border-gray-300 rounded-md p-2 w-full"
+                        value={clientInfos.gsm3 || ""}
+                        onChange={(e) => handleChange(e, "gsm3")}
+                        disabled={!activerChampsForm}
+                      />
+                    </td>
+                    <td className="w-1/4">
+                      <input
+                        type="text"
+                        className="border border-gray-300 rounded-md p-2 w-full"
+                        value={clientInfos.nposte3 || ""}
+                        onChange={(e) => handleChange(e, "nposte3")}
+                        disabled={!activerChampsForm}
+                      />
+                    </td>
+                    <td className="w-1/4">
+                      <input
+                        type="text"
+                        className="border border-gray-300 rounded-md p-2 w-full"
+                        disabled={!activerChampsForm}
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div className="w-full min-w-md">
+              <div className="flex flex-nowrap">
+                <div className="flex flex-col w-2/3">
+                  <label
+                    className="font-bold"
+                    style={{ color: "rgb(48, 60, 123)" }}
+                  >
+                    Tarif
+                  </label>
+
+                  <select
+                    className="border border-gray-300 rounded-md p-2"
+                    disabled={!activerChampsForm}
+                  >
+                    <option value="prix1">prix1</option>
+                    <option value="prix2">prix2</option>
+                    <option value="prix3">prix3</option>
+                    <option value="prix4">prix4</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex flex-col">
+                <label
+                  className="font-bold"
+                  style={{ color: "rgb(48, 60, 123)" }}
+                >
+                  Remise max
+                </label>
+                <input
+                  type="text"
+                  className="border border-gray-300 rounded-md p-2"
+                  value={clientInfos.remise || ""}
+                  onChange={(e) => handleChange(e, "remise")}
+                  disabled={!activerChampsForm}
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label
+                  className="font-bold"
+                  style={{ color: "rgb(48, 60, 123)" }}
+                >
+                  Seuil crédit
+                </label>
+                <input
+                  type="text"
+                  className="border border-gray-300 rounded-md p-2"
+                  value={clientInfos.scredit || ""}
+                  onChange={(e) => handleChange(e, "scredit")}
+                  disabled={!activerChampsForm}
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label
+                  className="font-bold"
+                  style={{ color: "rgb(48, 60, 123)" }}
+                >
+                  Seuil Risque
+                </label>
+                <input
+                  type="text"
+                  className="border border-gray-300 rounded-md p-2"
+                  value={clientInfos.srisque || ""}
+                  onChange={(e) => handleChange(e, "srisque")}
+                  disabled={!activerChampsForm}
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label
+                  className="font-bold"
+                  style={{ color: "rgb(48, 60, 123)" }}
+                >
+                  Référence
+                </label>
+                <input
+                  type="text"
+                  className="border border-gray-300 rounded-md p-2"
+                  value={clientInfos.reference || ""}
+                  onChange={(e) => handleChange(e, "reference")}
+                  disabled={!activerChampsForm}
+                />
+              </div>
+
+              <div className="flex flex-nowrap space-x-20">
+                <div className="flex flex-col">
+                  <label
+                    className="font-bold"
+                    style={{ color: "rgb(48, 60, 123)" }}
+                  >
+                    Blockage
+                  </label>
+                  <select
+                    className="border border-gray-300 rounded-md p-2 w-11/12"
+                    disabled={!activerChampsForm}
+                  >
+                    <option value="O">O</option>
+                    <option value="N">N</option>
+                  </select>
+                </div>
+                <div className="flex flex-col">
+                  <label
+                    className="font-bold"
+                    style={{ color: "rgb(48, 60, 123)" }}
+                  >
+                    Contrat
+                  </label>
+                  <select
+                    className="border border-gray-300 rounded-md p-2 w-11/12"
+                    disabled={!activerChampsForm}
+                  >
+                    <option value="O">O</option>
+                    <option value="N">N</option>
+                  </select>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-
-        {/* 2 */}
-        <div className="divider"></div>
-
-        <div className="flex w-full">
-          <div className="card bg-base-300 rounded-box p-6 w-1/3 space-y-2">
-            <fieldset className="fieldset bg-base-300 border border-base-100 p-2 rounded-box">
-              <legend className="fieldset-legend text-red-500 font-bold">
-                Banque
-              </legend>
-
+        {/* 2eme whada */}
+        <div className="details">
+          <div className="recentOrders">
+            <div className="cardHeader">
+              <h2>Banque</h2>
+            </div>
+            <div className="card rounded-box p-6 space-y-2">
               <div className="flex flex-nowrap">
                 <div className="flex flex-col w-1/3">
                   <label
@@ -895,11 +856,7 @@ function ClientForm() {
                   />
                 </div>
               </div>
-            </fieldset>
-            <fieldset className="fieldset bg-base-300 border border-base-100 p-2 rounded-box">
-              <legend className="fieldset-legend text-red-500 font-bold">
-                Parametre Fiscales
-              </legend>
+
               <div className="flex">
                 <div className="flex flex-col w-1/2">
                   <label
@@ -1009,9 +966,10 @@ function ClientForm() {
                     </label>
                   </div>
                 </div>
-                <div className="flex flex-col w-1/2">
-                  <div className="flex flex-nowrap">
-                    <div className="flex space-x-2 w-1/2">
+                <div className="flex flex-col w-1/2 p-8  gap-10 ">
+                  {/* Ligne 1 */}
+                  <div className="flex flex-wrap md:flex-nowrap gap-4">
+                    <div className="flex items-center space-x-2 w-full md:w-1/2">
                       <input
                         type="checkbox"
                         checked={clientInfos.majotva === "0"}
@@ -1019,28 +977,24 @@ function ClientForm() {
                         onChange={(e) => handleChange(e, "majotva")}
                         disabled={!activerChampsForm}
                       />
-                      <label style={{ color: "rgb(48, 60, 123)" }}>
-                        Majoration de TVA
-                      </label>
+                      <label className="text-blue-900">Majoration de TVA</label>
                     </div>
 
-                    <div className="flex space-x-2 w-1/2">
+                    <div className="flex items-center space-x-2 w-full md:w-1/2">
                       <input
                         checked={clientInfos.exon === "0"}
                         type="checkbox"
                         className="border border-gray-300 rounded-md"
-                        value={clientInfos.exon || ""}
                         onChange={(e) => handleChange(e, "exon")}
                         disabled={!activerChampsForm}
                       />
-                      <label style={{ color: "rgb(48, 60, 123)" }}>
-                        Exonore de TVA
-                      </label>
+                      <label className="text-blue-900">Exonore de TVA</label>
                     </div>
                   </div>
 
-                  <div className="flex flex-nowrap">
-                    <div className="flex space-x-2 w-1/2">
+                  {/* Ligne 2 */}
+                  <div className="flex flex-wrap md:flex-nowrap gap-4">
+                    <div className="flex items-center space-x-2 w-full md:w-1/2">
                       <input
                         disabled={!activerChampsForm}
                         checked={clientInfos.regime === "O"}
@@ -1048,12 +1002,10 @@ function ClientForm() {
                         className="border border-gray-300 rounded-md"
                         onChange={(e) => handleChange(e, "regime")}
                       />
-                      <label style={{ color: "rgb(48, 60, 123)" }}>
-                        Regime reele
-                      </label>
+                      <label className="text-blue-900">Regime réel</label>
                     </div>
 
-                    <div className="flex space-x-2 w-1/2">
+                    <div className="flex items-center space-x-2 w-full md:w-1/2">
                       <input
                         disabled={!activerChampsForm}
                         type="checkbox"
@@ -1061,90 +1013,55 @@ function ClientForm() {
                         className="border border-gray-300 rounded-md"
                         onChange={(e) => handleChange(e, "suspfodec")}
                       />
-                      <label style={{ color: "rgb(48, 60, 123)" }}>
-                        Suspendu FODEK
-                      </label>
+                      <label className="text-blue-900">Suspendu FODEK</label>
                     </div>
                   </div>
-                  <div className="flex flex-nowrap">
-                    <div className="flex space-x-2 w-1/2">
+
+                  {/* Ligne 3 */}
+                  <div className="flex flex-wrap md:flex-nowrap gap-4">
+                    <div className="flex items-center space-x-2 w-full md:w-1/2">
                       <input
                         type="checkbox"
                         disabled={!activerChampsForm}
                         checked={clientInfos.cltexport === "0"}
                         className="border border-gray-300 rounded-md"
-                        value={clientInfos.cltexport || ""}
                         onChange={(e) => handleChange(e, "cltexport")}
                       />
-                      <label style={{ color: "rgb(48, 60, 123)" }}>
-                        Client A l'expert
-                      </label>
+                      <label className="text-blue-900">Client à l'export</label>
                     </div>
 
-                    <div className="flex space-x-2 w-1/2">
+                    <div className="flex items-center space-x-2 w-full md:w-1/2">
                       <input
                         type="checkbox"
                         disabled={!activerChampsForm}
-                        className="border border-gray-300 rounded-md"
                         checked={clientInfos.timbref === "O"}
+                        className="border border-gray-300 rounded-md"
                         onChange={(e) => handleChange(e, "timbref")}
                       />
-                      <label style={{ color: "rgb(48, 60, 123)" }}>
-                        Timbre fiscale
-                      </label>
+                      <label className="text-blue-900">Timbre fiscal</label>
                     </div>
                   </div>
 
-                  <div className="flex space-x-2">
+                  {/* Ligne 4 - Unique */}
+                  <div className="flex items-center space-x-2">
                     <input
                       type="checkbox"
                       disabled={!activerChampsForm}
+                      checked={clientInfos.fact === "0"}
                       className="border border-gray-300 rounded-md"
-                      checked={clientInfos.fact == "0"}
                       onChange={(e) => handleChange(e, "fact")}
                     />
-                    <label style={{ color: "rgb(48, 60, 123)" }}>
+                    <label className="text-blue-900">
                       Fact ticket de caisse
                     </label>
                   </div>
                 </div>
               </div>
-            </fieldset>
+            </div>
           </div>
 
-          {/* <div className="divider lg:divider-horizontal"></div> */}
-
-          <div className="card bg-base-300 rounded-box p-6 w-1/3 space-y-20 mt-2">
-            {/* Ajout de space-y-6 pour espacer les fieldsets */}
-
-            {/* Fieldset Compte comptable */}
-            <fieldset className="fieldset bg-base-300 border border-base-100 p-4 rounded-box">
-              <legend
-                className="fieldset-legend font-bold"
-                style={{ color: "rgb(48, 60, 123)" }}
-              >
-                Compte comptable
-              </legend>
-
-              <div className="flex flex-nowrap w-full items-center space-x-2">
-                <select
-                  className="border border-gray-300 rounded-md p-2 w-11/12"
-                  disabled={!activerChampsForm}
-                />
-                <button
-                  className="btn btn-sm disabled={!activerChampsForm}"
-                  disabled={!activerChampsForm}
-                ></button>
-              </div>
-              <select
-                className="border border-gray-300 rounded-md p-2 w-11/12"
-                disabled={!activerChampsForm}
-              />
-            </fieldset>
-
-            {/* Fieldset Informations */}
-            <fieldset className="fieldset bg-base-300 border border-base-100 p-4 rounded-box">
-              <legend className="fieldset-legend"></legend>
+          <div className="recentCustomers">
+            <div className="card rounded-box p-6 space-y-2">
               <div className="flex flex-col w-full">
                 {/* Ligne pour "Creation" */}
                 <div className="flex items-center space-x-4">
@@ -1158,7 +1075,10 @@ function ClientForm() {
                   <input
                     type="text"
                     className="border border-gray-300 rounded-md p-2 w-2/3"
-                    value={clientInfos.usera || infosUtilisateur.codeuser + " // " + infosUtilisateur.nom}
+                    value={
+                      clientInfos.usera ||
+                      infosUtilisateur.codeuser + " // " + infosUtilisateur.nom
+                    }
                     onChange={(e) => handleChange(e, "usera")}
                     disabled
                   />
@@ -1198,13 +1118,6 @@ function ClientForm() {
                   />
                 </div>
               </div>
-            </fieldset>
-          </div>
-
-          {/* <div className="divider lg:divider-horizontal"></div> */}
-
-          <div className="card bg-base-300 rounded-box p-6 w-1/3 space-y-2">
-            <fieldset className="fieldset bg-base-300 border border-base-100 p-4 rounded-box">
               <div className="flex flex-col">
                 <label
                   className="block font-bold text-center"
@@ -1222,58 +1135,14 @@ function ClientForm() {
                   disabled={!activerChampsForm}
                 />
               </div>
-
-              <div className="flex flex-col">
-                <label
-                  className="block font-bold text-center"
-                  style={{ color: "rgb(48, 60, 123)" }}
-                >
-                  Aval
-                </label>
-                <input
-                  type="text"
-                  className="w-full border border-gray-300 rounded-md p-2"
-                  value={clientInfos.aval1 || ""}
-                  onChange={(e) => handleChange(e, "aval1")}
-                  disabled={!activerChampsForm}
-                />
-                <input
-                  type="text"
-                  className="w-full border border-gray-300 rounded-md p-2"
-                  value={clientInfos.aval2 || ""}
-                  onChange={(e) => handleChange(e, "aval2")}
-                  disabled={!activerChampsForm}
-                />
-              </div>
-
-              <div className="flex flex-col">
-                <label
-                  className="block font-bold text-center"
-                  style={{ color: "rgb(48, 60, 123)" }}
-                >
-                  Cordonnes client en arabe{" "}
-                </label>
-                <input
-                  type="text"
-                  className="w-full border border-gray-300 rounded-md p-2"
-                  disabled={!activerChampsForm}
-                  // value={clientInfos.cltexport || ""}
-                  // onChange={(e) => handleChange(e, "cltexport")}
-                />
-                <input
-                  type="text"
-                  className="w-full border border-gray-300 rounded-md p-2"
-                  disabled={!activerChampsForm}
-                  // value={clientInfos.cltexport || ""}
-                  // onChange={(e) => handleChange(e, "cltexport")}
-                />
-              </div>
-            </fieldset>
+            </div>
           </div>
         </div>
-      </form>
-    </>
+      </div>
+
+      <script src="%PUBLIC_URL%/assets/js/main.js"></script>
+    </div>
   );
-}
+};
 
 export default ClientForm;

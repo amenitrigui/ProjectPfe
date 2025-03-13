@@ -14,6 +14,7 @@ import {
   faTrashAlt,
   faCancel,
 } from "@fortawesome/free-solid-svg-icons";
+import SideBar from "../Common/SideBar"
 import {
   ajouterClient,
   getDerniereCodeClient,
@@ -362,30 +363,6 @@ function ToolBar() {
         </nav>
       </nav>
 
-      {toolbarTable == "devis" && (
-        <h2
-          style={{
-            color: "rgb(48, 60, 123)",
-            fontWeight: "bold",
-            fontStyle: "italic",
-          }}
-          className="text-3xl"
-        >
-          Devis / Facture Proforma
-        </h2>
-      )}
-      {toolbarTable == "client" && (
-        <h2
-          style={{
-            color: "rgb(48, 60, 123)",
-            fontWeight: "bold",
-            fontStyle: "italic",
-          }}
-          className="text-3xl"
-        >
-          Client / Facture Proforma
-        </h2>
-      )}
     </>
   );
 }
