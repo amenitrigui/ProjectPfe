@@ -46,6 +46,7 @@ const registerUser = async (req, res) => {
         .json({ message: "Tous les champs doivent être remplis." });
     }
 
+    const User = defineUserModel(sequelizeUserERP);
     const existingUser = await User.findOne({ where: { email } });
 
     if (existingUser) {
@@ -55,10 +56,12 @@ const registerUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(motpasse, 10);
     console.log(hashedPassword);
 
+
     const newUser = await User.create({
       email,
       motpasse: hashedPassword,
       nom,
+      type: "Utilisateur"
     });
 
     return res.status(201).json({

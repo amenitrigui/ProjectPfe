@@ -416,7 +416,7 @@ const getListePointVente = async (req, res) => {
     const { dbName } = req.params;
     const dbConnection = await getDatabaseConnection(dbName, res);
     const pointsVenteDistincts = await dbConnection.query(
-      `SELECT DISTINCT(libpv) from dfp`,
+      `SELECT DISTINCT(Libelle) from pointvente`,
       {
         type: dbConnection.QueryTypes.SELECT,
       }

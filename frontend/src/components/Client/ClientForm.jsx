@@ -70,11 +70,11 @@ function ClientForm() {
   console.log(clientInfos.code);
   return (
     <>
-      <form className="grid grid-cols-1 space-y-2 items-center bg-base-300">
+      <form className="grid grid-cols-1 space-y-2 items-center">
         <div className="flex w-full">
-          <div className="card bg-base-300 rounded-box p-6 w-1/3 space-y-2">
+          <div className="card rounded-box p-6 w-1/3 space-y-2">
             {/* Conteneur pour Code Client, Type Client et CIN */}
-            <fieldset className="fieldset bg-base-300 border border-base-100 p-2 rounded-box">
+            <fieldset className="fieldset border border-base-100 p-2 rounded-box">
 
             <div className="flex flex-wrap">
               <div className="flex flex-col w-1/3">
@@ -334,7 +334,7 @@ function ClientForm() {
           </div>
           {/* <div className="divider lg:divider-horizontal" /> */}
 
-          <div className="card bg-base-300 rounded-box p-6 w-1/2 space-y-2">
+          <div className="card rounded-box p-6 w-1/2 space-y-2">
           
             <div className="flex flex-col items-end">
               <input
@@ -382,7 +382,7 @@ function ClientForm() {
                   disabled={!activerChampsForm}
                 />
               </div>
-              <div className="flex flex-col w-1/3">
+              {/* <div className="flex flex-col w-1/3">
                 <label
                   className="font-bold mb-1"
                   style={{ color: "rgb(48, 60, 123)" }}
@@ -396,7 +396,7 @@ function ClientForm() {
                   onChange={(e) => handleChange(e, "telex")}
                   disabled={!activerChampsForm}
                 />
-              </div>
+              </div> */}
             </div>
             <div className="flex flex-wrap">
               <div className="flex flex-col w-1/3">
@@ -430,7 +430,7 @@ function ClientForm() {
                 />
               </div>
             </div>
-            <div className="flex flex-nowrap">
+            {/* <div className="flex flex-nowrap">
               <div className="flex flex-col w-1/4">
                 <label
                   className="font-bold mb-1"
@@ -476,7 +476,7 @@ function ClientForm() {
                   disabled={!activerChampsForm}
                 />
               </div>
-            </div>
+            </div> */}
             <div className="flex flex-cols">
               <button className="btn" disabled={activerChampsForm}>
                 Liste clients bloquer
@@ -636,8 +636,8 @@ function ClientForm() {
 
           {/* <div className="divider lg:divider-horizontal" /> */}
 
-          <div className="card bg-base-300 rounded-box p-6 w-1/5 space-y-2">
-            <fieldset className="fieldset bg-base-300 border border-base-100 p-2 rounded-box">
+          <div className="card rounded-box p-6 w-1/5 space-y-2">
+            <fieldset className="fieldset border border-base-100 p-2 rounded-box">
               <legend
                 className="font-normal"
                 style={{ color: "rgb(48, 60, 123)" }}
@@ -666,7 +666,7 @@ function ClientForm() {
                     </select>
                   </div>
 
-                  <div className="flex flex-col w-1/2">
+                  {/* <div className="flex flex-col w-1/2">
                     <label
                       className="font-bold"
                       style={{ color: "rgb(48, 60, 123)" }}
@@ -684,7 +684,7 @@ function ClientForm() {
                       <option value="Virement">Virement</option>
                       <option value="Différence">Différence</option>
                     </select>
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className="flex flex-col">
@@ -703,7 +703,7 @@ function ClientForm() {
                   />
                 </div>
 
-                <div className="flex flex-col">
+                {/* <div className="flex flex-col">
                   <label
                     className="font-bold"
                     style={{ color: "rgb(48, 60, 123)" }}
@@ -749,7 +749,7 @@ function ClientForm() {
                     onChange={(e) => handleChange(e, "delregBL")}
                     disabled={!activerChampsForm}
                   />
-                </div>
+                </div> */}
 
                 <div className="flex flex-col">
                   <label
@@ -799,7 +799,7 @@ function ClientForm() {
                   />
                 </div>
 
-                <div className="flex flex-col">
+                {/* <div className="flex flex-col">
                   <label
                     className="font-bold"
                     style={{ color: "rgb(48, 60, 123)" }}
@@ -813,7 +813,7 @@ function ClientForm() {
                     // value={clientInfos.cltexport || ""}
                     // onChange={(e) => handleChange(e, "cltexport")}
                   />
-                </div>
+                </div> */}
 
                 <div className="flex flex-nowrap space-x-20">
                   <div className="flex flex-col">
@@ -856,8 +856,8 @@ function ClientForm() {
         <div className="divider"></div>
 
         <div className="flex w-full">
-          <div className="card bg-base-300 rounded-box p-6 w-1/3 space-y-2">
-            <fieldset className="fieldset bg-base-300 border border-base-100 p-2 rounded-box">
+          <div className="card rounded-box p-6 w-1/3 space-y-2">
+            <fieldset className="fieldset border border-base-100 p-2 rounded-box">
               <legend className="fieldset-legend text-red-500 font-bold">
                 Banque
               </legend>
@@ -896,7 +896,7 @@ function ClientForm() {
                 </div>
               </div>
             </fieldset>
-            <fieldset className="fieldset bg-base-300 border border-base-100 p-2 rounded-box">
+            <fieldset className="fieldset border border-base-100 p-2 rounded-box">
               <legend className="fieldset-legend text-red-500 font-bold">
                 Parametre Fiscales
               </legend>
@@ -1114,11 +1114,11 @@ function ClientForm() {
 
           {/* <div className="divider lg:divider-horizontal"></div> */}
 
-          <div className="card bg-base-300 rounded-box p-6 w-1/3 space-y-20 mt-2">
+          <div className="card rounded-box p-6 w-1/3 space-y-20 mt-2">
             {/* Ajout de space-y-6 pour espacer les fieldsets */}
 
             {/* Fieldset Compte comptable */}
-            <fieldset className="fieldset bg-base-300 border border-base-100 p-4 rounded-box">
+            {/* <fieldset className="fieldset bg-base-300 border border-base-100 p-4 rounded-box">
               <legend
                 className="fieldset-legend font-bold"
                 style={{ color: "rgb(48, 60, 123)" }}
@@ -1140,10 +1140,10 @@ function ClientForm() {
                 className="border border-gray-300 rounded-md p-2 w-11/12"
                 disabled={!activerChampsForm}
               />
-            </fieldset>
+            </fieldset> */}
 
             {/* Fieldset Informations */}
-            <fieldset className="fieldset bg-base-300 border border-base-100 p-4 rounded-box">
+            <fieldset className="fieldset border border-base-100 p-4 rounded-box">
               <legend className="fieldset-legend"></legend>
               <div className="flex flex-col w-full">
                 {/* Ligne pour "Creation" */}
@@ -1203,8 +1203,8 @@ function ClientForm() {
 
           {/* <div className="divider lg:divider-horizontal"></div> */}
 
-          <div className="card bg-base-300 rounded-box p-6 w-1/3 space-y-2">
-            <fieldset className="fieldset bg-base-300 border border-base-100 p-4 rounded-box">
+          <div className="card rounded-box p-6 w-1/3 space-y-2">
+            <fieldset className="fieldset border border-base-100 p-4 rounded-box">
               <div className="flex flex-col">
                 <label
                   className="block font-bold text-center"
@@ -1223,7 +1223,7 @@ function ClientForm() {
                 />
               </div>
 
-              <div className="flex flex-col">
+              {/* <div className="flex flex-col">
                 <label
                   className="block font-bold text-center"
                   style={{ color: "rgb(48, 60, 123)" }}
@@ -1244,9 +1244,9 @@ function ClientForm() {
                   onChange={(e) => handleChange(e, "aval2")}
                   disabled={!activerChampsForm}
                 />
-              </div>
+              </div> */}
 
-              <div className="flex flex-col">
+              {/* <div className="flex flex-col">
                 <label
                   className="block font-bold text-center"
                   style={{ color: "rgb(48, 60, 123)" }}
@@ -1267,7 +1267,7 @@ function ClientForm() {
                   // value={clientInfos.cltexport || ""}
                   // onChange={(e) => handleChange(e, "cltexport")}
                 />
-              </div>
+              </div> */}
             </fieldset>
           </div>
         </div>

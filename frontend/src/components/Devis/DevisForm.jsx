@@ -155,8 +155,8 @@ function DevisForm() {
                     disabled={!activerChampsForm}
                   >
                     {listePointsVente.map((pointVente) => (
-                      <option key={pointVente.libpv} value={pointVente.libpv}>
-                        {pointVente.libpv}
+                      <option key={pointVente.Libelle} value={pointVente.Libelle}>
+                        {pointVente.Libelle}
                       </option>
                     ))}
                   </select>
@@ -499,7 +499,7 @@ function DevisForm() {
                   ></textarea>
                 </div>
               </div>
-              <div className="flex flex-nowrap">
+              {/* <div className="flex flex-nowrap">
                 <div className="flex flex-col w-full">
                   <label
                     className="font-bold mb-1"
@@ -513,7 +513,7 @@ function DevisForm() {
                     disabled={!activerChampsForm}
                   />
                 </div>
-              </div>
+              </div> */}
             </fieldset>
           </div>
         </div>
