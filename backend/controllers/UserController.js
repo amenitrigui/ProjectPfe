@@ -88,7 +88,7 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   const { nom, motpasse } = req.body;
-
+  console.log(nom," ",motpasse);
   const User = defineUserModel(sequelizeUserERP);
   console.log(User);
 
