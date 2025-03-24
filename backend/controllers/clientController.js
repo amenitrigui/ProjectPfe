@@ -343,12 +343,9 @@ const getDerniereCodeClient = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
-
 const getCodePostalDesignationParCode = async (req, res) => {
   const { dbName } = req.params;
   const { cp } = req.query;
-  const { codeClient } = req.query;
 
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
@@ -359,11 +356,10 @@ const getCodePostalDesignationParCode = async (req, res) => {
     cpost.desicp
     FROM CLIENT clt
       JOIN CPOSTAL cpost ON clt.cp = cpost.codep
-    where clt.code = :codeClient and clt.cp = :cp`,
+    where clt.cp = :cp`,
       {
         type: dbConnection.QueryTypes.SELECT,
         replacements: {
-          codeClient: codeClient,
           cp: cp,
         },
       }
@@ -380,6 +376,9 @@ const getCodePostalDesignationParCode = async (req, res) => {
   }
 };
 
+
+
+
 module.exports = {
   getListeClients,
   filtrerListeClients,
@@ -391,5 +390,5 @@ module.exports = {
   getDerniereCodeClient,
   getClientParCin,
   getToutCodesClient,
-  getCodePostalDesignationParCode,
+  getCodePostalDesignationParCode
 };

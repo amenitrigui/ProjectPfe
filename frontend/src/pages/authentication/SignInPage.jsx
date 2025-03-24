@@ -124,15 +124,6 @@ function SignInPage() {
           </form>
           <div className="mt-6 text-center">
             <p className="text-gray-600">
-              Vous n'avez pas de compte ?{" "}
-              <Link
-                to="/RegisterPage"
-                className="text-blue-600 hover:text-blue-700 font-semibold underline"
-              >
-                Inscrivez-vous
-              </Link>
-            </p>
-            <p className="text-gray-600">
               <Link
                 to="/ResetPassword"
                 className="text-blue-600 hover:text-blue-700 font-semibold underline"

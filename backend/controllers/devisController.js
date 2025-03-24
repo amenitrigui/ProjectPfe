@@ -519,4 +519,5 @@ module.exports = {
   getDevisCreator,
   getDerniereNumbl,
   deleteDevis,
+  
 };
