@@ -6,7 +6,10 @@ const {
 
 // * récupèrer la liste des clients à partir de la base des données
 // * dbName donnée comme paramètre de requete
-
+// * example:
+// * input : 
+// * output : liste clients
+// * http://localhost:5000/api/client/SOLEVO/getListeClients
 const getListeClients = async (req, res) => {
   const { dbName } = req.params;
   try {
@@ -28,6 +31,10 @@ const getListeClients = async (req, res) => {
 
 // * retourner une liste des clients filtrée, selon le table
 // * filters données par le client
+// * example:
+// * input : liste de filtres
+// * output : liste de clients filtrés
+// * http://localhost:5000/api/client/SOLEVO/filtrerListeClients
 const filtrerListeClients = async (req, res) => {
   const { dbName } = req.params;
   const { filters } = req.query;
@@ -87,7 +94,10 @@ const filtrerListeClients = async (req, res) => {
 
 // * Inserer les informations d'un client clientInfos
 // * dans la base des données dbName donnée comme paramètre de requete
-
+// * example:
+// * input : client
+// * output : client ajouté à la base des données
+// * http://localhost:5000/api/client/SOLEVO/AjouterClient
 const AjouterClient = async (req, res) => {
   const { dbName } = req.params;
   const { clientInfos } = req.body;
@@ -143,7 +153,10 @@ const AjouterClient = async (req, res) => {
 // * supprimer un client ou plusieurs clients par leurs codes
 // * qui se trouvent dans le tableau clients envoyé par le client
 // * de la base des données dbName donnée comme paramètre de requete
-
+// * example:
+// * input : 41001080
+// * output : client supprimé de la base de données
+// * http://localhost:5000/api/client/SOLEVO/getClientParCode/41001080
 const supprimerClient = async (req, res) => {
   const { dbName } = req.params;
   // ? tableau contenant les codes des clients à supprimer
@@ -167,7 +180,10 @@ const supprimerClient = async (req, res) => {
 // * récupere un client à partir de la base des données
 // * dbName donnée comme paramètre de requete
 // * par son code, aussi donnée comme paramètre de requete
-
+// * example:
+// * input : 41001080
+// * output : client
+// * http://localhost:5000/api/client/SOLEVO/getClientParCode/41001080
 const getClientParCode = async (req, res) => {
   const { dbName } = req.params;
   const { code } = req.params;
@@ -195,7 +211,10 @@ const getClientParCode = async (req, res) => {
 };
 
 // * mettre à jour un client d'une societé donnée comme paramètre de requete (dbName)
-// ! AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+// * example:
+// * input : nouv infos client
+// * output : infos client mis à jour
+// * http://localhost:5000/api/client/SOLEVO/majClient
 const majClient = async (req, res) => {
   const { dbName } = req.params;
   const { clientUpdate } = req.body;
@@ -209,8 +228,8 @@ const majClient = async (req, res) => {
       await Client.update(
         {
           code: clientUpdate.code,
-          typecli: clientUpdate.typecli, // add this to the model
-          cin: clientUpdate.cin, // add this to model
+          typecli: clientUpdate.typecli,
+          cin: clientUpdate.cin,
           email: clientUpdate.email,
           rsoc: clientUpdate.rsoc,
           cp: clientUpdate.cp,
@@ -249,6 +268,8 @@ const majClient = async (req, res) => {
       return res
         .status(200)
         .json({ message: "Client mise à jour avec succès" });
+    }else {
+      return res.status(500).json({ message: "le client n'est pas définit"})
     }
   } catch (error) {
     return res.status(500).json({
@@ -258,7 +279,11 @@ const majClient = async (req, res) => {
   }
 };
 
-// * récupere la liste de codes de clients
+//* récuperer la liste de codes clients
+// * example:
+// * input : 
+// * output : liste codes clients
+// * http://localhost:5000/api/client/SOLEVO/getToutCodesClient
 const getToutCodesClient = async (req, res) => {
   try {
     const { dbName } = req.params;
@@ -280,11 +305,15 @@ const getToutCodesClient = async (req, res) => {
   }
 };
 
-
+//* récuperer un client par type
+// * example:
+// * input : 
+// * output : client
+// * http://localhost:5000/api/client/SOLEVO/getClientParTypecli/l
 const getClientParTypecli = async (req, res) => {
   try {
     const { dbName } = req.params;
-    const { typecli } = req.query;
+    const { typecli } = req.params;
     const dbConnection = await getDatabaseConnection(dbName, res);
     const client = await dbConnection.query(
       `SELECT * FROM CLIENT where typecli = :typecli`,
@@ -304,7 +333,7 @@ const getClientParTypecli = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-//* récuperer le client par cin
+//* récuperer un client par cin
 // * example:
 // * input : 9780000
 // * output : client

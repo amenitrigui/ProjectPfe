@@ -8,7 +8,7 @@ export const getListeClient = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/List`
+      }/getListeClients`
     );
     return response.data.result;
   }
@@ -26,10 +26,7 @@ export const getClientParTypecli = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/getClientParTypecli`,
-      {
-        params: { typecli },
-      }
+      }/getClientParTypecli/${typecli}`
     );
     return response.data.clients;
   }
@@ -54,7 +51,7 @@ export const getClientParCode = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/client/${code}`
+      }/getClientParCode/${code}`
     );
     console.log(response.data);
     return response.data.client;
@@ -69,7 +66,7 @@ export const ajouterClient = createAsyncThunk(
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/Add`,
+      }/AjouterClient`,
       {
         clientInfos,
       }
@@ -89,7 +86,7 @@ export const majClient = createAsyncThunk(
     const response = await axios.put(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/Update`,
+      }/majClient`,
       { clientUpdate } // htha y3niii bch tjib les donds il kol htha body, ya3ni objet kamel mesh bel champ bel champ
     );
     return response.message;
@@ -104,7 +101,7 @@ export const filtrerClients = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/filterClient`,
+      }/filtrerListeClients`,
       {
         params: {
           filters: thunkAPI.getState().ClientCrud.filters, // Utiliser filters ici
