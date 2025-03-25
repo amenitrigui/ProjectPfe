@@ -19,7 +19,6 @@ const DevisDetails = () => {
           );
         }
         const data = await response.json();
-        console.log("Données reçues:", data);
 
         const devisData = data[0];
         setDevis(devisData);

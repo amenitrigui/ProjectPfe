@@ -34,7 +34,6 @@ export const getLignesDevis = createAsyncThunk(
 export const AjouterDevis = createAsyncThunk(
   "slice/AddDevis",
   async (_, thunkAPI) => {
-    console.log("ddd");
     const devisInfo = thunkAPI.getState().DevisCrud.devisInfo;
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/devis/${
@@ -42,7 +41,6 @@ export const AjouterDevis = createAsyncThunk(
       }/create`,
       { devisInfo }
     );
-    console.log(response);
     return response.data.devis;
   }
 );
@@ -111,7 +109,6 @@ export const getDevisParMontant = createAsyncThunk(
         },
       }
     );
-    console.log(response);
     return response.data.devis;
   }
 );
@@ -151,7 +148,6 @@ export const getInfoUtilisateur = createAsyncThunk(
         },
       }
     );
-    console.log(response);
     return response.data.utilisateur;
   }
 );
@@ -216,7 +212,6 @@ export const getDerniereNumbl = createAsyncThunk(
         thunkAPI.getState().UtilisateurInfo.dbName
       }/getDerniereNumbl`
     );
-    console.log(response);
     return response.data.derniereNumbl;
   }
 );
@@ -228,7 +223,6 @@ export const deleteDevis = createAsyncThunk(
         thunkAPI.getState().UtilisateurInfo.dbName
       }/devis/${NUMBL}/deleteDevis`
     );
-    console.log(response);
     return response;
   }
 );
@@ -304,7 +298,6 @@ export const devisSlice = createSlice({
     setDevisClientInfos: (state, action) => {
       const { ADRCLI, CODECLI, cp, RSCLI } = action.payload;
       state.devisInfo.CODECLI = CODECLI;
-      console.log(state.devisInfo);
       state.devisInfo.ADRCLI = ADRCLI;
       state.devisInfo.cp = cp;
       state.devisInfo = RSCLI;

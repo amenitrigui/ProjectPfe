@@ -30,7 +30,6 @@ function ArticlesDevis() {
   );
 
   const articleInfos = useSelector((state) => state.ArticlesDevis.articleInfos)
-  console.log(articleInfos);
 
   const handlecodeFamilleChange = (codeFamille) => {
     dispatch(setArticleInfos({colonne: "famille", valeur: codeFamille}))
@@ -53,7 +52,6 @@ function ArticlesDevis() {
     0;
 
   const handleChangementChamp = (colonne, e) => {
-    console.log("changed the value of ",colonne," to: ",e.target.value);
     dispatch(setArticleInfos({colonne: colonne, valeur: e.target.value}))
   }
   const handleValiderLDFPBtnClick = () => {

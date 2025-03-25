@@ -156,38 +156,36 @@ export const getDerniereCodeClient = createAsyncThunk(
     return response.data.derniereCodeClient.code;
   }
 );
-// * récupere le libelle d'un code postal donnée
-export const getCodePostalDesignationParCode = createAsyncThunk(
-  "clientSlice/getCodePostalDesignationParCode",
-  async (cp, thunkAPI) => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/client/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getCpInfos/`,
-      {
-        params: {
-          cp: cp,
-        },
-      }
-    );
-    console.log(response);
-    return response.data.cpInfos;
-  }
-);
+
 //* récuperer la désignation d'un secteur par son code
 // * example:
 // * input : 002
 // * output : SHZ
-export const getDesignationSecteurparCode = createAsyncThunk(
-  "clientSlice/getDesignationSecteurparCode",
+export const getDesignationSecteurparCodeSecteur = createAsyncThunk(
+  "clientSlice/getDesignationSecteurparCodeSecteur",
   async (codesecteur, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/secteur/${thunkAPI.getState().UtilisateurInfo.dbName}`,
-      {
-        params: codesecteur
-      }
+      `${process.env.REACT_APP_API_URL}/api/client/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getDesignationSecteurparCodeSecteur/${codesecteur}`
     );
-    return response;
+    return response.data.secteurInfo[0];
+  }
+);
+
+//* récuperer la liste de codes secteur
+// * example:
+// * input : 
+// * output : ['001','002','003','004']
+export const getListeCodesSecteur = createAsyncThunk(
+  "clientSlice/getListeCodeSecteur",
+  async (_, thunkAPI) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/client/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getListeCodesSecteur`
+    );
+    return response.data.listeCodesSecteurs;
   }
 );
 
@@ -199,25 +197,30 @@ export const getVilleParCodePostal = createAsyncThunk(
   "clientSlice/getVilleParCodePostal",
   async (cp, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/client/${thunkAPI.getState().UtilisateurInfo.dbName}/getVilleParCodePostale/${cp}`
+      `${process.env.REACT_APP_API_URL}/api/client/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getVilleParCodePostale/${cp}`
     );
-    return response.data.ville;
-    console.log(response.data.ville);
+    return response.data.ville[0];
   }
 );
 
 //* récuperer la liste de codes posteaux
 // * example:
-// * input : 
+// * input :
 // * output : liste de codes posteaux
 export const getListeCodesPosteaux = createAsyncThunk(
   "clientSlice/getListeCodesPosteaux",
-  async(_,thunkAPI) => {
-    const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/client/${thunkAPI.getState().UtilisateurInfo.dbName}/getListeCodesPosteaux`)
+  async (_, thunkAPI) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/client/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getListeCodesPosteaux`
+    );
 
-    return(response.data.listeCodesPosteaux);
+    return response.data.listeCodesPosteaux;
   }
-)
+);
 
 export const clientSlice = createSlice({
   name: "slice",
@@ -228,6 +231,7 @@ export const clientSlice = createSlice({
     clientInfos: {
       code: "",
       rsoc: "",
+      cp: "",
       adresse: "",
       email: "",
       telephone: "",
@@ -264,23 +268,19 @@ export const clientSlice = createSlice({
       typecli: "L",
       cin: "",
       fax: "",
-      secteur: {
-        codesec: "",
-        desisec: "",
-      },
-      region: {
-        codergg: "",
-        desirgg: "",
-      },
-      cpostal: {
-        CODEp: "",
-        desicp: "",
-      },
+
+      codesec: "",
+      desisec: "",
+
+      codergg: "",
+      desirgg: "",
+      desicp: "",
     }, // * informations de formulaire de client
     listeToutCodesClients: [],
+    listeCodesSecteur: [],
     clientsASupprimer: [], // * tableau des codes de clients a supprimer. id reeelement code.
     listeClients: [],
-    
+
     listeToutCodesPosteaux: [],
     status: "inactive",
     erreur: null,
@@ -320,28 +320,17 @@ export const clientSlice = createSlice({
     viderChampsClientInfo: (state) => {
       state.clientInfos = {
         code: "",
-        nature: "",
         rsoc: "",
-        nom1: "",
-        nom2: "",
-        nom3: "",
-        titre1: "",
-        titre2: "",
-        titre3: "",
-        gsm1: "",
-        gsm2: "",
-        gsm3: "",
-        nposte1: "",
-        nposte2: "",
-        nposte3: "",
-        adresse: "",
         cp: "",
+        adresse: "",
         email: "",
         telephone: "",
+        tel1: "",
+        tel2: "",
+        telex: "",
         desrep: "",
         aval2: "",
         aval1: "",
-        tarif: "",
         Commentaire: "",
         datemaj: "",
         userm: "",
@@ -354,7 +343,6 @@ export const clientSlice = createSlice({
         exon: "",
         majotva: "",
         fidel: "",
-        banque: "",
         datefinaut: "",
         datedebaut: "",
         decision: "",
@@ -369,18 +357,15 @@ export const clientSlice = createSlice({
         activite: "",
         typecli: "L",
         cin: "",
-        secteur: {
-          codesec: "",
-          desisec: "",
-        },
-        region: {
-          codergg: "",
-          desirgg: "",
-        },
-        cpostal: {
-          CODEp: "",
-          desicp: "",
-        },
+        fax: "",
+
+        codesec: "",
+        desisec: "",
+
+        codergg: "",
+        desirgg: "",
+
+        desicp: "",
       };
     },
 
@@ -460,11 +445,11 @@ export const clientSlice = createSlice({
       })
       .addCase(getClientParCode.fulfilled, (state, action) => {
         console.log(action.payload);
-        // ! danger
+        // ! ceci est utilisé pour les filtres
         state.listeClients = action.payload;
         //objet client bch tit3aba il formulaire
-        state.clientInfos.cpostal.CODEp = action.payload[0].cp;
         state.clientInfos = action.payload[0];
+        state.clientInfos.CODEp = action.payload[0].cp;
 
         state.status = "réussi";
       })
@@ -522,36 +507,20 @@ export const clientSlice = createSlice({
         state.erreur = action.payload;
       })
 
-      .addCase(getCodePostalDesignationParCode.pending, (state) => {
+      .addCase(getDesignationSecteurparCodeSecteur.pending, (state) => {
         state.status = "chargement";
       })
-      .addCase(getCodePostalDesignationParCode.fulfilled, (state, action) => {
-        state.clientInfos.cpostal.CODEp = action.payload[0].CODEp;
-        state.clientInfos.cpostal.desicp = action.payload[0].desicp;
+      .addCase(getDesignationSecteurparCodeSecteur.fulfilled, (state, action) => {
+        state.clientInfos.desisec = action.payload.desisec;
 
         state.status = "réussi";
       })
-      .addCase(getCodePostalDesignationParCode.rejected, (state, action) => {
+
+      .addCase(getDesignationSecteurparCodeSecteur.rejected, (state, action) => {
         state.status = "échoué";
         state.erreur = action.payload;
       })
 
-      .addCase(getDesignationSecteurparCode.pending, (state) => {
-        state.status = "chargement";
-      })
-      .addCase(getDesignationSecteurparCode.fulfilled, (state, action) => {
-        state.clientInfos.secteur.codesec = action.payload.codesec;
-        state.clientInfos.secteur.desisec = action.payload.desisec;
-
-        state.status = "réussi";
-      })
-      
-      
-      .addCase(getDesignationSecteurparCode.rejected, (state, action) => {
-        state.status = "échoué";
-        state.erreur = action.payload;
-      })
-      
       .addCase(getListeCodesPosteaux.pending, (state) => {
         state.status = "chargement";
       })
@@ -563,16 +532,27 @@ export const clientSlice = createSlice({
         state.status = "échoué";
         state.erreur = action.payload;
       })
-      
+
       .addCase(getVilleParCodePostal.pending, (state) => {
         state.status = "chargement";
       })
       .addCase(getVilleParCodePostal.fulfilled, (state, action) => {
-        console.log(action.payload);
-        state.clientInfos.cpostal.desicp = action.payload;
+        state.clientInfos.desicp = action.payload.desicp;
         state.status = "réussi";
       })
       .addCase(getVilleParCodePostal.rejected, (state, action) => {
+        state.status = "échoué";
+        state.erreur = action.payload;
+      })
+
+      .addCase(getListeCodesSecteur.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getListeCodesSecteur.fulfilled, (state, action) => {
+        state.listeCodesSecteur = action.payload;
+        state.status = "réussi";
+      })
+      .addCase(getListeCodesSecteur.rejected, (state, action) => {
         state.status = "échoué";
         state.erreur = action.payload;
       });
