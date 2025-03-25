@@ -243,7 +243,15 @@ function DevisForm() {
                         <span>Identifiants Devis</span>
                       </h3>
                       <label className="block font-medium">N° Devis :</label>
-                      <select
+                      <input type="text" className="w-full border border-gray-300 rounded-md p-2" list="listeCodesNumbl" onChange={(e) => handleSelectDevis(e)}/>
+                      <datalist id="listeCodesNumbl">
+                      {listeNUMBL.map((codeDevis) => (
+                          <option key={codeDevis.NUMBL} value={codeDevis.NUMBL}>
+                            {codeDevis.NUMBL}
+                          </option>
+                        ))}
+                      </datalist>
+                      {/* <select
                         className="select select-bordered w-full max-w-xs"
                         disabled={activerChampsForm}
                         onChange={(e) => handleSelectDevis(e)}
@@ -254,7 +262,7 @@ function DevisForm() {
                             {codeDevis.NUMBL}
                           </option>
                         ))}
-                      </select>
+                      </select> */}
 
                       <label className="block font-medium">
                         Point de vente :

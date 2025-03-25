@@ -15,6 +15,8 @@ import {
   getToutCodesClient,
   setClientInfos,
   viderChampsClientInfo,
+  getListeCodesPosteaux,
+  getVilleParCodePostal,
 } from "../../app/client_slices/clientSlice";
 
 import ToolBar from "../Common/ToolBar";
@@ -22,22 +24,24 @@ import ToolBar from "../Common/ToolBar";
 const ClientForm = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useDispatch();
+
   // Fonction pour basculer la visibilité de la sidebar
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
-  const dispatch = useDispatch();
   useEffect(() => {
+    dispatch(getListeCodesPosteaux());
     dispatch(getNombreTotalDevis());
     dispatch(getTotalChiffres());
   }, []);
+
   useEffect(() => {
     dispatch(getToutCodesClient());
   }, []);
 
   // Sélection des informations du client depuis le state Redux
   const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
-  console.log(clientInfos);
 
   const infosUtilisateur = useSelector(
     (state) => state.UtilisateurInfo.infosUtilisateur
@@ -58,9 +62,12 @@ const ClientForm = () => {
   const listeToutCodesClients = useSelector(
     (state) => state.ClientCrud.listeToutCodesClients
   );
+  const listeToutCodesPosteaux = useSelector(
+    (state) => state.ClientCrud.listeToutCodesPosteaux
+  );
+  console.log(listeToutCodesPosteaux);
 
   const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
-  console.log(toolbarMode);
 
   // Fonction pour gérer les changements dans les champs du formulaire
   const handleChange = (e, colonne) => {
@@ -70,6 +77,9 @@ const ClientForm = () => {
     console.log(colonne);
     if (e.target.value == "") {
       dispatch(viderChampsClientInfo());
+    }
+    if (colonne == "cp" && e.target.value.length == 4) {
+      dispatch(getCodePostalDesignationParCode(e.target.value));
     }
     // * on va récuperer les informations de client
     // * à partir de son code
@@ -86,9 +96,13 @@ const ClientForm = () => {
       dispatch(setDevisInfo({ colonne, valeur: e.target.value }));
     }
   };
-  useEffect(()=>{
-    dispatch(getCodePostalDesignationParCode(['2052','41102752']))
-  },[])
+  useEffect(() => {
+    dispatch(getCodePostalDesignationParCode("2052"));
+  }, []);
+
+  const handleChangeCodePostal = (e) => {
+    dispatch(getVilleParCodePostal(e.target.value))
+  }
 
   const nombredevis = useSelector((state) => state.DevisCrud.nombreDeDevis);
   const totalchifre = useSelector((state) => state.DevisCrud.totalchifre);
@@ -386,10 +400,21 @@ const ClientForm = () => {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     value={clientInfos.cp || ""}
-                    // value={clientInfos.cpostal.CODEp || ""}
-                    onChange={(e) => handleChange(e, "cp")}
-                    disabled={!activerChampsForm}
+                    list="listeCodesPosteaux"
+                    onChange= {(e) => handleChangeCodePostal(e)}
                   />
+
+                  <datalist id="listeCodesPosteaux">
+                    {listeToutCodesPosteaux.length > 0 ? (
+                      listeToutCodesPosteaux.map((cp, indice) => (
+                        <option key={indice} value={cp.CODEp}>
+                          {cp.CODE}
+                        </option>
+                      ))
+                    ) : (
+                      <option disabled>Aucun client trouvé</option>
+                    )}
+                  </datalist>
                 </div>
                 <div className="flex flex-col w-2/3">
                   <label
@@ -401,7 +426,7 @@ const ClientForm = () => {
                   <input
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
-                    // value={clientInfos.cpostal.desicp || ""}
+                    value={clientInfos.cpostal.desicp || ""}
                     onChange={(e) => handleChange(e, "ville")}
                     disabled={!activerChampsForm}
                   />
@@ -420,9 +445,18 @@ const ClientForm = () => {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     disabled={!activerChampsForm}
-                    // value={clientInfos.secteur.codesec || ""}
-                    // onChange={(e) => handleChange(e, "codesec")} ///table secteur
                   />
+                  <datalist id="listeCodesPosteaux">
+                    {listeToutCodesClients.length > 0 ? (
+                      listeToutCodesClients.map((client, indice) => (
+                        <option key={indice} value={client.code}>
+                          {client.code}
+                        </option>
+                      ))
+                    ) : (
+                      <option disabled>Aucun client trouvé</option>
+                    )}
+                  </datalist>
                 </div>
                 <div className="flex flex-col w-2/3">
                   <label
@@ -435,6 +469,7 @@ const ClientForm = () => {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     disabled={!activerChampsForm}
+                    value={clientInfos.secteur.desisec}
                   />
                 </div>
               </div>

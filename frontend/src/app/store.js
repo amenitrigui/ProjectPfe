@@ -10,7 +10,6 @@ import localforage from 'localforage';
 
 const persistConfig = {
   key: "root",
-  // 🤢🤢🤢
   storage: localforage, // pour utiliser LocalStorage
   // ! le magique au chocolat
   // whitelist: [ // pour specifier quelles slices on persiste

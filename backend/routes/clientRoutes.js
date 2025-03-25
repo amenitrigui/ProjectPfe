@@ -9,9 +9,13 @@ const {
   getClientParCode,
   getDerniereCodeClient,
   getClientParTypecli,
+  getDesignationSecteurparCodeSecteur,
   getClientParCin,
   getToutCodesClient,
+  getVilleParCodePostale,
   getCodePostalDesignationParCode,
+  getVilleParRegion,
+  getListeCodesPosteaux
 } = require("../controllers/clientController");
 router.get("/:dbName/List", getListeClients);
 router.get("/:dbName/filterClient", filtrerListeClients);
@@ -25,7 +29,8 @@ router.get("/:dbName/getClientParCin/:cin", getClientParCin);
 router.get("/:dbName/getToutCodesClient", getToutCodesClient);
 router.get("/:dbName/client/:code", getClientParCode);
 router.get("/:dbName/getCpInfos", getCodePostalDesignationParCode);
-
-router.get("/:dbName/getCpInfos", getCodePostalDesignationParCode);
-
+router.get("/:dbName/getDesignationSecteurparCodeSecteur/:codesecteur", getDesignationSecteurparCodeSecteur)
+router.get("/:dbName/getVilleParCodePostale/:cp", getVilleParCodePostale);
+router.get("/:dbName/getVilleParRegion/:codeRegion", getVilleParRegion);
+router.get("/:dbName/getListeCodesPosteaux", getListeCodesPosteaux);
 module.exports = router;

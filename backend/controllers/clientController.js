@@ -174,11 +174,12 @@ const getClientParCode = async (req, res) => {
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const client = await dbConnection.query(
-      `select * from client where code = :code`, {
-        type: dbConnection.QueryTypes.SELECT, 
+      `select * from client where code = :code`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
         replacements: {
-          code
-        }
+          code,
+        },
       }
     );
     console.log(client);
@@ -375,6 +376,148 @@ const getCodePostalDesignationParCode = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+//* récuperer la désignation d'un secteur par son code
+// * example:
+// * input : 002
+// * output : SHZ
+const getDesignationSecteurparCodeSecteur = async (req, res) => {
+  const { dbName, codesecteur } = req.params;
+  try {
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const secteurInfo = await dbConnection.query(
+      `Select codesec, desisec from secteur where codesec = :codesecteur `,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+        replacements: {
+          codesecteur: codesecteur,
+        },
+      }
+    );
+
+    console.log(secteurInfo);
+
+    return res
+      .status(200)
+      .json({ message: "secteur récupéré avec succès", secteurInfo });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+//* récuperer la liste de villes d'un région
+// * example:
+// * input : Ariana
+// * output : liste de villes de région d'Ariana
+const getVilleParRegion = async (req, res) => {
+  const { dbName, codeRegion } = req.params;
+  console.log(dbName, " ", codeRegion);
+  try {
+    const dbConnexion = await getDatabaseConnection(dbName, res);
+    const infosRegion = await dbConnexion.query(
+      `Select codergg,desirgg from region where codergg = :codeRegion`,
+      {
+        type: dbConnexion.QueryTypes.SELECT,
+        replacements: {
+          codeRegion,
+        },
+      }
+    );
+    return res
+      .status(200)
+      .json({ message: "region recupere avec suucess", infosRegion });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+//* récuperer la ville associé à un code postal
+// * example:
+// * input : Ariana
+// * output : liste de villes de région d'Ariana
+// * http://localhost:5000/api/client/SOLEVO/getVilleParCodePostale/1000
+const getVilleParCodePostale = async (req, res) => {
+  const { dbName, cp } = req.params;
+  try {
+    console.log(dbName, " ", cp);
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const ville = await dbConnection.query(
+      `SELECT desicp from cpostal where CODEp = :cp`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+        replacements: {
+          cp: cp
+        }
+      }
+    )
+    return res
+      .status(200)
+      .json({ message: "liste ville de code postale récuperé avec succès", ville : ville});
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+//* récuperer la liste de codes posteaux
+// * example:
+// * input : 
+// * output : liste de codes posteaux
+// * http://localhost:5000/api/client/SOLEVO/getListeCodesPosteaux
+const getListeCodesPosteaux = async (req, res) => {
+  const { dbName } = req.params;
+  try {
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const listeCodesPosteaux = await dbConnection.query(
+      `SELECT CODEp from cpostal`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    )
+
+    return res.status(200).json({message: "liste de codes posteaux récuperée avec succès", listeCodesPosteaux});
+  }catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+//* récuperer la liste de régions
+// * example:
+// * input : 
+// * output : liste de régions
+// * http://localhost:5000/api/client/SOLEVO/getListeCodesPosteaux
+const getListeCodeRegions = async (req, res) => {
+  const { dbName } = req.params;
+  try {
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const listeCodesPosteaux = await dbConnection.query(
+      `SELECT codergg from region`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    )
+
+    return res.status(200).json({message: "liste de codes posteaux récuperée avec succès", listeCodesPosteaux});
+  }catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+//* récuperer la liste de codes posteaux
+// * example:
+// * input : 
+// * output : liste de codes posteaux
+const getListeCodesSecteur = async (req, res) => {
+  const { dbName } = req.params;
+  try {
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const listeCodesPosteaux = await dbConnection.query(
+      `SELECT codesec from secteur`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    )
+
+    return res.status(200).json({message: "liste de codes posteaux récuperée avec succès", listeCodesPosteaux});
+  }catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
 
 
 
@@ -390,5 +533,10 @@ module.exports = {
   getDerniereCodeClient,
   getClientParCin,
   getToutCodesClient,
-  getCodePostalDesignationParCode
+  getCodePostalDesignationParCode,
+  getDesignationSecteurparCodeSecteur,
+  getVilleParRegion,
+  getVilleParCodePostale,
+  getListeCodesPosteaux,
+  getListeCodeRegions
 };
