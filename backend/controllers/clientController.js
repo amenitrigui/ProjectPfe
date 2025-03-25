@@ -415,14 +415,14 @@ const getListeCodeRegions = async (req, res) => {
   const { dbName } = req.params;
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
-    const listeCodesPosteaux = await dbConnection.query(
+    const listeCodesRegion = await dbConnection.query(
       `SELECT codergg from region`,
       {
         type: dbConnection.QueryTypes.SELECT,
       }
     )
 
-    return res.status(200).json({message: "liste de codes posteaux récuperée avec succès", listeCodesPosteaux});
+    return res.status(200).json({message: "liste de codes posteaux récuperée avec succès", listeCodesRegion});
   }catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -437,8 +437,8 @@ const getVilleParRegion = async (req, res) => {
   console.log(dbName, " ", codeRegion);
   try {
     const dbConnexion = await getDatabaseConnection(dbName, res);
-    const infosRegion = await dbConnexion.query(
-      `Select codergg,desirgg from region where codergg = :codeRegion`,
+    const ListRegion = await dbConnexion.query(
+      `Select desirgg from region where codergg = :codeRegion`,
       {
         type: dbConnexion.QueryTypes.SELECT,
         replacements: {
@@ -448,11 +448,15 @@ const getVilleParRegion = async (req, res) => {
     );
     return res
       .status(200)
-      .json({ message: "region recupere avec suucess", infosRegion });
+      .json({ message: "region recupere avec suucess", ListRegion });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
+
+
+
+
 //* récuperer la ville associé à un code postal
 // * example:
 // * input : Ariana
@@ -479,6 +483,10 @@ const getVilleParCodePostale = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+
+
+
 //* récuperer la liste de codes posteaux
 // * example:
 // * input : 
