@@ -109,7 +109,6 @@ function DevisForm() {
   };
 
   const toobarTable = useSelector((state) => state.uiStates.toolbarTable);
-  console.log(devisInfo);
   // * useEffect #1 : désactiver tous les champs
   // * et indiquer qu'on va utiliser la table de devis
 

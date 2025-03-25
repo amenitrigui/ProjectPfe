@@ -6,11 +6,11 @@ import utilisateurSlice from "./utilisateur_slices/utilisateurSlice";
 import articleSlice from "./article_slices/articleSlice";
 import { combineReducers } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
-import localforage from 'localforage';
+import localStorage from "redux-persist/es/storage";
 
 const persistConfig = {
   key: "root",
-  storage: localforage, // pour utiliser LocalStorage
+  storage: localStorage, // pour utiliser LocalStorage
   // ! le magique au chocolat
   // whitelist: [ // pour specifier quelles slices on persiste
   //   "ClientCrud",

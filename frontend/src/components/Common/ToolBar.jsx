@@ -156,7 +156,6 @@ function ToolBar() {
       }
 
       if (toolbarMode == "modification") {
-        console.log("modification d'un devis");
         // dispatch(majDevis())
       }
     }
@@ -185,11 +184,9 @@ function ToolBar() {
   };
 
   const handleNaviguerVersPrecedent = () => {
-    console.log("naviguer ver l'élèment précedent");
   };
 
   const handleNaviguerVersSuivant = () => {
-    console.log("naviguer vers l'élèment suivant");
   };
   return (
     <>

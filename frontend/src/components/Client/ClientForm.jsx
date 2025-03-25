@@ -11,12 +11,13 @@ import {
 import { setDevisInfo } from "../../app/devis_slices/devisSlice";
 import {
   getClientParCode,
-  getCodePostalDesignationParCode,
+  getVilleParCodePostal,
   getToutCodesClient,
   setClientInfos,
   viderChampsClientInfo,
   getListeCodesPosteaux,
-  getVilleParCodePostal,
+  getListeCodesSecteur,
+  getDesignationSecteurparCodeSecteur,
 } from "../../app/client_slices/clientSlice";
 
 import ToolBar from "../Common/ToolBar";
@@ -34,6 +35,7 @@ const ClientForm = () => {
     dispatch(getListeCodesPosteaux());
     dispatch(getNombreTotalDevis());
     dispatch(getTotalChiffres());
+    dispatch(getListeCodesSecteur());
   }, []);
 
   useEffect(() => {
@@ -65,7 +67,9 @@ const ClientForm = () => {
   const listeToutCodesPosteaux = useSelector(
     (state) => state.ClientCrud.listeToutCodesPosteaux
   );
-  console.log(listeToutCodesPosteaux);
+  const listeCodesSecteur = useSelector(
+    (state) => state.ClientCrud.listeCodesSecteur
+  );
 
   const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
 
@@ -73,13 +77,11 @@ const ClientForm = () => {
   const handleChange = (e, colonne) => {
     // * si aucun code client est selectionné
     // * vider les champs
-    console.log(e.target);
-    console.log(colonne);
     if (e.target.value == "") {
       dispatch(viderChampsClientInfo());
     }
     if (colonne == "cp" && e.target.value.length == 4) {
-      dispatch(getCodePostalDesignationParCode(e.target.value));
+      dispatch(getVilleParCodePostal(e.target.value));
     }
     // * on va récuperer les informations de client
     // * à partir de son code
@@ -96,13 +98,25 @@ const ClientForm = () => {
       dispatch(setDevisInfo({ colonne, valeur: e.target.value }));
     }
   };
-  useEffect(() => {
-    dispatch(getCodePostalDesignationParCode("2052"));
-  }, []);
 
   const handleChangeCodePostal = (e) => {
-    dispatch(getVilleParCodePostal(e.target.value))
-  }
+    if (e.target.value.length == 4) {
+      dispatch(getVilleParCodePostal(e.target.value));
+    }
+    if (e.target.value == "") {
+      dispatch(setClientInfos({ colonne: "desicp", valeur: "" }));
+    }
+    dispatch(setClientInfos({ colonne: "cp", valeur: e.target.value }));
+  };
+
+  const handleSecteurChange = (e) => {
+    if (e.target.value.length == 3) {
+      dispatch(getDesignationSecteurparCodeSecteur(e.target.value));
+    }
+    if (e.target.value == "") {
+      dispatch(setClientInfos({ colonne: "desisec", valeur: "" }));
+    }
+  };
 
   const nombredevis = useSelector((state) => state.DevisCrud.nombreDeDevis);
   const totalchifre = useSelector((state) => state.DevisCrud.totalchifre);
@@ -240,12 +254,12 @@ const ClientForm = () => {
                 <input
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
-                  list="browsers"
+                  list="listeCodesClients"
                   value={clientInfos.code || ""}
                   onChange={(e) => handleChange(e, "code")}
                   disabled={activerChampsForm}
                 />
-                <datalist id="browsers">
+                <datalist id="listeCodesClients">
                   {listeToutCodesClients.length > 0 ? (
                     listeToutCodesClients.map((client, indice) => (
                       <option key={indice} value={client.code}>
@@ -401,7 +415,8 @@ const ClientForm = () => {
                     className="border border-gray-300 rounded-md p-2"
                     value={clientInfos.cp || ""}
                     list="listeCodesPosteaux"
-                    onChange= {(e) => handleChangeCodePostal(e)}
+                    onChange={(e) => handleChangeCodePostal(e)}
+                    disabled={!activerChampsForm}
                   />
 
                   <datalist id="listeCodesPosteaux">
@@ -426,7 +441,7 @@ const ClientForm = () => {
                   <input
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
-                    value={clientInfos.cpostal.desicp || ""}
+                    value={clientInfos.desicp || ""}
                     onChange={(e) => handleChange(e, "ville")}
                     disabled={!activerChampsForm}
                   />
@@ -445,16 +460,18 @@ const ClientForm = () => {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     disabled={!activerChampsForm}
+                    list="listeCodesSecteur"
+                    onChange={(e) => handleSecteurChange(e)}
                   />
-                  <datalist id="listeCodesPosteaux">
-                    {listeToutCodesClients.length > 0 ? (
-                      listeToutCodesClients.map((client, indice) => (
-                        <option key={indice} value={client.code}>
-                          {client.code}
+                  <datalist id="listeCodesSecteur">
+                    {listeCodesSecteur.length > 0 ? (
+                      listeCodesSecteur.map((secteur, indice) => (
+                        <option key={indice} value={secteur.codesec}>
+                          {secteur.codesec}
                         </option>
                       ))
                     ) : (
-                      <option disabled>Aucun client trouvé</option>
+                      <option disabled>Aucun secteur trouvé</option>
                     )}
                   </datalist>
                 </div>
@@ -469,7 +486,7 @@ const ClientForm = () => {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     disabled={!activerChampsForm}
-                    value={clientInfos.secteur.desisec}
+                    value={clientInfos.desisec}
                   />
                 </div>
               </div>
