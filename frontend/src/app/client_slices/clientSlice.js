@@ -222,6 +222,41 @@ export const getListeCodesPosteaux = createAsyncThunk(
   }
 );
 
+
+//* récuperer la liste de codes posteaux
+// * example:
+// * input :
+// * output : liste de codes pregion 01
+export const getListeCodeRegions = createAsyncThunk(
+  "clientSlice/getListeCodeRegions",
+  async (_, thunkAPI) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/client/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getListeCodeRegions`
+    );
+    console.log(response)
+    return response.data.listeCodesRegion;
+
+  }
+);
+//* récuperer la ville associé à un region
+// * example:
+// * input : 01
+// * output : 01
+export const getVilleParRegion = createAsyncThunk(
+  "clientSlice/getVilleParRegion",
+  async (codeRegion, thunkAPI) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/client/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getVilleParRegion/${codeRegion}`
+    );
+console.log(response)
+    return response.data.ListRegion[0]
+  }
+);
+
 export const clientSlice = createSlice({
   name: "slice",
   initialState: {
@@ -277,10 +312,11 @@ export const clientSlice = createSlice({
       desicp: "",
     }, // * informations de formulaire de client
     listeToutCodesClients: [],
+    
     listeCodesSecteur: [],
     clientsASupprimer: [], // * tableau des codes de clients a supprimer. id reeelement code.
     listeClients: [],
-
+    listeCodesRegion:[],
     listeToutCodesPosteaux: [],
     status: "inactive",
     erreur: null,
@@ -553,6 +589,30 @@ export const clientSlice = createSlice({
         state.status = "réussi";
       })
       .addCase(getListeCodesSecteur.rejected, (state, action) => {
+        state.status = "échoué";
+        state.erreur = action.payload;
+      })
+
+      .addCase(getListeCodeRegions.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getListeCodeRegions.fulfilled, (state, action) => {
+        state.listeCodesRegion = action.payload;
+        state.status = "réussi";
+      })
+      .addCase(getListeCodeRegions.rejected, (state, action) => {
+        state.status = "échoué";
+        state.erreur = action.payload;
+      })
+
+      .addCase(getVilleParRegion.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getVilleParRegion.fulfilled, (state, action) => {
+        state.clientInfos.desirgg = action.payload;
+        state.status = "réussi";
+      })
+      .addCase(getVilleParRegion.rejected, (state, action) => {
         state.status = "échoué";
         state.erreur = action.payload;
       });

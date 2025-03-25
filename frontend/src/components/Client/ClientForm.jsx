@@ -18,6 +18,8 @@ import {
   getListeCodesPosteaux,
   getListeCodesSecteur,
   getDesignationSecteurparCodeSecteur,
+  getListeCodeRegions,
+  getVilleParRegion,
 } from "../../app/client_slices/clientSlice";
 
 import ToolBar from "../Common/ToolBar";
@@ -36,6 +38,7 @@ const ClientForm = () => {
     dispatch(getNombreTotalDevis());
     dispatch(getTotalChiffres());
     dispatch(getListeCodesSecteur());
+    dispatch(getListeCodeRegions())
   }, []);
 
   useEffect(() => {
@@ -48,7 +51,7 @@ const ClientForm = () => {
   const infosUtilisateur = useSelector(
     (state) => state.UtilisateurInfo.infosUtilisateur
   );
-
+const  listeCodesRegion=useSelector((state)=>state.ClientCrud.listeCodesRegion)
   // state pour désactiver/activer les champs lors de changement de modes editables (ajout/modification)
   // vers le mode de consultation respectivement
   const activerChampsForm = useSelector(
@@ -117,7 +120,9 @@ const ClientForm = () => {
       dispatch(setClientInfos({ colonne: "desisec", valeur: "" }));
     }
   };
-
+const hundleRegionChange=(e)=>{
+  dispatch(getVilleParRegion(e.target.value))
+}
   const nombredevis = useSelector((state) => state.DevisCrud.nombreDeDevis);
   const totalchifre = useSelector((state) => state.DevisCrud.totalchifre);
   return (
@@ -503,8 +508,21 @@ const ClientForm = () => {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     disabled={!activerChampsForm}
+                    list="listeCodesRegion"
+                    onChange={(e)=>hundleRegionChange(e)}
                     // table region
                   />
+                   <datalist id="listeCodesRegion">
+                    {listeCodesRegion.length > 0 ? (
+                      listeCodesRegion.map((region, indice) => (
+                        <option key={indice} value={region.codergg}>
+                          {region.codergg}
+                        </option>
+                      ))
+                    ) : (
+                      <option disabled>Aucun region trouvé</option>
+                    )}
+                  </datalist>
                 </div>
                 <div className="flex flex-col w-2/3">
                   <label

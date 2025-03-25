@@ -15,7 +15,8 @@ const {
   getVilleParCodePostale,
   getVilleParRegion,
   getListeCodesPosteaux,
-  getListeCodesSecteur
+  getListeCodesSecteur,
+  getListeCodeRegions
 } = require("../controllers/clientController");
 router.get("/:dbName/List", getListeClients);
 router.get("/:dbName/filterClient", filtrerListeClients);
@@ -34,4 +35,9 @@ router.get("/:dbName/getVilleParCodePostale/:cp", getVilleParCodePostale);
 
 router.get("/:dbName/getListeCodesSecteur", getListeCodesSecteur);
 router.get("/:dbName/getDesignationSecteurparCodeSecteur/:codesecteur", getDesignationSecteurparCodeSecteur)
+
+router.get("/:dbName/getListeCodeRegions", getListeCodeRegions)
+router.get("/:dbName/getVilleParRegion/:codeRegion", getVilleParRegion)
+
+
 module.exports = router;
