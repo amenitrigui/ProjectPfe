@@ -232,7 +232,6 @@ export const getListeCodeRegions = createAsyncThunk(
         thunkAPI.getState().UtilisateurInfo.dbName
       }/getListeCodeRegions`
     );
-    console.log(response)
     return response.data.listeCodesRegion;
 
   }
@@ -249,11 +248,17 @@ export const getVilleParRegion = createAsyncThunk(
         thunkAPI.getState().UtilisateurInfo.dbName
       }/getVilleParRegion/${codeRegion}`
     );
-console.log(response)
+    console.log("response")
+    
     return response.data.ListRegion[0]
+
   }
 );
 
+// export const getRIBParBanque = createAsyncThunk(
+//   "clientSlice/getRIBParBanque",
+//   async(banque,thunkAPI)
+// )
 export const clientSlice = createSlice({
   name: "slice",
   initialState: {
@@ -483,6 +488,7 @@ export const clientSlice = createSlice({
         //objet client bch tit3aba il formulaire
         state.clientInfos = action.payload[0];
         state.clientInfos.CODEp = action.payload[0].cp;
+        state.clientInfos.codergg=action.payload.desireg
 
         state.status = "réussi";
       })
@@ -606,7 +612,8 @@ export const clientSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getVilleParRegion.fulfilled, (state, action) => {
-        state.clientInfos.desirgg = action.payload;
+        console.log(action.payload)
+        state.clientInfos.desirgg = action.payload.desirgg;
         state.status = "réussi";
       })
       .addCase(getVilleParRegion.rejected, (state, action) => {

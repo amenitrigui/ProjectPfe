@@ -30,6 +30,7 @@ router.get("/:dbName/getDerniereCodeClient", getDerniereCodeClient);
 router.get("/:dbName/getClientParCin/:cin", getClientParCin);
 
 router.get("/:dbName/getToutCodesClient", getToutCodesClient);
+router.get("/:dbName/getClientParCode/:code", getClientParCode);
 
 router.get("/:dbName/getListeCodesPosteaux", getListeCodesPosteaux);
 router.get("/:dbName/getVilleParCodePostale/:cp", getVilleParCodePostale);
@@ -42,5 +43,6 @@ router.get(
 
 router.get("/:dbName/getListeCodeRegions", getListeCodeRegions);
 router.get("/:dbName/getVilleParRegion/:codeRegion", getVilleParRegion);
+
 
 module.exports = router;
