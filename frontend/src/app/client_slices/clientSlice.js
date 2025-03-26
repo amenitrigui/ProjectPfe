@@ -54,7 +54,7 @@ export const getClientParCode = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/client/${code}`
+      }/getClientParCode/${code}`
     );
     console.log(response.data);
     return response.data.client;

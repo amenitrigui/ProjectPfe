@@ -28,7 +28,7 @@ router.get("/:dbName/getDerniereCodeClient", getDerniereCodeClient);
 router.get("/:dbName/getClientParCin/:cin", getClientParCin);
 
 router.get("/:dbName/getToutCodesClient", getToutCodesClient);
-router.get("/:dbName/client/:code", getClientParCode);
+router.get("/:dbName/getClientParCode/:code", getClientParCode);
 router.get("/:dbName/getListeCodesPosteaux", getListeCodesPosteaux);
 router.get("/:dbName/getVilleParCodePostale/:cp", getVilleParCodePostale);
 

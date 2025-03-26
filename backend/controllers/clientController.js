@@ -91,35 +91,49 @@ const filtrerListeClients = async (req, res) => {
 const AjouterClient = async (req, res) => {
   const { dbName } = req.params;
   const { clientInfos } = req.body;
-
+  
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const Client = defineClientModel(dbConnection);
     const newClient = await Client.create({
       //add + save min base 3ibrt 3ml insert into mn base de donnes
       code: clientInfos.code,
-      typecli: clientInfos.typecli, // add this to the model
-      cin: clientInfos.cin, // add this to model
-      email: clientInfos.email,
+      typecli: clientInfos.typecli, // ! select à vérifier
+      cin: clientInfos.cin,
       rsoc: clientInfos.rsoc,
-      cp: clientInfos.cp,
-      telephone: clientInfos.telephone,
-      desrep: clientInfos.desrep,
       adresse: clientInfos.adresse,
-      aval2: clientInfos.aval2,
-      aval1: clientInfos.aval1,
+      activite: clientInfos.activite,
+      cp: clientInfos.cp,
+      desicp: clientInfos.desicp,
+      nature: clientInfos.nature, // !
+      desisec: clientInfos.desisec, // !
+      desireg: clientInfos.desireg, // ! dans la base: desireg, dans clientInfos : desirgg
+      tel1:clientInfos.tel1,
+      tel2:clientInfos.tel2,
+      email: clientInfos.email,
+      fax: clientInfos.fax,
+      nom1: clientInfos.nom1,
+      nom2: clientInfos.nom2,
+      nom3: clientInfos.nom3,
+      titre1: clientInfos.titre1,
+      titre2: clientInfos.titre2,
+      titre3: clientInfos.titre3,
+      gsm1: clientInfos.gsm1,
+      gsm2: clientInfos.gsm2,
+      gsm3: clientInfos.gsm3,
+      nposte1: clientInfos.nposte1,
+      nposte2: clientInfos.nposte2,
+      nposte3: clientInfos.nposte3,
       Commentaire: clientInfos.Commentaire,
-      datemaj: clientInfos.datemaj,
-      userm: clientInfos.userm,
-      usera: clientInfos.usera,
-      fact: clientInfos.fact,
-      timbref: clientInfos.timbref,
-      cltexport: clientInfos.cltexport,
-      suspfodec: clientInfos.suspfodec,
-      regime: clientInfos.regime,
-      exon: clientInfos.exon,
-      majotva: clientInfos.majotva,
-      fidel: clientInfos.fidel,
+      usera: clientInfos.usera, // ! 
+      fact: clientInfos.fact, // ! checkbox à vérifier
+      timbref: clientInfos.timbref, // ! checkbox à vérifier
+      cltexport: clientInfos.cltexport, // ! checkbox à vérifier
+      suspfodec: clientInfos.suspfodec, // ! checkbox à vérifier
+      regime: clientInfos.regime, // ! checkbox à vérifier
+      exon: clientInfos.exon, // ! checkbox à vérifier
+      majotva: clientInfos.majotva, // ! checkbox à vérifier
+      fidel: clientInfos.fidel, // ! checkbox à vérifier
       datefinaut: clientInfos.datefinaut,
       datedebaut: clientInfos.datedebaut,
       decision: clientInfos.decision,
@@ -127,11 +141,14 @@ const AjouterClient = async (req, res) => {
       reference: clientInfos.reference,
       srisque: clientInfos.srisque,
       scredit: clientInfos.scredit,
-      delregBL: clientInfos.delregBL,
-      delregFT: clientInfos.delregFT,
-      delregFC: clientInfos.delregFC,
       remise: clientInfos.remise,
-      activite: clientInfos.activite,
+      compteb : clientInfos.compteb, // !
+      banque:clientInfos.banque,
+      contrat:clientInfos.contrat,
+      blockage:clientInfos.blockage,
+      susptva:clientInfos.susptva,
+      tarif:clientInfos.tarif
+      
     });
 
     return res.status(200).json({ message: "insertion avec succès" });

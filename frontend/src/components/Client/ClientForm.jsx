@@ -159,23 +159,43 @@ const ClientForm = () => {
   };
 
   const handleChangeTel = (e, colonne) => {
-    console.log(e.target.value," ", colonne);
-    if ((!isNaN(e.target.value)) && (e.target.value.length == 8)) {
+    console.log(e.target.value, " ", colonne);
+    if (!isNaN(e.target.value)) {
       dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
     }
   };
   const handleChangeFax = (e, colonne) => {
-    if (
-      !isNaN(e.target.value) &&
-      e.target.value.length >= 6 &&
-      e.target.value.length <= 9
-    ) {
+    if (!isNaN(e.target.value)) {
       dispatch(setClientInfos({ colonne: "fax", valeur: e.target.value }));
     }
     if (e.target.value == "") {
       dispatch(setClientInfos({ colonne: "fax", valeur: "" }));
     }
   };
+  const handleChangeAlphaphetique = (e, colonne) => {
+    if (/^[A-Za-z\s]*$/.test(e.target.value)) {
+      dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
+    }
+  };
+  const handleChangeAlphaNumerique = (e, colonne) => {
+    if (isNaN(e.target.value)) {
+      dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
+    }
+  };
+  const handleChangeNumDecision = (e, colonne) => {
+    if (!isNaN(e.target.value))
+      dispatch(setClientInfos({ colonne: "decision", valeur: e.target.value }));
+  };
+  const handleChangeNumeriqueDouble = (e, colonne) => {
+    if (!isNaN(parseFloat(e.target.value))) {
+      dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
+    }
+  };
+  console.log(clientInfos)
+  const hundleSelectTous = (e, champ) => {
+    dispatch(setClientInfos({ colonne: champ, valeur: e.target.value }));
+  };
+
   const nombredevis = useSelector((state) => state.DevisCrud.nombreDeDevis);
   const totalchifre = useSelector((state) => state.DevisCrud.totalchifre);
   return (
@@ -372,7 +392,7 @@ const ClientForm = () => {
                 type="text"
                 className="border border-gray-300 rounded-md p-2"
                 value={clientInfos.rsoc || ""}
-                onChange={(e) => handleChange(e, "rsoc")}
+                onChange={(e) => handleChangeAlphaphetique(e, "rsoc")}
                 disabled={!activerChampsForm}
               />
             </div>
@@ -387,7 +407,7 @@ const ClientForm = () => {
                 type="text"
                 className="border border-gray-300 rounded-md p-2"
                 value={clientInfos.adresse || ""}
-                onChange={(e) => handleChange(e, "adresse")}
+                onChange={(e) => handleChangeAlphaNumerique(e, "adresse")}
                 disabled={!activerChampsForm}
               />
             </div>
@@ -402,7 +422,7 @@ const ClientForm = () => {
                 type="text"
                 className="border border-gray-300 rounded-md p-2"
                 value={clientInfos.activite || ""}
-                onChange={(e) => handleChange(e, "activite")}
+                onChange={(e) => handleChangeAlphaphetique(e, "activite")}
                 disabled={!activerChampsForm}
               />
             </div>
@@ -457,7 +477,7 @@ const ClientForm = () => {
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
                   value={clientInfos.nature || ""}
-                  onChange={(e) => handleChange(e, "nature")}
+                  onChange={(e) => handleChangeAlphaphetique(e, "nature")}
                   disabled={!activerChampsForm}
                 />
               </div>
@@ -718,7 +738,7 @@ const ClientForm = () => {
                         type="text"
                         className="border border-gray-300 rounded-md p-2 w-full"
                         value={clientInfos.Nom1 || ""}
-                        onChange={(e) => handleChange(e, "Nom1")}
+                        onChange={(e) => handleChangeAlphaphetique(e, "Nom1")}
                         disabled={!activerChampsForm}
                       />
                     </td>
@@ -727,7 +747,7 @@ const ClientForm = () => {
                         type="text"
                         className="border border-gray-300 rounded-md p-2 w-full"
                         value={clientInfos.titre1 || ""}
-                        onChange={(e) => handleChange(e, "titre1")}
+                        onChange={(e) => handleChangeAlphaphetique(e, "titre1")}
                         disabled={!activerChampsForm}
                       />
                     </td>
@@ -738,6 +758,7 @@ const ClientForm = () => {
                         value={clientInfos.gsm1 || ""}
                         onChange={(e) => handleChangeTel(e, "gsm1")}
                         disabled={!activerChampsForm}
+                        maxLength={8}
                       />
                     </td>
                     <td className="w-1/4">
@@ -757,7 +778,7 @@ const ClientForm = () => {
                         type="text"
                         className="border border-gray-300 rounded-md p-2 w-full"
                         value={clientInfos.Nom2 || ""}
-                        onChange={(e) => handleChange(e, "Nom2")}
+                        onChange={(e) => handleChangeAlphaphetique(e, "Nom2")}
                         disabled={!activerChampsForm}
                       />
                     </td>
@@ -766,7 +787,7 @@ const ClientForm = () => {
                         type="text"
                         className="border border-gray-300 rounded-md p-2 w-full"
                         value={clientInfos.titre2 || ""}
-                        onChange={(e) => handleChange(e, "titre2")}
+                        onChange={(e) => handleChangeAlphaphetique(e, "titre2")}
                         disabled={!activerChampsForm}
                       />
                     </td>
@@ -777,6 +798,7 @@ const ClientForm = () => {
                         value={clientInfos.gsm2 || ""}
                         onChange={(e) => handleChangeTel(e, "gsm2")}
                         disabled={!activerChampsForm}
+                        maxLength={8}
                       />
                     </td>
                     <td className="w-1/4">
@@ -796,8 +818,17 @@ const ClientForm = () => {
                         type="text"
                         className="border border-gray-300 rounded-md p-2 w-full"
                         value={clientInfos.Nom3 || ""}
-                        onChange={(e) => handleChange(e, "Nom3")}
+                        onChange={(e) => handleChangeAlphaphetique(e, "Nom3")}
                         disabled={!activerChampsForm}
+                      />
+                    </td>
+                    <td className="w-1/4">
+                      <input
+                        type="text"
+                        className="border border-gray-300 rounded-md p-2 w-full"
+                        disabled={!activerChampsForm}
+                        value={clientInfos.titre3 || ""}
+                        onChange={(e) => handleChangeAlphaphetique(e, "titre3")}
                       />
                     </td>
                     <td className="w-1/4">
@@ -807,6 +838,7 @@ const ClientForm = () => {
                         value={clientInfos.gsm3 || ""}
                         onChange={(e) => handleChangeTel(e, "gsm3")}
                         disabled={!activerChampsForm}
+                        maxLength={8}
                       />
                     </td>
                     <td className="w-1/4">
@@ -815,13 +847,6 @@ const ClientForm = () => {
                         className="border border-gray-300 rounded-md p-2 w-full"
                         value={clientInfos.nposte3 || ""}
                         onChange={(e) => handleChange(e, "nposte3")}
-                        disabled={!activerChampsForm}
-                      />
-                    </td>
-                    <td className="w-1/4">
-                      <input
-                        type="text"
-                        className="border border-gray-300 rounded-md p-2 w-full"
                         disabled={!activerChampsForm}
                       />
                     </td>
@@ -843,6 +868,7 @@ const ClientForm = () => {
                   <select
                     className="border border-gray-300 rounded-md p-2"
                     disabled={!activerChampsForm}
+                    onChange={(e)=>hundleSelectTous(e,"tarif")}
                   >
                     <option value="prix1">prix1</option>
                     <option value="prix2">prix2</option>
@@ -863,8 +889,9 @@ const ClientForm = () => {
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
                   value={clientInfos.remise || ""}
-                  onChange={(e) => handleChange(e, "remise")}
+                  onChange={(e) => handleChangeNumeriqueDouble(e, "remise")}
                   disabled={!activerChampsForm}
+                  maxLength={3}
                 />
               </div>
 
@@ -879,8 +906,9 @@ const ClientForm = () => {
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
                   value={clientInfos.scredit || ""}
-                  onChange={(e) => handleChange(e, "scredit")}
+                  onChange={(e) => handleChangeNumeriqueDouble(e, "scredit")}
                   disabled={!activerChampsForm}
+                  maxLength={3}
                 />
               </div>
 
@@ -895,8 +923,9 @@ const ClientForm = () => {
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
                   value={clientInfos.srisque || ""}
-                  onChange={(e) => handleChange(e, "srisque")}
+                  onChange={(e) => handleChangeNumeriqueDouble(e, "srisque")}
                   disabled={!activerChampsForm}
+                  maxLength={3}
                 />
               </div>
 
@@ -911,8 +940,9 @@ const ClientForm = () => {
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
                   value={clientInfos.reference || ""}
-                  onChange={(e) => handleChange(e, "reference")}
+                  onChange={(e) => handleChangeAlphaNumerique(e, "reference")}
                   disabled={!activerChampsForm}
+                  maxLength={11}
                 />
               </div>
 
@@ -927,6 +957,9 @@ const ClientForm = () => {
                   <select
                     className="border border-gray-300 rounded-md p-2 w-11/12"
                     disabled={!activerChampsForm}
+                    onChange={(e) => {
+                      hundleSelectTous(e, "blockage");
+                    }}
                   >
                     <option value="O">O</option>
                     <option value="N">N</option>
@@ -942,6 +975,9 @@ const ClientForm = () => {
                   <select
                     className="border border-gray-300 rounded-md p-2 w-11/12"
                     disabled={!activerChampsForm}
+                    onChange={(e) => {
+                      hundleSelectTous(e, "Contrat");
+                    }}
                   >
                     <option value="O">O</option>
                     <option value="N">N</option>
@@ -1005,8 +1041,11 @@ const ClientForm = () => {
                     type="text"
                     className=" border border-gray-300 rounded-md p-2 "
                     value={clientInfos.matriculef || ""}
-                    onChange={(e) => handleChange(e, "matriculef")}
+                    onChange={(e) =>
+                      handleChangeAlphaNumerique(e, "matriculef")
+                    }
                     disabled={!activerChampsForm}
+                    maxLength={17}
                   />
 
                   <label
@@ -1019,8 +1058,9 @@ const ClientForm = () => {
                     type="text"
                     className="border border-gray-300 rounded-md p-2 "
                     value={clientInfos.decision || ""}
-                    onChange={(e) => handleChange(e, "decision")}
+                    onChange={(e) => handleChangeNumDecision(e, "decision")}
                     disabled={!activerChampsForm}
+                    maxLength={12}
                   />
                   <label
                     className="block"
@@ -1030,7 +1070,7 @@ const ClientForm = () => {
                   </label>
 
                   <input
-                    type="text"
+                    type="date"
                     className="border border-gray-300 rounded-md p-2 "
                     value={clientInfos.datedebaut || ""}
                     onChange={(e) => handleChange(e, "datedebaut")}
@@ -1045,7 +1085,7 @@ const ClientForm = () => {
                   </label>
 
                   <input
-                    type="text"
+                    type="date"
                     className="border border-gray-300 rounded-md p-2 "
                     value={clientInfos.datefinaut || ""}
                     onChange={(e) => handleChange(e, "datefinaut")}
@@ -1089,6 +1129,9 @@ const ClientForm = () => {
                     <select
                       className="border border-gray-300 rounded-md w-1/3 p-2"
                       disabled={!activerChampsForm}
+                      onChange={(e) => {
+                        hundleSelectTous(e, "susptva");
+                      }}
                     >
                       <option>O</option>
                       <option>N</option>
@@ -1245,7 +1288,7 @@ const ClientForm = () => {
                     Date Maj
                   </label>
                   <input
-                    type="text"
+                    type="date"
                     className="border border-gray-300 rounded-md p-2 w-2/3"
                     value={clientInfos.datemaj || ""}
                     onChange={(e) => handleChange(e, "datemaj")}

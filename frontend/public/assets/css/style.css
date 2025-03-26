@@ -261,7 +261,7 @@ body {
 /* ================== Order Details List ============== */
 .details {
   position: relative;
-  width: 100%;
+  width: 95%;
   padding: 20px;
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -364,6 +364,7 @@ body {
 .recentCustomers {
   position: relative;
   display: grid;
+  width: 120%;
   min-height: 500px;
   padding: 20px;
   background: var(--white);
@@ -399,7 +400,7 @@ body {
 }
 .recentCustomers table tr:hover {
   background: var(--blue);
-  color: var(--white);
+  /*color: var(--white);*/
 }
 .recentCustomers table tr:hover td h4 span {
   color: var(--white);
