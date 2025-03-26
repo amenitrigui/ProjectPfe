@@ -495,10 +495,6 @@ const getListeCodesPosteaux = async (req, res) => {
   }
 }
 
-
-
-
-
 module.exports = {
   getListeClients,
   filtrerListeClients,
@@ -515,5 +511,5 @@ module.exports = {
   getVilleParCodePostale,
   getListeCodesPosteaux,
   getListeCodeRegions,
-  getListeCodesSecteur
+  getListeCodesSecteur,
 };

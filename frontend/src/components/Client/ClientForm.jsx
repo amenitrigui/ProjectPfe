@@ -38,7 +38,7 @@ const ClientForm = () => {
     dispatch(getNombreTotalDevis());
     dispatch(getTotalChiffres());
     dispatch(getListeCodesSecteur());
-    dispatch(getListeCodeRegions())
+    dispatch(getListeCodeRegions());
   }, []);
 
   useEffect(() => {
@@ -51,7 +51,9 @@ const ClientForm = () => {
   const infosUtilisateur = useSelector(
     (state) => state.UtilisateurInfo.infosUtilisateur
   );
-const  listeCodesRegion=useSelector((state)=>state.ClientCrud.listeCodesRegion)
+  const listeCodesRegion = useSelector(
+    (state) => state.ClientCrud.listeCodesRegion
+  );
   // state pour désactiver/activer les champs lors de changement de modes editables (ajout/modification)
   // vers le mode de consultation respectivement
   const activerChampsForm = useSelector(
@@ -76,6 +78,12 @@ const  listeCodesRegion=useSelector((state)=>state.ClientCrud.listeCodesRegion)
 
   const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
 
+  const handleCinChange = (e, colonne) => {
+    if (!isNaN(e.target.value)) {
+      dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
+    }
+  };
+
   // Fonction pour gérer les changements dans les champs du formulaire
   const handleChange = (e, colonne) => {
     // * si aucun code client est selectionné
@@ -83,19 +91,10 @@ const  listeCodesRegion=useSelector((state)=>state.ClientCrud.listeCodesRegion)
     if (e.target.value == "") {
       dispatch(viderChampsClientInfo());
     }
-    if (colonne == "cp" && e.target.value.length == 4) {
-      dispatch(getVilleParCodePostal(e.target.value));
-    }
-    // * on va récuperer les informations de client
-    // * à partir de son code
-    if (
-      colonne == "code" &&
-      e.target.value != "" &&
-      e.target.value.length == 8 &&
-      !isNaN(e.target.value)
-    ) {
-      dispatch(getClientParCode(e.target.value));
-    }
+    if (e)
+      if (colonne == "cp" && e.target.value.length == 4) {
+        dispatch(getVilleParCodePostal(e.target.value));
+      }
     dispatch(setClientInfos({ colonne, valeur: e.target.value }));
     if (insertionDepuisDevisForm) {
       dispatch(setDevisInfo({ colonne, valeur: e.target.value }));
@@ -120,9 +119,63 @@ const  listeCodesRegion=useSelector((state)=>state.ClientCrud.listeCodesRegion)
       dispatch(setClientInfos({ colonne: "desisec", valeur: "" }));
     }
   };
-const hundleRegionChange=(e)=>{
-  dispatch(getVilleParRegion(e.target.value))
-}
+  const hundleRegionChange = (e) => {
+    if (e.target.value.length == 3) {
+      dispatch(getVilleParRegion(e.target.value));
+    }
+    if (e.target.value == "") {
+      dispatch(setClientInfos({ colonne: "desirgg", valeur: "" }));
+    }
+  };
+  const handleChangeCodeClient = (e, colonne) => {
+    if (!isNaN(e.target.value)) {
+      dispatch(setClientInfos({ colonne: "code", valeur: e.target.value }));
+    }
+    // * on va récuperer les informations de client
+    // * à partir de son code
+    if (
+      colonne == "code" &&
+      e.target.value != "" &&
+      e.target.value.length == 8 &&
+      !isNaN(e.target.value)
+    ) {
+      dispatch(getClientParCode(e.target.value));
+    }
+  };
+  const handleChangeRib = (e, colonne) => {
+    if (!isNaN(e.target.value)) {
+      dispatch(setClientInfos({ colonne: "compteb", valeur: e.target.value }));
+    }
+    if (e.target.value == "") {
+      dispatch(setClientInfos({ colonne: "compteb", valeur: "" }));
+    }
+  };
+  const handleChangeNom = (e, colonne) => {
+    dispatch(setClientInfos({ colonne: "banque", valeur: e.target.value }));
+
+    if (e.target.value == "") {
+      dispatch(setClientInfos({ colonne: "banque", valeur: "" }));
+    }
+  };
+
+  const handleChangeTel = (e, colonne) => {
+    console.log(e.target.value," ", colonne);
+    if ((!isNaN(e.target.value)) && (e.target.value.length == 8)) {
+      dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
+    }
+  };
+  const handleChangeFax = (e, colonne) => {
+    if (
+      !isNaN(e.target.value) &&
+      e.target.value.length >= 6 &&
+      e.target.value.length <= 9
+    ) {
+      dispatch(setClientInfos({ colonne: "fax", valeur: e.target.value }));
+    }
+    if (e.target.value == "") {
+      dispatch(setClientInfos({ colonne: "fax", valeur: "" }));
+    }
+  };
   const nombredevis = useSelector((state) => state.DevisCrud.nombreDeDevis);
   const totalchifre = useSelector((state) => state.DevisCrud.totalchifre);
   return (
@@ -261,8 +314,9 @@ const hundleRegionChange=(e)=>{
                   className="border border-gray-300 rounded-md p-2"
                   list="listeCodesClients"
                   value={clientInfos.code || ""}
-                  onChange={(e) => handleChange(e, "code")}
+                  onChange={(e) => handleChangeCodeClient(e, "code")}
                   disabled={activerChampsForm}
+                  maxLength={8}
                 />
                 <datalist id="listeCodesClients">
                   {listeToutCodesClients.length > 0 ? (
@@ -301,8 +355,9 @@ const hundleRegionChange=(e)=>{
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
                   value={clientInfos.cin || ""}
-                  onChange={(e) => handleChange(e, "cin")}
+                  onChange={(e) => handleCinChange(e, "cin")}
                   disabled={!activerChampsForm}
+                  maxLength={8}
                 />
               </div>
             </div>
@@ -509,10 +564,10 @@ const hundleRegionChange=(e)=>{
                     className="border border-gray-300 rounded-md p-2"
                     disabled={!activerChampsForm}
                     list="listeCodesRegion"
-                    onChange={(e)=>hundleRegionChange(e)}
+                    onChange={(e) => hundleRegionChange(e)}
                     // table region
                   />
-                   <datalist id="listeCodesRegion">
+                  <datalist id="listeCodesRegion">
                     {listeCodesRegion.length > 0 ? (
                       listeCodesRegion.map((region, indice) => (
                         <option key={indice} value={region.codergg}>
@@ -536,6 +591,7 @@ const hundleRegionChange=(e)=>{
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     disabled={!activerChampsForm}
+                    value={clientInfos.desirgg}
                   />
                 </div>
               </div>
@@ -561,8 +617,9 @@ const hundleRegionChange=(e)=>{
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     value={clientInfos.tel1 || ""}
-                    onChange={(e) => handleChange(e, "tel1")}
+                    onChange={(e) => handleChangeTel(e, "tel1")}
                     disabled={!activerChampsForm}
+                    maxLength={8}
                   />
                 </div>
                 <div className="flex flex-col w-2/3">
@@ -576,8 +633,9 @@ const hundleRegionChange=(e)=>{
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     value={clientInfos.tel2 || ""}
-                    onChange={(e) => handleChange(e, "tel2")}
+                    onChange={(e) => handleChangeTel(e, "tel2")}
                     disabled={!activerChampsForm}
+                    maxLength={8}
                   />
                 </div>
               </div>
@@ -590,7 +648,7 @@ const hundleRegionChange=(e)=>{
                     Email
                   </label>
                   <input
-                    type="text"
+                    type="email"
                     className="border border-gray-300 rounded-md p-2"
                     value={clientInfos.email || ""}
                     onChange={(e) => handleChange(e, "email")}
@@ -608,8 +666,10 @@ const hundleRegionChange=(e)=>{
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     value={clientInfos.fax || ""}
-                    onChange={(e) => handleChange(e, "fax")}
+                    onChange={(e) => handleChangeFax(e, "fax")}
                     disabled={!activerChampsForm}
+                    minLength={6}
+                    maxLength={9}
                   />
                 </div>
               </div>
@@ -676,7 +736,7 @@ const hundleRegionChange=(e)=>{
                         type="text"
                         className="border border-gray-300 rounded-md p-2 w-full"
                         value={clientInfos.gsm1 || ""}
-                        onChange={(e) => handleChange(e, "gsm1")}
+                        onChange={(e) => handleChangeTel(e, "gsm1")}
                         disabled={!activerChampsForm}
                       />
                     </td>
@@ -715,7 +775,7 @@ const hundleRegionChange=(e)=>{
                         type="text"
                         className="border border-gray-300 rounded-md p-2 w-full"
                         value={clientInfos.gsm2 || ""}
-                        onChange={(e) => handleChange(e, "gsm2")}
+                        onChange={(e) => handleChangeTel(e, "gsm2")}
                         disabled={!activerChampsForm}
                       />
                     </td>
@@ -745,7 +805,7 @@ const hundleRegionChange=(e)=>{
                         type="text"
                         className="border border-gray-300 rounded-md p-2 w-full"
                         value={clientInfos.gsm3 || ""}
-                        onChange={(e) => handleChange(e, "gsm3")}
+                        onChange={(e) => handleChangeTel(e, "gsm3")}
                         disabled={!activerChampsForm}
                       />
                     </td>
@@ -910,8 +970,8 @@ const hundleRegionChange=(e)=>{
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     disabled={!activerChampsForm}
-                    // value={clientInfos.banque.banque || ""}
-                    //   onChange={(e) => handleChange(e, "nposte1")}
+                    value={clientInfos.banque || ""}
+                    onChange={(e) => handleChangeNom(e, "banque")}
                   />
                 </div>
                 <div className="flex flex-col w-2/3">
@@ -926,8 +986,9 @@ const hundleRegionChange=(e)=>{
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     disabled={!activerChampsForm}
-                    // value={clientInfos.banque.ncompte || ""}
-                    //   onChange={(e) => handleChange(e, "ncompte")}
+                    value={clientInfos.compteb || ""}
+                    onChange={(e) => handleChangeRib(e, "compteb")}
+                    maxLength={20}
                   />
                 </div>
               </div>
