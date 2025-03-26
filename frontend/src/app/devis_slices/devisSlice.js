@@ -8,7 +8,7 @@ export const getDevisList = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/devis`
+      }/getTousDevis`
     );
     return response.data.devisList;
   }
@@ -21,10 +21,7 @@ export const getLignesDevis = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/getLignesDevis`,
-      {
-        params: { NumBL },
-      }
+      }/getLignesDevis/${NumBL}`
     );
     return response.data.listeArticle;
   }
@@ -38,7 +35,7 @@ export const AjouterDevis = createAsyncThunk(
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/create`,
+      }/creerDevis`,
       { devisInfo }
     );
     return response.data.devis;
@@ -52,7 +49,7 @@ export const getNombreTotalDevis = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/devis/total`
+      }/getNombreDevis`
     );
     return response.data.totalDevis;
   }
@@ -65,7 +62,7 @@ export const getTotalChiffres = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/devis/totalchiffre`
+      }/getTotalChiffres`
     );
     return response.data.totalchifre;
   }
@@ -78,10 +75,9 @@ export const getDevisParNUMBL = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/getDevisParNUMBL`,
+      }/getDevisParNUMBL/${NUMBL}`,
       {
         params: {
-          NUMBL,
           codeuser: thunkAPI.getState().UtilisateurInfo.codeuser,
         },
       }
@@ -101,10 +97,9 @@ export const getDevisParMontant = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/getDevisParMontant`,
+      }/getDevisParMontant/${montant}`,
       {
         params: {
-          montant,
           codeuser,
         },
       }
@@ -179,12 +174,7 @@ export const getListeNumbl = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/getListeNUMBL`,
-      {
-        params: {
-          usera: thunkAPI.getState().UtilisateurInfo.codeuser,
-        },
-      }
+      }/getCodesDevis/${thunkAPI.getState().UtilisateurInfo.codeuser}`
     );
     return response.data.listeNUMBL;
   }
@@ -221,7 +211,7 @@ export const deleteDevis = createAsyncThunk(
     const response = await axios.delete(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/devis/${NUMBL}/deleteDevis`
+      }/deleteDevis/${NUMBL}`
     );
     return response;
   }

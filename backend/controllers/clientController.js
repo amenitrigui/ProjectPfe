@@ -6,7 +6,10 @@ const {
 
 // * récupèrer la liste des clients à partir de la base des données
 // * dbName donnée comme paramètre de requete
-
+// * example:
+// * input :
+// * output : liste clients
+// * http://localhost:5000/api/client/SOLEVO/getListeClients
 const getListeClients = async (req, res) => {
   const { dbName } = req.params;
   try {
@@ -28,6 +31,10 @@ const getListeClients = async (req, res) => {
 
 // * retourner une liste des clients filtrée, selon le table
 // * filters données par le client
+// * example:
+// * input : liste de filtres
+// * output : liste de clients filtrés
+// * http://localhost:5000/api/client/SOLEVO/filtrerListeClients
 const filtrerListeClients = async (req, res) => {
   const { dbName } = req.params;
   const { filters } = req.query;
@@ -87,7 +94,10 @@ const filtrerListeClients = async (req, res) => {
 
 // * Inserer les informations d'un client clientInfos
 // * dans la base des données dbName donnée comme paramètre de requete
-
+// * example:
+// * input : client
+// * output : client ajouté à la base des données
+// * http://localhost:5000/api/client/SOLEVO/AjouterClient
 const AjouterClient = async (req, res) => {
   const { dbName } = req.params;
   const { clientInfos } = req.body;
@@ -161,7 +171,10 @@ const AjouterClient = async (req, res) => {
 // * supprimer un client ou plusieurs clients par leurs codes
 // * qui se trouvent dans le tableau clients envoyé par le client
 // * de la base des données dbName donnée comme paramètre de requete
-
+// * example:
+// * input : 41001080
+// * output : client supprimé de la base de données
+// * http://localhost:5000/api/client/SOLEVO/getClientParCode/41001080
 const supprimerClient = async (req, res) => {
   const { dbName } = req.params;
   // ? tableau contenant les codes des clients à supprimer
@@ -185,7 +198,10 @@ const supprimerClient = async (req, res) => {
 // * récupere un client à partir de la base des données
 // * dbName donnée comme paramètre de requete
 // * par son code, aussi donnée comme paramètre de requete
-
+// * example:
+// * input : 41001080
+// * output : client
+// * http://localhost:5000/api/client/SOLEVO/getClientParCode/41001080
 const getClientParCode = async (req, res) => {
   const { dbName } = req.params;
   const { code } = req.params;
@@ -213,7 +229,10 @@ const getClientParCode = async (req, res) => {
 };
 
 // * mettre à jour un client d'une societé donnée comme paramètre de requete (dbName)
-// ! AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+// * example:
+// * input : nouv infos client
+// * output : infos client mis à jour
+// * http://localhost:5000/api/client/SOLEVO/majClient
 const majClient = async (req, res) => {
   const { dbName } = req.params;
   const { clientUpdate } = req.body;
@@ -227,8 +246,8 @@ const majClient = async (req, res) => {
       await Client.update(
         {
           code: clientUpdate.code,
-          typecli: clientUpdate.typecli, // add this to the model
-          cin: clientUpdate.cin, // add this to model
+          typecli: clientUpdate.typecli,
+          cin: clientUpdate.cin,
           email: clientUpdate.email,
           rsoc: clientUpdate.rsoc,
           cp: clientUpdate.cp,
@@ -267,6 +286,8 @@ const majClient = async (req, res) => {
       return res
         .status(200)
         .json({ message: "Client mise à jour avec succès" });
+    } else {
+      return res.status(500).json({ message: "le client n'est pas définit" });
     }
   } catch (error) {
     return res.status(500).json({
@@ -276,7 +297,11 @@ const majClient = async (req, res) => {
   }
 };
 
-// * récupere la liste de codes de clients
+//* récuperer la liste de codes clients
+// * example:
+// * input :
+// * output : liste codes clients
+// * http://localhost:5000/api/client/SOLEVO/getToutCodesClient
 const getToutCodesClient = async (req, res) => {
   try {
     const { dbName } = req.params;
@@ -297,10 +322,16 @@ const getToutCodesClient = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+//* récuperer un client par type
+// * example:
+// * input :
+// * output : client
+// * http://localhost:5000/api/client/SOLEVO/getClientParTypecli/l
 const getClientParTypecli = async (req, res) => {
   try {
     const { dbName } = req.params;
-    const { typecli } = req.query;
+    const { typecli } = req.params;
     const dbConnection = await getDatabaseConnection(dbName, res);
     const client = await dbConnection.query(
       `SELECT * FROM CLIENT where typecli = :typecli`,
@@ -320,6 +351,11 @@ const getClientParTypecli = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+//* récuperer un client par cin
+// * example:
+// * input : 9780000
+// * output : client
+// * http://localhost:5000/api/client/SOLEVO/getClientParCin/9780000
 const getClientParCin = async (req, res) => {
   try {
     const { dbName } = req.params;
@@ -342,7 +378,11 @@ const getClientParCin = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
+//* récuperer le dernièr code de client dans la base
+// * example: le dernier code client dans la base est 2000
+// * input :
+// * output : 2000
+// * http://localhost:5000/api/client/SOLEVO/getDerniereCodeClient
 const getDerniereCodeClient = async (req, res) => {
   try {
     const { dbName } = req.params;
@@ -362,156 +402,6 @@ const getDerniereCodeClient = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-//* récuperer la liste de codes posteaux
-// * example:
-// * input : 
-// * output : liste de codes posteaux
-const getListeCodesSecteur = async (req, res) => {
-  const { dbName } = req.params;
-  try {
-    const dbConnection = await getDatabaseConnection(dbName, res);
-    const listeCodesSecteurs = await dbConnection.query(
-      `SELECT codesec from secteur`,
-      {
-        type: dbConnection.QueryTypes.SELECT,
-      }
-    )
-
-    return res.status(200).json({message: "liste de codes secteurs récuperée avec succès", listeCodesSecteurs});
-  }catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-}
-
-//* récuperer la désignation d'un secteur par son code
-// * example:
-// * input : 002
-// * output : SHZ
-const getDesignationSecteurparCodeSecteur = async (req, res) => {
-  const { dbName, codesecteur } = req.params;
-  console.log(dbName, " ", codesecteur);
-  try {
-    const dbConnection = await getDatabaseConnection(dbName, res);
-    const secteurInfo = await dbConnection.query(
-      `Select codesec, desisec from secteur where codesec = :codesecteur `,
-      {
-        type: dbConnection.QueryTypes.SELECT,
-        replacements: {
-          codesecteur: codesecteur,
-        },
-      }
-    );
-
-    console.log(secteurInfo);
-
-    return res
-      .status(200)
-      .json({ message: "secteur récupéré avec succès", secteurInfo });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
-//* récuperer la liste de régions
-// * example:
-// * input : 
-// * output : liste de régions
-// * http://localhost:5000/api/client/SOLEVO/getListeCodeRegions
-const getListeCodeRegions = async (req, res) => {
-  const { dbName } = req.params;
-  try {
-    const dbConnection = await getDatabaseConnection(dbName, res);
-    const listeCodesRegion = await dbConnection.query(
-      `SELECT codergg from region`,
-      {
-        type: dbConnection.QueryTypes.SELECT,
-      }
-    )
-
-    return res.status(200).json({message: "liste de codes posteaux récuperée avec succès", listeCodesRegion});
-  }catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-}
-//* récuperer la liste de villes d'un région
-// * example:
-// * input : Ariana
-// * output : liste de villes de région d'Ariana
-const getVilleParRegion = async (req, res) => {
-  const { dbName, codeRegion } = req.params;
-  console.log(dbName, " ", codeRegion);
-  try {
-    const dbConnexion = await getDatabaseConnection(dbName, res);
-    const ListRegion = await dbConnexion.query(
-      `Select desirgg from region where codergg = :codeRegion`,
-      {
-        type: dbConnexion.QueryTypes.SELECT,
-        replacements: {
-          codeRegion,
-        },
-      }
-    );
-    return res
-      .status(200)
-      .json({ message: "region recupere avec suucess", ListRegion });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
-
-
-
-
-//* récuperer la ville associé à un code postal
-// * example:
-// * input : Ariana
-// * output : liste de villes de région d'Ariana
-// * http://localhost:5000/api/client/SOLEVO/getVilleParCodePostale/1000
-const getVilleParCodePostale = async (req, res) => {
-  const { dbName, cp } = req.params;
-  try {
-    console.log(dbName, " ", cp);
-    const dbConnection = await getDatabaseConnection(dbName, res);
-    const ville = await dbConnection.query(
-      `SELECT desicp from cpostal where CODEp = :cp`,
-      {
-        type: dbConnection.QueryTypes.SELECT,
-        replacements: {
-          cp: cp
-        }
-      }
-    )
-    return res
-      .status(200)
-      .json({ message: "liste ville de code postale récuperé avec succès", ville : ville});
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
-
-
-
-
-//* récuperer la liste de codes posteaux
-// * example:
-// * input : 
-// * output : liste de codes posteaux
-// * http://localhost:5000/api/client/SOLEVO/getListeCodesPosteaux
-const getListeCodesPosteaux = async (req, res) => {
-  const { dbName } = req.params;
-  try {
-    const dbConnection = await getDatabaseConnection(dbName, res);
-    const listeCodesPosteaux = await dbConnection.query(
-      `SELECT CODEp from cpostal`,
-      {
-        type: dbConnection.QueryTypes.SELECT,
-      }
-    )
-
-    return res.status(200).json({message: "liste de codes posteaux récuperée avec succès", listeCodesPosteaux});
-  }catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-}
 
 module.exports = {
   getListeClients,
@@ -523,11 +413,5 @@ module.exports = {
   getClientParTypecli,
   getDerniereCodeClient,
   getClientParCin,
-  getToutCodesClient,
-  getDesignationSecteurparCodeSecteur,
-  getVilleParRegion,
-  getVilleParCodePostale,
-  getListeCodesPosteaux,
-  getListeCodeRegions,
-  getListeCodesSecteur,
+  getToutCodesClient
 };

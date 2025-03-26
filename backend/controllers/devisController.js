@@ -5,7 +5,10 @@ const defineLdfpModel = require("../models/societe/ldfp");
 const { getDatabaseConnection } = require("../common/commonMethods");
 
 // * récuperer la liste des dévis d'une societé donnée (dbName)
-
+// * example:
+// * input : 
+// * output : liste devis
+// * http://localhost:5000/api/devis/SOLEVO/getTousDevis
 const getTousDevis = async (req, res) => {
   const { dbName } = req.params;
 
@@ -45,7 +48,10 @@ const getTousDevis = async (req, res) => {
 };
 
 // * récuperer la somme de colonne MTTC pour une societé donnée (dbName)
-
+// * example:
+// * input : 
+// * output : total de chiffres généré par toutes les devis
+// * http://localhost:5000/api/devis/SOLEVO/getTotalChiffres
 const getTotalChiffres = async (req, res) => {
   const { dbName } = req.params;
   if (!dbName) {
@@ -74,7 +80,10 @@ const getTotalChiffres = async (req, res) => {
 };
 
 // * récuperer le nombre de dévis genérer pour une societé donnée (dbName)
-
+// * example:
+// * input : 
+// * output : nombre total de devis générés
+// * http://localhost:5000/api/devis/SOLEVO/getNombreDevis
 const getNombreDevis = async (req, res) => {
   const { dbName } = req.params;
 
@@ -115,7 +124,10 @@ const getNombreDevis = async (req, res) => {
 };
 
 // * créer un devis dans une societé donnée (dbName)
-
+// * example:
+// * input : devis
+// * output : un nouveau devis est ajouté au base de données
+// * http://localhost:5000/api/devis/SOLEVO/creerDevis
 const creerDevis = async (req, res) => {
   const { dbName } = req.params;
   const {
@@ -205,11 +217,16 @@ const creerDevis = async (req, res) => {
     });
   }
 };
-//* recupere la ligne d'article
+
+//* recupere les lignes de devis d'un devis
+// * example:
+// * input : DV2300002
+// * output : la liste de lignes de devis
+// * http://localhost:5000/api/devis/SOLEVO/getLignesDevis/DV2300002
 const getLignesDevis = async (req, res) => {
   try {
     const { dbName } = req.params;
-    const { NumBL } = req.query;
+    const { NumBL } = req.params;
     console.log(NumBL);
     const dbConnection = await getDatabaseConnection(dbName, res);
     const listeArticle = await dbConnection.query(
@@ -232,7 +249,6 @@ const getLignesDevis = async (req, res) => {
 
 // * récuperer la liste de devis créés dans une date spécifique (DATEBL)
 // * pour une societé donnée (dbName)
-
 const GetDevisParPeriode = async (req, res) => {
   try {
     const { dbName } = req.params;
@@ -257,7 +273,6 @@ const GetDevisParPeriode = async (req, res) => {
 
 // * récuperer la liste de devis créés pour un client spécifique (CODECLI)
 // * pour une societé donnée (dbName)
-
 const GetDevisListParClient = async (req, res) => {
   try {
     const { dbName } = req.params;
@@ -281,11 +296,14 @@ const GetDevisListParClient = async (req, res) => {
 
 // * récuperer la liste des codes de devis (NUMBL)
 // * pour une societé donnée (dbName)
-
+// * example:
+// * input : 4
+// * output : la liste de codes devis généré par l'utilisateur 4
+// * http://localhost:5000/api/devis/SOLEVO/getCodesDevis/4
 const getCodesDevis = async (req, res) => {
   try {
     const { dbName } = req.params;
-    const { usera } = req.query;
+    const { usera } = req.params;
     const dbConnection = await getDatabaseConnection(dbName, res);
     const listeNUMBL = await dbConnection.query(
       `SELECT NUMBL from dfp where usera = :usera order by CAST(NUMBL AS UNSIGNED) ASC`,
@@ -308,11 +326,14 @@ const getCodesDevis = async (req, res) => {
 
 // * récuperer un devis par son code (NUMBL)
 // * pour une societé donnée (dbName)
-
+// * example:
+// * input : NUMBL = DV2300002, usera=4 
+// * output : le devis ayant le NUMBL DV2300002, créé par l'utilisateur 4
+// * http://localhost:5000/api/devis/SOLEVO/getDevisParNUMBL/DV2300002
 const getDevisParNUMBL = async (req, res) => {
   try {
     const { dbName } = req.params;
-    const { NUMBL } = req.query;
+    const { NUMBL } = req.params;
     const { codeuser } = req.query;
 
     const dbConnection = await getDatabaseConnection(dbName, res);
@@ -329,6 +350,8 @@ const getDevisParNUMBL = async (req, res) => {
       return res
         .status(200)
         .json({ message: "devis recupere avec succes", devis: devis });
+    }else {
+      return res.status(500).json({message: "récupération de devis échoué"})
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -359,8 +382,6 @@ const getDevisCreator = async (req, res) => {
   }
 };
 
-// * récuperer toutes les devis par montant
-// * pour une societé donnée (dbName)
 const getInfoUtilisateur = async (req, res) => {
   try {
     const { dbName } = req.params;
@@ -384,14 +405,20 @@ const getInfoUtilisateur = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+// * récuperer toutes les devis par montant
+// * pour une societé donnée (dbName)
+// * example:
+// * input montant=5664.511, codeuser=4
+// * output : le(s) devis ayant(ent) le montant 5664.511 et créé par l'utilisateur 4
+// * http://localhost:5000/api/devis/SOLEVO/getDevisParMontant/5664.511
 const getDevisParMontant = async (req, res) => {
   try {
     const { dbName } = req.params;
-    const { montant } = req.query;
+    const { montant } = req.params;
     const { codeuser } = req.query;
 
     const dbConnection = await getDatabaseConnection(dbName, res);
-    if (montant) {
+    if (montant && codeuser) {
       // devis selectionné
       const devis = await dbConnection.query(
         `SELECT NUMBL,libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where MTTC = :montant and usera = :codeuser`,
@@ -403,6 +430,8 @@ const getDevisParMontant = async (req, res) => {
       return res
         .status(200)
         .json({ message: "devis recupere avec succes", devis: devis });
+    }else {
+      return res.status(500).json({ message: "erreur lors de récupération de devis par montant" });
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -430,6 +459,13 @@ const getListePointVente = async (req, res) => {
   }
 };
 
+// * récuperer le NUMBL de dernier devis généré
+// * cette itération de la solution ne compte pas
+// * l'année courante du système, ie: implémentation basique
+// * example:
+// * input 
+// * output : NUMBL du dernier devis généré
+// * http://localhost:5000/api/devis/SOLEVO/getDerniereNumbl
 const getDerniereNumbl = async (req, res) => {
   try {
     const { dbName } = req.params;
@@ -453,10 +489,13 @@ const getDerniereNumbl = async (req, res) => {
   }
 };
 
-//* suprimer devis
+//* suprimer un devis par son NUMBL
+// * example:
+// * input : NUMBL = DV2500155
+// * output : Devis ayant NUMBL = DV2500155 est supprimé
+// * http://localhost:5000/api/devis/SOLEVO/deleteDevis/DV2500155
 const deleteDevis = async (req, res) => {
   const { dbName, NUMBL } = req.params;
-
   if (!NUMBL || NUMBL.trim() === "") {
     return res
       .status(400)
@@ -500,7 +539,6 @@ const deleteDevis = async (req, res) => {
     });
   }
 };
-
 
 
 module.exports = {
