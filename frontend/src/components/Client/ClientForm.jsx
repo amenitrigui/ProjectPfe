@@ -201,7 +201,7 @@ const ClientForm = () => {
       dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
     }
   };
-  console.log(clientInfos)
+  console.log(clientInfos.fidel)
   const hundleSelectTous = (e, champ) => {
     dispatch(setClientInfos({ colonne: champ, valeur: e.target.value }));
   };
@@ -1106,7 +1106,7 @@ const ClientForm = () => {
                       type="checkbox"
                       className="border border-gray-300 rounded-md p-2"
                       checked={
-                        (toolbarMode == "ajout" || toolbarMode == "modification")  && clientInfos.fidel
+                        (toolbarMode == "consultation" || toolbarMode == "modification")  && (clientInfos.fidel && clientInfos.fidel?.toUpperCase() !== "N")
                       }
                       onChange={(e) => handleChangeCheckbox(e, "fidel")}
                       disabled={!activerChampsForm}
@@ -1124,9 +1124,9 @@ const ClientForm = () => {
                       className="border border-gray-300 rounded-md p-2 "
                       disabled={!activerChampsForm}
                       checked={
-                      (toolbarMode == "ajout" || toolbarMode == "modification")  && clientInfos.autretva
+                      (toolbarMode == "consultation" || toolbarMode == "modification")  && (clientInfos.ptva && clientInfos.ptva?.toUpperCase() !== "N") 
                       }
-                      onChange={(e) => handleChangeCheckbox(e, "autretva")}
+                      onChange={(e) => handleChangeCheckbox(e, "ptva")}
                     />
                     <label
                       className="block"
@@ -1159,7 +1159,7 @@ const ClientForm = () => {
                       <input
                         type="checkbox"
                         checked={
-                          (toolbarMode === "ajout" || toolbarMode == "modification")  && clientInfos.majotva
+                          (toolbarMode === "consultation" || toolbarMode == "modification")  && (clientInfos.majotva && clientInfos.majotva?.toUpperCase() !== "N")
                         }
                         className="border border-gray-300 rounded-md"
                         onChange={(e) => handleChangeCheckbox(e, "majotva")}
@@ -1171,7 +1171,7 @@ const ClientForm = () => {
                     <div className="flex items-center space-x-2 w-full md:w-1/2">
                       <input
                         checked={
-                          (toolbarMode == "ajout" || toolbarMode == "modification")  && clientInfos.exon
+                          (toolbarMode == "consultation" || toolbarMode == "modification")  && (clientInfos.exon && clientInfos.exon?.toUpperCase() !== "N")
                         }
                         type="checkbox"
                         className="border border-gray-300 rounded-md"
@@ -1188,7 +1188,7 @@ const ClientForm = () => {
                       <input
                         disabled={!activerChampsForm}
                         checked={
-                          (toolbarMode == "ajout" || toolbarMode == "modification")  && clientInfos.regime
+                          (toolbarMode == "consultation" || toolbarMode == "modification")  && (clientInfos.regime && clientInfos.regime?.toUpperCase() !== "N")
                         }
                         type="checkbox"
                         className="border border-gray-300 rounded-md"
@@ -1202,7 +1202,7 @@ const ClientForm = () => {
                         disabled={!activerChampsForm}
                         type="checkbox"
                         checked={
-                          (toolbarMode == "ajout" || toolbarMode == "modification")  && clientInfos.suspfodec
+                          (toolbarMode == "consultation" || toolbarMode == "modification")  && (clientInfos.suspfodec && clientInfos.suspfodec?.toUpperCase() !== "N")
                         }
                         className="border border-gray-300 rounded-md"
                         onChange={(e) => handleChangeCheckbox(e, "suspfodec")}
@@ -1217,7 +1217,7 @@ const ClientForm = () => {
                       <input
                         type="checkbox"
                         disabled={!activerChampsForm}
-                        checked={(toolbarMode == "ajout" || toolbarMode == "modification") && clientInfos.cltexport}
+                        checked={(toolbarMode == "consultation" || toolbarMode == "modification") && (clientInfos.cltexport && clientInfos.cltexport.toUpperCase() !== "N")}
                         className="border border-gray-300 rounded-md"
                         onChange={(e) => handleChangeCheckbox(e, "cltexport")}
                       />
@@ -1228,7 +1228,7 @@ const ClientForm = () => {
                       <input
                         type="checkbox"
                         disabled={!activerChampsForm}
-                        checked={(toolbarMode == "ajout" || toolbarMode == "modification") && clientInfos.timbref}
+                        checked={(toolbarMode == "consultation" || toolbarMode == "modification") && (clientInfos.timbref && clientInfos.timbref?.toUpperCase() !== "N")}
                         className="border border-gray-300 rounded-md"
                         onChange={(e) => handleChangeCheckbox(e, "timbref")}
                       />
@@ -1241,9 +1241,9 @@ const ClientForm = () => {
                     <input
                       type="checkbox"
                       disabled={!activerChampsForm}
-                      checked={(toolbarMode == "ajout" || toolbarMode == "modification") && clientInfos.fact}
+                      checked={(toolbarMode == "consultation" || toolbarMode == "modification") && (clientInfos.offretick && clientInfos.offretick?.toUpperCase() !== "N")}
                       className="border border-gray-300 rounded-md"
-                      onChange={(e) => handleChangeCheckbox(e, "fact")}
+                      onChange={(e) => handleChangeCheckbox(e, "offretick")}
                     />
                     <label className="text-blue-900">
                       Fact ticket de caisse

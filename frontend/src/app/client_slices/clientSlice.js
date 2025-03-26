@@ -53,7 +53,6 @@ export const getClientParCode = createAsyncThunk(
         thunkAPI.getState().UtilisateurInfo.dbName
       }/getClientParCode/${code}`
     );
-    console.log(response.data);
     return response.data.client;
   }
 );
@@ -276,13 +275,11 @@ export const clientSlice = createSlice({
       tel2: "",
       telex: "",
       desrep: "",
-      aval2: "",
-      aval1: "",
       Commentaire: "",
       datemaj: "",
       userm: "",
       usera: "",
-      fact: "",
+      offretick: "",
       timbref: "",
       cltexport: "",
       suspfodec: "",
@@ -306,7 +303,7 @@ export const clientSlice = createSlice({
       typecli: "L",
       cin: "",
       fax: "",
-
+      ptva: "",
       codesec: "",
       desisec: "",
 
@@ -374,7 +371,7 @@ export const clientSlice = createSlice({
         datemaj: "",
         userm: "",
         usera: "",
-        fact: "",
+        offretick: "",
         timbref: "",
         cltexport: "",
         suspfodec: "",
@@ -501,7 +498,6 @@ export const clientSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getToutCodesClient.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.listeToutCodesClients = action.payload;
         state.status = "réussi";
       })
