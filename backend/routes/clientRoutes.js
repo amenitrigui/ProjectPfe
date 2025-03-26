@@ -12,11 +12,7 @@ const {
   getDesignationSecteurparCodeSecteur,
   getClientParCin,
   getToutCodesClient,
-  getVilleParCodePostale,
-  getVilleParRegion,
-  getListeCodesPosteaux,
   getListeCodesSecteur,
-  getListeCodeRegions,
 } = require("../controllers/clientController");
 
 router.post("/:dbName/AjouterClient", AjouterClient);
@@ -32,17 +28,10 @@ router.get("/:dbName/getClientParCin/:cin", getClientParCin);
 router.get("/:dbName/getToutCodesClient", getToutCodesClient);
 router.get("/:dbName/getClientParCode/:code", getClientParCode);
 
-router.get("/:dbName/getListeCodesPosteaux", getListeCodesPosteaux);
-router.get("/:dbName/getVilleParCodePostale/:cp", getVilleParCodePostale);
-
 router.get("/:dbName/getListeCodesSecteur", getListeCodesSecteur);
 router.get(
   "/:dbName/getDesignationSecteurparCodeSecteur/:codesecteur",
   getDesignationSecteurparCodeSecteur
 );
-
-router.get("/:dbName/getListeCodeRegions", getListeCodeRegions);
-router.get("/:dbName/getVilleParRegion/:codeRegion", getVilleParRegion);
-
 
 module.exports = router;

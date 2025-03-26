@@ -194,7 +194,7 @@ export const getVilleParCodePostal = createAsyncThunk(
   "clientSlice/getVilleParCodePostal",
   async (cp, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/client/${
+      `${process.env.REACT_APP_API_URL}/api/codePostal/${
         thunkAPI.getState().UtilisateurInfo.dbName
       }/getVilleParCodePostale/${cp}`
     );
@@ -210,11 +210,10 @@ export const getListeCodesPosteaux = createAsyncThunk(
   "clientSlice/getListeCodesPosteaux",
   async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/client/${
+      `${process.env.REACT_APP_API_URL}/api/codePostal/${
         thunkAPI.getState().UtilisateurInfo.dbName
       }/getListeCodesPosteaux`
     );
-
     return response.data.listeCodesPosteaux;
   }
 );
@@ -228,7 +227,7 @@ export const getListeCodeRegions = createAsyncThunk(
   "clientSlice/getListeCodeRegions",
   async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/client/${
+      `${process.env.REACT_APP_API_URL}/api/region/${
         thunkAPI.getState().UtilisateurInfo.dbName
       }/getListeCodeRegions`
     );
@@ -243,8 +242,9 @@ export const getListeCodeRegions = createAsyncThunk(
 export const getVilleParRegion = createAsyncThunk(
   "clientSlice/getVilleParRegion",
   async (codeRegion, thunkAPI) => {
+    console.log("ok");
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/client/${
+      `${process.env.REACT_APP_API_URL}/api/region/${
         thunkAPI.getState().UtilisateurInfo.dbName
       }/getVilleParRegion/${codeRegion}`
     );

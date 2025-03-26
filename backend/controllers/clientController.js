@@ -7,7 +7,7 @@ const {
 // * récupèrer la liste des clients à partir de la base des données
 // * dbName donnée comme paramètre de requete
 // * example:
-// * input : 
+// * input :
 // * output : liste clients
 // * http://localhost:5000/api/client/SOLEVO/getListeClients
 const getListeClients = async (req, res) => {
@@ -268,8 +268,8 @@ const majClient = async (req, res) => {
       return res
         .status(200)
         .json({ message: "Client mise à jour avec succès" });
-    }else {
-      return res.status(500).json({ message: "le client n'est pas définit"})
+    } else {
+      return res.status(500).json({ message: "le client n'est pas définit" });
     }
   } catch (error) {
     return res.status(500).json({
@@ -281,7 +281,7 @@ const majClient = async (req, res) => {
 
 //* récuperer la liste de codes clients
 // * example:
-// * input : 
+// * input :
 // * output : liste codes clients
 // * http://localhost:5000/api/client/SOLEVO/getToutCodesClient
 const getToutCodesClient = async (req, res) => {
@@ -307,7 +307,7 @@ const getToutCodesClient = async (req, res) => {
 
 //* récuperer un client par type
 // * example:
-// * input : 
+// * input :
 // * output : client
 // * http://localhost:5000/api/client/SOLEVO/getClientParTypecli/l
 const getClientParTypecli = async (req, res) => {
@@ -362,7 +362,7 @@ const getClientParCin = async (req, res) => {
 };
 //* récuperer le dernièr code de client dans la base
 // * example: le dernier code client dans la base est 2000
-// * input : 
+// * input :
 // * output : 2000
 // * http://localhost:5000/api/client/SOLEVO/getDerniereCodeClient
 const getDerniereCodeClient = async (req, res) => {
@@ -386,7 +386,7 @@ const getDerniereCodeClient = async (req, res) => {
 };
 //* récuperer la liste de codes secteurs
 // * example:
-// * input : 
+// * input :
 // * output : liste de codes secteurs
 // * http://localhost:5000/api/client/SOLEVO/getListeCodesSecteur
 const getListeCodesSecteur = async (req, res) => {
@@ -398,13 +398,18 @@ const getListeCodesSecteur = async (req, res) => {
       {
         type: dbConnection.QueryTypes.SELECT,
       }
-    )
+    );
 
-    return res.status(200).json({message: "liste de codes secteurs récuperée avec succès", listeCodesSecteurs});
-  }catch (error) {
+    return res
+      .status(200)
+      .json({
+        message: "liste de codes secteurs récuperée avec succès",
+        listeCodesSecteurs,
+      });
+  } catch (error) {
     return res.status(500).json({ message: error.message });
   }
-}
+};
 
 //* récuperer la désignation d'un secteur par son code
 // * example:
@@ -435,109 +440,6 @@ const getDesignationSecteurparCodeSecteur = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-//* récuperer la liste de régions
-// * example:
-// * input : 
-// * output : liste de régions
-// * http://localhost:5000/api/client/SOLEVO/getListeCodeRegions
-const getListeCodeRegions = async (req, res) => {
-  const { dbName } = req.params;
-  try {
-    const dbConnection = await getDatabaseConnection(dbName, res);
-    const listeCodesRegion = await dbConnection.query(
-      `SELECT codergg from region`,
-      {
-        type: dbConnection.QueryTypes.SELECT,
-      }
-    )
-
-    return res.status(200).json({message: "liste de codes posteaux récuperée avec succès", listeCodesRegion});
-  }catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-}
-//* récuperer la liste de villes d'un région
-// * example:
-// * input : Ariana
-// * output : liste de villes de région d'Ariana
-// * http://localhost:5000/api/client/SOLEVO/getVilleParRegion/Ariana
-const getVilleParRegion = async (req, res) => {
-  const { dbName, codeRegion } = req.params;
-  console.log(dbName, " ", codeRegion);
-  try {
-    const dbConnexion = await getDatabaseConnection(dbName, res);
-    const ListRegion = await dbConnexion.query(
-      `Select desirgg from region where codergg = :codeRegion`,
-      {
-        type: dbConnexion.QueryTypes.SELECT,
-        replacements: {
-          codeRegion,
-        },
-      }
-    );
-    return res
-      .status(200)
-      .json({ message: "region recupere avec suucess", ListRegion });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
-
-
-
-
-//* récuperer la ville associé à un code postal
-// * example:
-// * input : Ariana
-// * output : liste de villes de région d'Ariana
-// * http://localhost:5000/api/client/SOLEVO/getVilleParCodePostale/1000
-const getVilleParCodePostale = async (req, res) => {
-  const { dbName, cp } = req.params;
-  try {
-    console.log(dbName, " ", cp);
-    const dbConnection = await getDatabaseConnection(dbName, res);
-    const ville = await dbConnection.query(
-      `SELECT desicp from cpostal where CODEp = :cp`,
-      {
-        type: dbConnection.QueryTypes.SELECT,
-        replacements: {
-          cp: cp
-        }
-      }
-    )
-    return res
-      .status(200)
-      .json({ message: "liste ville de code postale récuperé avec succès", ville : ville});
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
-
-
-
-
-//* récuperer la liste de codes posteaux
-// * example:
-// * input : 
-// * output : liste de codes posteaux
-// * http://localhost:5000/api/client/SOLEVO/getListeCodesPosteaux
-const getListeCodesPosteaux = async (req, res) => {
-  const { dbName } = req.params;
-  try {
-    const dbConnection = await getDatabaseConnection(dbName, res);
-    const listeCodesPosteaux = await dbConnection.query(
-      `SELECT CODEp from cpostal`,
-      {
-        type: dbConnection.QueryTypes.SELECT,
-      }
-    )
-
-    return res.status(200).json({message: "liste de codes posteaux récuperée avec succès", listeCodesPosteaux});
-  }catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-}
-
 module.exports = {
   getListeClients,
   filtrerListeClients,
@@ -550,9 +452,5 @@ module.exports = {
   getClientParCin,
   getToutCodesClient,
   getDesignationSecteurparCodeSecteur,
-  getVilleParRegion,
-  getVilleParCodePostale,
-  getListeCodesPosteaux,
-  getListeCodeRegions,
   getListeCodesSecteur,
 };
