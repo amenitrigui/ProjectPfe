@@ -25,5 +25,4 @@ router.get("/:dbName/getClientParCin/:cin", getClientParCin);
 
 router.get("/:dbName/getToutCodesClient", getToutCodesClient);
 router.get("/:dbName/getClientParCode/:code", getClientParCode);
-
 module.exports = router;

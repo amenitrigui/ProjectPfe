@@ -287,6 +287,7 @@ export const clientSlice = createSlice({
       cltexport: "",
       suspfodec: "",
       regime: "",
+      susptva: "",
       exon: "",
       majotva: "",
       fidel: "",
