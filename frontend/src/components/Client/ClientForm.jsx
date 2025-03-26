@@ -138,6 +138,9 @@ const ClientForm = () => {
     if (!isNaN(e.target.value)) {
       dispatch(setClientInfos({ colonne: "code", valeur: e.target.value }));
     }
+    if (e.target.value == "") {
+      dispatch(viderChampsClientInfo());
+    }
     // * on va récuperer les informations de client
     // * à partir de son code
     if (
