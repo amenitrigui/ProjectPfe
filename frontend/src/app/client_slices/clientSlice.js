@@ -178,7 +178,7 @@ export const getListeCodesSecteur = createAsyncThunk(
   "clientSlice/getListeCodeSecteur",
   async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/client/${
+      `${process.env.REACT_APP_API_URL}/api/secteur/${
         thunkAPI.getState().UtilisateurInfo.dbName
       }/getListeCodesSecteur`
     );

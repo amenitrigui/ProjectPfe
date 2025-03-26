@@ -7,6 +7,7 @@ const userRoutes = require("./routes/userRoutes");
 const clientRoutes = require("./routes/clientRoutes");
 const codePostalRoutes = require("./routes/codePostalRoutes");
 const regionRoutes = require("./routes/regionRoutes");
+const secteurRoutes = require("./routes/secteurRoutes");
 require("dotenv").config();
 
 // * Création de l'application Express
@@ -32,6 +33,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/client", clientRoutes);
 app.use("/api/codePostal", codePostalRoutes);
 app.use("/api/region", regionRoutes);
+app.use("/api/secteur", secteurRoutes);
 // * Test de connexion à la base de données
 app.get("/", async (req, res) => {
   try {

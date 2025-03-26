@@ -9,10 +9,8 @@ const {
   getClientParCode,
   getDerniereCodeClient,
   getClientParTypecli,
-  getDesignationSecteurparCodeSecteur,
   getClientParCin,
   getToutCodesClient,
-  getListeCodesSecteur,
 } = require("../controllers/clientController");
 
 router.post("/:dbName/AjouterClient", AjouterClient);
@@ -27,11 +25,5 @@ router.get("/:dbName/getClientParCin/:cin", getClientParCin);
 
 router.get("/:dbName/getToutCodesClient", getToutCodesClient);
 router.get("/:dbName/getClientParCode/:code", getClientParCode);
-
-router.get("/:dbName/getListeCodesSecteur", getListeCodesSecteur);
-router.get(
-  "/:dbName/getDesignationSecteurparCodeSecteur/:codesecteur",
-  getDesignationSecteurparCodeSecteur
-);
 
 module.exports = router;
