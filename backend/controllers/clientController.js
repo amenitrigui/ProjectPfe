@@ -147,7 +147,8 @@ const AjouterClient = async (req, res) => {
       contrat:clientInfos.contrat,
       blockage:clientInfos.blockage,
       susptva:clientInfos.susptva,
-      tarif:clientInfos.tarif
+      tarif:clientInfos.tarif,
+      desireg:clientInfos.desireg
       
     });
 
