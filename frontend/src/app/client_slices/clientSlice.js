@@ -81,13 +81,13 @@ export const ajouterClient = createAsyncThunk(
 export const majClient = createAsyncThunk(
   "slice/majClient",
   async (_, thunkAPI) => {
-    const clientUpdate = thunkAPI.getState().ClientCrud.clientInfos;
+    const clientMaj = thunkAPI.getState().ClientCrud.clientInfos;
 
     const response = await axios.put(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().UtilisateurInfo.dbName
       }/majClient`,
-      { clientUpdate } // htha y3niii bch tjib les donds il kol htha body, ya3ni objet kamel mesh bel champ bel champ
+      { clientMaj },// htha y3niii bch tjib les donds il kol htha body, ya3ni objet kamel mesh bel champ bel champ
     );
     return response.message;
   }
@@ -475,6 +475,7 @@ export const clientSlice = createSlice({
       })
       .addCase(majClient.rejected, (state, action) => {
         state.status = "échoué";
+        console.log(action.payload);
         state.erreur = action.payload;
       })
 

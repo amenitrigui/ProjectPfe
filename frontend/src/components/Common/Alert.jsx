@@ -17,48 +17,57 @@ function Alert() {
 
   useEffect(() => {
     if (afficherAlert) {
-      toast.info(
+      toast(
         ({ closeToast }) => (
           <div
-            style={{
-              backgroundColor: "#2a2185",
-              color: "white",
-              padding: "15px",
-              borderRadius: "8px",
-              textAlign: "center",
-              boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-            }}
+          style={{
+            
+           
+            
+          borderRadius:"20px",
+            boxShadow: "0px 4px 10px rgb(42, 33, 133)",
+          
+        
+          }}
           >
-            <p style={{ fontWeight: "bold", fontSize: "16px" }}>
-              Êtes-vous sûr de vouloir ajouter ce client ?
+            <p style={{ fontWeight: "bold", color: "#1f1f1f",   textAlign: "center",fontSize: "18px", fontFamily: "Arial, sans-serif", marginBottom: "15px" }}>
+              Confirmez-vous l'ajout de ce client ?
             </p>
-            <div style={{ display: "flex", justifyContent: "center", gap: "10px" }}>
+            <div style={{ display: "flex", justifyContent: "center", gap: "12px" }}>
               <button
                 style={{
-                  backgroundColor: "#28a745",
+                  backgroundColor: "#2a2185",
                   color: "white",
                   border: "none",
-                  borderRadius: "5px",
-                  padding: "8px 12px",
+                  borderRadius: "6px",
+                  padding: "10px 18px",
+                  fontWeight: "bold",
                   cursor: "pointer",
+                  transition: "background 0.3s ease",
                 }}
                 onClick={() => handleAjout(closeToast)}
+                onMouseOver={(e) => (e.target.style.backgroundColor = "#211b70")}
+                onMouseOut={(e) => (e.target.style.backgroundColor = "#2a2185")}
               >
                 Ajouter
               </button>
               <button
                 style={{
-                  backgroundColor: "#dc3545",
-                  color: "white",
+                  backgroundColor: "#b0b0b0",
+                  color: "#333",
                   border: "none",
-                  borderRadius: "5px",
-                  padding: "8px 12px",
+                  borderRadius: "6px",
+                  padding: "10px 18px",
+                  fontWeight: "bold",
                   cursor: "pointer",
+                  transition: "background 0.3s ease",
                 }}
                 onClick={() => {
                   dispatch(setAfficherAlert(false));
                   closeToast();
                 }}
+                onMouseOver={(e) => (e.target.style.backgroundColor = "#888")}
+                onMouseOut={(e) => (e.target.style.backgroundColor = "#b0b0b0")}
               >
                 Annuler
               </button>
@@ -71,8 +80,8 @@ function Alert() {
           hideProgressBar: true,
           closeOnClick: false,
           pauseOnHover: true,
-          draggable: true,
-          theme: "colored",
+          draggable: false,
+          closeButton: false,
         }
       );
     }

@@ -24,6 +24,7 @@ export const uiSlice = createSlice({
     activerBoutonsValiderAnnuler: false,
     // * mode de toolbar: insertion/modification/consultation
     toolbarMode: "consultation",
+    setAlertModifier:""
   },
 
   reducers: {
@@ -59,6 +60,7 @@ export const uiSlice = createSlice({
     setToolbarMode: (state, action) => {
       state.toolbarMode = action.payload;
     }
+   
   },
 });
 export const {

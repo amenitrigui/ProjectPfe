@@ -5,6 +5,7 @@ import Alert from "../../components/Common/Alert";
 import AlertModalD from "../../components/Common/AlertModalD";
 import { setToolbarTable } from "../../app/interface_slices/uiSlice";
 import { useDispatch, useSelector } from "react-redux";
+import AlertModifier from "../../components/Common/AlertModifier";
 
 function ClientFormTout() {
   const dispatch = useDispatch();
@@ -21,9 +22,7 @@ function ClientFormTout() {
   return (
     <div className="flex min-h-screen bg-gray-100">
       <div className="flex-1 ">
-        <Alert />
-      
-        <AlertModalD />
+        <AlertModifier></AlertModifier>
         <ClientForm />
         <br />
       </div>
