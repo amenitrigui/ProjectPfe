@@ -38,7 +38,7 @@ const Dashboard = () => {
           {[
             { name: "Dashboard", icon: "home-outline", path: "/dashboard" },
             { name: "Clients", icon: "people-outline", path: "/ClientFormTout" },
-            { name: "devis", icon: "chatbubble-outline", path: "/DevisList" },
+            { name: "Article", icon: "chatbubble-outline", path: "/ArticleFormTout" },
             {
               name: "devistout",
               icon: "lock-closed-outline",

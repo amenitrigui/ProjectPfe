@@ -30,6 +30,7 @@ import { viderChampsClientInfo } from "./app/client_slices/clientSlice";
 import { setDevisInfo, viderChampsDevisInfo } from "./app/devis_slices/devisSlice";
 import { persistStore } from "redux-persist";
 import { store } from "./app/store";
+import ArticleFormTout from "./pages/Article/ArticleFormTout"
 
 function App() {
   const dispatch = useDispatch();
@@ -63,6 +64,7 @@ function App() {
         <Route path="/Parent" element={<Parent />}></Route>
         <Route path="/DevisFormTout" element={<DevisFormTout />}></Route>
         <Route path="/Test" element={<Test />}></Route>
+        <Route path="/ArticleFormTout" element={<ArticleFormTout/>}></Route>
 
         <Route
           path="/DevisFormPlaceholder"
