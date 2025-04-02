@@ -30,6 +30,7 @@ import { viderChampsClientInfo } from "./app/client_slices/clientSlice";
 import { setDevisInfo, viderChampsDevisInfo } from "./app/devis_slices/devisSlice";
 import { persistStore } from "redux-persist";
 import { store } from "./app/store";
+import UtilisateurFormTout from "./pages/Utilisateurs/UtilisateurFormTout";
 
 function App() {
   const dispatch = useDispatch();
@@ -68,6 +69,7 @@ function App() {
           path="/DevisFormPlaceholder"
           element={<DevisFormPlaceholder></DevisFormPlaceholder>}
         ></Route>
+        <Route path="/UtilisateurFormTout" element={<UtilisateurFormTout />} />
       </Routes>
     </Router>
   );

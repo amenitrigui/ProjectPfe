@@ -101,6 +101,7 @@ const filtrerListeClients = async (req, res) => {
 const AjouterClient = async (req, res) => {
   const { dbName } = req.params;
   const { clientInfos } = req.body;
+  console.log("ajouterClient infos :",clientInfos)
   
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
@@ -235,53 +236,70 @@ const getClientParCode = async (req, res) => {
 // * http://localhost:5000/api/client/SOLEVO/majClient
 const majClient = async (req, res) => {
   const { dbName } = req.params;
-  const { clientUpdate } = req.body;
-
+  const { clientMaj } = req.body;
+  console.log("majClient: ", clientMaj);
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const Client = defineClientModel(dbConnection);
-    const client = await Client.findOne({ where: { code: clientUpdate.code } });
+    const client = await Client.findOne({ where: { code: clientMaj.code } });
 
     if (client) {
       await Client.update(
         {
-          code: clientUpdate.code,
-          typecli: clientUpdate.typecli,
-          cin: clientUpdate.cin,
-          email: clientUpdate.email,
-          rsoc: clientUpdate.rsoc,
-          cp: clientUpdate.cp,
-          telephone: clientUpdate.telephone,
-          desrep: clientUpdate.desrep,
-          adresse: clientUpdate.adresse,
-          aval2: clientUpdate.aval2,
-          aval1: clientUpdate.aval1,
-          Commentaire: clientUpdate.Commentaire,
-          datemaj: clientUpdate.datemaj,
-          userm: clientUpdate.userm,
-          usera: clientUpdate.usera,
-          fact: clientUpdate.fact,
-          timbref: clientUpdate.timbref,
-          cltexport: clientUpdate.cltexport,
-          suspfodec: clientUpdate.suspfodec,
-          regime: clientUpdate.regime,
-          exon: clientUpdate.exon,
-          majotva: clientUpdate.majotva,
-          fidel: clientUpdate.fidel,
-          datefinaut: clientUpdate.datefinaut,
-          datedebaut: clientUpdate.datedebaut,
-          decision: clientUpdate.decision,
-          matriculef: clientUpdate.matriculef,
-          reference: clientUpdate.reference,
-          srisque: clientUpdate.srisque,
-          scredit: clientUpdate.scredit,
-          delregBL: clientUpdate.delregBL,
-          delregFT: clientUpdate.delregFT,
-          delregFC: clientUpdate.delregFC,
-          remise: clientUpdate.remise,
-          activite: clientUpdate.activite,
+          code: clientMaj.code,
+          typecli: clientMaj.typecli, 
+          cin: clientMaj.cin,
+          rsoc: clientMaj.rsoc,
+          adresse: clientMaj.adresse,
+          activite: clientMaj.activite,
+          cp: clientMaj.cp,
+          desicp: clientMaj.desicp,
+          nature: clientMaj.nature, 
+          desisec: clientMaj.desisec, 
+          desireg: clientMaj.desireg, 
+          tel1:clientMaj.tel1,
+          tel2:clientMaj.tel2,
+          email: clientMaj.email,
+          fax: clientMaj.fax,
+          nom1: clientMaj.nom1,
+          nom2: clientMaj.nom2,
+          nom3: clientMaj.nom3,
+          titre1: clientMaj.titre1,
+          titre2: clientMaj.titre2,
+          titre3: clientMaj.titre3,
+          gsm1: clientMaj.gsm1,
+          gsm2: clientMaj.gsm2,
+          gsm3: clientMaj.gsm3,
+          nposte1: clientMaj.nposte1,
+          nposte2: clientMaj.nposte2,
+          nposte3: clientMaj.nposte3,
+          Commentaire: clientMaj.Commentaire,
+          usera: clientMaj.usera, 
+          fact: clientMaj.fact, 
+          timbref: clientMaj.timbref, 
+          cltexport: clientMaj.cltexport, 
+          suspfodec: clientMaj.suspfodec,
+          regime: clientMaj.regime, 
+          exon: clientMaj.exon, 
+          majotva: clientMaj.majotva, 
+          fidel: clientMaj.fidel,
+          datefinaut: clientMaj.datefinaut,
+          datedebaut: clientMaj.datedebaut,
+          decision: clientMaj.decision,
+          matriculef: clientMaj.matriculef,
+          reference: clientMaj.reference,
+          srisque: clientMaj.srisque,
+          scredit: clientMaj.scredit,
+          remise: clientMaj.remise,
+          compteb : clientMaj.compteb, 
+          banque:clientMaj.banque,
+          contrat:clientMaj.contrat,
+          blockage:clientMaj.blockage,
+          susptva:clientMaj.susptva,
+          tarif:clientMaj.tarif,
+          desireg:clientMaj.desireg
         },
-        { where: { code: clientUpdate.code } }
+        { where: { code: clientMaj.code } }
       );
       return res
         .status(200)

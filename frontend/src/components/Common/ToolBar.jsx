@@ -113,53 +113,61 @@ function ToolBar() {
   // * afficher la fenetre de confirmation
   // * pour supprimer un ou plusieurs clients/devis
   const afficherSuppToast = async () => {
-    if (toolbarTable == "devis") {
-      if (!devisInfo.NUMBL) {
-        // ! a remplacer par toast
-        alert("aucune devis est selectionné pour la suppression");
-      }
-    }
+    // if (toolbarTable == "devis") {
+    //   if (!devisInfo.NUMBL) {
+    //     // ! a remplacer par toast
+    //     alert("aucune devis est selectionné pour la suppression");
+    //   }
+    // }
 
-    if (toolbarTable == "client") {
-      if (!clientInfos.code) {
-        // ! a remplacer par toast
-        alert("aucun client est selectionné pour la suppression");
-      }
-    }
+    // if (toolbarTable == "client") {
+    //   if (!clientInfos.code) {
+    //     // ! a remplacer par toast
+    //     alert("aucun client est selectionné pour la suppression");
+    //   }
+    // }
 
-    if (
-      (toolbarTable == "client" && clientInfos.code) ||
-      (toolbarTable == "devis" && devisInfo.NUMBL)
-    ) {
-      dispatch(setAfficherAlertModal(true));
-    }
+    // if (
+    //   (toolbarTable == "client" && clientInfos.code) ||
+    //   (toolbarTable == "devis" && devisInfo.NUMBL)
+    // ) {
+    //   dispatch(setAfficherAlertModal(true));
+    // }
+    dispatch(setActiverChampsForm(false));
+    dispatch(setToolbarMode("suppression"));
+    dispatch(setAlertMessage("Êtes-vous sûr de vouloir supprimer ce client ?"))
+    dispatch(setAfficherAlert(true))
   };
 
   // * méthode pour valider l'ajout d'un client/devis
   const handleValiderBtnClick = () => {
     if (toolbarTable == "client") {
       if (toolbarMode == "ajout") {
+        dispatch(setAlertMessage("Confirmez-vous ajouter de ce client ?"))
         dispatch(setAfficherAlert(true));
       }
 
       if (toolbarMode == "modification") {
-        dispatch(majClient());
-        dispatch(setActiverChampsForm(false));
-        dispatch(setActiverBoutonsValiderAnnuler(false));
-        dispatch(viderChampsClientInfo());
+        // dispatch(majClient());
+        // dispatch(setActiverChampsForm(false));
+        // dispatch(setActiverBoutonsValiderAnnuler(false));
+        // dispatch(viderChampsClientInfo());
+        dispatch(setAlertMessage("Confirmez-vous modifier de ce client ?"))
+        dispatch(setAfficherAlert(true));
       }
     }
     if (toolbarTable == "devis") {
       if (toolbarMode == "ajout") {
-        dispatch(AjouterDevis());
-        dispatch(setActiverChampsForm(true));
+        // dispatch(AjouterDevis());
+        // dispatch(setActiverChampsForm(true));
+        dispatch(setAlertMessage("Confirmez-vous ajouter de ce devis ?"))
+        dispatch(setAfficherAlert(true));
       }
 
       if (toolbarMode == "modification") {
         // dispatch(majDevis())
       }
     }
-    dispatch(setToolbarMode("consultation"));
   };
 
   // * cacher les bouttons valider/annuler
