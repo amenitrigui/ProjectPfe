@@ -23,6 +23,7 @@ import {
 } from "../../app/client_slices/clientSlice";
 
 import ToolBar from "../Common/ToolBar";
+import { isAlphabetique, isNumerique } from "../../utils/validations";
 
 const ClientForm = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -75,15 +76,9 @@ const ClientForm = () => {
   const listeCodesSecteur = useSelector(
     (state) => state.ClientCrud.listeCodesSecteur
   );
-
+  
   const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
-
-  const handleCinChange = (e, colonne) => {
-    if (!isNaN(e.target.value)) {
-      dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
-    }
-  };
-
+  
   const handleChangeCheckbox = (e, colonne) => {
     console.log(e.target.checked," ", colonne)
     if(toolbarMode == "ajout" || toolbarMode == "modification") {
@@ -135,7 +130,7 @@ const ClientForm = () => {
     }
   };
   const handleChangeCodeClient = (e, colonne) => {
-    if (!isNaN(e.target.value)) {
+    if (isNumerique(e.target.value)) {
       dispatch(setClientInfos({ colonne: "code", valeur: e.target.value }));
     }
     if (e.target.value == "") {
@@ -153,7 +148,7 @@ const ClientForm = () => {
     }
   };
   const handleChangeRib = (e, colonne) => {
-    if (!isNaN(e.target.value)) {
+    if (isNumerique(e.target.value)) {
       dispatch(setClientInfos({ colonne: "compteb", valeur: e.target.value }));
     }
     if (e.target.value == "") {
@@ -162,18 +157,11 @@ const ClientForm = () => {
   };
   const handleChangeNom = (e, colonne) => {
     dispatch(setClientInfos({ colonne: "banque", valeur: e.target.value }));
-
     if (e.target.value == "") {
       dispatch(setClientInfos({ colonne: "banque", valeur: "" }));
     }
   };
 
-  const handleChangeTel = (e, colonne) => {
-    console.log(e.target.value, " ", colonne);
-    if (!isNaN(e.target.value)) {
-      dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
-    }
-  };
   const handleChangeFax = (e, colonne) => {
     if (!isNaN(e.target.value)) {
       dispatch(setClientInfos({ colonne: "fax", valeur: e.target.value }));
@@ -182,8 +170,21 @@ const ClientForm = () => {
       dispatch(setClientInfos({ colonne: "fax", valeur: "" }));
     }
   };
+
+  const handleCinChange = (e, colonne) => {
+    if (isNumerique(e.target.value)) {
+      dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
+    }
+  };
+  
+  const handleChangeTel = (e, colonne) => {
+    
+  };
+
+
+
   const handleChangeAlphaphetique = (e, colonne) => {
-    if (/^[A-Za-z\s]*$/.test(e.target.value)) {
+    if (isAlphabetique(e.target.value)) {
       dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
     }
   };
@@ -192,16 +193,16 @@ const ClientForm = () => {
       dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
     }
   };
-  const handleChangeNumDecision = (e, colonne) => {
-    if (!isNaN(e.target.value))
-      dispatch(setClientInfos({ colonne: "decision", valeur: e.target.value }));
-  };
   const handleChangeNumeriqueDouble = (e, colonne) => {
     if (!isNaN(parseFloat(e.target.value))) {
       dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
     }
   };
-  console.log(clientInfos.fidel)
+
+  const handleChangeNumDecision = (e, colonne) => {
+    if (isNumerique(e.target.value))
+      dispatch(setClientInfos({ colonne: "decision", valeur: e.target.value }));
+  };
   const hundleSelectTous = (e, champ) => {
     dispatch(setClientInfos({ colonne: champ, valeur: e.target.value }));
   };

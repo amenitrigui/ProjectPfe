@@ -58,7 +58,7 @@ export const uiSlice = createSlice({
     },
     setToolbarMode: (state, action) => {
       state.toolbarMode = action.payload;
-    }
+    },
   },
 });
 export const {
@@ -71,6 +71,6 @@ export const {
   setToolbarTable,
   setActiverChampsForm,
   setActiverBoutonsValiderAnnuler,
-  setToolbarMode
+  setToolbarMode,
 } = uiSlice.actions;
 export default uiSlice.reducer;
