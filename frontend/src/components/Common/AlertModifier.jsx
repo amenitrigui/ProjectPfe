@@ -14,14 +14,19 @@ import {
   supprimerClient,
   viderChampsClientInfo,
 } from "../../app/client_slices/clientSlice";
+
+import { suprimerArticle } from "../../app/article_slices/articleSlice";
 function AlertModifier() {
   const dispatch = useDispatch();
+  
   const afficherAlert = useSelector((state) => state.uiStates.afficherAlert);
   const message = useSelector((state) => state.uiStates.message);
   const toolbarTable = useSelector((state) => state.uiStates.toolbarTable);
   const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
   const clientSelectionne = useSelector((state) =>  state.ClientCrud.clientInfos).code;
+  const articleCode = useSelector((state) => state.ArticlesDevis.articleInfos).code;
   const handleConfirmerClick = async (closeToast) => {
+    //*pour le client
     if (toolbarTable == "client") {
       if (toolbarMode == "ajout") {
         dispatch(ajouterClient())
@@ -39,7 +44,7 @@ function AlertModifier() {
       // * pour vider les champs de l'objet clientInfos
       dispatch(viderChampsClientInfo());
     }
-
+    // * pour devis
     if (toolbarTable == "devis") {
       if (toolbarMode == "ajout") {
         
@@ -48,16 +53,19 @@ function AlertModifier() {
         
       }
       if (toolbarMode == "suppression") {
+       
       }
       
     }
-
+    // * pour l'article
     if (toolbarTable == "article") {
       if (toolbarMode == "ajout") {
       }
       if (toolbarMode == "modification") {
       }
       if (toolbarMode == "suppression") {
+        console.log("dd")
+        dispatch(suprimerArticle("yb11"))
       }
     }
     dispatch(setAfficherAlert(false));

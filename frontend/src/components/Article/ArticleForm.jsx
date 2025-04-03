@@ -1,14 +1,31 @@
 import React from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { FaUser, FaCog, FaCreditCard, FaSignOutAlt } from "react-icons/fa";
 import ToolBar from "../Common/ToolBar";
+import { useDispatch, useSelector } from "react-redux";
+import { getListeFamillesArticle, setArticleInfos } from "../../app/article_slices/articleSlice";
 function ArticleForm() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+  const articleInfos = useSelector((state) => state.ArticlesDevis.articleInfos);
+  const ListeCodeArticles = useSelector((state) => state.ArticlesDevis.ListeCodeArticles);
+  const ListeFamille = useSelector((state) => state.ArticlesDevis.ListeFamille);
+ 
+  const dispatch = useDispatch();
+ 
+
+  useEffect(() => {
+    dispatch(getListeFamillesArticle())
+  }, [])
+
+  const handleCodeFamilleChange = (valeur, colonne) => {
+    dispatch(setArticleInfos({colonne: colonne, valeur: valeur}))
+  }
   return (
     <div className="container">
       <div className={`navigation ${isSidebarOpen ? "active" : ""}`}>
@@ -18,7 +35,7 @@ function ArticleForm() {
               <span className="icon">
                 <ion-icon name="speedometer-outline"></ion-icon>
               </span>
-              <span className="title">ERP Logicom</span>
+              <span className="title">ERP Logicom</span>m
             </a>
           </li>
 
@@ -129,7 +146,7 @@ function ArticleForm() {
                 }}
                 className="text-3xl"
               >
-                Article / Facture Proforma
+                Article
               </h2>
               <a href="#" className="btn">
                 View All
@@ -141,10 +158,28 @@ function ArticleForm() {
                   className="font-bold mb-1"
                   style={{ color: "rgb(48, 60, 123)" }}
                 >
-                  Code Article
+                  Code Famille
                 </label>
 
-                <select className="border border-gray-300 rounded-md p-2"></select>
+                <input
+                  type="text"
+                  className="border border-gray-300 rounded-md p-2"
+                  value = {articleInfos.famille}
+                  onChange={(e) => handleCodeFamilleChange(e.target.value, "famille")}
+                  list="listeCodesArticle"
+                />
+
+                <datalist id="listeCodesArticle">
+                  {ListeFamille.length > 0 ? (
+                    ListeFamille.map((famille, indice) => (
+                      <option key={indice} value={famille.code}>
+                        {famille.code}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled>Aucun article trouvé</option>
+                  )}
+                </datalist>
               </div>
               <div className="flex flex-col w-2/3">
                 <label
@@ -180,18 +215,32 @@ function ArticleForm() {
               </div>
             </div>
             <div className="flex flex-wrap">
-              <div className="flex flex-col w-1/3">
+            <div className="flex flex-col w-1/3">
                 <label
                   className="font-bold mb-1"
                   style={{ color: "rgb(48, 60, 123)" }}
                 >
-                  code Article
+                  Code Article
                 </label>
 
                 <input
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
+                  value = {articleInfos.code}
+                  list="listeCodesArticle"
                 />
+
+                <datalist id="listeCodesArticle">
+                  {ListeCodeArticles.length > 0 ? (
+                    ListeCodeArticles.map((article, indice) => (
+                      <option key={indice} value={article.code}>
+                        {article.code}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled>Aucun article trouvé</option>
+                  )}
+                </datalist>
               </div>
               <div className="flex flex-col w-1/3">
                 <label
@@ -555,7 +604,6 @@ function ArticleForm() {
                       Valeur du Stock
                     </button>
                   </div>
-                  
                 </div>
               </div>
             </div>

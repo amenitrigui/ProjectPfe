@@ -1,5 +1,6 @@
 const { Sequelize } = require("sequelize");
 const defineArticleModel = require("../models/societe/article");
+const defineFamilleModel = require("../models/societe/famille");
 const defineLdfpModel = require("../models/societe/ldfp");
 const { getSequelizeConnection } = require("../db/config");
 const { getDatabaseConnection } = require("../common/commonMethods");
@@ -11,8 +12,12 @@ const initializeDynamicModels = (sequelize) => {
 
   return { Article, Ldfp };
 };
-
-const getFamilles = async (req, res) => {
+// * méthode pour récuperer la liste de familles (code+libelle)
+// * exemple : 
+// * input : ""
+// * output: liste des famille :  [{"code": "02-MAT", "libelle": "MATELAS"}]
+//*http://localhost:5000/api/article/SOLEVO/familles
+const getListeFamilles = async (req, res) => {
   const { dbName } = req.params;
 
   if (!dbName) {
@@ -22,15 +27,17 @@ const getFamilles = async (req, res) => {
   }
 
   try {
-    const dynamicSequelize = getSequelizeConnection(dbName);
-    await dynamicSequelize.authenticate();
+    const dbConnection = await getDatabaseConnection(dbName, res);
 
-    const { Article } = initializeDynamicModels(dynamicSequelize);
+    const Familles = defineFamilleModel(dbConnection);
 
-    const familles = await Article.findAll({
-      attributes: ["famille"],
-      group: ["famille"],
+    console.log("Familles: ",Familles);
+
+    const familles = await Familles.findAll({
+      attributes: ["code", "libelle"],
     });
+
+    console.log(familles)
 
     if (familles.length === 0) {
       return res.status(404).json({
@@ -40,7 +47,7 @@ const getFamilles = async (req, res) => {
 
     return res.status(200).json({
       message: "Familles d'articles récupérées avec succès.",
-      familles: familles.map((famille) => famille.famille),
+      familles: familles,
     });
   } catch (error) {
     console.error("Erreur lors de la récupération :", error);
@@ -51,7 +58,11 @@ const getFamilles = async (req, res) => {
   }
 };
 
-const getCodesByFamille = async (req, res) => {
+// * récupere la liste d'articles ayant un famille donné
+// * exemple : 
+// * input : 02-SP
+// * output : liste d'articles ayant le code famille 02-SP
+const getCodesArticlesByFamille = async (req, res) => {
   const { dbName, famille } = req.params;
 
   if (!dbName || !famille) {
@@ -254,6 +265,17 @@ const getListeArticles = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+// const getToutCodesFamille = async (res,req)=>{
+//   // listeCodesFamilles
+//   const {dbName} = req.params
+//   const {listeCodesFamilles}= req.params
+//   try  {
+//     const dbConnection = await getDatabaseConnection(dbName,res)
+//     const listeCodesFamilles = await dbConnection.query(`select code , libelle  from famille `,{
+      
+//     })
+//   }
+// }
 
 // const getArticleParLIbelle = async(req, res) => {
 //   const { dbName, libelle } = req.params;
@@ -321,13 +343,40 @@ const filtrerListeArticle = async (req, res) => {
   });
 };
 
+//* récuperer la liste de codes articles
+// * example:
+// * input : ""
+// * output : liste codes articles
+// * http://localhost:5000/api/client/SOLEVO/getToutCodesArticle
+const getToutCodesArticle = async (req, res) => {
+  try {
+    const { dbName } = req.params;
+    const dbConnection = await getDatabaseConnection(dbName, res);
+
+    const listeCodesArticles = await dbConnection.query(
+      `SELECT code FROM article ORDER BY code`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    );
+
+    return res.status(200).json({
+      message: "Codes Articles récupéré avec succès",
+      listeCodesArticles: listeCodesArticles,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
-  getFamilles,
-  getCodesByFamille,
+  getListeFamilles,
+  getCodesArticlesByFamille,
   suprimerArticle,
   getArticle,
   ajouterArticle,
   getListeArticles,
   modifierArticle,
-  filtrerListeArticle
+  filtrerListeArticle,
+  getToutCodesArticle 
 };
