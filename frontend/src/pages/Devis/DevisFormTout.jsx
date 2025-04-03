@@ -14,7 +14,6 @@ function DevisFormTout() {
   const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
   const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
   const toobarTable = useSelector((state) => state.uiStates.toolbarTable);
-  console.log(devisInfo)
   // * useEffect #1 : désactiver tous les champs
   // * et indiquer qu'on va utiliser la table de devis
   const dispatch = useDispatch();

@@ -438,7 +438,11 @@ const getDevisParMontant = async (req, res) => {
   }
 };
 
-// * récuperer la liste de points de vente
+// * méthode pour récuperer la liste de points de vente
+// * exemple : 
+// * input : 
+// * output: liste pointsVenteDistincts: [{libelle: "ptVente1"},{libelle: "ptVente2"},{libelle: "ptVente3"},{libelle: "ptVente4"},...]
+// * http://localhost:5000/api/devis/SOLEVO/getListePointVente
 const getListePointVente = async (req, res) => {
   try {
     const { dbName } = req.params;

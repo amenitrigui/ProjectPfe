@@ -35,8 +35,12 @@ oAuth2Client.setCredentials({
 
 // * enregistrer une nouvelle utilisateur
 // * dans la base des données ErpSole
-
-const registerUser = async (req, res) => {
+// * exemple
+// * input : {nom: "testUser", "motpasse": "testUserMotPasse", "email": "testUser@test.test"}
+// * output : aucune, l'utilisateur sera enregistré dans la base de données
+// * verb : post
+// * http://localhost:5000/api/utilisateurs/inscrireUtilisteur
+const inscrireUtilisteur = async (req, res) => {
   const { email, motpasse, nom } = req.body;
 
   try {
@@ -85,8 +89,12 @@ const registerUser = async (req, res) => {
 };
 
 // * Generer un jwt d'accès pour un utilisateur déjà inscrit
-
-const loginUser = async (req, res) => {
+// * exemple
+// * input : {nom: "test", motpasse: "test"}
+// * outpout : jwt 
+// * verb : post
+// * http://localhost:5000/api/utilisateurs/loginUtilisateur
+const loginUtilisateur = async (req, res) => {
   const { nom, motpasse } = req.body;
   console.log(nom," ",motpasse);
   const User = defineUserModel(sequelizeUserERP);
@@ -154,7 +162,9 @@ const loginUser = async (req, res) => {
 };
 
 // * Recupère la liste de devis pour une sociète donnée
-// ! this does not belong in here
+// ! useless
+// * verb : post
+// * http://localhost:5000/api/utilisateurs/select-database
 const selectDatabase = async (req, res) => {
   const { databaseName } = req.body;
 
@@ -197,13 +207,11 @@ const selectDatabase = async (req, res) => {
   }
 };
 
-/**
- * Description
- * ! this does not belong in here
- * @author Unknown
- * @date 2025-02-07
- * @returns {status}
- */
+// * récupere les détails d'un devis créé par l'utilisateur
+// * courament connecté
+// ! does NOT belong in here
+// * verb : get
+// * http://localhost:5000/api/utilisateurs/get-devis-details/SOLEVO/DV2500155
 const getDevisDetails = async (req, res) => {
   const { databaseName, NUMBL } = req.params;
 
@@ -280,16 +288,12 @@ const getDevisDetails = async (req, res) => {
   }
 };
 
-/**
- * Description
- * retourne la devis ayant l'année la plus récente avec ses lignes d'articles
- * ! this does not belong in here
- * @author Unknown
- * @date 2025-02-10
- * @param {any} req
- * @param {any} res
- * @returns {any}
- */
+
+// * retourne la devis ayant l'année la plus récente avec ses lignes d'articles
+// * pour une société donnée
+// ! this does not belong in here
+// * verb : get
+// * http://localhost:5000/api/utilisateurs/get-devis-details/SOLEVO
 const getLatestDevisByYear = async (req, res) => {
   const { databaseName } = req.params;
 
@@ -380,16 +384,11 @@ const getLatestDevisByYear = async (req, res) => {
   }
 };
 
-/**
- * Description
- * récupère la liste des clients d'une societé (databaseName)
- * ! this does not belong in here
- * @author Unknown
- * @date 2025-02-10
- * @param {any} req
- * @param {any} res
- * @returns {clients}
- */
+
+// * récupère la liste des clients d'une societé (databaseName)
+// ! this does not belong in here + does not, in fact, work (nice)
+// * verb : get
+// * http://localhost:5000/api/utilisateurs/SOLEVO/clients
 const getAllClients = async (req, res) => {
   const { databaseName } = req.params;
 
@@ -441,13 +440,10 @@ const getAllClients = async (req, res) => {
   }
 };
 
-/**
- * Description
- * ! this does not belong in here
- * @author Unknown
- * @date 2025-02-07
- * @returns {any}
- */
+// * récuperer la liste des secteurs pour une société donnée
+// ! this does not belong in here
+// * verb : get
+// * http://localhost:5000/api/utilisateurs/secteurs/SOLEVO
 const getAllSectors = async (req, res) => {
   const { databaseName } = req.params;
 
@@ -489,8 +485,9 @@ const getAllSectors = async (req, res) => {
 
 // * Envoyer un email de réinitialisation de mot de passe
 // * pour un email donné si un utilisateur ayant cet email existe
-
-const sendPasswordResetEmail = async (req, res) => {
+// * verb : post
+// * http://localhost:5000/api/utilisateurs/envoyerDemandeReinitialisationMp
+const envoyerDemandeReinitialisationMp = async (req, res) => {
   const { email } = req.body;
   if (!email) {
     return res.status(400).json({ message: "L'Email est requise." });
@@ -563,8 +560,9 @@ const sendPasswordResetEmail = async (req, res) => {
 
 // * réinitialiser le mot de passe pour un email donné
 // * si un utilisateur ayant cet email existe
-
-const passwordReset = async (req, res) => {
+// * verb : put
+// * http://localhost:5000/api/utilisateurs/reinitialiserMotPasse
+const reinitialiserMotPasse = async (req, res) => {
   const { email, password, token } = req.body;
 
   if (!token) {
@@ -606,15 +604,16 @@ const passwordReset = async (req, res) => {
   }
 };
 
-// * 
+// * récuperer les informations d'un utilisateur par son code
+// * verb : get
+// * http://localhost:5000/api/utilisateurs/getUtilisateurParCode
 const getUtilisateurParCode = async(req, res) => {
   try{
-    const {dbName} = req.params;
     const { codeuser } = req.query;
 
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection("usererpsole", res);
     const utilisateur = await dbConnection.query(
-      `SELECT codeuser, nom FROM utilisateur WHERE codeuser = :codeuser`,
+      `SELECT codeuser, nom, directeur FROM utilisateur WHERE codeuser = :codeuser`,
       {
         type: dbConnection.QueryTypes.SELECT,
         replacements: {
@@ -635,14 +634,14 @@ const getUtilisateurParCode = async(req, res) => {
 
 // Exporter la méthode
 module.exports = {
-  registerUser,
-  loginUser,
+  inscrireUtilisteur,
+  loginUtilisateur,
   selectDatabase,
   getDevisDetails,
   getLatestDevisByYear,
   getAllClients,
   getAllSectors,
-  sendPasswordResetEmail,
-  passwordReset,
+  envoyerDemandeReinitialisationMp,
+  reinitialiserMotPasse,
   getUtilisateurParCode
 };

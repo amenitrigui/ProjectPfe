@@ -11,9 +11,8 @@ export const getArticleFamiles = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/familles`
+      }/getListeFamilles`
     );
-
     return response.data.familles;
   }
 );

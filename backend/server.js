@@ -3,7 +3,7 @@ const { sequelize } = require("./db/config");
 const cors = require("cors");
 const devisRoutes = require("./routes/devisRoutes");
 const articleRoutes = require("./routes/articleRoutes");
-const userRoutes = require("./routes/userRoutes");
+const utilisateurRoutes = require("./routes/utilisateurRoutes");
 const clientRoutes = require("./routes/clientRoutes");
 const codePostalRoutes = require("./routes/codePostalRoutes");
 const regionRoutes = require("./routes/regionRoutes");
@@ -29,7 +29,7 @@ app.use(express.json());
 // * Définition des routes de l'API
 app.use("/api/devis", devisRoutes);
 app.use("/api/article", articleRoutes);
-app.use("/api/users", userRoutes);
+app.use("/api/utilisateurs", utilisateurRoutes);
 app.use("/api/client", clientRoutes);
 app.use("/api/codePostal", codePostalRoutes);
 app.use("/api/region", regionRoutes);

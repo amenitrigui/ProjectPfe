@@ -16,7 +16,7 @@ const initializeDynamicModels = (sequelize) => {
 // * exemple : 
 // * input : ""
 // * output: liste des famille :  [{"code": "02-MAT", "libelle": "MATELAS"}]
-//*http://localhost:5000/api/article/SOLEVO/familles
+// * http://localhost:5000/api/article/SOLEVO/getListeFamilles
 const getListeFamilles = async (req, res) => {
   const { dbName } = req.params;
 
@@ -241,7 +241,11 @@ const modifierArticle = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
+// * méthode pour récuperer la liste d'articles
+// * exemple : 
+// * input : ""
+// * output: liste d'articles :  [{"code": "art1", "libelle": "desart1", ...}, ...]
+// * http://localhost:5000/api/article/SOLEVO/getListeArticles
 const getListeArticles = async (req, res) => {
   const { dbName } = req.params;
   try {
@@ -250,10 +254,12 @@ const getListeArticles = async (req, res) => {
       type: dbConnection.QueryTypes.SELECT,
     });
 
+    console.log(listeArticles)
+    console.log(await dbConnection.query(`SELECT COUNT(*) FROM ARTICLE`, {type: dbConnection.QueryTypes.SELECT}))
     if (listeArticles) {
       return res
         .status(200)
-        .json({ message: "liste d'articles récuperé avec succès" });
+        .json({ message: "liste d'articles récuperé avec succès"});//, listeArticles: listeArticles});
     } else {
       return res
         .status(500)
@@ -286,6 +292,13 @@ const getListeArticles = async (req, res) => {
 //     return res.status(500).json({ message: error.message });
 //   }
 // }
+
+
+// * méthode pour filtrer la liste d'articles
+// * exemple : 
+// * input : filters[{libelle: "test"}]
+// * output: liste d'articles :  [{"code": "02-MAT", "libelle": "pentest"},{"code": "01-SP", "libelle": "intest"}]
+// * http://localhost:5000/api/article/SOLEVO/filtrerListeArticle
 const filtrerListeArticle = async (req, res) => {
   const { dbName } = req.params;
   const { filters } = req.body;

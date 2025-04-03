@@ -53,6 +53,7 @@ export const getClientParCode = createAsyncThunk(
         thunkAPI.getState().UtilisateurInfo.dbName
       }/getClientParCode/${code}`
     );
+    console.log(response)
     return response.data.client;
   }
 );
@@ -480,11 +481,12 @@ export const clientSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getClientParCode.fulfilled, (state, action) => {
+        console.log(action.payload)
         // ! ceci est utilisé pour les filtres
         state.listeClients = action.payload;
         //objet client bch tit3aba il formulaire
         state.clientInfos = action.payload[0];
-        state.clientInfos.CODEp = action.payload[0].cp;
+        state.clientInfos.CODEp = action.payload[0].cp? action.payload[0].cp : "";
         state.clientInfos.codergg=action.payload.desireg
 
         state.status = "réussi";
