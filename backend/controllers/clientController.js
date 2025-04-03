@@ -175,7 +175,7 @@ const AjouterClient = async (req, res) => {
 // * example:
 // * input : 41001080
 // * output : client supprimé de la base de données
-// * http://localhost:5000/api/client/SOLEVO/supprimerClient/41001080
+// * http://localhost:5000/api/client/SOLEVO/Delete/41100020
 const supprimerClient = async (req, res) => {
   const { dbName } = req.params;
   // ? tableau contenant les codes des clients à supprimer

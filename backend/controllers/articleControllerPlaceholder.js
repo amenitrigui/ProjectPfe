@@ -474,5 +474,5 @@ module.exports = {
   updateConfig,
   getSearchResultsByClientOrNumbl,
   getAllCodeCli,
-  getLastNumbl
+  getLastNumbl,
 };

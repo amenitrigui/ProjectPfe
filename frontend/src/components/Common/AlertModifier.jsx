@@ -20,7 +20,7 @@ function AlertModifier() {
   const message = useSelector((state) => state.uiStates.message);
   const toolbarTable = useSelector((state) => state.uiStates.toolbarTable);
   const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
-  console.log(toolbarTable, " ", toolbarMode);
+  const clientSelectionne = useSelector((state) =>  state.ClientCrud.clientInfos).code;
   const handleConfirmerClick = async (closeToast) => {
     if (toolbarTable == "client") {
       if (toolbarMode == "ajout") {
@@ -30,7 +30,7 @@ function AlertModifier() {
         dispatch(majClient());
       }
       if (toolbarMode == "suppression") {
-        dispatch(supprimerClient());
+        dispatch(supprimerClient(clientSelectionne))
       }
       // * pour désactiver les champs du formulaire
       dispatch(setActiverChampsForm(false));
