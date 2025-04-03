@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import {
   getArticleFamiles,
-  getCodeArticle,
+  getListeCodesArticles,
   getTousArticleparcode,
   setArticleInfos,
 } from "../../app/article_slices/articleSlice";
@@ -33,7 +33,7 @@ function ArticlesDevis() {
 
   const handlecodeFamilleChange = (codeFamille) => {
     dispatch(setArticleInfos({colonne: "famille", valeur: codeFamille}))
-    dispatch(getCodeArticle(codeFamille));
+    dispatch(getListeCodesArticles(codeFamille));
   };
   const handleSubmiparcode = (codeArticle) => {
     dispatch(setArticleInfos({colonne: "code", valeur: codeArticle}))

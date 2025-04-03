@@ -112,7 +112,7 @@ function ToolBar() {
 
   // * afficher la fenetre de confirmation
   // * pour supprimer un ou plusieurs clients/devis
-  const afficherSuppToast = async () => {
+  const handleSupprimerBtnClick = async () => {
     // if (toolbarTable == "devis") {
     //   if (!devisInfo.NUMBL) {
     //     // ! a remplacer par toast
@@ -239,7 +239,7 @@ function ToolBar() {
 
               <button
                 type="button"
-                onClick={() => afficherSuppToast()}
+                onClick={() => handleSupprimerBtnClick()}
                 className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
               >
                 <FontAwesomeIcon

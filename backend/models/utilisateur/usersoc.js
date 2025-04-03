@@ -1,5 +1,5 @@
-const {DataTypes} = require('sequelize');
-module.exports = function(sequelize) {
+const Sequelize = require('sequelize');
+module.exports = function(sequelize, DataTypes) {
   return sequelize.define('usersoc', {
     CODEUSER: {
       type: DataTypes.STRING(50),
