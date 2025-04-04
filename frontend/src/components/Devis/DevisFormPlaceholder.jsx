@@ -1606,7 +1606,7 @@ const DevisFormPlaceholder = () => {
   };
 
   const fetchSecteurs = async () => {
-    try {
+    try { 
       const response = await fetch(
         `${process.env.REACT_APP_API_URL}/api/utilisateurs/secteurs/ERP13`
       );

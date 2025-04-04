@@ -32,6 +32,7 @@ import { persistStore } from "redux-persist";
 import { store } from "./app/store";
 import UtilisateurFormTout from "./pages/Utilisateurs/UtilisateurFormTout";
 import ArticleFormTout from "./pages/Article/ArticleFormTout"
+import ArticleList from "./pages/Article/ArticleList"
 
 function App() {
   const dispatch = useDispatch();
@@ -66,6 +67,7 @@ function App() {
         <Route path="/DevisFormTout" element={<DevisFormTout />}></Route>
         <Route path="/Test" element={<Test />}></Route>
         <Route path="/ArticleFormTout" element={<ArticleFormTout/>}></Route>
+        <Route path="/ArticleList" element={<ArticleList/>}></Route>
 
         <Route
           path="/DevisFormPlaceholder"

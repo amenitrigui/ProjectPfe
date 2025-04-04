@@ -62,6 +62,10 @@ function ToolBar() {
     if (toolbarTable == "client") {
       navigate("/ClientList");
     }
+    if (toolbarTable == "article")
+    {
+      navigate("/ArticleList")
+    }
   };
   // * ajout d'un client/devi
   const handleAjoutBtnClick = async () => {

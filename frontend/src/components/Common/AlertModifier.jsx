@@ -15,7 +15,7 @@ import {
   viderChampsClientInfo,
 } from "../../app/client_slices/clientSlice";
 
-import { suprimerArticle } from "../../app/article_slices/articleSlice";
+import { ajouterArticle, suprimerArticle } from "../../app/article_slices/articleSlice";
 function AlertModifier() {
   const dispatch = useDispatch();
   
@@ -60,6 +60,7 @@ function AlertModifier() {
     // * pour l'article
     if (toolbarTable == "article") {
       if (toolbarMode == "ajout") {
+        dispatch(ajouterArticle())
       }
       if (toolbarMode == "modification") {
       }
