@@ -38,8 +38,7 @@ function DevisForm() {
   const navi = useNavigate();
   // * tableau contenant la liste des codes des devis
   const listeNUMBL = useSelector((state) => state.DevisCrud.listeNUMBL);
-  // * informations d'un devis provenant des champs de cette formulaire
-  const devisInfos = useSelector((state) => state.DevisCrud.devisInfo);
+
   const listePointsVente = useSelector(
     (state) => state.DevisCrud.listePointsVente
   );
@@ -48,6 +47,7 @@ function DevisForm() {
     dispatch(getListeNumbl());
     dispatch(getListePointsVente());
   }, []);
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -58,6 +58,9 @@ function DevisForm() {
     (state) => state.ClientCrud.listeToutCodesClients
   );
   const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
+
+  // * UseEffect #2 : Récuperer la liste de codes clients lorsque
+  // * le mode de toolbar change vers l'ajout
   useEffect(() => {
     if (toolbarMode == "ajout") dispatch(getToutCodesClient());
   }, [toolbarMode]);
@@ -74,7 +77,24 @@ function DevisForm() {
     // * vider les champs du formulaire
     else dispatch(viderChampsDevisInfo());
   };
+  // * informations d'un devis provenant des champs de cette formulaire
+
   const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
+
+  // * UseEffect #3 : récuperer les information de client
+  // * associé avec le devis selectionné
+  useEffect(() => {
+    if (devisInfo.CODECLI) {
+      dispatch(getClientParCode(devisInfo.CODECLI));
+    }
+  }, [devisInfo.CODECLI]);
+
+  // * UseEffect #4 : récuperer les information d'utilisateur connecté
+  useEffect(() => {
+    if (devisInfo.CODECLI) {
+      dispatch(getClientParCode(devisInfo.CODECLI));
+    }
+  }, [devisInfo.CODECLI]);
   const handleChange = (e, col) => {
     dispatch(
       setDevisInfo({
@@ -109,16 +129,21 @@ function DevisForm() {
   };
 
   const toobarTable = useSelector((state) => state.uiStates.toolbarTable);
-  // * useEffect #1 : désactiver tous les champs
+  // * useEffect #5 : désactiver tous les champs
   // * et indiquer qu'on va utiliser la table de devis
 
   useEffect(() => {
     dispatch(setToolbarMode("devis"));
     dispatch(setActiverChampsForm(false));
   }, []);
+
   const NETHTGLOBAL = devisInfo.MHT - devisInfo.MREMISE || 0;
   const taxe = devisInfo.MTTC - NETHTGLOBAL || 0;
   const apayer = devisInfo.MTTC + devisInfo.TIMBRE || 0;
+
+  const infosUtilisateur = useSelector(
+    (state) => state.UtilisateurInfo.infosUtilisateur
+  );
   return (
     <>
       <div className="container">
@@ -242,9 +267,14 @@ function DevisForm() {
                         <span>Identifiants Devis</span>
                       </h3>
                       <label className="block font-medium">N° Devis :</label>
-                      <input type="text" className="w-full border border-gray-300 rounded-md p-2" list="listeCodesNumbl" onChange={(e) => handleSelectDevis(e)}/>
+                      <input
+                        type="text"
+                        className="w-full border border-gray-300 rounded-md p-2"
+                        list="listeCodesNumbl"
+                        onChange={(e) => handleSelectDevis(e)}
+                      />
                       <datalist id="listeCodesNumbl">
-                      {listeNUMBL.map((codeDevis) => (
+                        {listeNUMBL.map((codeDevis) => (
                           <option key={codeDevis.NUMBL} value={codeDevis.NUMBL}>
                             {codeDevis.NUMBL}
                           </option>
@@ -272,8 +302,8 @@ function DevisForm() {
                       >
                         {listePointsVente.map((pointVente) => (
                           <option
-                            key={pointVente.libpv}
-                            value={pointVente.libpv}
+                            key={pointVente.Code}
+                            value={pointVente.Code}
                           >
                             {pointVente.libpv}
                           </option>
@@ -291,7 +321,7 @@ function DevisForm() {
                         type="date"
                         className="w-full border border-gray-300 rounded-md p-2"
                         disabled={!activerChampsForm}
-                        // defaultValue={devisInfos.DATEBL} // Assurez-vous d'avoir cet état dans votre composant
+                        Value={devisInfo.DATEBL}
                         onChange={(e) =>
                           setDevisInfo({
                             collone: "DATEBL",
@@ -343,6 +373,7 @@ function DevisForm() {
                       type="text"
                       className="w-full border border-gray-300 rounded-md p-2"
                       disabled={!activerChampsForm}
+                      value={clientInfos.code || ""}
                       // defaultValue={devisInfos.CODECLI} // Assurez-vous d'avoir cet état dans votre composant
                       // onChange={(e) =>
                       //   setDevisInfo({ collone: "CODECLI", valeur: e.target.value })
@@ -363,6 +394,7 @@ function DevisForm() {
                           valeur: e.target.value,
                         })
                       } // Mettez à jour l'état
+                      value={clientInfos.rsoc || ""}
                     />
 
                     <label className="block font-medium">Adresse :</label>
@@ -370,7 +402,7 @@ function DevisForm() {
                       type="text"
                       className="w-full border border-gray-300 rounded-md p-2"
                       disabled={!activerChampsForm}
-                      // defaultValue={devisInfos.ADRCLI} // Assurez-vous d'avoir cet état dans votre composant
+                      defaultValue={clientInfos.adresse || ""}
                       onChange={(e) =>
                         setDevisInfo({
                           collone: "ADRCLI",
@@ -384,7 +416,7 @@ function DevisForm() {
                       type="text"
                       className="w-full border border-gray-300 rounded-md p-2"
                       disabled={!activerChampsForm}
-                      // defaultValue={devisInfos.cp} // Assurez-vous d'avoir cet état dans votre composant
+                      value={clientInfos.cp ? clientInfos.cp : ""} // Assurez-vous d'avoir cet état dans votre composant
                       onChange={(e) =>
                         setDevisInfo({ collone: "cp", valeur: e.target.value })
                       } // Mettez à jour l'état
@@ -395,6 +427,7 @@ function DevisForm() {
                       type="email"
                       className="w-full border border-gray-300 rounded-md p-2"
                       disabled={!activerChampsForm}
+                      value={clientInfos.email || ""}
                     />
 
                     <label className="block font-medium">Téléphone :</label>
@@ -402,6 +435,7 @@ function DevisForm() {
                       type="text"
                       className="w-full border border-gray-300 rounded-md p-2"
                       disabled={!activerChampsForm}
+                      value={clientInfos.telephone || ""}
                     />
                   </div>
                 </div>
@@ -421,6 +455,7 @@ function DevisForm() {
                   type="text"
                   className="w-full border border-gray-300 rounded-md p-2"
                   disabled={!activerChampsForm}
+                  value={infosUtilisateur.codeuser || ""}
                 />
 
                 <label className="block font-medium">RSREP :</label>
@@ -428,13 +463,15 @@ function DevisForm() {
                   type="text"
                   className="w-full border border-gray-300 rounded-md p-2"
                   disabled={!activerChampsForm}
+                  value={infosUtilisateur.directeur || ""}
                 />
 
                 <label className="block font-medium">Code Secteur :</label>
                 <select
                   className="select select-bordered w-full max-w-xs"
                   disabled={!activerChampsForm}
-                  // onChange={(e) => handleSelectDevis(e)}
+                  value={devisInfo.codesecteur || ""}
+                  //onChange={(e) => handleSelectDevis(e)}
                 ></select>
 
                 <label className="block font-medium">
@@ -465,10 +502,11 @@ function DevisForm() {
                     <input
                       type="text"
                       className="border border-gray-300 rounded-md p-2 w-2/3"
-                      // value={
-                      //   clientInfos.usera ||
-                      //   infosUtilisateur.codeuser + " // " + infosUtilisateur.nom
-                      // }
+                      value={
+                        infosUtilisateur.codeuser +
+                          " // " +
+                          infosUtilisateur.nom || ""
+                      }
                       // onChange={(e) => handleChange(e, "usera")}
                       disabled
                     />
@@ -485,7 +523,11 @@ function DevisForm() {
                     <input
                       type="text"
                       className="border border-gray-300 rounded-md p-2 w-2/3"
-                      // value={clientInfos.userm || ""}
+                      value={
+                        devisInfo.userm
+                          ? infosUtilisateur.code + "//" + infosUtilisateur.nom
+                          : ""
+                      }
                       // onChange={(e) => handleChange(e, "userm")}
                       disabled
                     />
@@ -502,7 +544,7 @@ function DevisForm() {
                     <input
                       type="text"
                       className="border border-gray-300 rounded-md p-2 w-2/3"
-                      // value={clientInfos.datemaj || ""}
+                      value={devisInfo.DATEDMAJ || ""}
                       // onChange={(e) => handleChange(e, "datemaj")}
                       disabled
                     />
@@ -515,7 +557,7 @@ function DevisForm() {
           {toolbarMode === "ajout" && <ArticlesDevis />}
           <div className="mt-6">
             <div className="p-4 sticky bottom-0 w-full overflow-x-auto">
-            <table className="min-w-[600px] sm:min-w-full table-auto border-collapse border border-gray-300">
+              <table className="min-w-[600px] sm:min-w-full table-auto border-collapse border border-gray-300">
                 <thead className="bg-gray-300">
                   {/* Ajout du fond gris pour l'en-tête */}
                   <tr>
@@ -552,47 +594,51 @@ function DevisForm() {
                   </tr>
                 </thead>
                 <tbody>
-                  {devisInfo.articles?.map((article) => (
-                    <tr
-                      key={`${article.famille}-${article.CodeART}`}
-                      className="transition-all duration-150 ease-in-out hover:bg-[#2A2185]"
-                    >
-                      <td className="p-3 border border-gray-300">
-                        {article.famille}
+                  {(devisInfo.articles || []).length > 0 ? (
+                    devisInfo.articles.map((article) => (
+                      <tr
+                        key={`${article.famille}-${article.CodeART}`}
+                        className="transition-all duration-150 ease-in-out hover:bg-[#2A2185]"
+                      >
+                        <td className="p-3 border border-gray-300">
+                          {article.famille}
+                        </td>
+                        <td className="p-3 border border-gray-300">
+                          {article.CodeART}
+                        </td>
+                        <td className="p-3 border border-gray-300">
+                          {article.Unite}
+                        </td>
+                        <td className="p-3 border border-gray-300">
+                          {article.QteART}
+                        </td>
+                        <td className="p-3 border border-gray-300">
+                          {article.Remise}%
+                        </td>
+                        <td className="p-3 border border-gray-300">
+                          {article.DesART}
+                        </td>
+                        <td className="p-3 border border-gray-300">
+                          {article.TauxTVA}%
+                        </td>
+                        <td className="p-3 border border-gray-300">
+                          {article.PUART}
+                        </td>
+                        <td className="p-3 border border-gray-300">
+                          {article.PUART}
+                        </td>
+                        <td className="p-3 border border-gray-300">
+                          {article.PUART}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="10" className="text-center">
+                        Aucun article trouvé.
                       </td>
-                      <td className="p-3 border border-gray-300">
-                        {article.CodeART}
-                      </td>
-                      <td className="p-3 border border-gray-300">
-                        {article.Unite}
-                      </td>
-                      <td className="p-3 border border-gray-300">
-                        {article.QteART}
-                      </td>
-                      <td className="p-3 border border-gray-300">
-                        {article.Remise}%
-                      </td>
-                      <td className="p-3 border border-gray-300">
-                        {article.DesART}
-                      </td>
-                      <td className="p-3 border border-gray-300">
-                        {article.TauxTVA}%
-                      </td>
-                      <td className="p-3 border border-gray-300">
-                        {article.PUART}
-                      </td>
-                      <td className="p-3 border border-gray-300">
-                        {article.PUART}
-                      </td>
-                      <td className="p-3 border border-gray-300">
-                        {article.PUART}
-                      </td>
-
-                      {/* <td className="p-3 border border-gray-300">A001</td>
-                  <td className="p-3 border border-gray-300">A001</td>
-                  <td className="p-3 border border-gray-300">A001</td> */}
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

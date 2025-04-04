@@ -5,7 +5,16 @@ import { useState } from "react";
 import { FaUser, FaCog, FaCreditCard, FaSignOutAlt } from "react-icons/fa";
 import ToolBar from "../Common/ToolBar";
 import { useDispatch, useSelector } from "react-redux";
-import { getListeFamillesArticle, setArticleInfos } from "../../app/article_slices/articleSlice";
+import {
+  getArticleParCode,
+  getDesignationFamilleParCodeFamille,
+  getdesignationSousFamillebycodeSousFamille,
+  getListeCodesArticles,
+  getListecodesousFamille,
+  getListeFamillesArticle,
+  setArticleInfos,
+  viderChampsArticleInfo,
+} from "../../app/article_slices/articleSlice";
 function ArticleForm() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
@@ -13,19 +22,59 @@ function ArticleForm() {
     setIsSidebarOpen(!isSidebarOpen);
   };
   const articleInfos = useSelector((state) => state.ArticlesDevis.articleInfos);
-  const ListeCodeArticles = useSelector((state) => state.ArticlesDevis.ListeCodeArticles);
+  const ListeCodeArticles = useSelector(
+    (state) => state.ArticlesDevis.ListeCodeArticles
+  );
   const ListeFamille = useSelector((state) => state.ArticlesDevis.ListeFamille);
- 
+  const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
+  const ListeSousFamille = useSelector(
+    (state) => state.ArticlesDevis.ListeSousFamille
+  );
+
   const dispatch = useDispatch();
- 
 
   useEffect(() => {
-    dispatch(getListeFamillesArticle())
-  }, [])
+    dispatch(getListeFamillesArticle()); //* la colonne code Famille
+    dispatch(getListecodesousFamille()); //** la collone de code sous famille */
+    dispatch(getListeCodesArticles()); // * la colonne de code article
+  }, []);
 
+  const hundlesubmitCodeSousFamille = (codeSousfamille) => {
+    dispatch(
+      setArticleInfos({ colonne: "sousfamille", valeur: codeSousfamille })
+    );
+    //*valeur : codeSousfamille
+    if (codeSousfamille != "") {
+      dispatch(getdesignationSousFamillebycodeSousFamille(codeSousfamille));
+    } else {
+      dispatch(setArticleInfos({ colonne: "Libellesousfamille", valeur: "" }));
+    }
+  };
+  const handleDesignationFamilleChange = (valeur, colonne) => {
+    console.log(valeur, " ", colonne);
+  };
   const handleCodeFamilleChange = (valeur, colonne) => {
-    dispatch(setArticleInfos({colonne: colonne, valeur: valeur}))
-  }
+    dispatch(setArticleInfos({ colonne: colonne, valeur: valeur }));
+    // * valeur == codeFamille
+    if (valeur != "") {
+      dispatch(getDesignationFamilleParCodeFamille(valeur));
+    } else {
+      dispatch(setArticleInfos({ colonne: "libelleFamille", valeur: "" }));
+    }
+  };
+
+  const handleCodeArticleChange = (codeArticle) => {
+    dispatch(setArticleInfos({ colonne: "code", valeur: codeArticle }));
+    //*valeur=: codeArticle
+    if (
+      codeArticle != ""
+    ) {
+      dispatch(getArticleParCode(codeArticle));
+    } else {
+      dispatch(viderChampsArticleInfo());
+    }
+  };
+
   return (
     <div className="container">
       <div className={`navigation ${isSidebarOpen ? "active" : ""}`}>
@@ -164,12 +213,14 @@ function ArticleForm() {
                 <input
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
-                  value = {articleInfos.famille}
-                  onChange={(e) => handleCodeFamilleChange(e.target.value, "famille")}
-                  list="listeCodesArticle"
+                  value={articleInfos.famille}
+                  onChange={(e) =>
+                    handleCodeFamilleChange(e.target.value, "famille")
+                  }
+                  list="listeCodesFamilles"
                 />
 
-                <datalist id="listeCodesArticle">
+                <datalist id="listeCodesFamilles">
                   {ListeFamille.length > 0 ? (
                     ListeFamille.map((famille, indice) => (
                       <option key={indice} value={famille.code}>
@@ -189,7 +240,17 @@ function ArticleForm() {
                   Designation Famille
                 </label>
 
-                <select className="border border-gray-300 rounded-md p-2"></select>
+                <input
+                  type="text"
+                  className="border border-gray-300 rounded-md p-2"
+                  value={articleInfos.libelleFamille}
+                  onChange={(e) =>
+                    handleDesignationFamilleChange(
+                      e.target.value,
+                      "libelleFamille"
+                    )
+                  }
+                />
               </div>
             </div>
             <div className="flex flex-wrap">
@@ -201,7 +262,24 @@ function ArticleForm() {
                   Code Sous Famille
                 </label>
 
-                <select className="border border-gray-300 rounded-md p-2"></select>
+                <input
+                  type="text"
+                  className="border border-gray-300 rounded-md p-2"
+                  value={articleInfos.sousfamille}
+                  list="listeCodesSousFamille"
+                  onChange={(e) => hundlesubmitCodeSousFamille(e.target.value)}
+                />
+                <datalist id="listeCodesSousFamille">
+                  {ListeSousFamille.length > 0 ? (
+                    ListeSousFamille.map((Sousfamille, indice) => (
+                      <option key={indice} value={Sousfamille.code}>
+                        {Sousfamille.code}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled>Aucune liste Sous famille trouvé</option>
+                  )}
+                </datalist>
               </div>
               <div className="flex flex-col w-2/3">
                 <label
@@ -210,12 +288,15 @@ function ArticleForm() {
                 >
                   Designation sous Famille
                 </label>
-
-                <select className="border border-gray-300 rounded-md p-2"></select>
+                <input
+                  type="text"
+                  className="border border-gray-300 rounded-md p-2"
+                  value={articleInfos.Libellesousfamille}
+                />
               </div>
             </div>
             <div className="flex flex-wrap">
-            <div className="flex flex-col w-1/3">
+              <div className="flex flex-col w-1/3">
                 <label
                   className="font-bold mb-1"
                   style={{ color: "rgb(48, 60, 123)" }}
@@ -226,8 +307,9 @@ function ArticleForm() {
                 <input
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
-                  value = {articleInfos.code}
+                  value={articleInfos.code}
                   list="listeCodesArticle"
+                  onChange={(e) => handleCodeArticleChange(e.target.value)}
                 />
 
                 <datalist id="listeCodesArticle">
@@ -238,7 +320,7 @@ function ArticleForm() {
                       </option>
                     ))
                   ) : (
-                    <option disabled>Aucun article trouvé</option>
+                    <option disabled>Aucun code d'article trouvé</option>
                   )}
                 </datalist>
               </div>
@@ -253,6 +335,7 @@ function ArticleForm() {
                 <input
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
+                  value={articleInfos.codebarre}
                 />
               </div>
               <div className="flex flex-col w-1/3">
@@ -265,6 +348,7 @@ function ArticleForm() {
                 <input
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
+                  value={articleInfos.libelle}
                 />
               </div>
             </div>
@@ -282,6 +366,7 @@ function ArticleForm() {
                 <input
                   type="text"
                   className="border border-gray-300 rounded-md p-2 w-full"
+                  value={articleInfos.tauxtva}
                 />
               </div>
 
@@ -294,17 +379,23 @@ function ArticleForm() {
                 <input
                   type="text"
                   className="border border-gray-300 rounded-md p-2 w-full"
+                  value={articleInfos.fodec}
                 />
               </div>
 
               {/* DC (Checkbox) */}
-              <div className="flex items-center gap-x-2">
+              {/* <div className="flex items-center gap-x-2">
                 <input
                   type="checkbox"
                   className="border border-gray-300 rounded-md"
+                  checked=
+                  {(toolbarMode == "consultation" ||
+                    toolbarMode == "modification") &&
+                    articleInfos.typeart == "DC"}
                 />
                 <label className="text-[rgb(48,60,123)] font-bold">DC</label>
-              </div>
+               
+              </div> */}
             </div>
 
             <div className="flex flex-cols">
@@ -316,12 +407,13 @@ function ArticleForm() {
                   className="font-bold mb-1"
                   style={{ color: "rgb(48, 60, 123)" }}
                 >
-                  NGB
+                  NGP
                 </label>
 
                 <input
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
+                  value={articleInfos.NGP}
                 />
               </div>
               <div className="flex flex-col w-1/3">
@@ -335,6 +427,7 @@ function ArticleForm() {
                 <input
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
+                  value={articleInfos.lieustock}
                 />
               </div>
               <div className="flex flex-col w-1/3">
@@ -347,6 +440,7 @@ function ArticleForm() {
                 <input
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
+                  value={articleInfos.reforigine}
                 />
               </div>
             </div>
@@ -363,7 +457,7 @@ function ArticleForm() {
                 <input
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
-                  placeholder="start"
+                  value={articleInfos.fourn}
                 />
               </div>
               <div className="flex flex-col w-2/3">
@@ -377,7 +471,7 @@ function ArticleForm() {
                 <input
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
-                  placeholder="start"
+                  value={articleInfos.fourn}
                 />
               </div>
             </div>
@@ -385,7 +479,7 @@ function ArticleForm() {
 
           <div className="recentCustomers">
             <div className="cardHeader">
-              <h2>Paramettre de fACTURATION</h2>
+              {/* <h2>PARAMETTRE DE FACTURATION</h2> */}
             </div>
             <div className="card rounded-box p-6 space-y-2">
               {/* Conteneur pour Code Client, Type Client et CIN */}
@@ -398,7 +492,12 @@ function ArticleForm() {
                     unite
                   </label>
 
-                  <select className="border border-gray-300 rounded-md p-2"></select>
+                  <input
+                    type="text"
+                    className="border border-gray-300 rounded-md p-2"
+                    placeholder="start"
+                    value={articleInfos.unite}
+                  />
                 </div>
                 <div className="flex flex-col w-1/3">
                   <label
@@ -411,6 +510,7 @@ function ArticleForm() {
                   <input
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
+                    value={articleInfos.prixbrut}
                   />
                 </div>
                 <div className="flex flex-col w-1/3">
@@ -423,6 +523,7 @@ function ArticleForm() {
                   <input
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
+                    value={articleInfos.prixnet}
                   />
                 </div>
               </div>
@@ -438,6 +539,7 @@ function ArticleForm() {
                   <input
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
+                    value={articleInfos.nbrunit}
                   />
                 </div>
                 <div className="flex flex-col w-2/3">
@@ -451,6 +553,7 @@ function ArticleForm() {
                   <input
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
+                    value={articleInfos.comptec}
                   />
                 </div>
               </div>
@@ -462,8 +565,11 @@ function ArticleForm() {
                   >
                     Type
                   </label>
-
-                  <select className="border border-gray-300 rounded-md p-2"></select>
+                  <input
+                    type="text"
+                    className="border border-gray-300 rounded-md p-2"
+                    value={articleInfos.type}
+                  />
                 </div>
                 <div className="flex flex-col w-2/3">
                   <label
@@ -473,7 +579,11 @@ function ArticleForm() {
                     colisage
                   </label>
 
-                  <select className="border border-gray-300 rounded-md p-2"></select>
+                  <input
+                    type="text"
+                    className="border border-gray-300 rounded-md p-2"
+                    value={articleInfos.colisage}
+                  />
                 </div>
               </div>
               <div className="flex items-center gap-x-4">
@@ -481,6 +591,11 @@ function ArticleForm() {
                   <input
                     type="radio"
                     className="border border-gray-300 rounded-md"
+                    checked={
+                      (toolbarMode == "consultation" ||
+                        toolbarMode == "modification") &&
+                      articleInfos.typeart == "PF"
+                    }
                   />
                   <label className="text-[rgb(48,60,123)]">PF</label>
                 </div>
@@ -489,6 +604,11 @@ function ArticleForm() {
                   <input
                     type="radio"
                     className="border border-gray-300 rounded-md"
+                    checked={
+                      (toolbarMode == "consultation" ||
+                        toolbarMode == "modification") &&
+                      articleInfos.typeart == "X"
+                    }
                   />
                   <label className="text-[rgb(48,60,123)]">X</label>
                 </div>
@@ -497,6 +617,11 @@ function ArticleForm() {
                   <input
                     type="radio"
                     className="border border-gray-300 rounded-md"
+                    checked={
+                      (toolbarMode == "consultation" ||
+                        toolbarMode == "modification") &&
+                      articleInfos.typeart == "MP"
+                    }
                   />
                   <label className="text-[rgb(48,60,123)]">MP</label>
                 </div>
@@ -505,6 +630,11 @@ function ArticleForm() {
                   <input
                     type="radio"
                     className="border border-gray-300 rounded-md"
+                    checked={
+                      (toolbarMode == "consultation" ||
+                        toolbarMode == "modification") &&
+                      articleInfos.import == "I"
+                    }
                   />
                   <label className="text-[rgb(48,60,123)]">Importé</label>
                 </div>
@@ -513,6 +643,11 @@ function ArticleForm() {
                   <input
                     type="radio"
                     className="border border-gray-300 rounded-md"
+                    checked={
+                      (toolbarMode == "consultation" ||
+                        toolbarMode == "modification") &&
+                      articleInfos.import == "L"
+                    }
                   />
                   <label className="text-[rgb(48,60,123)]">Local</label>
                 </div>
@@ -533,6 +668,11 @@ function ArticleForm() {
                       <input
                         type="checkbox"
                         className="border border-gray-300 rounded-md"
+                        checked={
+                          (toolbarMode == "consultation" ||
+                            toolbarMode == "modification") &&
+                          articleInfos.sav == "O"
+                        }
                       />
                       <label className="text-blue-900">Gestion SAv</label>
                     </div>
@@ -541,6 +681,11 @@ function ArticleForm() {
                       <input
                         type="checkbox"
                         className="border border-gray-300 rounded-md"
+                        checked={
+                          (toolbarMode == "consultation" ||
+                            toolbarMode == "modification") &&
+                          articleInfos.cons == "O"
+                        }
                       />
                       <label className="text-blue-900">Consigne</label>
                     </div>
@@ -549,6 +694,11 @@ function ArticleForm() {
                       <input
                         type="checkbox"
                         className="border border-gray-300 rounded-md"
+                        checked={
+                          (toolbarMode == "consultation" ||
+                            toolbarMode == "modification") &&
+                          articleInfos.nomenclature == "O"
+                        }
                       />
                       <label className="text-blue-900">Nomenec fiche</label>
                     </div>
@@ -557,6 +707,11 @@ function ArticleForm() {
                       <input
                         type="checkbox"
                         className="border border-gray-300 rounded-md"
+                        checked={
+                          (toolbarMode == "consultation" ||
+                            toolbarMode == "modification") &&
+                          articleInfos.gestionstock == "O"
+                        }
                       />
                       <label className="text-blue-900">Gestion de Stock</label>
                     </div>
@@ -565,6 +720,11 @@ function ArticleForm() {
                       <input
                         type="checkbox"
                         className="border border-gray-300 rounded-md"
+                        checked={
+                          (toolbarMode == "consultation" ||
+                            toolbarMode == "modification") &&
+                          articleInfos.avecconfig == "O"
+                        }
                       />
                       <label className="text-blue-900">Configuration Art</label>
                     </div>
@@ -573,8 +733,13 @@ function ArticleForm() {
                       <input
                         type="checkbox"
                         className="border border-gray-300 rounded-md"
+                        checked={
+                          (toolbarMode == "consultation" ||
+                            toolbarMode == "modification") &&
+                          articleInfos.ventevrac == "O"
+                        }
                       />
-                      <label className="text-blue-900">Vente Frac</label>
+                      <label className="text-blue-900">Vente Vrac</label>
                     </div>
                   </div>
                   <div className="flex flex-col">
@@ -585,7 +750,12 @@ function ArticleForm() {
                       Configuiration
                     </label>
 
-                    <textarea className="w-full border border-gray-300 rounded-md p-2" />
+                    <textarea
+                      className="w-full border border-gray-300 rounded-md p-2"
+                      value={articleInfos.CONFIG}
+                      rows={10}
+                      cols={30}
+                    />
                   </div>
                   <div className="flex flex-col items-center gap-4">
                     <label className="block font-bold text-center text-[rgb(48,60,123)]"></label>
@@ -625,6 +795,7 @@ function ArticleForm() {
                     type="text"
                     className="border border-gray-300 rounded-md p-2 w-2/3"
                     disabled
+                    value={articleInfos.usera}
                   />
                 </div>
 
@@ -639,6 +810,7 @@ function ArticleForm() {
                   <input
                     type="text"
                     className="border border-gray-300 rounded-md p-2 w-2/3"
+                    value={articleInfos.userm}
                   />
                 </div>
 
@@ -652,6 +824,7 @@ function ArticleForm() {
                   </label>
                   <input
                     type="date"
+                    value={articleInfos.datemaj}
                     className="border border-gray-300 rounded-md p-2 w-2/3"
                   />
                 </div>

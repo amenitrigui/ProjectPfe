@@ -4,6 +4,7 @@ const { getDatabaseConnection } = require("../common/commonMethods");
 // * example:
 // * input :
 // * output : liste de codes secteurs
+// * verb : get
 // * http://localhost:5000/api/secteur/SOLEVO/getListeCodesSecteur
 const getListeCodesSecteur = async (req, res) => {
     const { dbName } = req.params;
@@ -31,6 +32,7 @@ const getListeCodesSecteur = async (req, res) => {
   // * example:
   // * input : 002
   // * output : SHZ
+  // * verb : get
   // * http://localhost:5000/api/secteur/SOLEVO/getDesignationSecteurparCodeSecteur/002
   const getDesignationSecteurparCodeSecteur = async (req, res) => {
     const { dbName, codesecteur } = req.params;

@@ -2,6 +2,7 @@ const { Sequelize } = require("sequelize");
 const defineArticleModel = require("../models/societe/article");
 const defineFamilleModel = require("../models/societe/famille");
 const defineLdfpModel = require("../models/societe/ldfp");
+const defineSousFamilleModel = require("../models/societe/sousfamille");
 const { getSequelizeConnection } = require("../db/config");
 const { getDatabaseConnection } = require("../common/commonMethods");
 const article = require("../models/societe/article");
@@ -13,10 +14,10 @@ const initializeDynamicModels = (sequelize) => {
   return { Article, Ldfp };
 };
 // * méthode pour récuperer la liste de familles (code+libelle)
-// * exemple : 
+// * exemple :
 // * input : ""
 // * output: liste des famille :  [{"code": "02-MAT", "libelle": "MATELAS"}]
-//*http://localhost:5000/api/article/SOLEVO/familles
+// * http://localhost:5000/api/article/SOLEVO/getListeFamilles
 const getListeFamilles = async (req, res) => {
   const { dbName } = req.params;
 
@@ -31,13 +32,13 @@ const getListeFamilles = async (req, res) => {
 
     const Familles = defineFamilleModel(dbConnection);
 
-    console.log("Familles: ",Familles);
+    console.log("Familles: ", Familles);
 
     const familles = await Familles.findAll({
       attributes: ["code", "libelle"],
     });
 
-    console.log(familles)
+    console.log(familles);
 
     if (familles.length === 0) {
       return res.status(404).json({
@@ -59,7 +60,7 @@ const getListeFamilles = async (req, res) => {
 };
 
 // * récupere la liste d'articles ayant un famille donné
-// * exemple : 
+// * exemple :
 // * input : 02-SP
 // * output : liste d'articles ayant le code famille 02-SP
 const getCodesArticlesByFamille = async (req, res) => {
@@ -134,9 +135,10 @@ const suprimerArticle = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-//* url : http://localhost:5000/api/article/SOLEVO/getArticle/YDKITV1
+//* url : http://localhost:5000/api/article/SOLEVO/getArticleParCode/YDKITV1
 //* tous donnes d'article ayant le code YDKITV1
-const getArticle = async (req, res) => {
+// * output : un seul article
+const getArticleParCode = async (req, res) => {
   const { dbName } = req.params;
   const { code } = req.params;
   try {
@@ -200,9 +202,9 @@ const ajouterArticle = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-//* Article Modifie 
+//* Article Modifie
 // *url : http://localhost:5000/api/article/SOLEVO/modifierArticle/BL-MR16-6W
-//* resultat attendu :  les infomation d'un code BL-MR16-6W seront modifie 
+//* resultat attendu :  les infomation d'un code BL-MR16-6W seront modifie
 
 const modifierArticle = async (req, res) => {
   const { dbName } = req.params;
@@ -212,10 +214,12 @@ const modifierArticle = async (req, res) => {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const Article = defineArticleModel(dbConnection);
 
-    const articleAModifier = await Article.findOne({where: {
-      code: code
-    }})
-    if(articleAModifier) {
+    const articleAModifier = await Article.findOne({
+      where: {
+        code: code,
+      },
+    });
+    if (articleAModifier) {
       const ArticleModifier = await Article.update(
         {
           libelle: article.libelle,
@@ -233,15 +237,21 @@ const modifierArticle = async (req, res) => {
         },
         { where: { code: code } }
       );
-      return res.status(200).json({ message: "Article Modife avec succes"});
-    }else {
-      return res.status(500).json({message: "échec de modification de l'article"})
+      return res.status(200).json({ message: "Article Modife avec succes" });
+    } else {
+      return res
+        .status(500)
+        .json({ message: "échec de modification de l'article" });
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
-
+// * méthode pour récuperer la liste d'articles
+// * exemple :
+// * input : ""
+// * output: liste d'articles :  [{"code": "art1", "libelle": "desart1", ...}, ...]
+// * http://localhost:5000/api/article/SOLEVO/getListeArticles
 const getListeArticles = async (req, res) => {
   const { dbName } = req.params;
   try {
@@ -250,32 +260,26 @@ const getListeArticles = async (req, res) => {
       type: dbConnection.QueryTypes.SELECT,
     });
 
+    console.log(listeArticles);
+    console.log(
+      await dbConnection.query(`SELECT COUNT(*) FROM ARTICLE`, {
+        type: dbConnection.QueryTypes.SELECT,
+      })
+    );
     if (listeArticles) {
-      return res
-        .status(200)
-        .json({ message: "liste d'articles récuperé avec succès" });
+      return res.status(200).json({
+        message: "liste d'articles récuperé avec succès",
+        listeArticles: listeArticles,
+      });
     } else {
-      return res
-        .status(500)
-        .json({
-          message: "erreur lors de la récupération de la liste d'articles",
-        });
+      return res.status(500).json({
+        message: "erreur lors de la récupération de la liste d'articles",
+      });
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
-// const getToutCodesFamille = async (res,req)=>{
-//   // listeCodesFamilles
-//   const {dbName} = req.params
-//   const {listeCodesFamilles}= req.params
-//   try  {
-//     const dbConnection = await getDatabaseConnection(dbName,res)
-//     const listeCodesFamilles = await dbConnection.query(`select code , libelle  from famille `,{
-      
-//     })
-//   }
-// }
 
 // const getArticleParLIbelle = async(req, res) => {
 //   const { dbName, libelle } = req.params;
@@ -286,9 +290,15 @@ const getListeArticles = async (req, res) => {
 //     return res.status(500).json({ message: error.message });
 //   }
 // }
+
+// * méthode pour filtrer la liste d'articles
+// * exemple :
+// * input : filters[{libelle: "test"}]
+// * output: liste d'articles :  [{"code": "02-MAT", "libelle": "pentest"},{"code": "01-SP", "libelle": "intest"}]
+// * http://localhost:5000/api/article/SOLEVO/filtrerListeArticle
 const filtrerListeArticle = async (req, res) => {
   const { dbName } = req.params;
-  const { filters } = req.body;
+  const { filters } = req.query;
 
   const dbConnection = await getDatabaseConnection(dbName, res);
   // ? liste des conditions
@@ -347,7 +357,7 @@ const filtrerListeArticle = async (req, res) => {
 // * example:
 // * input : ""
 // * output : liste codes articles
-// * http://localhost:5000/api/client/SOLEVO/getToutCodesArticle
+// * http://localhost:5000/api/article/SOLEVO/getToutCodesArticle
 const getToutCodesArticle = async (req, res) => {
   try {
     const { dbName } = req.params;
@@ -369,14 +379,192 @@ const getToutCodesArticle = async (req, res) => {
   }
 };
 
+//* récuperer la désignation d'un famille par code famille
+// * example:
+// * input : 02-MAT
+// * output : {"libelle": "MATELAS"}
+// * http://localhost:5000/api/article/SOLEVO/getDesignationFamilleParCodeFamille/02-MAT
+const getDesignationFamilleParCodeFamille = async (req, res) => {
+  const { dbName, codeFamille } = req.params;
+  try {
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const getDesignationFamilleParCodeFamille = await dbConnection.query(
+      `select libelle from famille where code = :code`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+        replacements: {
+          code: codeFamille,
+        },
+      }
+    );
+    return res.status(200).json({
+      message: "Libelle recupere avec succes",
+      getDesignationFamilleParCodeFamille,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+//* de la base de donnes sous famille
+//* url : http://localhost:5000/api/article/SOLEVO/getListecodesousFamille?codeSousFamille=SUP-MOD
+//* input : SUP-MOD
+//* output : SUP-MOD
+const getListecodesousFamille = async (req, res) => {
+  const { dbName } = req.params;
+
+  try {
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const getcodesousFamille = await dbConnection.query(
+      `select code from sousfamille`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    );
+    return res
+      .status(200)
+      .json({ message: "recuperation de code famille ", getcodesousFamille });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// * récupere un code famille par son désignation
+// * exemple
+// * input : MATELAS, SOLEVO
+// * output : testCodeArticle
+// * url : http://localhost:5000/api/article/SOLEVO/getCodeFamilleParDesignationFamille/MATELAS
+const getCodeFamilleParDesignationFamille = async (req, res) => {
+  const { dbName, desFamille } = req.params;
+  try {
+    if(!dbName || !desFamille) {
+      return res.status(400).json({message: "dbName et desFamille sont réquises"})
+    }
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const Familles = defineFamilleModel(dbConnection);
+    const codesFamillesTrouves = await Familles.findAll({
+      attributes: ["code"],
+      where: { libelle: desFamille },
+    });
+    if(codesFamillesTrouves.length == 1){
+      return res.status(200).json({message: "code rélative au désignation donnée récuperé avec succès", codesFamillesTrouves});
+    }
+    if(codesFamillesTrouves.length == 0){
+      return res.status(404).json({message: "aucun code est rélative à la désignation donné"})
+    }
+    if(codesFamillesTrouves.length > 1){
+      return res.status(400).json({message: "plusieurs codes trouvées pour la désignation donnée"})
+    }
+
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// * récupere un code famille par son désignation
+// * exemple
+// * input : MATELAS, SOLEVO
+// * output : testCodeArticle
+// * url : http://localhost:5000/api/article/SOLEVO/getCodeSousFamilleParDesignationSousFamille/MATELAS
+const getCodeSousFamilleParDesignationSousFamille = async (req, res) => {
+  const { dbName, desSousFamille } = req.params;
+  try {
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    console.log("ok");
+    const SousFamilles = defineSousFamilleModel(dbConnection);
+    const sousFamillesTrouves = await SousFamilles.findAll({
+      attributes: ["code"],
+      where: { libelle: desSousFamille },
+    });
+    if(sousFamillesTrouves.length == 1){
+      return res.status(200).json({message: "code rélative au désignation donnée récuperé avec succès", sousFamillesTrouves});
+    }
+    if(sousFamillesTrouves.length == 0){
+      return res.status(404).json({message: "aucun code est rélative à la désignation donné"})
+    }
+    if(sousFamillesTrouves.length > 1){
+      return res.status(400).json({message: "plusieurs codes trouvées pour la désignation donnée"})
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// * récupere un code famille par son désignation
+// * exemple
+// * input : MATELAS, SOLEVO
+// * output : informations article
+// * url : http://localhost:5000/api/article/SOLEVO/getArticleParLibelle/Logicom Test
+const getArticleParLibelle = async (req, res) => {
+  const { dbName, libelle } = req.params;
+  try {
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const Article = defineArticleModel(dbConnection);
+    const articlesTrouves = await Article.findAll({
+      where: { libelle: {[Sequelize.like]:libelle} },
+      order: ["libelle","ASC"]
+    });
+    if(articlesTrouves.length == 1){
+      return res.status(200).json({message: "article rélative au désignation donnée récuperé avec succès", articlesTrouves});
+    }
+    if(articlesTrouves.length == 0){
+      return res.status(404).json({message: "aucun article est rélative à la désignation donné"})
+    }
+    if(articlesTrouves.length > 1){
+      return res.status(400).json({message: "plusieurs articles trouvées pour la désignation donnée"})
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+//* url http://localhost:5000/api/article/SOLEVO/getdesignationSousFamillebycodeSousFamille/SUP-MOD
+//* la recuperation de libele parport le code de dous famille 
+//* input :SUP-MOD
+//*output :SUPPORT MODULE
+const getdesignationSousFamillebycodeSousFamille = async (req, res) => {
+  const { dbName, codeSousFamille } = req.params;
+
+  try {
+    const dbConnection = await getDatabaseConnection(dbName, res);
+
+    const result = await dbConnection.query(
+      `SELECT libelle FROM sousfamille WHERE code = :code`,
+      {
+        replacements: {
+          code: codeSousFamille,
+        },
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    );
+
+    return res.status(200).json({
+      message: "Libellé récupéré avec succès.",
+      libelle: result,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
+  //*apartient l'interface devis
   getListeFamilles,
+  //*appartient l'interface devis
   getCodesArticlesByFamille,
+  //*appartient La base de donnes c'est a dire l'interface d'article
   suprimerArticle,
-  getArticle,
+  getArticleParCode,
   ajouterArticle,
   getListeArticles,
   modifierArticle,
   filtrerListeArticle,
-  getToutCodesArticle 
+  getToutCodesArticle,
+  getDesignationFamilleParCodeFamille,
+  getListecodesousFamille,
+  getCodeFamilleParDesignationFamille,
+  getdesignationSousFamillebycodeSousFamille,
+  getCodeSousFamilleParDesignationSousFamille,
+  getArticleParLibelle
 };

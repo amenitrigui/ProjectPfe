@@ -2,28 +2,28 @@ const express = require("express");
 const router = express.Router();
 const authenticateJWT = require("../authentification/authenticateToken");
 const {
-  registerUser,
-  loginUser,
+  inscrireUtilisteur,
+  loginUtilisateur,
   selectDatabase,
   getLatestDevisByYear,
   getAllSectors,
-  sendPasswordResetEmail,
-  passwordReset,
+  envoyerDemandeReinitialisationMp,
+  reinitialiserMotPasse,
   getUtilisateurParCode
-} = require("../controllers/UserController");
+} = require("../controllers/utilisateurController");
 const {
   getDevisDetails,
   getAllClients,
-} = require("../controllers/UserController");
+} = require("../controllers/utilisateurController");
 
 // * inscription pour un utilisateur
-router.post("/register", registerUser);
+router.post("/inscrireUtilisteur", inscrireUtilisteur);
 // * connexion pour un utilisateur
-router.post("/login", loginUser);
+router.post("/loginUtilisateur", loginUtilisateur);
 // * envoyer une demander de réinitialisation de mot de passe
-router.post("/passwordResetRequest", sendPasswordResetEmail);
+router.post("/envoyerDemandeReinitialisationMp", envoyerDemandeReinitialisationMp);
 // * réinitialiser un mot de passe
-router.put("/passwordReset", passwordReset);
+router.put("/reinitialiserMotPasse", reinitialiserMotPasse);
 // * selectionner la base de données (societé) à gèrer
 router.post("/select-database", selectDatabase);
 // * get a single devis details
@@ -35,6 +35,6 @@ router.get("/:databaseName/clients", getAllClients);
 // * récuperer la liste des secteurs ?
 router.get("/secteurs/:databaseName", getAllSectors);
 // * récuperer un utilisateur par son code
-router.get("/:dbName/getUtilisateurParCode", getUtilisateurParCode);
+router.get("/getUtilisateurParCode", getUtilisateurParCode);
 
 module.exports = router;

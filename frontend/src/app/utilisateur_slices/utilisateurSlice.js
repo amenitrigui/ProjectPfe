@@ -5,7 +5,7 @@ export const getUtilisateurCourantInfos = createAsyncThunk(
   "utilisateurSlice/getUtilisateurCourantInfos",
   async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/users/usererpsole/getUtilisateurParCode`,
+      `${process.env.REACT_APP_API_URL}/api/utilisateurs/getUtilisateurParCode`,
       {
         params: {
           codeuser: thunkAPI.getState().UtilisateurInfo.codeuser,

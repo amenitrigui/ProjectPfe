@@ -53,7 +53,7 @@ export const getClientParCode = createAsyncThunk(
         thunkAPI.getState().UtilisateurInfo.dbName
       }/getClientParCode/${code}`
     );
-    console.log(response.data);
+    console.log(response)
     return response.data.client;
   }
 );
@@ -276,13 +276,11 @@ export const clientSlice = createSlice({
       tel2: "",
       telex: "",
       desrep: "",
-      aval2: "",
-      aval1: "",
       Commentaire: "",
       datemaj: "",
       userm: "",
       usera: "",
-      fact: "",
+      offretick: "",
       timbref: "",
       cltexport: "",
       suspfodec: "",
@@ -306,7 +304,7 @@ export const clientSlice = createSlice({
       typecli: "L",
       cin: "",
       fax: "",
-
+      ptva: "",
       codesec: "",
       desisec: "",
 
@@ -374,7 +372,7 @@ export const clientSlice = createSlice({
         datemaj: "",
         userm: "",
         usera: "",
-        fact: "",
+        offretick: "",
         timbref: "",
         cltexport: "",
         suspfodec: "",
@@ -483,12 +481,12 @@ export const clientSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getClientParCode.fulfilled, (state, action) => {
-        console.log(action.payload);
+        console.log(action.payload)
         // ! ceci est utilisé pour les filtres
         state.listeClients = action.payload;
         //objet client bch tit3aba il formulaire
         state.clientInfos = action.payload[0];
-        state.clientInfos.CODEp = action.payload[0].cp;
+        state.clientInfos.CODEp = action.payload[0].cp? action.payload[0].cp : "";
         state.clientInfos.codergg=action.payload.desireg
 
         state.status = "réussi";
@@ -502,7 +500,6 @@ export const clientSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getToutCodesClient.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.listeToutCodesClients = action.payload;
         state.status = "réussi";
       })
