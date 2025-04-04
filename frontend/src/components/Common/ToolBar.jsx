@@ -37,6 +37,7 @@ import {
   viderChampsDevisInfo,
 } from "../../app/devis_slices/devisSlice";
 import { getUtilisateurCourantInfos } from "../../app/utilisateur_slices/utilisateurSlice";
+import { viderChampsArticleInfo } from "../../app/article_slices/articleSlice";
 
 function ToolBar() {
   const dispatch = useDispatch();
@@ -83,6 +84,10 @@ function ToolBar() {
       dispatch(getDerniereCodeClient());
       // * dispatch une action pour récuperer le code + nom d'utilisateur courant
       dispatch(getUtilisateurCourantInfos());
+    }
+
+    if(toolbarTable == "article") {
+      dispatch(viderChampsArticleInfo());
     }
   };
   const HandleRecherche = async () => {
@@ -145,10 +150,10 @@ function ToolBar() {
 
   // * méthode pour valider l'ajout d'un client/devis
   const handleValiderBtnClick = () => {
+    console.log(toolbarTable)
     if (toolbarTable == "client") {
       if (toolbarMode == "ajout") {
         dispatch(setAlertMessage("Confirmez-vous ajouter de ce client ?"))
-        dispatch(setAfficherAlert(true));
       }
 
       if (toolbarMode == "modification") {
@@ -157,7 +162,6 @@ function ToolBar() {
         // dispatch(setActiverBoutonsValiderAnnuler(false));
         // dispatch(viderChampsClientInfo());
         dispatch(setAlertMessage("Confirmez-vous modifier de ce client ?"))
-        dispatch(setAfficherAlert(true));
       }
     }
     if (toolbarTable == "devis") {
@@ -172,6 +176,11 @@ function ToolBar() {
         // dispatch(majDevis())
       }
     }
+    if (toolbarTable == "article") {
+      dispatch(setAlertMessage("Confirmez-vous ajouter de ce article ?"))
+    }
+
+    dispatch(setAfficherAlert(true));
   };
 
   // * cacher les bouttons valider/annuler

@@ -172,24 +172,52 @@ export const getArticleParCode = createAsyncThunk(
       }/getArticleParCode/${code}`
     );
     console.log(response);
-    //return response.data.article[0];
+    return response.data.article[0];
   }
 );
 
 export const ajouterArticle = createAsyncThunk(
   "articleSlice/ajouterArticle",
-  async(_, thunkAPI) => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/article/${thunkAPI.getState().UtilisateurInfo.dbName}/ajouterArticle`,
+  async (_, thunkAPI) => {
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/api/article/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/ajouterArticle`,
       // * body/ req.body : c'est l'objet equivalent à req.body dans le backend
       {
-        articleAjoute: thunkAPI.getState().ArticlesDevis.articleInfos
+        articleAjoute: thunkAPI.getState().ArticlesDevis.articleInfos,
       }
-    )
+    );
 
     console.log(response);
   }
-)
+);
+
+const defaultArticleInfos = {
+  famille: "ameni",
+  code: "",
+  unite: "",
+  libelle: "",
+  quantite: "",
+  CONFIG: "",
+  REMISE: "",
+  tauxtva: "",
+  puht: "",
+  nbrunite: "",
+  mtnetht: "",
+  sousfamille: "",
+  codebarre: "",
+  nbreunite: "",
+  comptec: "",
+  type: "",
+  typeart: "",
+  colisage: "",
+  import: "",
+  fodec: "",
+  prixbrut: "",
+  prixnet: "",
+};
+
 export const articleSlice = createSlice({
   name: "articleSlice",
   initialState: {
@@ -198,28 +226,8 @@ export const articleSlice = createSlice({
     ListeFamille: [],
     ListeSousFamille: [],
     ListeCodeArticlesparLib: {},
-    articleInfos: {
-      famille: "",
-      code: "",
-      unite: "",
-      libelle: "",
-      quantite: "",
-      CONFIG: "",
-      REMISE: "",
-      tauxtva: "",
-      puht: "",
-      nbrunite: "",
-      mtnetht: "",
-      sousfamille: "",
-      codebarre: "",
-      nbreunite: "",
-      comptec: "",
-      type: "",
-      typeart: "",
-      colisage: "",
-      import: "",
-      codebarre: "",
-    },
+    defaultArticleInfos,
+    articleInfos: {...defaultArticleInfos},
   },
   reducers: {
     setArticleInfos: (state, action) => {
@@ -231,26 +239,7 @@ export const articleSlice = createSlice({
     },
     viderChampsArticleInfo: (state) => {
       state.articleInfos = {
-        famille: "",
-        code: "",
-        unite: "",
-        libelle: "",
-        quantite: "",
-        CONFIG: "",
-        REMISE: "",
-        tauxtva: "",
-        puht: "",
-        nbrunite: "",
-        mtnetht: "",
-        sousfamille: "",
-        codebarre: "",
-        nbreunite: "",
-        comptec: "",
-        type: "",
-        typeart: "",
-        colisage: "",
-        import: "",
-        codebarre: "",
+        ...state.defaultArticleInfos
       };
     },
   },
@@ -393,7 +382,10 @@ export const articleSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getArticleParCode.fulfilled, (state, action) => {
-        state.articleInfos = action.payload;
+        if (action.payload && action.payload != {}) {
+        console.log(action.payload)
+          state.articleInfos = action.payload;
+        }
         state.status = "reussi";
       })
       .addCase(getArticleParCode.rejected, (state, action) => {

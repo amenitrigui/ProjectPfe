@@ -445,36 +445,7 @@ function ArticleForm() {
               </div>
             </div>
 
-            <div className="flex flex-wrap">
-              <div className="flex flex-col w-1/3">
-                <label
-                  className="font-bold mb-1"
-                  style={{ color: "rgb(48, 60, 123)" }}
-                >
-                  Fours
-                </label>
-
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2"
-                  value={articleInfos.fourn}
-                />
-              </div>
-              <div className="flex flex-col w-2/3">
-                <label
-                  className="font-bold mb-1"
-                  style={{ color: "rgb(48, 60, 123)" }}
-                >
-                  Fours
-                </label>
-
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2"
-                  value={articleInfos.fourn}
-                />
-              </div>
-            </div>
+            
           </div>
 
           <div className="recentCustomers">
@@ -495,7 +466,6 @@ function ArticleForm() {
                   <input
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
-                    placeholder="start"
                     value={articleInfos.unite}
                   />
                 </div>
@@ -671,7 +641,7 @@ function ArticleForm() {
                         checked={
                           (toolbarMode == "consultation" ||
                             toolbarMode == "modification") &&
-                          articleInfos.sav == "O"
+                          (articleInfos.sav != "N" && articleInfos.sav != "")
                         }
                       />
                       <label className="text-blue-900">Gestion SAv</label>
@@ -684,7 +654,7 @@ function ArticleForm() {
                         checked={
                           (toolbarMode == "consultation" ||
                             toolbarMode == "modification") &&
-                          articleInfos.cons == "O"
+                          articleInfos.cons != "N" && articleInfos.sav != ""
                         }
                       />
                       <label className="text-blue-900">Consigne</label>
@@ -697,7 +667,7 @@ function ArticleForm() {
                         checked={
                           (toolbarMode == "consultation" ||
                             toolbarMode == "modification") &&
-                          articleInfos.nomenclature == "O"
+                          articleInfos.nomenclature != "N" && articleInfos.sav != ""
                         }
                       />
                       <label className="text-blue-900">Nomenec fiche</label>
@@ -710,7 +680,7 @@ function ArticleForm() {
                         checked={
                           (toolbarMode == "consultation" ||
                             toolbarMode == "modification") &&
-                          articleInfos.gestionstock == "O"
+                          articleInfos.gestionstock != "N" && articleInfos.sav != ""
                         }
                       />
                       <label className="text-blue-900">Gestion de Stock</label>
@@ -723,7 +693,7 @@ function ArticleForm() {
                         checked={
                           (toolbarMode == "consultation" ||
                             toolbarMode == "modification") &&
-                          articleInfos.avecconfig == "O"
+                          articleInfos.avecconfig != "N" && articleInfos.sav != ""
                         }
                       />
                       <label className="text-blue-900">Configuration Art</label>
@@ -736,7 +706,7 @@ function ArticleForm() {
                         checked={
                           (toolbarMode == "consultation" ||
                             toolbarMode == "modification") &&
-                          articleInfos.ventevrac == "O"
+                          articleInfos.ventevrac != "N" && articleInfos.sav != ""
                         }
                       />
                       <label className="text-blue-900">Vente Vrac</label>
