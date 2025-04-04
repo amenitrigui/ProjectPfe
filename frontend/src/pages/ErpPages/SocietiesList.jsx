@@ -31,7 +31,7 @@ const SocietiesList = () => {
       }
 
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/users/select-database`,
+        `${process.env.REACT_APP_API_URL}/api/utilisateurs/select-database`,
         {
           method: "POST",
           headers: {

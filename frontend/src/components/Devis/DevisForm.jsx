@@ -597,11 +597,11 @@ function DevisForm() {
                   {(devisInfo.articles || []).length > 0 ? (
                     devisInfo.articles.map((article) => (
                       <tr
-                        key={`${article.famille}-${article.CodeART}`}
+                        key={`${article.famille.code}-${article.CodeART}`}
                         className="transition-all duration-150 ease-in-out hover:bg-[#2A2185]"
                       >
                         <td className="p-3 border border-gray-300">
-                          {article.famille}
+                          {article.famille.code}
                         </td>
                         <td className="p-3 border border-gray-300">
                           {article.CodeART}
@@ -635,7 +635,7 @@ function DevisForm() {
                   ) : (
                     <tr>
                       <td colSpan="10" className="text-center">
-                        Aucun article trouvé.
+                        Aucun article.
                       </td>
                     </tr>
                   )}

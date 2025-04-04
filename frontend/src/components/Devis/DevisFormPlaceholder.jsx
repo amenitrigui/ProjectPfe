@@ -645,7 +645,7 @@ const DevisFormPlaceholder = () => {
       }
 
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/users/get-devis-details/${database}`,
+        `${process.env.REACT_APP_API_URL}/api/utilisateurs/get-devis-details/${database}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -684,7 +684,7 @@ const DevisFormPlaceholder = () => {
       });
 
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/users/get-devis-details/${database}/${NUMBL}`,
+        `${process.env.REACT_APP_API_URL}/api/utilisateurs/get-devis-details/${database}/${NUMBL}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -1608,7 +1608,7 @@ const DevisFormPlaceholder = () => {
   const fetchSecteurs = async () => {
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/users/secteurs/ERP13`
+        `${process.env.REACT_APP_API_URL}/api/utilisateurs/secteurs/ERP13`
       );
       const data = await response.json();
       if (data && Array.isArray(data.sectors)) {

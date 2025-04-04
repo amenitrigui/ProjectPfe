@@ -73,7 +73,7 @@ function ArticlesDevis() {
               }}
             >
               {ListeArticle.map((famille) => (
-                <option key={famille}>{famille}</option>
+                <option key={famille.code}>{famille.code}</option>
               ))}
             </select>
           </div>
