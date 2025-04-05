@@ -44,7 +44,7 @@ function ArticleForm() {
   );
 
   const hundlesubmitTousLesChamp = (valeur, colonne) => {
-    console.log(colonne, " ", valeur);
+   // console.log(colonne, " ", valeur);
     dispatch(setArticleInfos({ valeur, colonne }));
 
     if (colonne == "code") {
@@ -78,14 +78,13 @@ function ArticleForm() {
     (state) => state.uiStates.activerChampsForm
   );
 
-
-   const handleChangeCheckbox = (valeur, colonne) => {
-      console.log(valeur," ", colonne)
-      if(toolbarMode == "ajout" || toolbarMode == "modification") {
-        dispatch(setArticleInfos({colonne: colonne, valeur: valeur}))
-      }
+  const handleChangeCheckbox = (valeur, colonne) => {
+    console.log(valeur, " ", colonne);
+    if (toolbarMode == "ajout" || toolbarMode == "modification") {
+      dispatch(setArticleInfos({ colonne: colonne, valeur: valeur }));
     }
-  console.log(activerChampsForm);
+    console.log(articleInfos)
+  };
 
   return (
     <div className="container">
@@ -724,6 +723,7 @@ function ArticleForm() {
                           articleInfos.sav != "N" &&
                           articleInfos.sav != ""
                         }
+                        
                       />
                       <label className="text-blue-900">Gestion SAv</label>
                     </div>

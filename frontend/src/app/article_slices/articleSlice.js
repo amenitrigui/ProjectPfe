@@ -171,7 +171,7 @@ export const getArticleParCode = createAsyncThunk(
         thunkAPI.getState().UtilisateurInfo.dbName
       }/getArticleParCode/${code}`
     );
-    console.log(response);
+
     return response.data.article[0];
   }
 );
@@ -190,6 +190,22 @@ export const ajouterArticle = createAsyncThunk(
     );
 
     console.log(response);
+  }
+);
+export const modifierarticle = createAsyncThunk(
+  "articleSlice/ModifierArticle",
+  async (code, thunkAPI) => {
+    console.log(code);
+    const response = await axios.put(
+      `${process.env.REACT_APP_API_URL}/api/article/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/modifierArticle/${code}`,
+      {
+        article: thunkAPI.getState().ArticlesDevis.articleInfos,
+      }
+    );
+    console.log(response.data);
+    return response;
   }
 );
 
@@ -219,7 +235,8 @@ const defaultArticleInfos = {
   prixnet: "",
   libelleFamille: "",
   Libellesousfamille: "",
-  datecreate: new Date().toISOString().split("T")[0]
+  datemaj: new Date().toISOString().split("T")[0],
+  datecreate: new Date().toISOString().split("T")[0],
 };
 
 export const articleSlice = createSlice({
@@ -387,7 +404,6 @@ export const articleSlice = createSlice({
       })
       .addCase(getArticleParCode.fulfilled, (state, action) => {
         if (action.payload && action.payload != {}) {
-          console.log(action.payload);
           state.articleInfos = action.payload;
         }
         state.status = "reussi";
