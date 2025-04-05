@@ -15,7 +15,7 @@ function ArticleList() {
     famille: "",
     type: "",
     typeart: "",
-    sousfamille: "",
+    codesousfam: "",
   };
 
   const handleFilterChange = (e, colonne) => {
@@ -32,7 +32,7 @@ function ArticleList() {
     { name: "famille", selector: (row) => row.famille },
     { name: "type", selector: (row) => row.type },
     { name: "typeart", selector: (row) => row.typeart },
-    { name: "sousfamille", selector: (row) => row.sousfamille },
+    { name: "codesousfam", selector: (row) => row.codesousfam },
   ];
 
   // Définition de la couleur principale

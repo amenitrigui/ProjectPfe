@@ -184,15 +184,30 @@ const ajouterArticle = async (req, res) => {
         libelle: articleAjoute.libelle,
         unite: articleAjoute.unite,
         famille: articleAjoute.famille,
-        sousfamille: articleAjoute.sousfamille,
+        codesousfam: articleAjoute.codesousfam,
         codebarre: articleAjoute.codebarre,
-        nbreunite: articleAjoute.nbreunite,
+        nbrunite: articleAjoute.nbrunite,
         comptec: articleAjoute.comptec,
         type: articleAjoute.type,
         typeart: articleAjoute.typeart,
         colisage: articleAjoute.colisage,
         import: articleAjoute.import,
         tauxtva: articleAjoute.tauxtva,
+        prixbrut: articleAjoute.prixbrut,
+        prixnet: articleAjoute.prixnet,
+        fodec: articleAjoute.fodec,
+        CONFIG: articleAjoute.CONFIG,
+        reforigine: articleAjoute.reforigine,
+        lieustock: articleAjoute.lieustock,
+        NGP: articleAjoute.NGP,
+        sav: articleAjoute.sav,
+        cons: articleAjoute.cons,
+        nomenclature: articleAjoute.nomenclature,
+        gestionstock: articleAjoute.gestionstock,
+        avecconfig: articleAjoute.avecconfig,
+        ventevrac: articleAjoute.ventevrac,
+        usera: articleAjoute.usera,
+        datecreate: new Date().toISOString().split("T")[0]
       });
       return res
         .status(200)
@@ -225,7 +240,7 @@ const modifierArticle = async (req, res) => {
           libelle: article.libelle,
           unite: article.unite,
           famille: article.famille,
-          sousfamille: article.sousfamille,
+          codesousfam: article.codesousfam,
           codebarre: article.codebarre,
           nbreunite: article.nbreunite,
           comptec: article.comptec,
@@ -329,16 +344,16 @@ const filtrerListeArticle = async (req, res) => {
     whereClauses.push("typeart like :typeart");
     replacements.typeart = `%${filters.typeart}%`;
   }
-  if (filters.sousfamille) {
-    whereClauses.push("sousfamille like :sousfamille");
-    replacements.sousfamille = `%${filters.sousfamille}%`;
+  if (filters.codesousfam) {
+    whereClauses.push("codesousfam like :codesousfam");
+    replacements.codesousfam = `%${filters.codesousfam}%`;
   }
 
   // ? concatenation de l'opérateur logique après chaque ajout d'un nouvelle condition
   let whereCondition = whereClauses.join(" AND ");
 
   // ? Si on on a aucune condition on effectue une requete de select * from dfp
-  let query = `SELECT code, libelle, famille, type, typeart, sousfamille
+  let query = `SELECT code, libelle, famille, type, typeart, codesousfam
      FROM article 
       ${whereCondition ? "WHERE " + whereCondition : ""}`;
 

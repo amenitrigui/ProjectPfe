@@ -55,6 +55,7 @@ function ArticlesDevis() {
     dispatch(setArticleInfos({colonne: colonne, valeur: e.target.value}))
   }
   const handleValiderLDFPBtnClick = () => {
+    console.log(articleInfos);
     dispatch(setDevisArticles(articleInfos))
   }
   return (

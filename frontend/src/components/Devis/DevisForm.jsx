@@ -42,6 +42,40 @@ function DevisForm() {
   const listePointsVente = useSelector(
     (state) => state.DevisCrud.listePointsVente
   );
+
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
+  const listeToutCodesClients = useSelector(
+    (state) => state.ClientCrud.listeToutCodesClients
+  );
+  // * informations d'un devis provenant des champs de cette formulaire
+
+  const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
+  // * boolean pour activer/désactiver champs du formulaire
+  // * initialement false (champs désactivé en mode de consultation)
+  const activerChampsForm = useSelector(
+    (state) => state.uiStates.activerChampsForm
+  );
+  const insertionDepuisDevisForm = useSelector(
+    (state) => state.ClientCrud.insertionDepuisDevisForm
+  );
+
+  const toobarTable = useSelector((state) => state.uiStates.toolbarTable);
+
+  const NETHTGLOBAL = devisInfo.MHT - devisInfo.MREMISE || 0;
+  const taxe = devisInfo.MTTC - NETHTGLOBAL || 0;
+  const apayer = devisInfo.MTTC + devisInfo.TIMBRE || 0;
+
+  const infosUtilisateur = useSelector(
+    (state) => state.UtilisateurInfo.infosUtilisateur
+  );
+  /*
+  ============================================================================================================== 
+  ============================================================================================================== 
+  ============================================================================================================== 
+  ============================================================================================================== 
+  */
   // * UseEffect #1 : récupérer la liste des codes de devis et liste de points de vente
   useEffect(() => {
     dispatch(getListeNumbl());
@@ -51,12 +85,6 @@ function DevisForm() {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [isOpen, setIsOpen] = useState(false);
-  const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
-  const listeToutCodesClients = useSelector(
-    (state) => state.ClientCrud.listeToutCodesClients
-  );
   const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
 
   // * UseEffect #2 : Récuperer la liste de codes clients lorsque
@@ -77,9 +105,6 @@ function DevisForm() {
     // * vider les champs du formulaire
     else dispatch(viderChampsDevisInfo());
   };
-  // * informations d'un devis provenant des champs de cette formulaire
-
-  const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
 
   // * UseEffect #3 : récuperer les information de client
   // * associé avec le devis selectionné
@@ -111,14 +136,7 @@ function DevisForm() {
       dispatch(getClientParCode(e.target.value));
     }
   };
-  // * boolean pour activer/désactiver champs du formulaire
-  // * initialement false (champs désactivé en mode de consultation)
-  const activerChampsForm = useSelector(
-    (state) => state.uiStates.activerChampsForm
-  );
-  const insertionDepuisDevisForm = useSelector(
-    (state) => state.ClientCrud.insertionDepuisDevisForm
-  );
+
   // * méthode pour indiquer qu'on veut ajouter un nouveau client
   // * à partir de cette formulaire, ceci est nécessaire pour qu'on puisse
   // * consérver tous données de devis saisies avant l'ajout du client
@@ -128,7 +146,6 @@ function DevisForm() {
     navi("/ClientFormTout");
   };
 
-  const toobarTable = useSelector((state) => state.uiStates.toolbarTable);
   // * useEffect #5 : désactiver tous les champs
   // * et indiquer qu'on va utiliser la table de devis
 
@@ -137,13 +154,11 @@ function DevisForm() {
     dispatch(setActiverChampsForm(false));
   }, []);
 
-  const NETHTGLOBAL = devisInfo.MHT - devisInfo.MREMISE || 0;
-  const taxe = devisInfo.MTTC - NETHTGLOBAL || 0;
-  const apayer = devisInfo.MTTC + devisInfo.TIMBRE || 0;
-
-  const infosUtilisateur = useSelector(
-    (state) => state.UtilisateurInfo.infosUtilisateur
-  );
+  const handleChangeCodeClient = (valeur) => {
+    console.log(valeur)
+    dispatch(setDevisInfo({ collone: "CODECLI", valeur: valeur }));
+    dispatch(getClientParCode(valeur))
+  }
   return (
     <>
       <div className="container">
@@ -272,6 +287,8 @@ function DevisForm() {
                         className="w-full border border-gray-300 rounded-md p-2"
                         list="listeCodesNumbl"
                         onChange={(e) => handleSelectDevis(e)}
+                        value={devisInfo.NUMBL}
+                        disabled={activerChampsForm}
                       />
                       <datalist id="listeCodesNumbl">
                         {listeNUMBL.map((codeDevis) => (
@@ -302,10 +319,10 @@ function DevisForm() {
                       >
                         {listePointsVente.map((pointVente) => (
                           <option
-                            key={pointVente.Code}
-                            value={pointVente.Code}
+                            key={pointVente.Libelle}
+                            value={pointVente.Libelle}
                           >
-                            {pointVente.libpv}
+                            {pointVente.Libelle}
                           </option>
                         ))}
                       </select>
@@ -321,7 +338,7 @@ function DevisForm() {
                         type="date"
                         className="w-full border border-gray-300 rounded-md p-2"
                         disabled={!activerChampsForm}
-                        Value={devisInfo.DATEBL}
+                        value={devisInfo.DATEBL}
                         onChange={(e) =>
                           setDevisInfo({
                             collone: "DATEBL",
@@ -374,11 +391,19 @@ function DevisForm() {
                       className="w-full border border-gray-300 rounded-md p-2"
                       disabled={!activerChampsForm}
                       value={clientInfos.code || ""}
-                      // defaultValue={devisInfos.CODECLI} // Assurez-vous d'avoir cet état dans votre composant
-                      // onChange={(e) =>
-                      //   setDevisInfo({ collone: "CODECLI", valeur: e.target.value })
-                      // } // Mettez à jour l'état
+                      onChange={(e) =>
+                        handleChangeCodeClient(e.target.value)
+                      }
+                      list={toolbarMode == "ajout" || "modification" ? "listeCodesClients" : ""}
                     />
+
+                    <datalist id="listeCodesClients">
+                      {listeToutCodesClients.map((codeClient) => (
+                        <option key={codeClient.code} value={codeClient.code}>
+                          {codeClient.code}
+                        </option>
+                      ))}
+                    </datalist>
 
                     <label className="block font-medium">
                       Raison Sociale :
@@ -387,7 +412,6 @@ function DevisForm() {
                       type="text"
                       className="w-full border border-gray-300 rounded-md p-2"
                       disabled={!activerChampsForm}
-                      // defaultValue={devisInfos.RSCLI} // Assurez-vous d'avoir cet état dans votre composant
                       onChange={(e) =>
                         setDevisInfo({
                           collone: "RSCLI",
@@ -402,7 +426,7 @@ function DevisForm() {
                       type="text"
                       className="w-full border border-gray-300 rounded-md p-2"
                       disabled={!activerChampsForm}
-                      defaultValue={clientInfos.adresse || ""}
+                      value={clientInfos.adresse || ""}
                       onChange={(e) =>
                         setDevisInfo({
                           collone: "ADRCLI",
@@ -651,7 +675,7 @@ function DevisForm() {
                 <input
                   type="text"
                   name="totalHt"
-                  defaultValue={devisInfo.MHT}
+                  value={devisInfo.MHT}
                   className="w-full border rounded-md p-2"
                   readOnly
                 />
@@ -661,7 +685,7 @@ function DevisForm() {
                 <input
                   type="text"
                   name="Remise"
-                  defaultValue={devisInfo.MREMISE}
+                  value={devisInfo.MREMISE}
                   className="w-full border rounded-md p-2"
                   readOnly
                 />
@@ -691,7 +715,7 @@ function DevisForm() {
                 <input
                   type="text"
                   name="MTTC"
-                  defaultValue={devisInfo.MTTC ? devisInfo.MTTC.toFixed(3) : ""}
+                  value={devisInfo.MTTC ? devisInfo.MTTC.toFixed(3) : ""}
                   className="w-full border rounded-md p-2"
                   readOnly
                 />
@@ -701,7 +725,7 @@ function DevisForm() {
                 <input
                   type="text"
                   name="timbre"
-                  defaultValue={devisInfo.TIMBRE}
+                  value={devisInfo.TIMBRE}
                   readOnly={!(toolbarMode == "ajout" && toobarTable == "devis")}
                   className="w-full border rounded-md p-2"
                 />

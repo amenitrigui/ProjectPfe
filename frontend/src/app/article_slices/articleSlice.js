@@ -171,7 +171,6 @@ export const getArticleParCode = createAsyncThunk(
         thunkAPI.getState().UtilisateurInfo.dbName
       }/getArticleParCode/${code}`
     );
-    console.log(response);
     return response.data.article[0];
   }
 );
@@ -194,30 +193,36 @@ export const ajouterArticle = createAsyncThunk(
 );
 
 const defaultArticleInfos = {
-  famille: "",
+  // ! ajouter les valeurs par défaut pour les états de checkbox
   code: "",
-  unite: "",
   libelle: "",
-  quantite: "",
-  CONFIG: "",
-  REMISE: "",
-  tauxtva: "",
-  puht: "",
-  nbrunite: "",
-  mtnetht: "",
-  sousfamille: "",
+  unite: "",
+  famille: "",
+  codesousfam: "",
   codebarre: "",
-  nbreunite: "",
+  nbrunite: "",
   comptec: "",
   type: "",
   typeart: "",
   colisage: "",
   import: "",
-  fodec: "",
+  tauxtva: "",
   prixbrut: "",
   prixnet: "",
-  libelleFamille: "",
-  Libellesousfamille: ""
+  fodec: "",
+  CONFIG: "",
+  reforigine: "",
+  lieustock: "",
+  NGP: "",
+  sav: "",
+  cons: "",
+  nomenclature: "",
+  gestionstock: "",
+  avecconfig: "",
+  ventevrac: "",
+  usera: "",
+  datecreate: new Date().toISOString().split("T")[0],
+  datemaj: new Date().toISOString().split("T")[0],
 };
 
 export const articleSlice = createSlice({
@@ -229,7 +234,7 @@ export const articleSlice = createSlice({
     ListeSousFamille: [],
     ListeCodeArticlesparLib: {},
     defaultArticleInfos,
-    articleInfos: {...defaultArticleInfos},
+    articleInfos: { ...defaultArticleInfos },
   },
   reducers: {
     setArticleInfos: (state, action) => {
@@ -241,7 +246,7 @@ export const articleSlice = createSlice({
     },
     viderChampsArticleInfo: (state) => {
       state.articleInfos = {
-        ...state.defaultArticleInfos
+        ...state.defaultArticleInfos,
       };
     },
   },
@@ -385,7 +390,6 @@ export const articleSlice = createSlice({
       })
       .addCase(getArticleParCode.fulfilled, (state, action) => {
         if (action.payload && action.payload != {}) {
-        console.log(action.payload)
           state.articleInfos = action.payload;
         }
         state.status = "reussi";
