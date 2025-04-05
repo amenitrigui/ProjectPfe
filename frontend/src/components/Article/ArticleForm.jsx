@@ -63,7 +63,7 @@ function ArticleForm() {
       }
     }
 
-    if (colonne == "sousfamille") {
+    if (colonne == "codesousfam") {
       if (valeur != "") {
         dispatch(getdesignationSousFamillebycodeSousFamille(valeur));
       } else {

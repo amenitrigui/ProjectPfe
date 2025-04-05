@@ -278,6 +278,7 @@ const GetDevisListParClient = async (req, res) => {
     const { dbName } = req.params;
     const { CODECLI } = req.query;
     const { codeuser } = req.query;
+    console.log(dbName," ",CODECLI," ",codeuser)
     const dbConnection = await getDatabaseConnection(dbName, res);
     const devis = await dbConnection.query(
       `select  NUMBL, libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where CODECLI=:CODECLI and usera = :codeuser`,

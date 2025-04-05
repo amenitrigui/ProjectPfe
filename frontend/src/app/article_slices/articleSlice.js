@@ -45,13 +45,13 @@ export const suprimerArticle = createAsyncThunk(
   // ! param1 (code) : à passer au moment de l'appel de la méthode
   // ! param2 (thunkAPI) : un paramètres supplementaire qui revient de la méthode createAsyncThunk
   async (code, thunkAPI) => {
-    console.log(code)
+    console.log(code);
     const response = await axios.delete(`
       ${process.env.REACT_APP_API_URL}/api/article/${
       thunkAPI.getState().UtilisateurInfo.dbName
     }/suprimerArticle/${code}
     `);
-    console.log(response)
+    console.log(response);
     return response;
   }
 );
@@ -239,6 +239,7 @@ const defaultArticleInfos = {
   avecconfig: "",
   ventevrac: "",
   usera: "",
+  userm: "",
   datecreate: new Date().toISOString().split("T")[0],
   datemaj: new Date().toISOString().split("T")[0],
   libelleFamille: "",
