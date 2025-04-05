@@ -194,7 +194,8 @@ export const ajouterArticle = createAsyncThunk(
 );
 
 const defaultArticleInfos = {
-  famille: "ameni",
+  // ! ajouter les valeurs par défaut pour les états de checkbox
+  famille: "",
   code: "",
   unite: "",
   libelle: "",
@@ -205,17 +206,20 @@ const defaultArticleInfos = {
   puht: "",
   nbrunite: "",
   mtnetht: "",
-  sousfamille: "",
+  codesousfam: "",
   codebarre: "",
-  nbreunite: "",
   comptec: "",
   type: "",
+  lieustock: "",
   typeart: "",
   colisage: "",
   import: "",
   fodec: "",
   prixbrut: "",
   prixnet: "",
+  libelleFamille: "",
+  Libellesousfamille: "",
+  datecreate: new Date().toISOString().split("T")[0]
 };
 
 export const articleSlice = createSlice({
@@ -227,7 +231,7 @@ export const articleSlice = createSlice({
     ListeSousFamille: [],
     ListeCodeArticlesparLib: {},
     defaultArticleInfos,
-    articleInfos: {...defaultArticleInfos},
+    articleInfos: { ...defaultArticleInfos },
   },
   reducers: {
     setArticleInfos: (state, action) => {
@@ -239,7 +243,7 @@ export const articleSlice = createSlice({
     },
     viderChampsArticleInfo: (state) => {
       state.articleInfos = {
-        ...state.defaultArticleInfos
+        ...state.defaultArticleInfos,
       };
     },
   },
@@ -383,7 +387,7 @@ export const articleSlice = createSlice({
       })
       .addCase(getArticleParCode.fulfilled, (state, action) => {
         if (action.payload && action.payload != {}) {
-        console.log(action.payload)
+          console.log(action.payload);
           state.articleInfos = action.payload;
         }
         state.status = "reussi";

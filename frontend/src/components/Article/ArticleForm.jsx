@@ -39,41 +39,53 @@ function ArticleForm() {
     dispatch(getListeCodesArticles()); // * la colonne de code article
   }, []);
 
-  const hundlesubmitCodeSousFamille = (codeSousfamille) => {
-    dispatch(
-      setArticleInfos({ colonne: "sousfamille", valeur: codeSousfamille })
-    );
-    //*valeur : codeSousfamille
-    if (codeSousfamille != "") {
-      dispatch(getdesignationSousFamillebycodeSousFamille(codeSousfamille));
-    } else {
-      dispatch(setArticleInfos({ colonne: "Libellesousfamille", valeur: "" }));
+  const infosUtilisateur = useSelector(
+    (state) => state.UtilisateurInfo.infosUtilisateur
+  );
+
+  const hundlesubmitTousLesChamp = (valeur, colonne) => {
+    console.log(colonne, " ", valeur);
+    dispatch(setArticleInfos({ valeur, colonne }));
+
+    if (colonne == "code") {
+      if (valeur != "") {
+        dispatch(getArticleParCode(valeur));
+      } else {
+        dispatch(viderChampsArticleInfo());
+      }
     }
-  };
-  const handleDesignationFamilleChange = (valeur, colonne) => {
-    console.log(valeur, " ", colonne);
-  };
-  const handleCodeFamilleChange = (valeur, colonne) => {
-    dispatch(setArticleInfos({ colonne: colonne, valeur: valeur }));
-    // * valeur == codeFamille
-    if (valeur != "") {
-      dispatch(getDesignationFamilleParCodeFamille(valeur));
-    } else {
-      dispatch(setArticleInfos({ colonne: "libelleFamille", valeur: "" }));
+
+    if (colonne == "famille") {
+      if (valeur != "") {
+        dispatch(getDesignationFamilleParCodeFamille(valeur));
+      } else {
+        dispatch(setArticleInfos({ colonne: "libelleFamille", valeur: "" }));
+      }
+    }
+
+    if (colonne == "sousfamille") {
+      if (valeur != "") {
+        dispatch(getdesignationSousFamillebycodeSousFamille(valeur));
+      } else {
+        dispatch(
+          setArticleInfos({ colonne: "Libellesousfamille", valeur: "" })
+        );
+      }
     }
   };
 
-  const handleCodeArticleChange = (codeArticle) => {
-    dispatch(setArticleInfos({ colonne: "code", valeur: codeArticle }));
-    //*valeur=: codeArticle
-    if (
-      codeArticle != ""
-    ) {
-      dispatch(getArticleParCode(codeArticle));
-    } else {
-      dispatch(viderChampsArticleInfo());
+  const activerChampsForm = useSelector(
+    (state) => state.uiStates.activerChampsForm
+  );
+
+
+   const handleChangeCheckbox = (valeur, colonne) => {
+      console.log(valeur," ", colonne)
+      if(toolbarMode == "ajout" || toolbarMode == "modification") {
+        dispatch(setArticleInfos({colonne: colonne, valeur: valeur}))
+      }
     }
-  };
+  console.log(activerChampsForm);
 
   return (
     <div className="container">
@@ -197,9 +209,9 @@ function ArticleForm() {
               >
                 Article
               </h2>
-              <a href="#" className="btn">
+              {/* <a href="#" className="btn">
                 View All
-              </a>
+              </a> */}
             </div>
             <div className="flex flex-wrap">
               <div className="flex flex-col w-1/3">
@@ -215,8 +227,9 @@ function ArticleForm() {
                   className="border border-gray-300 rounded-md p-2"
                   value={articleInfos.famille}
                   onChange={(e) =>
-                    handleCodeFamilleChange(e.target.value, "famille")
+                    hundlesubmitTousLesChamp(e.target.value, "famille")
                   }
+                  disabled={!activerChampsForm}
                   list="listeCodesFamilles"
                 />
 
@@ -245,11 +258,9 @@ function ArticleForm() {
                   className="border border-gray-300 rounded-md p-2"
                   value={articleInfos.libelleFamille}
                   onChange={(e) =>
-                    handleDesignationFamilleChange(
-                      e.target.value,
-                      "libelleFamille"
-                    )
+                    hundlesubmitTousLesChamp(e.target.value, "libelleFamille")
                   }
+                  disabled={!activerChampsForm}
                 />
               </div>
             </div>
@@ -265,9 +276,12 @@ function ArticleForm() {
                 <input
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
-                  value={articleInfos.sousfamille}
+                  value={articleInfos.codesousfam}
                   list="listeCodesSousFamille"
-                  onChange={(e) => hundlesubmitCodeSousFamille(e.target.value)}
+                  onChange={(e) =>
+                    hundlesubmitTousLesChamp(e.target.value, "codesousfam")
+                  }
+                  disabled={!activerChampsForm}
                 />
                 <datalist id="listeCodesSousFamille">
                   {ListeSousFamille.length > 0 ? (
@@ -292,6 +306,13 @@ function ArticleForm() {
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
                   value={articleInfos.Libellesousfamille}
+                  disabled={!activerChampsForm}
+                  onChange={(e) =>
+                    hundlesubmitTousLesChamp(
+                      e.target.value,
+                      "Libellesousfamille"
+                    )
+                  }
                 />
               </div>
             </div>
@@ -309,7 +330,9 @@ function ArticleForm() {
                   className="border border-gray-300 rounded-md p-2"
                   value={articleInfos.code}
                   list="listeCodesArticle"
-                  onChange={(e) => handleCodeArticleChange(e.target.value)}
+                  onChange={(e) =>
+                    hundlesubmitTousLesChamp(e.target.value, "code")
+                  }
                 />
 
                 <datalist id="listeCodesArticle">
@@ -336,6 +359,10 @@ function ArticleForm() {
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
                   value={articleInfos.codebarre}
+                  disabled={!activerChampsForm}
+                  onChange={(e) =>
+                    hundlesubmitTousLesChamp(e.target.value, "codebarre")
+                  }
                 />
               </div>
               <div className="flex flex-col w-1/3">
@@ -349,6 +376,10 @@ function ArticleForm() {
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
                   value={articleInfos.libelle}
+                  disabled={!activerChampsForm}
+                  onChange={(e) =>
+                    hundlesubmitTousLesChamp(e.target.value, "libelle")
+                  }
                 />
               </div>
             </div>
@@ -367,19 +398,24 @@ function ArticleForm() {
                   type="text"
                   className="border border-gray-300 rounded-md p-2 w-full"
                   value={articleInfos.tauxtva}
+                  onChange={(e) =>
+                    hundlesubmitTousLesChamp(e.target.value, "tauxtva")
+                  }
+                  disabled={!activerChampsForm}
                 />
               </div>
 
               {/* Fodek */}
               <div className="flex flex-col w-1/3">
-                <label className="font-bold text-[rgb(48,60,123)]">
-                  {" "}
-                  Fodek{" "}
-                </label>
+                <label className="font-bold text-[rgb(48,60,123)]">Fodec</label>
                 <input
                   type="text"
                   className="border border-gray-300 rounded-md p-2 w-full"
                   value={articleInfos.fodec}
+                  onChange={(e) =>
+                    hundlesubmitTousLesChamp(e.target.value, "fodec")
+                  }
+                  disabled={!activerChampsForm}
                 />
               </div>
 
@@ -414,6 +450,10 @@ function ArticleForm() {
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
                   value={articleInfos.NGP}
+                  onChange={(e) =>
+                    hundlesubmitTousLesChamp(e.target.value, "NGP")
+                  }
+                  disabled={!activerChampsForm}
                 />
               </div>
               <div className="flex flex-col w-1/3">
@@ -428,6 +468,10 @@ function ArticleForm() {
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
                   value={articleInfos.lieustock}
+                  disabled={!activerChampsForm}
+                  onChange={(e) =>
+                    hundlesubmitTousLesChamp(e.target.value, "lieustock")
+                  }
                 />
               </div>
               <div className="flex flex-col w-1/3">
@@ -441,11 +485,13 @@ function ArticleForm() {
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
                   value={articleInfos.reforigine}
+                  onChange={(e) =>
+                    hundlesubmitTousLesChamp(e.target.value, "reforigine")
+                  }
+                  disabled={!activerChampsForm}
                 />
               </div>
             </div>
-
-            
           </div>
 
           <div className="recentCustomers">
@@ -467,6 +513,10 @@ function ArticleForm() {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     value={articleInfos.unite}
+                    onChange={(e) =>
+                      hundlesubmitTousLesChamp(e.target.value, "unite")
+                    }
+                    disabled={!activerChampsForm}
                   />
                 </div>
                 <div className="flex flex-col w-1/3">
@@ -481,6 +531,10 @@ function ArticleForm() {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     value={articleInfos.prixbrut}
+                    onChange={(e) =>
+                      hundlesubmitTousLesChamp(e.target.value, "prixbrut")
+                    }
+                    disabled={!activerChampsForm}
                   />
                 </div>
                 <div className="flex flex-col w-1/3">
@@ -494,6 +548,10 @@ function ArticleForm() {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     value={articleInfos.prixnet}
+                    onChange={(e) =>
+                      hundlesubmitTousLesChamp(e.target.value, "prixnet")
+                    }
+                    disabled={!activerChampsForm}
                   />
                 </div>
               </div>
@@ -509,7 +567,11 @@ function ArticleForm() {
                   <input
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
-                    value={articleInfos.nbrunit}
+                    value={articleInfos.nbrunite}
+                    onChange={(e) =>
+                      hundlesubmitTousLesChamp(e.target.value, "nbrunite")
+                    }
+                    disabled={!activerChampsForm}
                   />
                 </div>
                 <div className="flex flex-col w-2/3">
@@ -524,6 +586,10 @@ function ArticleForm() {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     value={articleInfos.comptec}
+                    onChange={(e) =>
+                      hundlesubmitTousLesChamp(e.target.value, "comptec")
+                    }
+                    disabled={!activerChampsForm}
                   />
                 </div>
               </div>
@@ -539,6 +605,10 @@ function ArticleForm() {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     value={articleInfos.type}
+                    onChange={(e) =>
+                      hundlesubmitTousLesChamp(e.target.value, "type")
+                    }
+                    disabled={!activerChampsForm}
                   />
                 </div>
                 <div className="flex flex-col w-2/3">
@@ -553,6 +623,10 @@ function ArticleForm() {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     value={articleInfos.colisage}
+                    onChange={(e) =>
+                      hundlesubmitTousLesChamp(e.target.value, "colisage")
+                    }
+                    disabled={!activerChampsForm}
                   />
                 </div>
               </div>
@@ -566,6 +640,8 @@ function ArticleForm() {
                         toolbarMode == "modification") &&
                       articleInfos.typeart == "PF"
                     }
+                    name="typeart"
+                    onClick={(e) => handleChangeCheckbox("PF", "typeart")}
                   />
                   <label className="text-[rgb(48,60,123)]">PF</label>
                 </div>
@@ -579,6 +655,8 @@ function ArticleForm() {
                         toolbarMode == "modification") &&
                       articleInfos.typeart == "X"
                     }
+                    name="typeart"
+                    onClick={(e) => handleChangeCheckbox("X", "typeart")}
                   />
                   <label className="text-[rgb(48,60,123)]">X</label>
                 </div>
@@ -592,6 +670,8 @@ function ArticleForm() {
                         toolbarMode == "modification") &&
                       articleInfos.typeart == "MP"
                     }
+                    name="typeart"
+                    onClick={(e) => handleChangeCheckbox("MP", "typeart")}
                   />
                   <label className="text-[rgb(48,60,123)]">MP</label>
                 </div>
@@ -641,7 +721,8 @@ function ArticleForm() {
                         checked={
                           (toolbarMode == "consultation" ||
                             toolbarMode == "modification") &&
-                          (articleInfos.sav != "N" && articleInfos.sav != "")
+                          articleInfos.sav != "N" &&
+                          articleInfos.sav != ""
                         }
                       />
                       <label className="text-blue-900">Gestion SAv</label>
@@ -654,7 +735,8 @@ function ArticleForm() {
                         checked={
                           (toolbarMode == "consultation" ||
                             toolbarMode == "modification") &&
-                          articleInfos.cons != "N" && articleInfos.sav != ""
+                          articleInfos.cons != "N" &&
+                          articleInfos.sav != ""
                         }
                       />
                       <label className="text-blue-900">Consigne</label>
@@ -667,7 +749,8 @@ function ArticleForm() {
                         checked={
                           (toolbarMode == "consultation" ||
                             toolbarMode == "modification") &&
-                          articleInfos.nomenclature != "N" && articleInfos.sav != ""
+                          articleInfos.nomenclature != "N" &&
+                          articleInfos.sav != ""
                         }
                       />
                       <label className="text-blue-900">Nomenec fiche</label>
@@ -680,7 +763,8 @@ function ArticleForm() {
                         checked={
                           (toolbarMode == "consultation" ||
                             toolbarMode == "modification") &&
-                          articleInfos.gestionstock != "N" && articleInfos.sav != ""
+                          articleInfos.gestionstock != "N" &&
+                          articleInfos.sav != ""
                         }
                       />
                       <label className="text-blue-900">Gestion de Stock</label>
@@ -693,7 +777,8 @@ function ArticleForm() {
                         checked={
                           (toolbarMode == "consultation" ||
                             toolbarMode == "modification") &&
-                          articleInfos.avecconfig != "N" && articleInfos.sav != ""
+                          articleInfos.avecconfig != "N" &&
+                          articleInfos.sav != ""
                         }
                       />
                       <label className="text-blue-900">Configuration Art</label>
@@ -706,7 +791,8 @@ function ArticleForm() {
                         checked={
                           (toolbarMode == "consultation" ||
                             toolbarMode == "modification") &&
-                          articleInfos.ventevrac != "N" && articleInfos.sav != ""
+                          articleInfos.ventevrac != "N" &&
+                          articleInfos.sav != ""
                         }
                       />
                       <label className="text-blue-900">Vente Vrac</label>
@@ -725,6 +811,10 @@ function ArticleForm() {
                       value={articleInfos.CONFIG}
                       rows={10}
                       cols={30}
+                      disabled={!activerChampsForm}
+                      onChange={(e) =>
+                        hundlesubmitTousLesChamp(e.target.value, "CONFIG")
+                      }
                     />
                   </div>
                   <div className="flex flex-col items-center gap-4">
@@ -765,39 +855,58 @@ function ArticleForm() {
                     type="text"
                     className="border border-gray-300 rounded-md p-2 w-2/3"
                     disabled
-                    value={articleInfos.usera}
+                    value={articleInfos.usera || infosUtilisateur.codeuser}
+                  />
+                </div>
+                <div className="flex items-center space-x-4">
+                  <label
+                    className="font-medium w-1/3 text-left block "
+                    style={{ color: "rgb(48, 60, 123)" }}
+                  >
+                    Date Creation
+                  </label>
+                  <input
+                    type="date"
+                    value={articleInfos.datecreate}
+                    className="border border-gray-300 rounded-md p-2 w-2/3"
+                    disabled
                   />
                 </div>
 
                 {/* Ligne pour "Modification" */}
-                <div className="flex items-center space-x-4">
-                  <label
-                    className="font-medium w-1/3 text-left block "
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Modification
-                  </label>
-                  <input
-                    type="text"
-                    className="border border-gray-300 rounded-md p-2 w-2/3"
-                    value={articleInfos.userm}
-                  />
-                </div>
+                {toolbarMode == "modification" && (
+                  <>
+                    <div className="flex items-center space-x-4">
+                      <label
+                        className="font-medium w-1/3 text-left block "
+                        style={{ color: "rgb(48, 60, 123)" }}
+                      >
+                        Modification
+                      </label>
+                      <input
+                        type="text"
+                        className="border border-gray-300 rounded-md p-2 w-2/3"
+                        value={articleInfos.userm}
+                        disabled
+                      />
+                    </div>
 
-                {/* Ligne pour "Date Maj" */}
-                <div className="flex items-center space-x-4">
-                  <label
-                    className="font-medium w-1/3 text-left block "
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Date Maj
-                  </label>
-                  <input
-                    type="date"
-                    value={articleInfos.datemaj}
-                    className="border border-gray-300 rounded-md p-2 w-2/3"
-                  />
-                </div>
+                    <div className="flex items-center space-x-4">
+                      <label
+                        className="font-medium w-1/3 text-left block "
+                        style={{ color: "rgb(48, 60, 123)" }}
+                      >
+                        Date modification
+                      </label>
+                      <input
+                        type="date"
+                        value={articleInfos.datemaj}
+                        className="border border-gray-300 rounded-md p-2 w-2/3"
+                        disabled
+                      />
+                    </div>
+                  </>
+                )}
               </div>
               <div className="flex flex-col">
                 <label
@@ -811,6 +920,7 @@ function ArticleForm() {
                   className="w-full border border-gray-300 rounded-md p-2"
                   cols={33}
                   rows={7}
+                  disabled={!activerChampsForm}
                 />
               </div>
             </div>
