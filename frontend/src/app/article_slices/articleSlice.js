@@ -171,10 +171,6 @@ export const getArticleParCode = createAsyncThunk(
         thunkAPI.getState().UtilisateurInfo.dbName
       }/getArticleParCode/${code}`
     );
-<<<<<<< HEAD
-=======
-
->>>>>>> d3afc5110343bb8a74b8af1e0422f1b2376642b5
     return response.data.article[0];
   }
 );

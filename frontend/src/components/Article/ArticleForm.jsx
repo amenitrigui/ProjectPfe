@@ -698,11 +698,7 @@ function ArticleForm() {
                         checked={
                           articleInfos.sav != "N" && articleInfos.sav != ""
                         }
-<<<<<<< HEAD
                         onChange={(e) => handleChangeCheckbox(e.target.checked, "sav")}
-=======
-                        
->>>>>>> d3afc5110343bb8a74b8af1e0422f1b2376642b5
                       />
                       <label className="text-blue-900">Gestion SAv</label>
                     </div>
