@@ -76,7 +76,8 @@ function AlertModifier() {
       }
       if (toolbarMode == "suppression") {
         console.log("dd");
-        dispatch(suprimerArticle("yb11"));
+        dispatch(suprimerArticle(articleCode));
+        dispatch(viderChampsArticleInfo())
       }
     }
     dispatch(setAfficherAlert(false));
