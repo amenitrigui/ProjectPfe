@@ -63,7 +63,7 @@ function ArticleForm() {
       }
     }
 
-    if (colonne == "sousfamille") {
+    if (colonne == "codesousfam") {
       if (valeur != "") {
         dispatch(getdesignationSousFamillebycodeSousFamille(valeur));
       } else {
@@ -78,14 +78,17 @@ function ArticleForm() {
     (state) => state.uiStates.activerChampsForm
   );
 
-  const handleChangeCheckbox = (valeur, colonne) => {
-    console.log(valeur, " ", colonne);
+  const handleChangeCheckbox = (checked, colonne) => {
+    if (toolbarMode == "ajout" || toolbarMode == "modification") {
+      dispatch(setArticleInfos({ colonne: colonne, valeur: checked == true ? "O" : "N" }));
+    }
+  };
+
+  const handleChangeRadio = (valeur, colonne) => {
     if (toolbarMode == "ajout" || toolbarMode == "modification") {
       dispatch(setArticleInfos({ colonne: colonne, valeur: valeur }));
     }
-    console.log(articleInfos)
-  };
-
+  }
   return (
     <div className="container">
       <div className={`navigation ${isSidebarOpen ? "active" : ""}`}>
@@ -206,7 +209,7 @@ function ArticleForm() {
                 }}
                 className="text-3xl"
               >
-                Article
+                Fiche Article
               </h2>
               {/* <a href="#" className="btn">
                 View All
@@ -327,8 +330,9 @@ function ArticleForm() {
                 <input
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
+                  disabled={toolbarMode=="modification"}
                   value={articleInfos.code}
-                  list="listeCodesArticle"
+                  list={toolbarMode != "ajout" ? "listeCodesArticle" : ""}
                   onChange={(e) =>
                     hundlesubmitTousLesChamp(e.target.value, "code")
                   }
@@ -417,20 +421,6 @@ function ArticleForm() {
                   disabled={!activerChampsForm}
                 />
               </div>
-
-              {/* DC (Checkbox) */}
-              {/* <div className="flex items-center gap-x-2">
-                <input
-                  type="checkbox"
-                  className="border border-gray-300 rounded-md"
-                  checked=
-                  {(toolbarMode == "consultation" ||
-                    toolbarMode == "modification") &&
-                    articleInfos.typeart == "DC"}
-                />
-                <label className="text-[rgb(48,60,123)] font-bold">DC</label>
-               
-              </div> */}
             </div>
 
             <div className="flex flex-cols">
@@ -632,71 +622,58 @@ function ArticleForm() {
               <div className="flex items-center gap-x-4">
                 <div className="flex items-center gap-x-2">
                   <input
+                        disabled={!activerChampsForm}
                     type="radio"
                     className="border border-gray-300 rounded-md"
-                    checked={
-                      (toolbarMode == "consultation" ||
-                        toolbarMode == "modification") &&
-                      articleInfos.typeart == "PF"
-                    }
+                    checked={articleInfos.typeart == "PF"}
                     name="typeart"
-                    onClick={(e) => handleChangeCheckbox("PF", "typeart")}
+                    onChange={(e) => handleChangeRadio("PF", "typeart")}
                   />
                   <label className="text-[rgb(48,60,123)]">PF</label>
                 </div>
 
                 <div className="flex items-center gap-x-2">
                   <input
+                        disabled={!activerChampsForm}
                     type="radio"
                     className="border border-gray-300 rounded-md"
-                    checked={
-                      (toolbarMode == "consultation" ||
-                        toolbarMode == "modification") &&
-                      articleInfos.typeart == "X"
-                    }
+                    checked={articleInfos.typeart == "X"}
                     name="typeart"
-                    onClick={(e) => handleChangeCheckbox("X", "typeart")}
+                    onChange={(e) => handleChangeRadio("X", "typeart")}
                   />
                   <label className="text-[rgb(48,60,123)]">X</label>
                 </div>
 
                 <div className="flex items-center gap-x-2">
                   <input
+                        disabled={!activerChampsForm}
                     type="radio"
                     className="border border-gray-300 rounded-md"
-                    checked={
-                      (toolbarMode == "consultation" ||
-                        toolbarMode == "modification") &&
-                      articleInfos.typeart == "MP"
-                    }
+                    checked={articleInfos.typeart == "MP"}
                     name="typeart"
-                    onClick={(e) => handleChangeCheckbox("MP", "typeart")}
+                    onChange={(e) => handleChangeRadio("MP", "typeart")}
                   />
                   <label className="text-[rgb(48,60,123)]">MP</label>
                 </div>
 
                 <div className="flex items-center gap-x-2">
                   <input
+                        disabled={!activerChampsForm}
                     type="radio"
                     className="border border-gray-300 rounded-md"
-                    checked={
-                      (toolbarMode == "consultation" ||
-                        toolbarMode == "modification") &&
-                      articleInfos.import == "I"
-                    }
+                    checked={articleInfos.import == "I"}
+                    onChange={(e) => handleChangeRadio("I", "import")}
                   />
                   <label className="text-[rgb(48,60,123)]">Importé</label>
                 </div>
 
                 <div className="flex items-center gap-x-2">
                   <input
+                        disabled={!activerChampsForm}
                     type="radio"
                     className="border border-gray-300 rounded-md"
-                    checked={
-                      (toolbarMode == "consultation" ||
-                        toolbarMode == "modification") &&
-                      articleInfos.import == "L"
-                    }
+                    checked={articleInfos.import == "L"}
+                    onChange={(e) => handleChangeRadio("L", "import")}
                   />
                   <label className="text-[rgb(48,60,123)]">Local</label>
                 </div>
@@ -716,14 +693,12 @@ function ArticleForm() {
                     <div className="flex items-center space-x-2">
                       <input
                         type="checkbox"
+                        disabled={!activerChampsForm}
                         className="border border-gray-300 rounded-md"
                         checked={
-                          (toolbarMode == "consultation" ||
-                            toolbarMode == "modification") &&
-                          articleInfos.sav != "N" &&
-                          articleInfos.sav != ""
+                          articleInfos.sav != "N" && articleInfos.sav != ""
                         }
-                        
+                        onChange={(e) => handleChangeCheckbox(e.target.checked, "sav")}
                       />
                       <label className="text-blue-900">Gestion SAv</label>
                     </div>
@@ -731,13 +706,12 @@ function ArticleForm() {
                     <div className="flex items-center space-x-2">
                       <input
                         type="checkbox"
+                        disabled={!activerChampsForm}
                         className="border border-gray-300 rounded-md"
                         checked={
-                          (toolbarMode == "consultation" ||
-                            toolbarMode == "modification") &&
-                          articleInfos.cons != "N" &&
-                          articleInfos.sav != ""
+                          articleInfos.cons != "N" && articleInfos.cons != ""
                         }
+                        onChange={(e) => handleChangeCheckbox(e.target.checked, "cons")}
                       />
                       <label className="text-blue-900">Consigne</label>
                     </div>
@@ -745,13 +719,13 @@ function ArticleForm() {
                     <div className="flex items-center space-x-2">
                       <input
                         type="checkbox"
+                        disabled={!activerChampsForm}
                         className="border border-gray-300 rounded-md"
                         checked={
-                          (toolbarMode == "consultation" ||
-                            toolbarMode == "modification") &&
                           articleInfos.nomenclature != "N" &&
-                          articleInfos.sav != ""
+                          articleInfos.nomenclature != ""
                         }
+                        onChange={(e) => handleChangeCheckbox(e.target.checked, "nomenclature")}
                       />
                       <label className="text-blue-900">Nomenec fiche</label>
                     </div>
@@ -759,13 +733,13 @@ function ArticleForm() {
                     <div className="flex items-center space-x-2">
                       <input
                         type="checkbox"
+                        disabled={!activerChampsForm}
                         className="border border-gray-300 rounded-md"
                         checked={
-                          (toolbarMode == "consultation" ||
-                            toolbarMode == "modification") &&
                           articleInfos.gestionstock != "N" &&
-                          articleInfos.sav != ""
+                          articleInfos.gestionstock != ""
                         }
+                        onChange={(e) => handleChangeCheckbox(e.target.checked, "gestionstock")}
                       />
                       <label className="text-blue-900">Gestion de Stock</label>
                     </div>
@@ -773,13 +747,13 @@ function ArticleForm() {
                     <div className="flex items-center space-x-2">
                       <input
                         type="checkbox"
+                        disabled={!activerChampsForm}
                         className="border border-gray-300 rounded-md"
                         checked={
-                          (toolbarMode == "consultation" ||
-                            toolbarMode == "modification") &&
                           articleInfos.avecconfig != "N" &&
-                          articleInfos.sav != ""
+                          articleInfos.avecconfig != ""
                         }
+                        onChange={(e) => handleChangeCheckbox(e.target.checked, "avecconfig")}
                       />
                       <label className="text-blue-900">Configuration Art</label>
                     </div>
@@ -787,13 +761,13 @@ function ArticleForm() {
                     <div className="flex items-center space-x-2">
                       <input
                         type="checkbox"
+                        disabled={!activerChampsForm}
                         className="border border-gray-300 rounded-md"
                         checked={
-                          (toolbarMode == "consultation" ||
-                            toolbarMode == "modification") &&
                           articleInfos.ventevrac != "N" &&
-                          articleInfos.sav != ""
+                          articleInfos.ventevrac != ""
                         }
+                        onChange={(e) => handleChangeCheckbox(e.target.checked, "ventevrac")}
                       />
                       <label className="text-blue-900">Vente Vrac</label>
                     </div>
@@ -886,7 +860,7 @@ function ArticleForm() {
                       <input
                         type="text"
                         className="border border-gray-300 rounded-md p-2 w-2/3"
-                        value={articleInfos.userm}
+                        value={articleInfos.userm || infosUtilisateur.codeuser}
                         disabled
                       />
                     </div>

@@ -173,7 +173,6 @@ export const getArticleParCode = createAsyncThunk(
         thunkAPI.getState().UtilisateurInfo.dbName
       }/getArticleParCode/${code}`
     );
-
     return response.data.article[0];
   }
 );
@@ -213,32 +212,35 @@ export const modifierarticle = createAsyncThunk(
 
 const defaultArticleInfos = {
   // ! ajouter les valeurs par défaut pour les états de checkbox
-  famille: "",
   code: "",
-  unite: "",
   libelle: "",
-  quantite: "",
-  CONFIG: "",
-  REMISE: "",
-  tauxtva: "",
-  puht: "",
-  nbrunite: "",
-  mtnetht: "",
+  unite: "",
+  famille: "",
   codesousfam: "",
   codebarre: "",
+  nbrunite: "",
   comptec: "",
   type: "",
-  lieustock: "",
   typeart: "",
   colisage: "",
   import: "",
-  fodec: "",
+  tauxtva: "",
   prixbrut: "",
   prixnet: "",
-  libelleFamille: "",
-  Libellesousfamille: "",
-  datemaj: new Date().toISOString().split("T")[0],
+  fodec: "",
+  CONFIG: "",
+  reforigine: "",
+  lieustock: "",
+  NGP: "",
+  sav: "",
+  cons: "",
+  nomenclature: "",
+  gestionstock: "",
+  avecconfig: "",
+  ventevrac: "",
+  usera: "",
   datecreate: new Date().toISOString().split("T")[0],
+  datemaj: new Date().toISOString().split("T")[0],
 };
 
 export const articleSlice = createSlice({

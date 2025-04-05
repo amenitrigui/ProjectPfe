@@ -76,6 +76,7 @@ function ToolBar() {
     // * vider les champs du formulaires
     if (toolbarTable == "devis") {
       dispatch(viderChampsDevisInfo());
+      dispatch(viderChampsClientInfo());
       dispatch(getDerniereNumbl());
     }
 
@@ -202,6 +203,7 @@ function ToolBar() {
     dispatch(setActiverChampsForm(false));
     dispatch(viderChampsClientInfo());
     dispatch(viderChampsDevisInfo());
+    dispatch(viderChampsArticleInfo());
     dispatch(setToolbarMode("consultation"));
   };
 

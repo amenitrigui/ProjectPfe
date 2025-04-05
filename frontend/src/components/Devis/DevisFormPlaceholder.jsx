@@ -795,13 +795,13 @@ const DevisFormPlaceholder = () => {
     }
   };
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
 
-    if (!token) {
-      navigate("/SignInPage");
-    }
-  }, [navigate]);
+  //   if (!token) {
+  //     navigate("/SignInPage");
+  //   }
+  // }, [navigate]);
 
   const handleSearchChange = (event) => {
     const value = event.target.value;

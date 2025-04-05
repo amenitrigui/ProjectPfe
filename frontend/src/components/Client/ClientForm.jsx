@@ -229,7 +229,7 @@ const ClientForm = () => {
               icon: "people-outline",
               path: "/ClientFormTout",
             },
-            { name: "devis", icon: "chatbubble-outline", path: "/DevisList" },
+            { name: "Article", icon: "chatbubble-outline", path: "/ArticleFormTout" },
             {
               name: "devistout",
               icon: "lock-closed-outline",

@@ -33,7 +33,7 @@ const Recherche = () => {
   const [datatableSelection, setDatatableSelection] = useState({});
   // * pour obtenir les informations de dévis séléctionné
   const handleselecteddevis = ({ selectedRows }) => {
-    setDatatableSelection(selectedRows[0])
+    setDatatableSelection(selectedRows[0]);
     if (selectedRows[0]) {
       if (toolbarTable == "devis") {
         dispatch(setDevisInfoEntiere(selectedRows[0]));
@@ -54,10 +54,14 @@ const Recherche = () => {
     if (!filtrerPar) {
       alert("Veuillez sélectionner un filtre de recherche.");
       return;
-    } 
+    }
 
     if (toolbarTable == "devis") {
+      console.log(toolbarTable)
+      console.log(filtrerPar)
+      console.log(valeurRecherche)
       switch (filtrerPar) {
+        
         case "client":
           dispatch(getDevisParCodeClient(valeurRecherche));
           break;
@@ -163,28 +167,55 @@ const Recherche = () => {
   };
 
   return (
-    <div className="container mx-auto p-6">
-      {/* Bouton de retour */}
-      <button
-        onClick={handleRetourBtnClick}
-        className="flex items-center text-blue-600 hover:text-blue-800 transition duration-200 mb-4"
-      >
-        <FaArrowLeft className="mr-2" /> Retour
-      </button>
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl p-6 relative">
+        {/* Bouton fermer (X) */}
+        <button
+          //onClick={onClose}
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-lg"
+        >
+          ✕
+        </button>
 
-      <h2 className="text-2xl font-semibold mb-6 text-center">Recherche</h2>
+        {/* Bouton retour */}
+        <button
+          onClick={() => {
+            handleRetourBtnClick();
+          }}
+          className="flex items-center text-blue-600 hover:text-blue-800 transition duration-200 mb-4"
+        >
+          <FaArrowLeft className="mr-2" /> Retour
+        </button>
 
-      <div className="flex space-x-6">
-        <div className="w-1/3 bg-white p-4 rounded-lg shadow-lg">
-          <h3 className="text-lg font-medium text-gray-700 mb-4">
-            Rechercher {toolbarTable == "devis" && <span>Devis</span>}{" "}
-            {toolbarTable == "client" && <span>Client</span>} Par
-          </h3>
+        <h2 className="text-2xl font-semibold mb-6 text-center">Recherche</h2>
 
-          <div className="space-y-2">
-            {toolbarTable == "devis" &&
-              ["devis", "client", "montant", "periode", "article"].map(
-                (filtre) => (
+        <div className="flex space-x-6">
+          {/* Filtres */}
+          <div className="w-1/3 bg-gray-50 p-4 rounded-xl shadow">
+            <h3 className="text-lg font-medium text-gray-700 mb-4">
+              Rechercher {toolbarTable === "devis" && "Devis"}{" "}
+              {toolbarTable === "client" && "Client"} par :
+            </h3>
+
+            <div className="space-y-2">
+              {toolbarTable === "devis" &&
+                ["devis", "client", "montant", "periode", "article"].map(
+                  (filtre) => (
+                    <label key={filtre} className="flex items-center">
+                      <input
+                        type="radio"
+                        name="filtres"
+                        value={filtre}
+                        className="mr-2"
+                        onChange={() => setFiltrerPar(filtre)}
+                      />
+                      {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
+                    </label>
+                  )
+                )}
+
+              {toolbarTable === "client" &&
+                ["code", "typecli", "cin"].map((filtre) => (
                   <label key={filtre} className="flex items-center">
                     <input
                       type="radio"
@@ -195,77 +226,69 @@ const Recherche = () => {
                     />
                     {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                   </label>
-                )
-              )}
-            {toolbarTable == "client" &&
-              ["code", "typecli", "cin"].map((filtre) => (
-                <label key={filtre} className="flex items-center">
-                  <input
-                    type="radio"
-                    name="filtres"
-                    value={filtre}
-                    className="mr-2"
-                    onChange={() => setFiltrerPar(filtre)}
-                  />
-                  {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
-                </label>
-              ))}
+                ))}
+            </div>
           </div>
-        </div>
 
-        <div className="w-2/3 bg-white p-4 rounded-lg shadow-lg">
-          <div className="flex items-center space-x-2">
-            <input
-              id="searchInput"
-              type="text"
-              onChange={(e) => setValeurRecherche(e.target.value)}
-              className="p-2 border border-gray-300 rounded-lg w-full"
-              placeholder="Entrez votre recherche..."
-            />
+          {/* Champ de recherche */}
+          <div className="w-2/3 bg-gray-50 p-4 rounded-xl shadow">
+            <div className="flex items-center space-x-2 mb-4">
+              <input
+                id="searchInput"
+                type="text"
+                onChange={(e) => setValeurRecherche(e.target.value)}
+                className="p-2 border border-gray-300 rounded-lg w-full"
+                placeholder="Entrez votre recherche..."
+              />
+              <button
+                onClick={handleSearch}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+              >
+                Rechercher
+              </button>
+            </div>
+
+            {/* Table des résultats */}
+            {toolbarTable === "client" && (
+              <div className="max-h-[400px] overflow-y-auto">
+                <DataTable
+                  data={listeClients}
+                  columns={collonesClient}
+                  pagination
+                  fixedHeader
+                  customStyles={customStyles}
+                  striped
+                  selectableRows
+                  onSelectedRowsChange={handleselecteddevis}
+                />
+              </div>
+            )}
+            {toolbarTable === "devis" && (
+              <div className="max-h-[400px] overflow-y-auto">
+                <DataTable
+                  data={devisList}
+                  columns={collonesDevis}
+                  pagination
+                  fixedHeader
+                  customStyles={customStyles}
+                  striped
+                  selectableRows
+                  onSelectedRowsChange={handleselecteddevis}
+                />
+              </div>
+            )}
+
             <button
-              onClick={handleSearch}
-              className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition duration-200"
+              onClick={handleValidate}
+              className="bg-green-600 text-white mt-4 px-4 py-2 rounded-lg hover:bg-green-700 transition"
+              disabled={!datatableSelection}
             >
-              Rechercher
+              Valider
             </button>
           </div>
         </div>
       </div>
-      {toolbarTable == "client" && (
-        <DataTable
-          data={listeClients}
-          columns={collonesClient}
-          pagination
-          fixedHeader
-          customStyles={customStyles}
-          striped
-          selectableRows
-          onSelectedRowsChange={handleselecteddevis}
-        />
-      )}
-      {toolbarTable == "devis" && (
-        <DataTable
-          data={devisList}
-          columns={collonesDevis}
-          pagination
-          fixedHeader
-          customStyles={customStyles}
-          striped
-          selectableRows
-          onSelectedRowsChange={handleselecteddevis}
-        />
-      )}
-      
-      <button
-        // todo: disable/enable the valider button according to wether or not the user has selected an item from the datatable
-        onClick={handleValidate}
-        className="bg-green-600 text-white p-2 rounded-lg hover:bg-green-700 transition duration-200 mt-4"
-        disabled={!datatableSelection}
-      >
-        Valider
-      </button>
     </div>
   );
 };
-
 export default Recherche;

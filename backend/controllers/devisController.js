@@ -273,6 +273,7 @@ const GetDevisParPeriode = async (req, res) => {
 
 // * récuperer la liste de devis créés pour un client spécifique (CODECLI)
 // * pour une societé donnée (dbName)
+//* url http://localhost:5000/api/devis/SOLEVO/getDevisParClient?CODECLI=41102630&codeuser=4
 const GetDevisListParClient = async (req, res) => {
   try {
     const { dbName } = req.params;
