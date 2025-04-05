@@ -14,7 +14,7 @@ import {
   faTrashAlt,
   faCancel,
 } from "@fortawesome/free-solid-svg-icons";
-import SideBar from "../Common/SideBar"
+import SideBar from "../Common/SideBar";
 import {
   ajouterClient,
   getDerniereCodeClient,
@@ -54,6 +54,7 @@ function ToolBar() {
   const activerBoutonsValiderAnnuler = useSelector(
     (state) => state.uiStates.activerBoutonsValiderAnnuler
   );
+  const articleInfo =useSelector((state)=>state.ArticlesDevis.articleInfos)
 
   const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
   const handleNaviguerVersListe = async () => {
@@ -63,9 +64,8 @@ function ToolBar() {
     if (toolbarTable == "client") {
       navigate("/ClientList");
     }
-    if (toolbarTable == "article")
-    {
-      navigate("/ArticleList")
+    if (toolbarTable == "article") {
+      navigate("/ArticleList");
     }
   };
   // * ajout d'un client/devi
@@ -87,7 +87,7 @@ function ToolBar() {
       dispatch(getUtilisateurCourantInfos());
     }
 
-    if(toolbarTable == "article") {
+    if (toolbarTable == "article") {
       dispatch(viderChampsArticleInfo());
     }
   };
@@ -109,10 +109,16 @@ function ToolBar() {
         alert("aucun client est selectionné pour la modification");
       }
     }
+    if (toolbarTable=="article"){
+      if (!articleInfo.code)
+      {
+        alert ("aucun article est selectionne pour la modification")
+      }
+    }
 
     if (
       (toolbarTable == "client" && clientInfos.code) ||
-      (toolbarTable == "devis" && devisInfo.NUMBL)
+      (toolbarTable == "devis" && devisInfo.NUMBL)|| (toolbarTable == "article"&& articleInfo.code)
     ) {
       dispatch(setToolbarMode("modification"));
       dispatch(setActiverBoutonsValiderAnnuler(true));
@@ -145,16 +151,16 @@ function ToolBar() {
     // }
     dispatch(setActiverChampsForm(false));
     dispatch(setToolbarMode("suppression"));
-    dispatch(setAlertMessage("Êtes-vous sûr de vouloir supprimer ce client ?"))
-    dispatch(setAfficherAlert(true))
+    dispatch(setAlertMessage("Êtes-vous sûr de vouloir supprimer ce client ?"));
+    dispatch(setAfficherAlert(true));
   };
 
   // * méthode pour valider l'ajout d'un client/devis
   const handleValiderBtnClick = () => {
-    console.log(toolbarTable)
+    console.log(toolbarTable);
     if (toolbarTable == "client") {
       if (toolbarMode == "ajout") {
-        dispatch(setAlertMessage("Confirmez-vous ajouter de ce client ?"))
+        dispatch(setAlertMessage("Confirmez-vous ajouter de ce client ?"));
       }
 
       if (toolbarMode == "modification") {
@@ -162,14 +168,14 @@ function ToolBar() {
         // dispatch(setActiverChampsForm(false));
         // dispatch(setActiverBoutonsValiderAnnuler(false));
         // dispatch(viderChampsClientInfo());
-        dispatch(setAlertMessage("Confirmez-vous modifier de ce client ?"))
+        dispatch(setAlertMessage("Confirmez-vous modifier de ce client ?"));
       }
     }
     if (toolbarTable == "devis") {
       if (toolbarMode == "ajout") {
         // dispatch(AjouterDevis());
         // dispatch(setActiverChampsForm(true));
-        dispatch(setAlertMessage("Confirmez-vous ajouter de ce devis ?"))
+        dispatch(setAlertMessage("Confirmez-vous ajouter de ce devis ?"));
         dispatch(setAfficherAlert(true));
       }
 
@@ -178,7 +184,12 @@ function ToolBar() {
       }
     }
     if (toolbarTable == "article") {
-      dispatch(setAlertMessage("Confirmez-vous ajouter de ce article ?"))
+      if (toolbarMode == "ajout") {
+        dispatch(setAlertMessage("Confirmez-vous ajouter de ce article ?"));
+      }
+      if (toolbarMode == "modification") {
+        dispatch(setAlertMessage("confirmer vous de modifier de article?"));
+      }
     }
 
     dispatch(setAfficherAlert(true));
@@ -206,11 +217,9 @@ function ToolBar() {
     }
   };
 
-  const handleNaviguerVersPrecedent = () => {
-  };
+  const handleNaviguerVersPrecedent = () => {};
 
-  const handleNaviguerVersSuivant = () => {
-  };
+  const handleNaviguerVersSuivant = () => {};
   return (
     <>
       <nav className="w-full h-[110px] sm:h-[80px] md:h-[90px] border-b border-gray-700 flex items-center px-6 sm:px-4 md:px-5 overflow-x-auto">
@@ -377,10 +386,8 @@ function ToolBar() {
               </span>
             </button>
           )}
-
         </div>
       </nav>
-
     </>
   );
 }

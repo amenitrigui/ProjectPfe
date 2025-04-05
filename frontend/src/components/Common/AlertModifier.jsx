@@ -9,33 +9,43 @@ import {
   setToolbarMode,
 } from "../../app/interface_slices/uiSlice";
 import {
-    ajouterClient,
+  ajouterClient,
   majClient,
   supprimerClient,
   viderChampsClientInfo,
 } from "../../app/client_slices/clientSlice";
 
-import { ajouterArticle, suprimerArticle } from "../../app/article_slices/articleSlice";
+import {
+  ajouterArticle,
+  modifierarticle,
+  suprimerArticle,
+  viderChampsArticleInfo,
+} from "../../app/article_slices/articleSlice";
 function AlertModifier() {
   const dispatch = useDispatch();
-  
+
   const afficherAlert = useSelector((state) => state.uiStates.afficherAlert);
   const message = useSelector((state) => state.uiStates.message);
   const toolbarTable = useSelector((state) => state.uiStates.toolbarTable);
   const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
-  const clientSelectionne = useSelector((state) =>  state.ClientCrud.clientInfos).code;
-  const articleCode = useSelector((state) => state.ArticlesDevis.articleInfos).code;
+  const clientSelectionne = useSelector(
+    (state) => state.ClientCrud.clientInfos
+  ).code;
+  const articleCode = useSelector(
+    (state) => state.ArticlesDevis.articleInfos
+  ).code;
+
   const handleConfirmerClick = async (closeToast) => {
     //*pour le client
     if (toolbarTable == "client") {
       if (toolbarMode == "ajout") {
-        dispatch(ajouterClient())
+        dispatch(ajouterClient());
       }
       if (toolbarMode == "modification") {
         dispatch(majClient());
       }
       if (toolbarMode == "suppression") {
-        dispatch(supprimerClient(clientSelectionne))
+        dispatch(supprimerClient(clientSelectionne));
       }
       // * pour désactiver les champs du formulaire
       dispatch(setActiverChampsForm(false));
@@ -47,31 +57,31 @@ function AlertModifier() {
     // * pour devis
     if (toolbarTable == "devis") {
       if (toolbarMode == "ajout") {
-        
       }
       if (toolbarMode == "modification") {
-        
       }
       if (toolbarMode == "suppression") {
-       
       }
-      
     }
     // * pour l'article
     if (toolbarTable == "article") {
       if (toolbarMode == "ajout") {
-        dispatch(ajouterArticle())
+        dispatch(ajouterArticle());
+        dispatch(viderChampsArticleInfo())
       }
       if (toolbarMode == "modification") {
+        dispatch(modifierarticle(articleCode));
+        dispatch(viderChampsArticleInfo())
+
       }
       if (toolbarMode == "suppression") {
-        console.log("dd")
-        dispatch(suprimerArticle("yb11"))
+        console.log("dd");
+        dispatch(suprimerArticle("yb11"));
       }
     }
     dispatch(setAfficherAlert(false));
     closeToast();
-    
+
     dispatch(setToolbarMode("consultation"));
   };
 
@@ -117,11 +127,13 @@ function AlertModifier() {
                 }
                 onMouseOut={(e) => (e.target.style.backgroundColor = "#2a2185")}
               >
-                  {toolbarMode == "ajout" ? "Ajouter" :
-                    toolbarMode == "modification" ? "Modifier" :
-                    toolbarMode == "suppression" ? "Supprimer" : 
-                    "par defaut"
-                }
+                {toolbarMode == "ajout"
+                  ? "Ajouter"
+                  : toolbarMode == "modification"
+                  ? "Modifier"
+                  : toolbarMode == "suppression"
+                  ? "Supprimer"
+                  : "par defaut"}
               </button>
               <button
                 style={{

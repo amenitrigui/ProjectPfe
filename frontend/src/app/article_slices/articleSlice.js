@@ -171,6 +171,10 @@ export const getArticleParCode = createAsyncThunk(
         thunkAPI.getState().UtilisateurInfo.dbName
       }/getArticleParCode/${code}`
     );
+<<<<<<< HEAD
+=======
+
+>>>>>>> d3afc5110343bb8a74b8af1e0422f1b2376642b5
     return response.data.article[0];
   }
 );
@@ -189,6 +193,22 @@ export const ajouterArticle = createAsyncThunk(
     );
 
     console.log(response);
+  }
+);
+export const modifierarticle = createAsyncThunk(
+  "articleSlice/ModifierArticle",
+  async (code, thunkAPI) => {
+    console.log(code);
+    const response = await axios.put(
+      `${process.env.REACT_APP_API_URL}/api/article/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/modifierArticle/${code}`,
+      {
+        article: thunkAPI.getState().ArticlesDevis.articleInfos,
+      }
+    );
+    console.log(response.data);
+    return response;
   }
 );
 
@@ -223,6 +243,8 @@ const defaultArticleInfos = {
   usera: "",
   datecreate: new Date().toISOString().split("T")[0],
   datemaj: new Date().toISOString().split("T")[0],
+  libelleFamille: "",
+  Libellesousfamille: "",
 };
 
 export const articleSlice = createSlice({
