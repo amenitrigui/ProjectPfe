@@ -194,7 +194,7 @@ export const ajouterArticle = createAsyncThunk(
 );
 
 const defaultArticleInfos = {
-  famille: "ameni",
+  famille: "",
   code: "",
   unite: "",
   libelle: "",
@@ -216,6 +216,8 @@ const defaultArticleInfos = {
   fodec: "",
   prixbrut: "",
   prixnet: "",
+  libelleFamille: "",
+  Libellesousfamille: ""
 };
 
 export const articleSlice = createSlice({
