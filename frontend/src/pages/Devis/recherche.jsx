@@ -19,8 +19,15 @@ import {
   setListeClients,
 } from "../../app/client_slices/clientSlice";
 import { setAfficherRecherchePopup } from "../../app/interface_slices/uiSlice";
-import { getArticleParCode, getListeArticleparFamille, getListeArticleparLibelle, getListeArticleParSousFamille, setArticleInfosEntiere, setListeArticle } from "../../app/article_slices/articleSlice";
-
+import {
+  getArticleParCode,
+  getListeArticleparFamille,
+  getListeArticleparLibelle,
+  getListeArticleParSousFamille,
+  setArticleInfosEntiere,
+  setListeArticle,
+} from "../../app/article_slices/articleSlice";
+import { getListeFamillesParCodeFamille } from "../../app/famille_slices/familleSlice";
 
 const Recherche = () => {
   const navigate = useNavigate();
@@ -33,10 +40,14 @@ const Recherche = () => {
   const devisList = useSelector((state) => state.DevisCrud.devisList);
   const listeClients = useSelector((state) => state.ClientCrud.listeClients);
   const ListeArticle = useSelector((state) => state.ArticlesDevis.ListeArticle);
+  const listeFamilles = useSelector((state) => state.familleSlice.listeFamilles);
+  const listeSousfamille = useSelector((state) => state.sousfamilleSlice.listeSousfamille);
   // * state qui contient l'information d'élèment selectionné
-  const [datatableElementSelection, setDatatableElementSelection] = useState({});
+  const [datatableElementSelection, setDatatableElementSelection] = useState(
+    {}
+  );
   // * pour obtenir les informations de dévis séléctionné
-  
+
   const handleSelection = ({ selectedRows }) => {
     setDatatableElementSelection(selectedRows[0]);
   };
@@ -103,8 +114,34 @@ const Recherche = () => {
           dispatch(getListeArticleparFamille(valeurRecherche));
           break;
         case "SousFamille":
-            dispatch(getListeArticleParSousFamille(valeurRecherche));
-            break;
+          dispatch(getListeArticleParSousFamille(valeurRecherche));
+          break;
+        default:
+          console.log("Valeur de filtre non définie");
+      }
+    }
+
+    if (toolbarTable == "famille") {
+      switch (filtrerPar) {
+        case "code":
+          dispatch(getListeFamillesParCodeFamille(valeurRecherche));
+          break;
+        case "libelle":
+          console.log("filtere table famille par libelle");
+          break;
+        default:
+          console.log("Valeur de filtre non définie");
+      }
+    }
+
+    if (toolbarTable == "sousfamille") {
+      switch (filtrerPar) {
+        case "code":
+          console.log("filtere table sous famille par code");
+          break;
+        case "libelle":
+          console.log("filtere table sous famille par libelle");
+          break;
         default:
           console.log("Valeur de filtre non définie");
       }
@@ -148,12 +185,16 @@ const Recherche = () => {
       dispatch(setListeClients([]));
       navigate("/ClientFormTout");
     }
-    if (toolbarTable=="article")
-    {
-      dispatch(setArticleInfosEntiere(datatableElementSelection))
-      dispatch(setListeArticle([]))
-      // ! dispatch(setViderFiltrers())
-      dispatch(setAfficherRecherchePopup(false))
+    if (toolbarTable == "article") {
+      dispatch(setArticleInfosEntiere(datatableElementSelection));
+      dispatch(setListeArticle([]));
+      dispatch(setAfficherRecherchePopup(false));
+    }
+    if (toolbarTable == "famille") {
+      console.log("table == famille");
+    }
+    if (toolbarTable == "sousfamille") {
+      console.log("table == sousfamille");
     }
   };
 
@@ -177,10 +218,19 @@ const Recherche = () => {
   ];
 
   const colonnesArticle = [
-    {name: "Code", selector: (row) => row.code, sortable: true},
-    {name: "Libelle", selector: (row) => row.libelle, sortable: true},
-    {name: "Famille", selector: (row) => row.famille, sortable: true},
-    {name: "Sous Famille", selector: (row) => row.codesousfam, sortable: true}
+    { name: "Code", selector: (row) => row.code, sortable: true },
+    { name: "Libelle", selector: (row) => row.libelle, sortable: true },
+    { name: "Famille", selector: (row) => row.famille, sortable: true },
+    {
+      name: "Sous Famille",
+      selector: (row) => row.codesousfam,
+      sortable: true,
+    },
+  ];
+
+  const colonnesFamille = [
+    { name: "Code", selector: (row) => row.code, sortable: true },
+    { name: "Libelle", selector: (row) => row.libelle, sortable: true },
   ]
 
   // const handleRetourBtnClick = () => {
@@ -274,6 +324,34 @@ const Recherche = () => {
                     {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                   </label>
                 ))}
+
+              {toolbarTable === "famille" &&
+                ["code", "libelle"].map((filtre) => (
+                  <label key={filtre} className="flex items-center">
+                    <input
+                      type="radio"
+                      name="filtres"
+                      value={filtre}
+                      className="mr-2"
+                      onChange={() => setFiltrerPar(filtre)}
+                    />
+                    {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
+                  </label>
+                ))}
+
+              {toolbarTable === "sousfamille" &&
+                ["code", "libelle"].map((filtre) => (
+                  <label key={filtre} className="flex items-center">
+                    <input
+                      type="radio"
+                      name="filtres"
+                      value={filtre}
+                      className="mr-2"
+                      onChange={() => setFiltrerPar(filtre)}
+                    />
+                    {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
+                  </label>
+                ))}
             </div>
           </div>
 
@@ -330,6 +408,36 @@ const Recherche = () => {
                 <DataTable
                   data={ListeArticle}
                   columns={colonnesArticle}
+                  pagination
+                  fixedHeader
+                  customStyles={customStyles}
+                  striped
+                  selectableRows
+                  onSelectedRowsChange={handleSelection}
+                />
+              </div>
+            )}
+
+            {toolbarTable === "famille" && (
+              <div className="max-h-[400px] overflow-y-auto">
+                <DataTable
+                  data={listeFamilles}
+                  columns={colonnesFamille}
+                  pagination
+                  fixedHeader
+                  customStyles={customStyles}
+                  striped
+                  selectableRows
+                  onSelectedRowsChange={handleSelection}
+                />
+              </div>
+            )}
+
+            {toolbarTable === "famille" && (
+              <div className="max-h-[400px] overflow-y-auto">
+                <DataTable
+                  data={listeSousfamille}
+                  columns={colonnesFamille}
                   pagination
                   fixedHeader
                   customStyles={customStyles}

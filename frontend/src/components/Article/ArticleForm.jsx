@@ -15,7 +15,7 @@ import {
   setArticleInfos,
   viderChampsArticleInfo,
 } from "../../app/article_slices/articleSlice";
-import { setAfficherRecherchePopup } from "../../app/interface_slices/uiSlice";
+import { setAfficherRecherchePopup, setToolbarTable } from "../../app/interface_slices/uiSlice";
 function ArticleForm() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
@@ -243,7 +243,7 @@ function ArticleForm() {
                   }
                   disabled={!activerChampsForm}
                   list="listeCodesFamilles"
-                  onClick={() => afficherRecherchePopup()}
+                  onClick={() => {dispatch(setToolbarTable("famille"));afficherRecherchePopup()}}
                 />
 
                 <datalist id="listeCodesFamilles">
@@ -295,7 +295,7 @@ function ArticleForm() {
                     hundlesubmitTousLesChamp(e.target.value, "codesousfam")
                   }
                   disabled={!activerChampsForm}
-                  onClick={() => afficherRecherchePopup()}
+                  onClick={() => {dispatch(setToolbarTable("sousfamille"));afficherRecherchePopup()}}
                 />
                 <datalist id="listeCodesSousFamille">
                   {ListeSousFamille.length > 0 ? (
