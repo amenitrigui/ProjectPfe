@@ -19,7 +19,8 @@ import {
   setListeClients,
 } from "../../app/client_slices/clientSlice";
 import { setAfficherRecherchePopup } from "../../app/interface_slices/uiSlice";
-import { getArticleParCode, getArticleparCodeArticle, getListeArticleparFamille, getListeArticleparLibelle } from "../../app/article_slices/articleSlice";
+import { getArticleParCode, getListeArticleparFamille, getListeArticleparLibelle, setArticleInfosEntiere, setListeArticle } from "../../app/article_slices/articleSlice";
+
 
 const Recherche = () => {
   const navigate = useNavigate();
@@ -32,18 +33,12 @@ const Recherche = () => {
   const devisList = useSelector((state) => state.DevisCrud.devisList);
   const listeClients = useSelector((state) => state.ClientCrud.listeClients);
   const ListeArticle = useSelector((state) => state.ArticlesDevis.ListeArticle);
-  const [datatableSelection, setDatatableSelection] = useState({});
+  // * state qui contient l'information d'élèment selectionné
+  const [datatableElementSelection, setDatatableElementSelection] = useState({});
   // * pour obtenir les informations de dévis séléctionné
-  const handleselecteddevis = ({ selectedRows }) => {
-    setDatatableSelection(selectedRows[0]);
-    if (selectedRows[0]) {
-      if (toolbarTable == "devis") {
-        dispatch(setDevisInfoEntiere(selectedRows[0]));
-      }
-      if (toolbarTable == "client") {
-        dispatch(setClientInfosEntiere(selectedRows[0]));
-      }
-    }
+  
+  const handleSelection = ({ selectedRows }) => {
+    setDatatableElementSelection(selectedRows[0]);
   };
   const toolbarTable = useSelector((state) => state.uiStates.toolbarTable);
 
@@ -99,12 +94,12 @@ const Recherche = () => {
     if (toolbarTable == "article") {
       switch (filtrerPar) {
         case "code":
-          dispatch(getArticleparCodeArticle(valeurRecherche));
+          dispatch(getArticleParCode(valeurRecherche));
           break;
         case "libelle":
           dispatch(getListeArticleparLibelle(valeurRecherche));
           break;
-        case "code famille":
+        case "famille":
           dispatch(getListeArticleparFamille(valeurRecherche));
           break;
         default:
@@ -150,6 +145,13 @@ const Recherche = () => {
       dispatch(setListeClients([]));
       navigate("/ClientFormTout");
     }
+    if (toolbarTable=="article")
+    {
+      dispatch(setArticleInfosEntiere(datatableElementSelection))
+      dispatch(setListeArticle([]))
+      // ! dispatch(setViderFiltrers())
+      dispatch(setAfficherRecherchePopup(false))
+    }
   };
 
   const collonesDevis = [
@@ -178,17 +180,17 @@ const Recherche = () => {
     {name: "Sous Famille", selector: (row) => row.codesousfam, sortable: true}
   ]
 
-  const handleRetourBtnClick = () => {
-    console.log("ok");
-    if (toolbarTable == "devis") {
-      dispatch(setDevisList([]));
-    }
-    if (toolbarTable == "client") {
-      dispatch(setListeClients([]));
-    }
+  // const handleRetourBtnClick = () => {
+  //   console.log("ok");
+  //   if (toolbarTable == "devis") {
+  //     dispatch(setDevisList([]));
+  //   }
+  //   if (toolbarTable == "client") {
+  //     dispatch(setListeClients([]));
+  //   }
 
-    navigate(-1);
-  };
+  //   navigate(-1);
+  // };
 
   const fermerPopupRecherche = () => {
     dispatch(setAfficherRecherchePopup(false));
@@ -205,7 +207,7 @@ const Recherche = () => {
           ✕
         </button>
 
-        {/* Bouton retour */}
+        {/* Bouton retour
         <button
           onClick={() => {
             handleRetourBtnClick();
@@ -213,7 +215,7 @@ const Recherche = () => {
           className="flex items-center text-blue-600 hover:text-blue-800 transition duration-200 mb-4"
         >
           <FaArrowLeft className="mr-2" /> Retour
-        </button>
+        </button> */}
 
         <h2 className="text-2xl font-semibold mb-6 text-center">Recherche</h2>
 
@@ -301,7 +303,7 @@ const Recherche = () => {
                   customStyles={customStyles}
                   striped
                   selectableRows
-                  onSelectedRowsChange={handleselecteddevis}
+                  onSelectedRowsChange={handleSelection}
                 />
               </div>
             )}
@@ -315,7 +317,7 @@ const Recherche = () => {
                   customStyles={customStyles}
                   striped
                   selectableRows
-                  onSelectedRowsChange={handleselecteddevis}
+                  onSelectedRowsChange={handleSelection}
                 />
               </div>
             )}
@@ -330,7 +332,7 @@ const Recherche = () => {
                   customStyles={customStyles}
                   striped
                   selectableRows
-                  onSelectedRowsChange={handleselecteddevis}
+                  onSelectedRowsChange={handleSelection}
                 />
               </div>
             )}
@@ -338,7 +340,7 @@ const Recherche = () => {
             <button
               onClick={handleValidate}
               className="bg-green-600 text-white mt-4 px-4 py-2 rounded-lg hover:bg-green-700 transition"
-              disabled={!datatableSelection}
+              disabled={datatableElementSelection == {}}
             >
               Valider
             </button>

@@ -219,6 +219,8 @@ export const getListeArticleparFamille = createAsyncThunk(
       }/getListeArticleparFamille/${codeFamille}`
     );
     console.log(response)
+    return response.data.ListecodeFamille
+    
   }
   
 );
@@ -226,29 +228,32 @@ export const getListeArticleparFamille = createAsyncThunk(
 export const getListeArticleparLibelle = createAsyncThunk(
   "article/getListeArticleparLibelle",
   async (listelibelle, thunkAPI) => {
+    
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/getListeArticleparFamille/${listelibelle}`
+      }/getListeArticleparLibelle/${listelibelle}`
     );
     console.log(response)
+    return response.data.ListelibelleArticle
+
   }
   
 );
 
-export const getArticleparCodeArticle = createAsyncThunk(
-  "article/getArticleparCodeArticle",
-  async (codeArticle, thunkAPI) => {
-    console.log(codeArticle);
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getArticleparCodeArticle/${codeArticle}`
-    );
-    console.log(response);
-    return response.data.result;
-  }
-);
+// export const getArticleparCodeArticle = createAsyncThunk(
+//   "article/getArticleparCodeArticle",
+//   async (codeArticle, thunkAPI) => {
+//     console.log(codeArticle);
+//     const response = await axios.get(
+//       `${process.env.REACT_APP_API_URL}/api/article/${
+//         thunkAPI.getState().UtilisateurInfo.dbName
+//       }/getArticleparCodeArticle/${codeArticle}`
+//     );
+//     console.log(response);
+//     return response.data.result;
+//   }
+// );
 
 const defaultArticleInfos = {
   // ! ajouter les valeurs par défaut pour les états de checkbox
@@ -304,6 +309,9 @@ export const articleSlice = createSlice({
     },
     setArticleInfosEntiere: (state, action) => {
       state.articleInfos = action.payload;
+    },
+    setListeArticle:(state,action)=>{
+      state.ListeArticle=action.payload;
     },
     viderChampsArticleInfo: (state) => {
       state.articleInfos = {
@@ -487,18 +495,18 @@ export const articleSlice = createSlice({
         state.status = "echoue";
       })
       
-      .addCase(getArticleparCodeArticle.pending, (state) => {
-        state.status = "chargement";
-      })
-      .addCase(getArticleparCodeArticle.fulfilled, (state, action) => {
-        state.ListeArticle = action.payload;
+      // .addCase(getArticleparCodeArticle.pending, (state) => {
+      //   state.status = "chargement";
+      // })
+      // .addCase(getArticleparCodeArticle.fulfilled, (state, action) => {
+      //   state.ListeArticle = action.payload;
 
-        state.status = "reussi";
-      })
-      .addCase(getArticleparCodeArticle.rejected, (state, action) => {
-        state.erreur = action.payload;
-        state.status = "echoue";
-      })
+      //   state.status = "reussi";
+      // })
+      // .addCase(getArticleparCodeArticle.rejected, (state, action) => {
+      //   state.erreur = action.payload;
+      //   state.status = "echoue";
+      // })
 ;
   },
 });
@@ -506,5 +514,6 @@ export const {
   setArticleInfos,
   setArticleInfosEntiere,
   viderChampsArticleInfo,
+  setListeArticle
 } = articleSlice.actions;
 export default articleSlice.reducer;

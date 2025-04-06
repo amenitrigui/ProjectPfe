@@ -207,7 +207,7 @@ const ajouterArticle = async (req, res) => {
         avecconfig: articleAjoute.avecconfig,
         ventevrac: articleAjoute.ventevrac,
         usera: articleAjoute.usera,
-        datecreate: new Date().toISOString().split("T")[0]
+        datecreate: new Date().toISOString().split("T")[0],
       });
       return res
         .status(200)
@@ -263,7 +263,7 @@ const modifierArticle = async (req, res) => {
           avecconfig: article.avecconfig,
           ventevrac: article.ventevrac,
           userm: article.userm,
-          datemaj:new Date().toISOString().split("T")[0] 
+          datemaj: new Date().toISOString().split("T")[0],
         },
         { where: { code: code } }
       );
@@ -466,8 +466,10 @@ const getListecodesousFamille = async (req, res) => {
 const getCodeFamilleParDesignationFamille = async (req, res) => {
   const { dbName, desFamille } = req.params;
   try {
-    if(!dbName || !desFamille) {
-      return res.status(400).json({message: "dbName et desFamille sont réquises"})
+    if (!dbName || !desFamille) {
+      return res
+        .status(400)
+        .json({ message: "dbName et desFamille sont réquises" });
     }
     const dbConnection = await getDatabaseConnection(dbName, res);
     const Familles = defineFamilleModel(dbConnection);
@@ -475,16 +477,26 @@ const getCodeFamilleParDesignationFamille = async (req, res) => {
       attributes: ["code"],
       where: { libelle: desFamille },
     });
-    if(codesFamillesTrouves.length == 1){
-      return res.status(200).json({message: "code rélative au désignation donnée récuperé avec succès", codesFamillesTrouves});
+    if (codesFamillesTrouves.length == 1) {
+      return res
+        .status(200)
+        .json({
+          message: "code rélative au désignation donnée récuperé avec succès",
+          codesFamillesTrouves,
+        });
     }
-    if(codesFamillesTrouves.length == 0){
-      return res.status(404).json({message: "aucun code est rélative à la désignation donné"})
+    if (codesFamillesTrouves.length == 0) {
+      return res
+        .status(404)
+        .json({ message: "aucun code est rélative à la désignation donné" });
     }
-    if(codesFamillesTrouves.length > 1){
-      return res.status(400).json({message: "plusieurs codes trouvées pour la désignation donnée"})
+    if (codesFamillesTrouves.length > 1) {
+      return res
+        .status(400)
+        .json({
+          message: "plusieurs codes trouvées pour la désignation donnée",
+        });
     }
-
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -505,14 +517,25 @@ const getCodeSousFamilleParDesignationSousFamille = async (req, res) => {
       attributes: ["code"],
       where: { libelle: desSousFamille },
     });
-    if(sousFamillesTrouves.length == 1){
-      return res.status(200).json({message: "code rélative au désignation donnée récuperé avec succès", sousFamillesTrouves});
+    if (sousFamillesTrouves.length == 1) {
+      return res
+        .status(200)
+        .json({
+          message: "code rélative au désignation donnée récuperé avec succès",
+          sousFamillesTrouves,
+        });
     }
-    if(sousFamillesTrouves.length == 0){
-      return res.status(404).json({message: "aucun code est rélative à la désignation donné"})
+    if (sousFamillesTrouves.length == 0) {
+      return res
+        .status(404)
+        .json({ message: "aucun code est rélative à la désignation donné" });
     }
-    if(sousFamillesTrouves.length > 1){
-      return res.status(400).json({message: "plusieurs codes trouvées pour la désignation donnée"})
+    if (sousFamillesTrouves.length > 1) {
+      return res
+        .status(400)
+        .json({
+          message: "plusieurs codes trouvées pour la désignation donnée",
+        });
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -530,17 +553,29 @@ const getArticleParLibelle = async (req, res) => {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const Article = defineArticleModel(dbConnection);
     const articlesTrouves = await Article.findAll({
-      where: { libelle: {[Sequelize.like]:libelle} },
-      order: ["libelle","ASC"]
+      where: { libelle: { [Sequelize.like]: libelle } },
+      order: ["libelle", "ASC"],
     });
-    if(articlesTrouves.length == 1){
-      return res.status(200).json({message: "article rélative au désignation donnée récuperé avec succès", articlesTrouves});
+    if (articlesTrouves.length == 1) {
+      return res
+        .status(200)
+        .json({
+          message:
+            "article rélative au désignation donnée récuperé avec succès",
+          articlesTrouves,
+        });
     }
-    if(articlesTrouves.length == 0){
-      return res.status(404).json({message: "aucun article est rélative à la désignation donné"})
+    if (articlesTrouves.length == 0) {
+      return res
+        .status(404)
+        .json({ message: "aucun article est rélative à la désignation donné" });
     }
-    if(articlesTrouves.length > 1){
-      return res.status(400).json({message: "plusieurs articles trouvées pour la désignation donnée"})
+    if (articlesTrouves.length > 1) {
+      return res
+        .status(400)
+        .json({
+          message: "plusieurs articles trouvées pour la désignation donnée",
+        });
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -548,7 +583,7 @@ const getArticleParLibelle = async (req, res) => {
 };
 
 //* url http://localhost:5000/api/article/SOLEVO/getdesignationSousFamillebycodeSousFamille/SUP-MOD
-//* la recuperation de libele parport le code de dous famille 
+//* la recuperation de libele parport le code de dous famille
 //* input :SUP-MOD
 //*output :SUPPORT MODULE
 const getdesignationSousFamillebycodeSousFamille = async (req, res) => {
@@ -586,7 +621,7 @@ const getListeArticleparFamille = async (req, res) => {
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const ListecodeFamille = await dbConnection.query(
-      `select code , famille from article where famille =:famille`,
+      `select code , famille, libelle,codesousfam from article where famille =:famille`,
       {
         replacements: {
           famille: codeFamille,
@@ -602,16 +637,18 @@ const getListeArticleparFamille = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+//*http://localhost:5000/api/article/SOLEVO/getListeArticleparLibelle/SPOT A BASE LED COB 5WW SILVER YBD6707
+//*au niveau de la recherche.jsx
 const getListeArticleparLibelle = async (req, res) => {
   const { dbName, listelibelle } = req.params;
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const ListelibelleArticle = await dbConnection.query(
-      `Select code, famille, libelle from article where libelle = :libelle`,
+      `Select code, famille, libelle ,codesousfam from article where libelle like :libelle`,
 
       {
         replacements: {
-          libelle: listelibelle,
+          libelle: "%"+listelibelle+"%",
         },
 
         type: dbConnection.QueryTypes.SELECT,
@@ -619,7 +656,7 @@ const getListeArticleparLibelle = async (req, res) => {
     );
     return res
       .status(200)
-      .json({ message: "famille recupere avec succes", ListelibelleArticle });
+      .json({ message: "liste article par  libelle  recupere avec succes", ListelibelleArticle });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -645,5 +682,5 @@ module.exports = {
   getCodeSousFamilleParDesignationSousFamille,
   getArticleParLibelle,
   getListeArticleparFamille,
-  getListeArticleparLibelle
+  getListeArticleparLibelle,
 };

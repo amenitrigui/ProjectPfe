@@ -351,7 +351,7 @@ function ArticleForm() {
                   onClick={() => afficherRecherchePopup()}
                 />
 
-                <datalist id="listeCodesArticle">
+                {/* <datalist id="listeCodesArticle">
                   {ListeCodeArticles.length > 0 ? (
                     ListeCodeArticles.map((article, indice) => (
                       <option key={indice} value={article.code}>
@@ -361,7 +361,7 @@ function ArticleForm() {
                   ) : (
                     <option disabled>Aucun code d'article trouvé</option>
                   )}
-                </datalist>
+                </datalist> */}
               </div>
               <div className="flex flex-col w-1/3">
                 <label
