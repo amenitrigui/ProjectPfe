@@ -19,7 +19,7 @@ import {
   setListeClients,
 } from "../../app/client_slices/clientSlice";
 import { setAfficherRecherchePopup } from "../../app/interface_slices/uiSlice";
-import { getArticleParCode, getListeArticleparFamille, getListeArticleparLibelle, setArticleInfosEntiere, setListeArticle } from "../../app/article_slices/articleSlice";
+import { getArticleParCode, getListeArticleparFamille, getListeArticleparLibelle, getListeArticleParSousFamille, setArticleInfosEntiere, setListeArticle } from "../../app/article_slices/articleSlice";
 
 
 const Recherche = () => {
@@ -102,6 +102,9 @@ const Recherche = () => {
         case "famille":
           dispatch(getListeArticleparFamille(valeurRecherche));
           break;
+        case "SousFamille":
+            dispatch(getListeArticleParSousFamille(valeurRecherche));
+            break;
         default:
           console.log("Valeur de filtre non définie");
       }
@@ -259,7 +262,7 @@ const Recherche = () => {
                 ))}
 
               {toolbarTable === "article" &&
-                ["code", "libelle", "famille", "sousfamille"].map((filtre) => (
+                ["code", "libelle", "famille", "SousFamille"].map((filtre) => (
                   <label key={filtre} className="flex items-center">
                     <input
                       type="radio"

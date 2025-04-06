@@ -238,7 +238,21 @@ export const getListeArticleparLibelle = createAsyncThunk(
     return response.data.ListelibelleArticle
 
   }
-  
+);
+
+export const getListeArticleParSousFamille = createAsyncThunk(
+  "article/getListeArticleParSousFamille",
+  async (SousFamille, thunkAPI) => {
+    
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/article/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getListeArticleParSousFamille/${SousFamille}`
+    );
+    console.log(response)
+   return response.data.ListeArticleSousFamille
+
+  }
 );
 
 // export const getArticleparCodeArticle = createAsyncThunk(
@@ -494,6 +508,21 @@ export const articleSlice = createSlice({
         state.erreur = action.payload;
         state.status = "echoue";
       })
+
+
+      .addCase(getListeArticleParSousFamille.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getListeArticleParSousFamille.fulfilled, (state, action) => {
+        state.ListeArticle = action.payload;
+
+        state.status = "reussi";
+      })
+      .addCase(getListeArticleParSousFamille.rejected, (state, action) => {
+        state.erreur = action.payload;
+        state.status = "echoue";
+      })
+
       
       // .addCase(getArticleparCodeArticle.pending, (state) => {
       //   state.status = "chargement";
