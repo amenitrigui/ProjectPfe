@@ -578,6 +578,53 @@ const getdesignationSousFamillebycodeSousFamille = async (req, res) => {
   }
 };
 
+//* dans recherche.jsx : dans recupere la famille
+//* http://localhost:5000/api/article/SOLEVO/getListeArticleparFamille/02-SP
+//*06/04/2025
+const getListeArticleparFamille = async (req, res) => {
+  const { dbName, codeFamille } = req.params;
+  try {
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const ListecodeFamille = await dbConnection.query(
+      `select code , famille from article where famille =:famille`,
+      {
+        replacements: {
+          famille: codeFamille,
+        },
+
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    );
+    return res
+      .status(200)
+      .json({ message: "famille recupere avec succes", ListecodeFamille });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+const getListeArticleparLibelle = async (req, res) => {
+  const { dbName, listelibelle } = req.params;
+  try {
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const ListelibelleArticle = await dbConnection.query(
+      `Select code, famille, libelle from article where libelle = :libelle`,
+
+      {
+        replacements: {
+          libelle: listelibelle,
+        },
+
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    );
+    return res
+      .status(200)
+      .json({ message: "famille recupere avec succes", ListelibelleArticle });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   //*apartient l'interface devis
   getListeFamilles,
@@ -596,5 +643,7 @@ module.exports = {
   getCodeFamilleParDesignationFamille,
   getdesignationSousFamillebycodeSousFamille,
   getCodeSousFamilleParDesignationSousFamille,
-  getArticleParLibelle
+  getArticleParLibelle,
+  getListeArticleparFamille,
+  getListeArticleparLibelle
 };

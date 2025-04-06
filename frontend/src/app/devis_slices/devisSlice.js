@@ -82,6 +82,7 @@ export const getDevisParNUMBL = createAsyncThunk(
         },
       }
     );
+    console.log(response)
     return response.data.devis;
   }
 );
@@ -93,7 +94,7 @@ export const getDevisParNUMBL = createAsyncThunk(
 export const getDevisParMontant = createAsyncThunk(
   "devisSlice/getDevisParMontant",
   async (montant, thunkAPI) => {
-    const codeuser = localStorage.getItem("codeuser");
+    const codeuser = thunkAPI.getState().UtilisateurInfo.codeuser;
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().UtilisateurInfo.dbName
@@ -112,7 +113,7 @@ export const getDevisParMontant = createAsyncThunk(
 export const getDevisParCodeClient = createAsyncThunk(
   "slice/getDevisParCodeClient",
   async (CODECLI, thunkAPI) => {
-    const codeuser = localStorage.getItem("codeuser");
+    const codeuser = thunkAPI.getState().UtilisateurInfo.codeuser;
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().UtilisateurInfo.dbName
@@ -151,7 +152,8 @@ export const getInfoUtilisateur = createAsyncThunk(
 export const getDevisParPeriode = createAsyncThunk(
   "slice/getDevisParPeriode",
   async (DATEBL, thunkAPI) => {
-    const codeuser = localStorage.getItem("codeuser");
+    const codeuser = thunkAPI.getState().UtilisateurInfo.codeuser;
+
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().UtilisateurInfo.dbName

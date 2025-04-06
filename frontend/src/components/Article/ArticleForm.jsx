@@ -15,6 +15,7 @@ import {
   setArticleInfos,
   viderChampsArticleInfo,
 } from "../../app/article_slices/articleSlice";
+import { setAfficherRecherchePopup } from "../../app/interface_slices/uiSlice";
 function ArticleForm() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
@@ -44,7 +45,7 @@ function ArticleForm() {
   );
 
   const hundlesubmitTousLesChamp = (valeur, colonne) => {
-   // console.log(colonne, " ", valeur);
+    // console.log(colonne, " ", valeur);
     dispatch(setArticleInfos({ valeur, colonne }));
 
     if (colonne == "code") {
@@ -80,7 +81,12 @@ function ArticleForm() {
 
   const handleChangeCheckbox = (checked, colonne) => {
     if (toolbarMode == "ajout" || toolbarMode == "modification") {
-      dispatch(setArticleInfos({ colonne: colonne, valeur: checked == true ? "O" : "N" }));
+      dispatch(
+        setArticleInfos({
+          colonne: colonne,
+          valeur: checked == true ? "O" : "N",
+        })
+      );
     }
   };
 
@@ -88,6 +94,10 @@ function ArticleForm() {
     if (toolbarMode == "ajout" || toolbarMode == "modification") {
       dispatch(setArticleInfos({ colonne: colonne, valeur: valeur }));
     }
+  };
+
+  const afficherRecherchePopup = () => {
+    dispatch(setAfficherRecherchePopup(true));
   }
   return (
     <div className="container">
@@ -233,6 +243,7 @@ function ArticleForm() {
                   }
                   disabled={!activerChampsForm}
                   list="listeCodesFamilles"
+                  onClick={() => afficherRecherchePopup()}
                 />
 
                 <datalist id="listeCodesFamilles">
@@ -284,6 +295,7 @@ function ArticleForm() {
                     hundlesubmitTousLesChamp(e.target.value, "codesousfam")
                   }
                   disabled={!activerChampsForm}
+                  onClick={() => afficherRecherchePopup()}
                 />
                 <datalist id="listeCodesSousFamille">
                   {ListeSousFamille.length > 0 ? (
@@ -330,12 +342,13 @@ function ArticleForm() {
                 <input
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
-                  disabled={toolbarMode=="modification"}
+                  disabled={toolbarMode == "modification"}
                   value={articleInfos.code}
                   list={toolbarMode != "ajout" ? "listeCodesArticle" : ""}
                   onChange={(e) =>
                     hundlesubmitTousLesChamp(e.target.value, "code")
                   }
+                  onClick={() => afficherRecherchePopup()}
                 />
 
                 <datalist id="listeCodesArticle">
@@ -622,7 +635,7 @@ function ArticleForm() {
               <div className="flex items-center gap-x-4">
                 <div className="flex items-center gap-x-2">
                   <input
-                        disabled={!activerChampsForm}
+                    disabled={!activerChampsForm}
                     type="radio"
                     className="border border-gray-300 rounded-md"
                     checked={articleInfos.typeart == "PF"}
@@ -634,7 +647,7 @@ function ArticleForm() {
 
                 <div className="flex items-center gap-x-2">
                   <input
-                        disabled={!activerChampsForm}
+                    disabled={!activerChampsForm}
                     type="radio"
                     className="border border-gray-300 rounded-md"
                     checked={articleInfos.typeart == "X"}
@@ -646,7 +659,7 @@ function ArticleForm() {
 
                 <div className="flex items-center gap-x-2">
                   <input
-                        disabled={!activerChampsForm}
+                    disabled={!activerChampsForm}
                     type="radio"
                     className="border border-gray-300 rounded-md"
                     checked={articleInfos.typeart == "MP"}
@@ -658,7 +671,7 @@ function ArticleForm() {
 
                 <div className="flex items-center gap-x-2">
                   <input
-                        disabled={!activerChampsForm}
+                    disabled={!activerChampsForm}
                     type="radio"
                     className="border border-gray-300 rounded-md"
                     checked={articleInfos.import == "I"}
@@ -669,7 +682,7 @@ function ArticleForm() {
 
                 <div className="flex items-center gap-x-2">
                   <input
-                        disabled={!activerChampsForm}
+                    disabled={!activerChampsForm}
                     type="radio"
                     className="border border-gray-300 rounded-md"
                     checked={articleInfos.import == "L"}
@@ -698,7 +711,9 @@ function ArticleForm() {
                         checked={
                           articleInfos.sav != "N" && articleInfos.sav != ""
                         }
-                        onChange={(e) => handleChangeCheckbox(e.target.checked, "sav")}
+                        onChange={(e) =>
+                          handleChangeCheckbox(e.target.checked, "sav")
+                        }
                       />
                       <label className="text-blue-900">Gestion SAv</label>
                     </div>
@@ -711,7 +726,9 @@ function ArticleForm() {
                         checked={
                           articleInfos.cons != "N" && articleInfos.cons != ""
                         }
-                        onChange={(e) => handleChangeCheckbox(e.target.checked, "cons")}
+                        onChange={(e) =>
+                          handleChangeCheckbox(e.target.checked, "cons")
+                        }
                       />
                       <label className="text-blue-900">Consigne</label>
                     </div>
@@ -725,7 +742,9 @@ function ArticleForm() {
                           articleInfos.nomenclature != "N" &&
                           articleInfos.nomenclature != ""
                         }
-                        onChange={(e) => handleChangeCheckbox(e.target.checked, "nomenclature")}
+                        onChange={(e) =>
+                          handleChangeCheckbox(e.target.checked, "nomenclature")
+                        }
                       />
                       <label className="text-blue-900">Nomenec fiche</label>
                     </div>
@@ -739,7 +758,9 @@ function ArticleForm() {
                           articleInfos.gestionstock != "N" &&
                           articleInfos.gestionstock != ""
                         }
-                        onChange={(e) => handleChangeCheckbox(e.target.checked, "gestionstock")}
+                        onChange={(e) =>
+                          handleChangeCheckbox(e.target.checked, "gestionstock")
+                        }
                       />
                       <label className="text-blue-900">Gestion de Stock</label>
                     </div>
@@ -753,7 +774,9 @@ function ArticleForm() {
                           articleInfos.avecconfig != "N" &&
                           articleInfos.avecconfig != ""
                         }
-                        onChange={(e) => handleChangeCheckbox(e.target.checked, "avecconfig")}
+                        onChange={(e) =>
+                          handleChangeCheckbox(e.target.checked, "avecconfig")
+                        }
                       />
                       <label className="text-blue-900">Configuration Art</label>
                     </div>
@@ -767,7 +790,9 @@ function ArticleForm() {
                           articleInfos.ventevrac != "N" &&
                           articleInfos.ventevrac != ""
                         }
-                        onChange={(e) => handleChangeCheckbox(e.target.checked, "ventevrac")}
+                        onChange={(e) =>
+                          handleChangeCheckbox(e.target.checked, "ventevrac")
+                        }
                       />
                       <label className="text-blue-900">Vente Vrac</label>
                     </div>

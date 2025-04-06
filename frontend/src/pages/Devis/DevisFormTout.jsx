@@ -9,11 +9,13 @@ import {
 
 import DevisForm from "../../components/Devis/DevisForm";
 import ArticlesDevis from "../../components/Devis/ArticlesDevis";
+import Recherche from "./recherche";
 
 function DevisFormTout() {
   const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
   const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
   const toobarTable = useSelector((state) => state.uiStates.toolbarTable);
+  const afficherRecherchePopup = useSelector((state) => state.uiStates.afficherRecherchePopup);
   // * useEffect #1 : désactiver tous les champs
   // * et indiquer qu'on va utiliser la table de devis
   const dispatch = useDispatch();
@@ -27,6 +29,7 @@ function DevisFormTout() {
 
   return (
     <div className="bg-gray-100 min-h-screen p-1 mb-1/2">
+      { afficherRecherchePopup == true && <Recherche/> }
       <DevisForm />
     </div>
   );

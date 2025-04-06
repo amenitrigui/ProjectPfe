@@ -14,7 +14,9 @@ const {
   getCodeFamilleParDesignationFamille,
   getdesignationSousFamillebycodeSousFamille,
   getCodeSousFamilleParDesignationSousFamille,
-  getArticleParLibelle
+  getArticleParLibelle,
+  getListeArticleparFamille,
+  getListeArticleparLibelle
 } = require("../controllers/articleController");
 const {
   getArticleDetailsByCode,
@@ -46,6 +48,8 @@ router.get(
 router.get("/:dbName/getdesignationSousFamillebycodeSousFamille/:codeSousFamille",getdesignationSousFamillebycodeSousFamille);
 router.get("/:dbName/getCodeSousFamilleParDesignationSousFamille/:codeSousFamille",getCodeSousFamilleParDesignationSousFamille);
 router.get("/:dbName/getArticleParLibelle/:libelle",getArticleParLibelle);
+router.get("/:dbName/getListeArticleparFamille/:codeFamille", getListeArticleparFamille);
+router.get("/:dbName/getListeArticleparLibelle/:listelibelle", getListeArticleparLibelle);
 
 // router.post("/:dbName/articles/:code/updateConfig", updateConfig);
 // router.get(

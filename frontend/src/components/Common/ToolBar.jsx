@@ -298,7 +298,7 @@ function ToolBar() {
             </div>
           )}
 
-          {!activerBoutonsValiderAnnuler && (
+          {/* {!activerBoutonsValiderAnnuler && (
             <>
               <div className="border-r border-gray-300 h-8"></div>
 
@@ -315,7 +315,7 @@ function ToolBar() {
                 </span>
               </button>
             </>
-          )}
+          )} */}
 
           {!activerBoutonsValiderAnnuler && (
             <button

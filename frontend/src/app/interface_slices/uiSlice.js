@@ -24,10 +24,14 @@ export const uiSlice = createSlice({
     activerBoutonsValiderAnnuler: false,
     // * mode de toolbar: insertion/modification/consultation
     toolbarMode: "consultation",
-    setAlertModifier:""
+    setAlertModifier:"",
+    afficherRecherchePopup: false,
   },
 
   reducers: {
+    setAfficherRecherchePopup: (state, action) => {
+      state.afficherRecherchePopup = action.payload;
+    },
     setAlertMessage: (state, action) => {
       state.message = action.payload;
       state.afficherAlert = true;
@@ -73,5 +77,6 @@ export const {
   setActiverChampsForm,
   setActiverBoutonsValiderAnnuler,
   setToolbarMode,
+  setAfficherRecherchePopup
 } = uiSlice.actions;
 export default uiSlice.reducer;

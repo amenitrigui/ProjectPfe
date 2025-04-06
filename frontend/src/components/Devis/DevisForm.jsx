@@ -30,6 +30,7 @@ import ToolBar from "../Common/ToolBar";
 import ArticlesDevis from "./ArticlesDevis";
 import {
   setActiverChampsForm,
+  setAfficherRecherchePopup,
   setToolbarMode,
 } from "../../app/interface_slices/uiSlice";
 
@@ -159,6 +160,9 @@ function DevisForm() {
     dispatch(setDevisInfo({ collone: "CODECLI", valeur: valeur }));
     dispatch(getClientParCode(valeur))
   }
+  const handleRecherche=()=>{
+    dispatch(setAfficherRecherchePopup(true))
+  }
   return (
     <>
       <div className="container">
@@ -180,7 +184,7 @@ function DevisForm() {
                 icon: "people-outline",
                 path: "/ClientFormTout",
               },
-              { name: "devis", icon: "chatbubble-outline", path: "/DevisList" },
+              { name: "Article", icon: "chatbubble-outline", path: "/ArticleFormTout" },
               {
                 name: "devistout",
                 icon: "lock-closed-outline",
@@ -289,6 +293,7 @@ function DevisForm() {
                         onChange={(e) => handleSelectDevis(e)}
                         value={devisInfo.NUMBL}
                         disabled={activerChampsForm}
+                        onClick={(e)=>handleRecherche(e)}
                       />
                       <datalist id="listeCodesNumbl">
                         {listeNUMBL.map((codeDevis) => (

@@ -173,7 +173,7 @@ export const getArticleParCode = createAsyncThunk(
         thunkAPI.getState().UtilisateurInfo.dbName
       }/getArticleParCode/${code}`
     );
-    return response.data.article[0];
+    return response.data.article;
   }
 );
 
@@ -207,6 +207,46 @@ export const modifierarticle = createAsyncThunk(
     );
     console.log(response.data);
     return response;
+  }
+);
+
+export const getListeArticleparFamille = createAsyncThunk(
+  "article/getListeArticleparFamille",
+  async (codeFamille, thunkAPI) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/article/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getListeArticleparFamille/${codeFamille}`
+    );
+    console.log(response)
+  }
+  
+);
+
+export const getListeArticleparLibelle = createAsyncThunk(
+  "article/getListeArticleparLibelle",
+  async (listelibelle, thunkAPI) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/article/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getListeArticleparFamille/${listelibelle}`
+    );
+    console.log(response)
+  }
+  
+);
+
+export const getArticleparCodeArticle = createAsyncThunk(
+  "article/getArticleparCodeArticle",
+  async (codeArticle, thunkAPI) => {
+    console.log(codeArticle);
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/article/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getArticleparCodeArticle/${codeArticle}`
+    );
+    console.log(response);
+    return response.data.result;
   }
 );
 
@@ -410,15 +450,56 @@ export const articleSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getArticleParCode.fulfilled, (state, action) => {
-        if (action.payload && action.payload != {}) {
-          state.articleInfos = action.payload;
+        if (action.payload && action.payload != []) {
+          state.ListeArticle = action.payload;
+          state.articleInfos = action.payload[0];
         }
         state.status = "reussi";
       })
       .addCase(getArticleParCode.rejected, (state, action) => {
         state.erreur = action.payload;
         state.status = "echoue";
-      });
+      })
+      
+      .addCase(getListeArticleparFamille.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getListeArticleparFamille.fulfilled, (state, action) => {
+        state.ListeArticle = action.payload;
+
+        state.status = "reussi";
+      })
+      .addCase(getListeArticleparFamille.rejected, (state, action) => {
+        state.erreur = action.payload;
+        state.status = "echoue";
+      })
+      
+      .addCase(getListeArticleparLibelle.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getListeArticleparLibelle.fulfilled, (state, action) => {
+        state.ListeArticle = action.payload;
+
+        state.status = "reussi";
+      })
+      .addCase(getListeArticleparLibelle.rejected, (state, action) => {
+        state.erreur = action.payload;
+        state.status = "echoue";
+      })
+      
+      .addCase(getArticleparCodeArticle.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getArticleparCodeArticle.fulfilled, (state, action) => {
+        state.ListeArticle = action.payload;
+
+        state.status = "reussi";
+      })
+      .addCase(getArticleparCodeArticle.rejected, (state, action) => {
+        state.erreur = action.payload;
+        state.status = "echoue";
+      })
+;
   },
 });
 export const {

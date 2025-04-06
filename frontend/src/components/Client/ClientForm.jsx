@@ -24,6 +24,7 @@ import {
 
 import ToolBar from "../Common/ToolBar";
 import { isAlphabetique, isNumerique } from "../../utils/validations";
+import { setAfficherRecherchePopup } from "../../app/interface_slices/uiSlice";
 
 const ClientForm = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -209,6 +210,10 @@ const ClientForm = () => {
 
   const nombredevis = useSelector((state) => state.DevisCrud.nombreDeDevis);
   const totalchifre = useSelector((state) => state.DevisCrud.totalchifre);
+
+  const afficherRecherchePopup = () => {
+    dispatch(setAfficherRecherchePopup(true))
+  }
   return (
     <div className="container">
       <div className={`navigation ${isSidebarOpen ? "active" : ""}`}>
@@ -229,7 +234,7 @@ const ClientForm = () => {
               icon: "people-outline",
               path: "/ClientFormTout",
             },
-            { name: "devis", icon: "chatbubble-outline", path: "/DevisList" },
+            { name: "Article", icon: "chatbubble-outline", path: "/ArticleFormTout" },
             {
               name: "devistout",
               icon: "lock-closed-outline",
@@ -348,6 +353,7 @@ const ClientForm = () => {
                   onChange={(e) => handleChangeCodeClient(e, "code")}
                   disabled={activerChampsForm}
                   maxLength={8}
+                  onClick = {() => afficherRecherchePopup()}
                 />
                 <datalist id="listeCodesClients">
                   {listeToutCodesClients.length > 0 ? (
