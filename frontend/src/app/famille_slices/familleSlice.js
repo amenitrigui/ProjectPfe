@@ -27,7 +27,11 @@ export const getListeFamillesParCodeFamille = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/famille/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/getListeFamillesParCodeFamille/${codeFamille}`
+      }/getListeFamillesParCodeFamille`, {
+        params: {
+          codeFamille: codeFamille
+        }
+      }
     );
     console.log(response);
     return response.data.getListeFamillesParCodeFamille;

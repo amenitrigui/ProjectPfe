@@ -135,7 +135,11 @@ export const getDesignationFamilleParCodeFamille = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/getDesignationFamilleParCodeFamille/${codeFamille}`
+      }/getDesignationFamilleParCodeFamille`, {
+        params: {
+          codeFamille: codeFamille
+        }
+      }
     );
     return response.data.getDesignationFamilleParCodeFamille[0].libelle;
   }
@@ -171,7 +175,11 @@ export const getArticleParCode = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/getArticleParCode/${code}`
+      }/getArticleParCode`, {
+        params: {
+          code: code
+        }
+      }
     );
     return response.data.article;
   }
@@ -218,7 +226,11 @@ export const getListeArticleparFamille = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/getListeArticleparFamille/${codeFamille}`
+      }/getListeArticleparFamille`, {
+        params: {
+          codeFamille: codeFamille
+        }
+      }
     );
     console.log(response);
     return response.data.ListecodeFamille;
@@ -227,11 +239,15 @@ export const getListeArticleparFamille = createAsyncThunk(
 
 export const getListeArticleparLibelle = createAsyncThunk(
   "article/getListeArticleparLibelle",
-  async (listelibelle, thunkAPI) => {
+  async (libelle, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/getListeArticleparLibelle/${listelibelle}`
+      }/getListeArticleparLibelle`, {
+        params: {
+          libelle: libelle
+        }
+      }
     );
     console.log(response);
     return response.data.ListelibelleArticle;

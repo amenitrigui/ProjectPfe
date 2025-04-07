@@ -35,7 +35,7 @@ import {
   setFamilleInfosEntiere,
   setListeFamilles,
 } from "../../app/famille_slices/familleSlice";
-import { getListeSousFamillesParCodeSousFamille, getListeSousFamillesParLibelleSousFamille } from "../../app/sousfamille_slices/sousfamilleSlice";
+import { getListeSousFamillesParCodeSousFamille, getListeSousFamillesParLibelleSousFamille, setListeSousfamille } from "../../app/sousfamille_slices/sousfamilleSlice";
 
 const Recherche = () => {
   const navigate = useNavigate();
@@ -60,13 +60,18 @@ const Recherche = () => {
   );
   // * pour obtenir les informations de dévis séléctionné
 
-  const handleSelection = ({ selectedRows }) => {
-    setDatatableElementSelection(selectedRows[0]);
+  const handleDatatableSelection = ({ selectedRows }) => {
+    if(selectedRows.length != 0){
+      setDatatableElementSelection(selectedRows[0]);
+    }else {
+      // ! pour éviter l'erreur lorsqu'on déselectionne le dernier élement
+      setDatatableElementSelection({})
+    }
   };
   const toolbarTable = useSelector((state) => state.uiStates.toolbarTable);
 
   // * pour filtrer la liste des devis
-  const handleSearch = () => {
+  const handleBtnRechercheClick = () => {
     if (!valeurRecherche) {
       alert("Veuillez entrer une valeur pour la recherche.");
       return;
@@ -191,7 +196,7 @@ const Recherche = () => {
     },
   };
 
-  const handleValidate = () => {
+  const handleBtnValiderClick = () => {
     if (toolbarTable == "devis") {
       dispatch(setDevisInfoEntiere(datatableElementSelection))
       dispatch(setDevisList([]));
@@ -213,16 +218,20 @@ const Recherche = () => {
       dispatch(setAfficherRecherchePopup(false));
     }
     if (toolbarTable == "famille") {
-      dispatch(setArticleInfos("famille",datatableElementSelection.code))
-      dispatch(setArticleInfos("libelleFamille",datatableElementSelection.libelle))
-
+      dispatch(setArticleInfos({ colonne: "famille",valeur: datatableElementSelection.code}))
+      dispatch(setArticleInfos({ colonne: "libelleFamille",valeur: datatableElementSelection.libelle} ))
       dispatch(setListeFamilles([]));
       dispatch(setAfficherRecherchePopup(false));
     }
     if (toolbarTable == "sousfamille") {
-      console.log("table == sousfamille");
+      dispatch(setArticleInfos({ colonne: "codesousfam",valeur: datatableElementSelection.code}))
+      dispatch(setArticleInfos({ colonne: "Libellesousfamille",valeur: datatableElementSelection.libelle} ))
+
+      dispatch(setListeSousfamille([]));
+      dispatch(setAfficherRecherchePopup(false));
     }
   };
+
   //devis
   const collonesDevis = [
     { name: "Numéro de devis", selector: (row) => row.NUMBL, sortable: true },
@@ -399,7 +408,7 @@ const Recherche = () => {
                 placeholder="Entrez votre recherche..."
               />
               <button
-                onClick={handleSearch}
+                onClick={handleBtnRechercheClick}
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
               >
                 Rechercher
@@ -417,7 +426,7 @@ const Recherche = () => {
                   customStyles={customStyles}
                   striped
                   selectableRows
-                  onSelectedRowsChange={handleSelection}
+                  onSelectedRowsChange={handleDatatableSelection}
                 />
               </div>
             )}
@@ -431,7 +440,7 @@ const Recherche = () => {
                   customStyles={customStyles}
                   striped
                   selectableRows
-                  onSelectedRowsChange={handleSelection}
+                  onSelectedRowsChange={handleDatatableSelection}
                 />
               </div>
             )}
@@ -446,7 +455,7 @@ const Recherche = () => {
                   customStyles={customStyles}
                   striped
                   selectableRows
-                  onSelectedRowsChange={handleSelection}
+                  onSelectedRowsChange={handleDatatableSelection}
                 />
               </div>
             )}
@@ -461,7 +470,7 @@ const Recherche = () => {
                   customStyles={customStyles}
                   striped
                   selectableRows
-                  onSelectedRowsChange={handleSelection}
+                  onSelectedRowsChange={handleDatatableSelection}
                 />
               </div>
             )}
@@ -476,15 +485,15 @@ const Recherche = () => {
                   customStyles={customStyles}
                   striped
                   selectableRows
-                  onSelectedRowsChange={handleSelection}
+                  onSelectedRowsChange={handleDatatableSelection}
                 />
               </div>
             )}
 
             <button
-              onClick={handleValidate}
-              className="bg-green-600 text-white mt-4 px-4 py-2 rounded-lg hover:bg-green-700 transition"
-              disabled={datatableElementSelection == {}}
+              onClick={handleBtnValiderClick}
+              className={`${Object.keys(datatableElementSelection).length == 0 ? "bg-gray-300 hover:bg-gray-700" : "bg-green-600 hover:bg-green-700"} text-white mt-4 px-4 py-2 rounded-lg transition`}
+              disabled={Object.keys(datatableElementSelection).length == 0}
             >
               Valider
             </button>

@@ -79,10 +79,22 @@ function ArticleForm() {
     }
   };
 
+  useEffect(() => {
+    if(articleInfos.codesousfam){
+      dispatch(getdesignationSousFamillebycodeSousFamille(articleInfos.codesousfam))
+    }
+  },[articleInfos.codesousfam])
+
+  useEffect(() => {
+    if(articleInfos.famille) {
+      dispatch(getDesignationFamilleParCodeFamille(articleInfos.famille))
+    }
+  },[articleInfos.famille])
+
   const activerChampsForm = useSelector(
     (state) => state.uiStates.activerChampsForm
   );
-
+  console.log(articleInfos)
   const handleChangeCheckbox = (checked, colonne) => {
     if (toolbarMode == "ajout" || toolbarMode == "modification") {
       dispatch(
@@ -103,6 +115,7 @@ function ArticleForm() {
   const afficherRecherchePopup = () => {
     dispatch(setAfficherRecherchePopup(true));
   };
+
   return (
     <div className="container">
       <div className={`navigation ${isSidebarOpen ? "active" : ""}`}>
