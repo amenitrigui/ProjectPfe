@@ -33,6 +33,7 @@ const {
   getDevisCreator,
   getDerniereNumbl,
   deleteDevis,
+  getListeDevisParCodeClient
 } = require("../controllers/devisController");
 //devis controller mt3na
 router.post("/:dbName/creerDevis", creerDevis);
@@ -57,6 +58,7 @@ router.delete("/:dbName/deleteDevis/:NUMBL", deleteDevis);
 router.get("/:dbName/getListePointVente", getListePointVente);
 
 router.get("/:dbName/getInfoUtilisateur", getInfoUtilisateur);
+router.get("/:dbName/getListeDevisParCodeClient", getListeDevisParCodeClient)
 //////////////////////////////////////////////
 
 router.get("/:dbName/clients/code/:code", getClientByCode);

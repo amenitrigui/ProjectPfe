@@ -125,7 +125,7 @@ export const getDevisParCodeClient = createAsyncThunk(
         },
       }
     );
-
+    console.log(response);
     return response.data.devis;
   }
 );

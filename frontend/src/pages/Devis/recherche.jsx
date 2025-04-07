@@ -82,14 +82,11 @@ const Recherche = () => {
     }
 
     if (toolbarTable == "devis") {
-      console.log(toolbarTable);
-      console.log(filtrerPar);
-      console.log(valeurRecherche);
       switch (filtrerPar) {
         case "client":
           dispatch(getDevisParCodeClient(valeurRecherche));
           break;
-        case "devis":
+        case "numbl":
           dispatch(getDevisParNUMBL(valeurRecherche));
           break;
         case "montant":
@@ -311,7 +308,7 @@ const Recherche = () => {
 
             <div className="space-y-2">
               {toolbarTable === "devis" &&
-                ["devis", "client", "montant", "periode", "article"].map(
+                ["numbl", "client", "montant", "periode", "article"].map(
                   (filtre) => (
                     <label key={filtre} className="flex items-center">
                       <input

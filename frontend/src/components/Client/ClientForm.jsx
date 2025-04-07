@@ -331,7 +331,7 @@ const ClientForm = () => {
                 }}
                 className="text-3xl"
               >
-                Client / Facture Proforma
+                Client
               </h2>
               <a href="#" className="btn">
                 View All
