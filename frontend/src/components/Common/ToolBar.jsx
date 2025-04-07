@@ -217,9 +217,13 @@ function ToolBar() {
     }
   };
 
-  const handleNaviguerVersPrecedent = () => {};
+  const handleNaviguerVersPrecedent = () => {
+    console.log("naviguer ver précedent")
+  };
 
-  const handleNaviguerVersSuivant = () => {};
+  const handleNaviguerVersSuivant = () => {
+    console.log("naviguer vers suivant")
+  };
   return (
     <>
       <nav className="w-full h-[110px] sm:h-[80px] md:h-[90px] border-b border-gray-700 flex items-center px-6 sm:px-4 md:px-5 overflow-x-auto">
