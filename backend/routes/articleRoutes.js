@@ -27,17 +27,17 @@ const router = express.Router();
 //hthi 5dmtna
 router.get("/:dbName/getListeFamilles", getListeFamilles);
 // ! ddddd
-router.get("/:dbName/codes/famille/:famille", getCodesArticlesByFamille);
+router.get("/:dbName/codes/famille", getCodesArticlesByFamille);
 router.get("/:dbName/articles/details/:code", getArticleDetailsByCode);
-router.delete("/:dbName/suprimerArticle/:code", suprimerArticle);
-router.get("/:dbName/getArticleParCode/:code", getArticleParCode);
+router.delete("/:dbName/suprimerArticle", suprimerArticle);
+router.get("/:dbName/getArticleParCode", getArticleParCode);
 router.post("/:dbName/ajouterArticle", ajouterArticle);
 router.put("/:dbName/modifierArticle/:code", modifierArticle);
 router.get("/:dbName/getListeArticles", getListeArticles);
 router.get("/:dbName/filtrerListeArticle", filtrerListeArticle);
 router.get("/:dbName/getToutCodesArticle", getToutCodesArticle);
 router.get(
-  "/:dbName/getDesignationFamilleParCodeFamille/:codeFamille",
+  "/:dbName/getDesignationFamilleParCodeFamille",
   getDesignationFamilleParCodeFamille
 );
 router.get("/:dbName/getListecodesousFamille", getListecodesousFamille);
@@ -48,8 +48,8 @@ router.get(
 router.get("/:dbName/getdesignationSousFamillebycodeSousFamille/:codeSousFamille",getdesignationSousFamillebycodeSousFamille);
 router.get("/:dbName/getCodeSousFamilleParDesignationSousFamille/:codeSousFamille",getCodeSousFamilleParDesignationSousFamille);
 router.get("/:dbName/getArticleParLibelle/:libelle",getArticleParLibelle);
-router.get("/:dbName/getListeArticleparFamille/:codeFamille", getListeArticleparFamille);
-router.get("/:dbName/getListeArticleparLibelle/:listelibelle", getListeArticleparLibelle);
+router.get("/:dbName/getListeArticleparFamille", getListeArticleparFamille);
+router.get("/:dbName/getListeArticleparLibelle", getListeArticleparLibelle);
 
 // router.post("/:dbName/articles/:code/updateConfig", updateConfig);
 // router.get(

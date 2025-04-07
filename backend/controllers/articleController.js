@@ -32,13 +32,9 @@ const getListeFamilles = async (req, res) => {
 
     const Familles = defineFamilleModel(dbConnection);
 
-    console.log("Familles: ", Familles);
-
     const familles = await Familles.findAll({
       attributes: ["code", "libelle"],
     });
-
-    console.log(familles);
 
     if (familles.length === 0) {
       return res.status(404).json({
@@ -64,8 +60,8 @@ const getListeFamilles = async (req, res) => {
 // * input : 02-SP
 // * output : liste d'articles ayant le code famille 02-SP
 const getCodesArticlesByFamille = async (req, res) => {
-  const { dbName, famille } = req.params;
-
+  const { dbName } = req.params;
+  const { famille } = req.query;
   if (!dbName || !famille) {
     return res.status(400).json({
       message: "Le nom de la base de données et la famille sont requis.",
@@ -113,16 +109,21 @@ const getCodesArticlesByFamille = async (req, res) => {
   }
 };
 
-//*suprimer le article voici un exemple  url
-// * http://localhost:5000/api/article/SOLEVO/suprimerArticle/FFSTR-3D
-//* output: suppression de  la ligne FFSTR-3D
+// * suprimer le article voici un exemple  url
+// * http://localhost:5000/api/article/SOLEVO/suprimerArticle/?code=FFSTR-3D
+// * output: suppression de  la ligne FFSTR-3D
 const suprimerArticle = async (req, res) => {
-  const { dbName, code } = req.params;
+  const { dbName } = req.params;
+  const { code } = req.query;
+
+  if(!dbName || !code) {
+    return res.status(400).json({message: "l'un ou les deux paramètres sont nulles"})
+  }
 
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const article = await dbConnection.query(
-      `Delete  FROM ARTICLE WHERE code = :code`,
+      `Delete FROM ARTICLE WHERE code = :code`,
       {
         replacements: {
           code,
@@ -135,12 +136,15 @@ const suprimerArticle = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-//* url : http://localhost:5000/api/article/SOLEVO/getArticleParCode/YDKITV1
+//* url : http://localhost:5000/api/article/SOLEVO/getArticleParCode?code=YDKITV1
 //* tous donnes d'article ayant le code YDKITV1
 // * output : un seul article
 const getArticleParCode = async (req, res) => {
   const { dbName } = req.params;
-  const { code } = req.params;
+  const { code } = req.query;
+  if(!dbName || !code) {
+    return res.status(400).json({message: "l'un ou les deux paramètres sont nulles"})
+  }
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const article = await dbConnection.query(
@@ -290,12 +294,6 @@ const getListeArticles = async (req, res) => {
       type: dbConnection.QueryTypes.SELECT,
     });
 
-    console.log(listeArticles);
-    console.log(
-      await dbConnection.query(`SELECT COUNT(*) FROM ARTICLE`, {
-        type: dbConnection.QueryTypes.SELECT,
-      })
-    );
     if (listeArticles) {
       return res.status(200).json({
         message: "liste d'articles récuperé avec succès",
@@ -413,9 +411,13 @@ const getToutCodesArticle = async (req, res) => {
 // * example:
 // * input : 02-MAT
 // * output : {"libelle": "MATELAS"}
-// * http://localhost:5000/api/article/SOLEVO/getDesignationFamilleParCodeFamille/02-MAT
+// * http://localhost:5000/api/article/SOLEVO/getDesignationFamilleParCodeFamille
 const getDesignationFamilleParCodeFamille = async (req, res) => {
-  const { dbName, codeFamille } = req.params;
+  const { dbName } = req.params;
+  const { codeFamille } = req.query;
+  if(!dbName || !codeFamille) {
+    return res.status(400).json({message: "l'un ou les deux paramètres sont nulles"})
+  }
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const getDesignationFamilleParCodeFamille = await dbConnection.query(
@@ -511,7 +513,6 @@ const getCodeSousFamilleParDesignationSousFamille = async (req, res) => {
   const { dbName, desSousFamille } = req.params;
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
-    console.log("ok");
     const SousFamilles = defineSousFamilleModel(dbConnection);
     const sousFamillesTrouves = await SousFamilles.findAll({
       attributes: ["code"],
@@ -614,17 +615,18 @@ const getdesignationSousFamillebycodeSousFamille = async (req, res) => {
 };
 
 //* dans recherche.jsx : dans recupere la famille
-//* http://localhost:5000/api/article/SOLEVO/getListeArticleparFamille/02-SP
+//* http://localhost:5000/api/article/SOLEVO/getListeArticleparFamille
 //*06/04/2025
 const getListeArticleparFamille = async (req, res) => {
-  const { dbName, codeFamille } = req.params;
+  const { dbName } = req.params;
+  const { codeFamille } = req.query;
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const ListecodeFamille = await dbConnection.query(
-      `select code , famille, libelle,codesousfam from article where famille =:famille`,
+      `select code , famille, libelle,codesousfam from article where famille like :famille`,
       {
         replacements: {
-          famille: codeFamille,
+          famille: "%"+codeFamille+"%",
         },
 
         type: dbConnection.QueryTypes.SELECT,
@@ -640,7 +642,8 @@ const getListeArticleparFamille = async (req, res) => {
 //*http://localhost:5000/api/article/SOLEVO/getListeArticleparLibelle/SPOT A BASE LED COB 5WW SILVER YBD6707
 //*au niveau de la recherche.jsx
 const getListeArticleparLibelle = async (req, res) => {
-  const { dbName, listelibelle } = req.params;
+  const { dbName } = req.params;
+  const { libelle } = req.query;
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const ListelibelleArticle = await dbConnection.query(
@@ -648,7 +651,7 @@ const getListeArticleparLibelle = async (req, res) => {
 
       {
         replacements: {
-          libelle: "%"+listelibelle+"%",
+          libelle: "%"+libelle+"%",
         },
 
         type: dbConnection.QueryTypes.SELECT,
@@ -656,7 +659,7 @@ const getListeArticleparLibelle = async (req, res) => {
     );
     return res
       .status(200)
-      .json({ message: "liste article par  libelle  recupere avec succes", ListelibelleArticle });
+      .json({ message: "liste article par libelle recupere avec succes", ListelibelleArticle });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
