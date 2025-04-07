@@ -163,6 +163,8 @@ const getArticleParCode = async (req, res) => {
 };
 //* ajouter un artile  lorsque tu veux ajoute un meme code d'article il s'affiche erreur
 //* vic url http://localhost:5000/api/article/SOLEVO/ajouterArticle
+//* input: {"articleAjoute": {  "code": "122",  "libelle": "bnn" }}
+//* il va etre ajouter 
 const ajouterArticle = async (req, res) => {
   const { dbName } = req.params;
   const { articleAjoute } = req.body;
@@ -608,10 +610,10 @@ const getListeArticleparFamille = async (req, res) => {
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const ListecodeFamille = await dbConnection.query(
-      `select code , famille, libelle,codesousfam from article where famille =:famille`,
+      `select code , famille, libelle,codesousfam from article where famille LIKE :famille`,
       {
         replacements: {
-          famille: codeFamille,
+          famille: `%${codeFamille}%`,
         },
 
         type: dbConnection.QueryTypes.SELECT,
@@ -676,6 +678,31 @@ const getListeArticleParSousFamille = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+//* au niveau de la recherche.jsx url : http://localhost:5000/api/article/SOLEVO/getListeArticleParCodeArticle/PR
+//* input Code : pr
+//* output plusieurs code pr "ListecodeArticle": [ {  "code": "PRZ2002",  "famille": "02-IN",  "libelle": "PROFILE EN ACIER GALVA 41X21  SIBEC",  "codesousfam": " "  ,
+const getListeArticleParCodeArticle=async(req,res)=>{
+  const { dbName, codeArticle } = req.params;
+  try {
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const ListecodeArticle = await dbConnection.query(
+      `select code , famille, libelle,codesousfam from article where code LIKE :code`,
+      {
+        replacements: {
+          code: `%${codeArticle}%`,
+        },
+
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    );
+    return res
+      .status(200)
+      .json({ message: "code Articlerecupere avec succes", ListecodeArticle });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+
+}
 
 module.exports = {
   //*apartient l'interface devis
@@ -698,5 +725,6 @@ module.exports = {
   getArticleParLibelle,
   getListeArticleparFamille,
   getListeArticleparLibelle,
-  getListeArticleParSousFamille
+  getListeArticleParSousFamille,
+  getListeArticleParCodeArticle
 };
