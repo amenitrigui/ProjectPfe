@@ -209,11 +209,11 @@ const getClientParCode = async (req, res) => {
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const client = await dbConnection.query(
-      `select * from client where code = :code`,
+      `select * from client where code LIKE :code`,
       {
         type: dbConnection.QueryTypes.SELECT,
         replacements: {
-          code,
+          code: `%${code}%`,
         },
       }
     );
@@ -380,11 +380,11 @@ const getClientParCin = async (req, res) => {
     const { cin } = req.params;
     const dbConnection = await getDatabaseConnection(dbName, res);
     const client = await dbConnection.query(
-      `SELECT * FROM CLIENT where cin = :cin`,
+      `SELECT * FROM CLIENT where cin LIKE :cin`,
       {
         type: dbConnection.QueryTypes.SELECT,
         replacements: {
-          cin: cin,
+          cin: `%${cin}%`,
         },
       }
     );

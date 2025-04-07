@@ -193,12 +193,19 @@ const Recherche = () => {
 
   const handleValidate = () => {
     if (toolbarTable == "devis") {
+      dispatch(setDevisInfoEntiere(datatableElementSelection))
       dispatch(setDevisList([]));
-      navigate("/DevisFormTout");
+    //  navigate("/DevisFormTout");
+    dispatch(setAfficherRecherchePopup(false));
+
     }
     if (toolbarTable == "client") {
+      dispatch(setClientInfosEntiere(datatableElementSelection));
+
       dispatch(setListeClients([]));
-      navigate("/ClientFormTout");
+     // navigate("/ClientFormTout");
+     dispatch(setAfficherRecherchePopup(false));
+
     }
     if (toolbarTable == "article") {
       dispatch(setArticleInfosEntiere(datatableElementSelection));
@@ -229,11 +236,17 @@ const Recherche = () => {
 
     { name: "RS Représentant", selector: (row) => row.RSREP },
     { name: "Code secteur", selector: (row) => row.codesecteur },
+  
+
   ];
   //client
   const collonesClient = [
     { name: "Code", selector: (row) => row.code, sortable: true },
     { name: "Raison Sociale", selector: (row) => row.rsoc, sortable: true },
+    { name: "cin", selector: (row) => row.cin, sortable: true },
+    { name: "typecli", selector: (row) => row.typecli, sortable: true },
+
+
   ];
   //article
   const colonnesArticle = [

@@ -384,7 +384,7 @@ function DevisForm() {
                       <span>Information Client</span>
                       <button
                         className="btn btn-outline btn-accent"
-                        // onClick={() => handleAjoutClientRedirect()}
+                         onClick={() => handleAjoutClientRedirect()}
                       >
                         {" "}
                         <i className="fas fa-plus-circle"></i>

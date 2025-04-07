@@ -610,7 +610,7 @@ const getListeArticleparFamille = async (req, res) => {
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const ListecodeFamille = await dbConnection.query(
-      `select code , famille, libelle,codesousfam from article where famille LIKE :famille`,
+      `select * from article where famille LIKE :famille`,
       {
         replacements: {
           famille: `%${codeFamille}%`,
@@ -633,7 +633,7 @@ const getListeArticleparLibelle = async (req, res) => {
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const ListelibelleArticle = await dbConnection.query(
-      `Select code, famille, libelle ,codesousfam from article where libelle like :libelle`,
+      `Select * from article where libelle like :libelle`,
 
       {
         replacements: {
@@ -658,7 +658,7 @@ const getListeArticleParSousFamille = async (req, res) => {
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const ListeArticleSousFamille = await dbConnection.query(
-      `Select code, famille, libelle ,codesousfam from article where codesousfam like :codesousfam`,
+      `Select * from article where codesousfam like :codesousfam`,
 
       {
         replacements: {
@@ -686,7 +686,7 @@ const getListeArticleParCodeArticle=async(req,res)=>{
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const ListecodeArticle = await dbConnection.query(
-      `select code , famille, libelle,codesousfam from article where code LIKE :code`,
+      `select * from article where code LIKE :code`,
       {
         replacements: {
           code: `%${codeArticle}%`,
