@@ -196,9 +196,11 @@ export const ajouterArticle = createAsyncThunk(
       {
         articleAjoute: thunkAPI.getState().ArticlesDevis.articleInfos,
       }
+
     );
 
     console.log(response);
+ //return response.data
   }
 );
 export const modifierarticle = createAsyncThunk(
@@ -230,17 +232,14 @@ export const getListeArticleparFamille = createAsyncThunk(
         }
       }
     );
-    console.log(response)
-    return response.data.ListecodeFamille
-    
+    console.log(response);
+    return response.data.ListecodeFamille;
   }
-  
 );
 
 export const getListeArticleparLibelle = createAsyncThunk(
   "article/getListeArticleparLibelle",
   async (libelle, thunkAPI) => {
-    
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().UtilisateurInfo.dbName
@@ -250,26 +249,37 @@ export const getListeArticleparLibelle = createAsyncThunk(
         }
       }
     );
-    console.log(response)
-    return response.data.ListelibelleArticle
-
+    console.log(response);
+    return response.data.ListelibelleArticle;
   }
-  
 );
 
-// export const getArticleparCodeArticle = createAsyncThunk(
-//   "article/getArticleparCodeArticle",
-//   async (codeArticle, thunkAPI) => {
-//     console.log(codeArticle);
-//     const response = await axios.get(
-//       `${process.env.REACT_APP_API_URL}/api/article/${
-//         thunkAPI.getState().UtilisateurInfo.dbName
-//       }/getArticleparCodeArticle/${codeArticle}`
-//     );
-//     console.log(response);
-//     return response.data.result;
-//   }
-// );
+export const getListeArticleParSousFamille = createAsyncThunk(
+  "article/getListeArticleParSousFamille",
+  async (SousFamille, thunkAPI) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/article/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getListeArticleParSousFamille/${SousFamille}`
+    );
+    console.log(response);
+    return response.data.ListeArticleSousFamille;
+  }
+);
+
+export const getListeArticleParCodeArticle = createAsyncThunk(
+  "article/getListeArticleParCodeArticle",
+  async (codeArticle, thunkAPI) => {
+    console.log(codeArticle);
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/article/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getListeArticleParCodeArticle/${codeArticle}`
+    );
+    console.log(response);
+    return response.data.ListecodeArticle;
+  }
+);
 
 const defaultArticleInfos = {
   // ! ajouter les valeurs par défaut pour les états de checkbox
@@ -326,8 +336,8 @@ export const articleSlice = createSlice({
     setArticleInfosEntiere: (state, action) => {
       state.articleInfos = action.payload;
     },
-    setListeArticle:(state,action)=>{
-      state.ListeArticle=action.payload;
+    setListeArticle: (state, action) => {
+      state.ListeArticle = action.payload;
     },
     viderChampsArticleInfo: (state) => {
       state.articleInfos = {
@@ -484,7 +494,7 @@ export const articleSlice = createSlice({
         state.erreur = action.payload;
         state.status = "echoue";
       })
-      
+
       .addCase(getListeArticleparFamille.pending, (state) => {
         state.status = "chargement";
       })
@@ -497,7 +507,7 @@ export const articleSlice = createSlice({
         state.erreur = action.payload;
         state.status = "echoue";
       })
-      
+
       .addCase(getListeArticleparLibelle.pending, (state) => {
         state.status = "chargement";
       })
@@ -510,26 +520,41 @@ export const articleSlice = createSlice({
         state.erreur = action.payload;
         state.status = "echoue";
       })
-      
-      // .addCase(getArticleparCodeArticle.pending, (state) => {
-      //   state.status = "chargement";
-      // })
-      // .addCase(getArticleparCodeArticle.fulfilled, (state, action) => {
-      //   state.ListeArticle = action.payload;
 
-      //   state.status = "reussi";
-      // })
-      // .addCase(getArticleparCodeArticle.rejected, (state, action) => {
-      //   state.erreur = action.payload;
-      //   state.status = "echoue";
-      // })
-;
+      .addCase(getListeArticleParSousFamille.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getListeArticleParSousFamille.fulfilled, (state, action) => {
+        state.ListeArticle = action.payload;
+
+        state.status = "reussi";
+      })
+      .addCase(getListeArticleParSousFamille.rejected, (state, action) => {
+        state.erreur = action.payload;
+        state.status = "echoue";
+      })
+
+      .addCase(getListeArticleParCodeArticle.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getListeArticleParCodeArticle.fulfilled, (state, action) => {
+        
+        state.ListeArticle = action.payload;
+       
+       
+
+        state.status = "reussi";
+      })
+      .addCase(getListeArticleParCodeArticle.rejected, (state, action) => {
+        state.erreur = action.payload;
+        state.status = "echoue";
+      });
   },
 });
 export const {
   setArticleInfos,
   setArticleInfosEntiere,
   viderChampsArticleInfo,
-  setListeArticle
+  setListeArticle,
 } = articleSlice.actions;
 export default articleSlice.reducer;

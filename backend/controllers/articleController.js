@@ -167,6 +167,8 @@ const getArticleParCode = async (req, res) => {
 };
 //* ajouter un artile  lorsque tu veux ajoute un meme code d'article il s'affiche erreur
 //* vic url http://localhost:5000/api/article/SOLEVO/ajouterArticle
+//* input: {"articleAjoute": {  "code": "122",  "libelle": "bnn" }}
+//* il va etre ajouter 
 const ajouterArticle = async (req, res) => {
   const { dbName } = req.params;
   const { articleAjoute } = req.body;
@@ -480,12 +482,10 @@ const getCodeFamilleParDesignationFamille = async (req, res) => {
       where: { libelle: desFamille },
     });
     if (codesFamillesTrouves.length == 1) {
-      return res
-        .status(200)
-        .json({
-          message: "code rélative au désignation donnée récuperé avec succès",
-          codesFamillesTrouves,
-        });
+      return res.status(200).json({
+        message: "code rélative au désignation donnée récuperé avec succès",
+        codesFamillesTrouves,
+      });
     }
     if (codesFamillesTrouves.length == 0) {
       return res
@@ -493,11 +493,9 @@ const getCodeFamilleParDesignationFamille = async (req, res) => {
         .json({ message: "aucun code est rélative à la désignation donné" });
     }
     if (codesFamillesTrouves.length > 1) {
-      return res
-        .status(400)
-        .json({
-          message: "plusieurs codes trouvées pour la désignation donnée",
-        });
+      return res.status(400).json({
+        message: "plusieurs codes trouvées pour la désignation donnée",
+      });
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -519,12 +517,10 @@ const getCodeSousFamilleParDesignationSousFamille = async (req, res) => {
       where: { libelle: desSousFamille },
     });
     if (sousFamillesTrouves.length == 1) {
-      return res
-        .status(200)
-        .json({
-          message: "code rélative au désignation donnée récuperé avec succès",
-          sousFamillesTrouves,
-        });
+      return res.status(200).json({
+        message: "code rélative au désignation donnée récuperé avec succès",
+        sousFamillesTrouves,
+      });
     }
     if (sousFamillesTrouves.length == 0) {
       return res
@@ -532,11 +528,9 @@ const getCodeSousFamilleParDesignationSousFamille = async (req, res) => {
         .json({ message: "aucun code est rélative à la désignation donné" });
     }
     if (sousFamillesTrouves.length > 1) {
-      return res
-        .status(400)
-        .json({
-          message: "plusieurs codes trouvées pour la désignation donnée",
-        });
+      return res.status(400).json({
+        message: "plusieurs codes trouvées pour la désignation donnée",
+      });
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -558,13 +552,10 @@ const getArticleParLibelle = async (req, res) => {
       order: ["libelle", "ASC"],
     });
     if (articlesTrouves.length == 1) {
-      return res
-        .status(200)
-        .json({
-          message:
-            "article rélative au désignation donnée récuperé avec succès",
-          articlesTrouves,
-        });
+      return res.status(200).json({
+        message: "article rélative au désignation donnée récuperé avec succès",
+        articlesTrouves,
+      });
     }
     if (articlesTrouves.length == 0) {
       return res
@@ -572,11 +563,9 @@ const getArticleParLibelle = async (req, res) => {
         .json({ message: "aucun article est rélative à la désignation donné" });
     }
     if (articlesTrouves.length > 1) {
-      return res
-        .status(400)
-        .json({
-          message: "plusieurs articles trouvées pour la désignation donnée",
-        });
+      return res.status(400).json({
+        message: "plusieurs articles trouvées pour la désignation donnée",
+      });
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -623,10 +612,10 @@ const getListeArticleparFamille = async (req, res) => {
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const ListecodeFamille = await dbConnection.query(
-      `select code , famille, libelle,codesousfam from article where famille like :famille`,
+      `select code , famille, libelle,codesousfam from article where famille LIKE :famille`,
       {
         replacements: {
-          famille: "%"+codeFamille+"%",
+          famille: `%${codeFamille}%`,
         },
 
         type: dbConnection.QueryTypes.SELECT,
@@ -659,11 +648,64 @@ const getListeArticleparLibelle = async (req, res) => {
     );
     return res
       .status(200)
-      .json({ message: "liste article par libelle recupere avec succes", ListelibelleArticle });
+      .json({
+        message: "liste article par  libelle  recupere avec succes",
+        ListelibelleArticle,
+      });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
+const getListeArticleParSousFamille = async (req, res) => {
+  const { dbName, SousFamille } = req.params;
+  try {
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const ListeArticleSousFamille = await dbConnection.query(
+      `Select code, famille, libelle ,codesousfam from article where codesousfam like :codesousfam`,
+
+      {
+        replacements: {
+          codesousfam: "%" + SousFamille + "%",
+        },
+
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    );
+    return res
+      .status(200)
+      .json({
+        message: "liste article par  code famille  recupere avec succes",
+        ListeArticleSousFamille,
+      });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+//* au niveau de la recherche.jsx url : http://localhost:5000/api/article/SOLEVO/getListeArticleParCodeArticle/PR
+//* input Code : pr
+//* output plusieurs code pr "ListecodeArticle": [ {  "code": "PRZ2002",  "famille": "02-IN",  "libelle": "PROFILE EN ACIER GALVA 41X21  SIBEC",  "codesousfam": " "  ,
+const getListeArticleParCodeArticle=async(req,res)=>{
+  const { dbName, codeArticle } = req.params;
+  try {
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const ListecodeArticle = await dbConnection.query(
+      `select code , famille, libelle,codesousfam from article where code LIKE :code`,
+      {
+        replacements: {
+          code: `%${codeArticle}%`,
+        },
+
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    );
+    return res
+      .status(200)
+      .json({ message: "code Articlerecupere avec succes", ListecodeArticle });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+
+}
 
 module.exports = {
   //*apartient l'interface devis
@@ -686,4 +728,6 @@ module.exports = {
   getArticleParLibelle,
   getListeArticleparFamille,
   getListeArticleparLibelle,
+  getListeArticleParSousFamille,
+  getListeArticleParCodeArticle
 };

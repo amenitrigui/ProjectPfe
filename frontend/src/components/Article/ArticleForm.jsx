@@ -15,7 +15,11 @@ import {
   setArticleInfos,
   viderChampsArticleInfo,
 } from "../../app/article_slices/articleSlice";
-import { setAfficherRecherchePopup } from "../../app/interface_slices/uiSlice";
+import {
+  setAfficherRecherchePopup,
+  setToolbarMode,
+  setToolbarTable,
+} from "../../app/interface_slices/uiSlice";
 function ArticleForm() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
@@ -49,10 +53,10 @@ function ArticleForm() {
     dispatch(setArticleInfos({ valeur, colonne }));
 
     if (colonne == "code") {
-      if (valeur != "") {
-        dispatch(getArticleParCode(valeur));
-      } else {
-        dispatch(viderChampsArticleInfo());
+      if (valeur == "") {
+        {
+          dispatch(viderChampsArticleInfo());
+        }
       }
     }
 
@@ -98,7 +102,7 @@ function ArticleForm() {
 
   const afficherRecherchePopup = () => {
     dispatch(setAfficherRecherchePopup(true));
-  }
+  };
   return (
     <div className="container">
       <div className={`navigation ${isSidebarOpen ? "active" : ""}`}>
@@ -243,7 +247,10 @@ function ArticleForm() {
                   }
                   disabled={!activerChampsForm}
                   list="listeCodesFamilles"
-                  onClick={() => afficherRecherchePopup()}
+                  onClick={() => {
+                    dispatch(setToolbarTable("famille"));
+                    afficherRecherchePopup();
+                  }}
                 />
 
                 <datalist id="listeCodesFamilles">
@@ -295,7 +302,10 @@ function ArticleForm() {
                     hundlesubmitTousLesChamp(e.target.value, "codesousfam")
                   }
                   disabled={!activerChampsForm}
-                  onClick={() => afficherRecherchePopup()}
+                  onClick={() => {
+                    dispatch(setToolbarTable("sousfamille"));
+                    afficherRecherchePopup();
+                  }}
                 />
                 <datalist id="listeCodesSousFamille">
                   {ListeSousFamille.length > 0 ? (
@@ -348,7 +358,12 @@ function ArticleForm() {
                   onChange={(e) =>
                     hundlesubmitTousLesChamp(e.target.value, "code")
                   }
-                  onClick={() => afficherRecherchePopup()}
+                  onClick={() => {
+                    dispatch(setToolbarTable("article"));
+                    if (toolbarMode === "consultation") {
+                      afficherRecherchePopup();
+                    }
+                  }}
                 />
 
                 {/* <datalist id="listeCodesArticle">
@@ -361,7 +376,7 @@ function ArticleForm() {
                   ) : (
                     <option disabled>Aucun code d'article trouvé</option>
                   )}
-                </datalist> */}
+                </datalist>   */}
               </div>
               <div className="flex flex-col w-1/3">
                 <label

@@ -7,6 +7,8 @@ import articleSlice from "./article_slices/articleSlice";
 import { combineReducers } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import localStorage from "redux-persist/es/storage";
+import  familleSlice  from "./famille_slices/familleSlice";
+import  sousfamilleSlice  from "./sousfamille_slices/sousfamilleSlice";
 
 const persistConfig = {
   key: "root",
@@ -28,6 +30,8 @@ const rootReducer = combineReducers({
   DevisCrud: devisSlice,
   UtilisateurInfo: utilisateurSlice,
   ArticlesDevis: articleSlice,
+  familleSlice: familleSlice,
+  sousfamilleSlice: sousfamilleSlice
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
