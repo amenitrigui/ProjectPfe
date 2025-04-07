@@ -53,6 +53,7 @@ export const getClientParCode = createAsyncThunk(
         thunkAPI.getState().UtilisateurInfo.dbName
       }/getClientParCode/${code}`
     );
+    console.log(response)
     return response.data.client;
   }
 );
@@ -149,6 +150,7 @@ export const getDerniereCodeClient = createAsyncThunk(
         thunkAPI.getState().UtilisateurInfo.dbName
       }/getDerniereCodeClient`
     );
+    console.log(response)
     return response.data.derniereCodeClient.code;
   }
 );
@@ -482,10 +484,10 @@ export const clientSlice = createSlice({
         if (action.payload[0] && action.payload[0] != {}) {
           //objet client bch tit3aba il formulaire
           state.clientInfos = action.payload[0];
-          state.clientInfos.CODEp = action.payload[0].cp
-            ? action.payload[0].cp
-            : "";
-          state.clientInfos.codergg = action.payload.desireg;
+          // state.clientInfos.CODEp = action.payload[0].cp
+          //   ? action.payload[0].cp
+          //   : "";
+          // state.clientInfos.codergg = action.payload.desireg;
         }
 
         state.status = "réussi";
@@ -512,6 +514,7 @@ export const clientSlice = createSlice({
       })
       .addCase(getDerniereCodeClient.fulfilled, (state, action) => {
         state.clientInfos.code = (parseInt(action.payload) + 1).toString();
+        console.log(action.payload)
         state.status = "réussi";
       })
       .addCase(getDerniereCodeClient.rejected, (state, action) => {

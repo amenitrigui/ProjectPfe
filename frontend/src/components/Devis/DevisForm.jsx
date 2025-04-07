@@ -32,6 +32,7 @@ import {
   setActiverChampsForm,
   setAfficherRecherchePopup,
   setToolbarMode,
+  setToolbarTable,
 } from "../../app/interface_slices/uiSlice";
 
 function DevisForm() {
@@ -156,13 +157,16 @@ function DevisForm() {
   }, []);
 
   const handleChangeCodeClient = (valeur) => {
-    console.log(valeur)
+    console.log(valeur);
     dispatch(setDevisInfo({ collone: "CODECLI", valeur: valeur }));
-    dispatch(getClientParCode(valeur))
-  }
-  const handleRecherche=()=>{
-    dispatch(setAfficherRecherchePopup(true))
-  }
+    dispatch(getClientParCode(valeur));
+  };
+  const handleRecherche = () => {
+    dispatch(setAfficherRecherchePopup(true));
+  };
+  const afficherRecherchePopup = () => {
+    dispatch(setAfficherRecherchePopup(true));
+  };
   return (
     <>
       <div className="container">
@@ -184,7 +188,11 @@ function DevisForm() {
                 icon: "people-outline",
                 path: "/ClientFormTout",
               },
-              { name: "Article", icon: "chatbubble-outline", path: "/ArticleFormTout" },
+              {
+                name: "Article",
+                icon: "chatbubble-outline",
+                path: "/ArticleFormTout",
+              },
               {
                 name: "devistout",
                 icon: "lock-closed-outline",
@@ -293,7 +301,10 @@ function DevisForm() {
                         onChange={(e) => handleSelectDevis(e)}
                         value={devisInfo.NUMBL}
                         disabled={activerChampsForm}
-                        onClick={(e)=>handleRecherche(e)}
+                        onClick={() => {
+                          dispatch(setToolbarTable("devis"));
+                          afficherRecherchePopup();
+                        }}
                       />
                       <datalist id="listeCodesNumbl">
                         {listeNUMBL.map((codeDevis) => (
@@ -384,7 +395,7 @@ function DevisForm() {
                       <span>Information Client</span>
                       <button
                         className="btn btn-outline btn-accent"
-                        // onClick={() => handleAjoutClientRedirect()}
+                        onClick={() => handleAjoutClientRedirect()}
                       >
                         {" "}
                         <i className="fas fa-plus-circle"></i>
@@ -396,10 +407,16 @@ function DevisForm() {
                       className="w-full border border-gray-300 rounded-md p-2"
                       disabled={!activerChampsForm}
                       value={clientInfos.code || ""}
-                      onChange={(e) =>
-                        handleChangeCodeClient(e.target.value)
+                      onChange={(e) => handleChangeCodeClient(e.target.value)}
+                      onClick={() => {
+                        dispatch(setToolbarTable("client"));
+                        afficherRecherchePopup();
+                      }}
+                      list={
+                        toolbarMode == "ajout" || "modification"
+                          ? "listeCodesClients"
+                          : ""
                       }
-                      list={toolbarMode == "ajout" || "modification" ? "listeCodesClients" : ""}
                     />
 
                     <datalist id="listeCodesClients">

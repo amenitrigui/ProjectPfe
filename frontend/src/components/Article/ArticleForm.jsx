@@ -125,7 +125,7 @@ function ArticleForm() {
               <span className="icon">
                 <ion-icon name="speedometer-outline"></ion-icon>
               </span>
-              <span className="title">ERP Logicom</span>m
+              <span className="title">ERP Logicom</span>
             </a>
           </li>
 

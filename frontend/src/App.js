@@ -37,6 +37,8 @@ import ArticleList from "./pages/Article/ArticleList"
 function App() {
   const dispatch = useDispatch();
   const usera = useSelector((state) => state.UtilisateurInfo.codeuser);
+  const toolbartable=useSelector((state)=>state.uiStates.toolbarTable)
+  console.log(toolbartable)
   dispatch(setDevisInfo("usera",usera))
   // ! thou art a man of feeble spirit
   // const persistor = persistStore(store);

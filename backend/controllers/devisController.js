@@ -252,24 +252,37 @@ const getLignesDevis = async (req, res) => {
 const GetDevisParPeriode = async (req, res) => {
   try {
     const { dbName } = req.params;
-    const { DATEBL } = req.query;
-    const { codeuser } = req.query;
+    const { DATEBL, codeuser } = req.query;
+
     const dbConnection = await getDatabaseConnection(dbName, res);
 
+    if (!DATEBL || !codeuser) {
+      return res.status(400).json({ message: "DATEBL ou codeuser est manquant" });
+    }
+
     const devis = await dbConnection.query(
-      `select  NUMBL, libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where DATE(DATEBL)= :DATEBL and usera = :codeuser`,
+      `SELECT NUMBL, libpv, ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT 
+       FROM dfp 
+       WHERE DATEBL LIKE :DATEBL AND usera = :codeuser`,
       {
-        replacements: { DATEBL, codeuser },
+        replacements: {
+          DATEBL: `%${DATEBL}%`, // Utilise LIKE pour faire une recherche partielle
+          codeuser,
+        },
         type: dbConnection.QueryTypes.SELECT,
       }
     );
-    return res
-      .status(200)
-      .json({ message: "recupere la periode par devis ", devis: devis });
+
+    return res.status(200).json({
+      message: "Période récupérée avec succès par devis",
+      devis: devis
+    });
+
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
+
 
 // * récuperer la liste de devis créés pour un client spécifique (CODECLI)
 // * pour une societé donnée (dbName)
@@ -277,24 +290,36 @@ const GetDevisParPeriode = async (req, res) => {
 const GetDevisListParClient = async (req, res) => {
   try {
     const { dbName } = req.params;
-    const { CODECLI } = req.query;
-    const { codeuser } = req.query;
+    const { CODECLI, codeuser } = req.query;
+
     console.log(dbName, " ", CODECLI, " ", codeuser);
+    
     const dbConnection = await getDatabaseConnection(dbName, res);
+
     const devis = await dbConnection.query(
-      `select  NUMBL, libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where CODECLI=:CODECLI and usera = :codeuser`,
+      `SELECT 
+         NUMBL, libpv, ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, 
+         comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT 
+       FROM dfp 
+       WHERE CODECLI LIKE :codecli AND usera = :codeuser`,
       {
-        replacements: { CODECLI, codeuser },
+        replacements: {
+          codecli: `%${CODECLI}%`,  // LIKE sur CODECLI
+          codeuser,
+        },
         type: dbConnection.QueryTypes.SELECT,
       }
     );
-    return res
-      .status(200)
-      .json({ message: "recupere code client par devis ", devis: devis });
+
+    return res.status(200).json({
+      message: "Code client récupéré avec succès par devis",
+      devis: devis,
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
+
 
 // * récuperer la liste des codes de devis (NUMBL)
 // * pour une societé donnée (dbName)
@@ -334,18 +359,25 @@ const getCodesDevis = async (req, res) => {
 // * http://localhost:5000/api/devis/SOLEVO/getDevisParNUMBL/DV2300002
 const getDevisParNUMBL = async (req, res) => {
   try {
-    const { dbName } = req.params;
-    const { NUMBL } = req.params;
+    const { dbName, NUMBL } = req.params;
     const { codeuser } = req.query;
 
     const dbConnection = await getDatabaseConnection(dbName, res);
     console.log(NUMBL, " ", codeuser);
+
     if (NUMBL && codeuser) {
-      // devis selectionné
       const devis = await dbConnection.query(
-        `SELECT NUMBL,libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP,TIMBRE, usera, RSCLI, codesecteur, MHT from dfp where NUMBL = :NUMBL and usera = :codeuser`,
+        `SELECT 
+          NUMBL, libpv, ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, 
+          comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT 
+         FROM dfp 
+         WHERE NUMBL LIKE :numbl 
+           AND usera = :codeuser`,
         {
-          replacements: { NUMBL, codeuser },
+          replacements: {
+            numbl: `%${NUMBL}%`,  // Ajout du LIKE ici
+            codeuser,
+          },
           type: dbConnection.QueryTypes.SELECT,
         }
       );
@@ -359,6 +391,7 @@ const getDevisParNUMBL = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
 
 // * récuperer l'utilisateur qui a crée un devis à partir
 // * de la base des données ErpSole
@@ -415,17 +448,24 @@ const getInfoUtilisateur = async (req, res) => {
 // * http://localhost:5000/api/devis/SOLEVO/getDevisParMontant/5664.511
 const getDevisParMontant = async (req, res) => {
   try {
-    const { dbName } = req.params;
-    const { montant } = req.params;
+    const { dbName, montant } = req.params;
     const { codeuser } = req.query;
 
     const dbConnection = await getDatabaseConnection(dbName, res);
+
     if (montant && codeuser) {
-      // devis selectionné
+      // Ici on convertit le montant en nombre pour s'assurer que la comparaison fonctionne
       const devis = await dbConnection.query(
-        `SELECT NUMBL,libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where MTTC = :montant and usera = :codeuser`,
+        `SELECT 
+          NUMBL, libpv, ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, 
+          comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT 
+        FROM dfp 
+        WHERE MTTC  LIKE :montant AND usera = :codeuser`,
         {
-          replacements: { montant, codeuser },
+          replacements: {
+            montant: `%${montant}%`,  // LIKE avec wildcard
+            codeuser
+          },
           type: dbConnection.QueryTypes.SELECT,
         }
       );
@@ -441,6 +481,7 @@ const getDevisParMontant = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
 
 // * méthode pour récuperer la liste de points de vente
 // * exemple :
