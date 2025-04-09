@@ -534,17 +534,10 @@ const createDevis = async (req, res) => {
   }
 };
 
-/**
- * Description
- * Suppression d'une devis
- * @author Unknown
- * @date 2025-02-13
- * @param {any} req
- * @param {any} res
- * @returns {any}
- */
+// * méthode pour supprimer un devis par son NUMBL
 const deleteDevis = async (req, res) => {
-  const { dbName, NUMBL } = req.params;
+  const { dbName } = req.params;
+  const { NUMBL } = req.query;
 
   if (!NUMBL || NUMBL.trim() === "") {
     return res

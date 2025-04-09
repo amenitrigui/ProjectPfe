@@ -2,7 +2,7 @@ const { Sequelize } = require("sequelize");
 require("dotenv").config();
 
 // * Informations d'accès au serveur de bases des données
-// * commentaire de machine 1
+
 const defaultDbConfig = {
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
