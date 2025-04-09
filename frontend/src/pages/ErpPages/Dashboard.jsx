@@ -49,6 +49,11 @@ const Dashboard = () => {
               icon: "help-outline",
               path: "/SocietiesList",
             },
+            {
+              name: "utilisateur",
+              icon: "help-outline",
+              path: "/UtilisateurFormTout",
+            },
             { name: "Settings", icon: "settings-outline", path: "/" },
             {
               name: "Deconnexion",

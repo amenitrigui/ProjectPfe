@@ -35,6 +35,6 @@ router.get("/:databaseName/clients", getAllClients);
 // * récuperer la liste des secteurs ?
 router.get("/secteurs/:databaseName", getAllSectors);
 // * récuperer un utilisateur par son code
-router.get("/getUtilisateurParCode", getUtilisateurParCode);
+router.get("getUtilisateurParCode/:codeuser", getUtilisateurParCode);
 
 module.exports = router;

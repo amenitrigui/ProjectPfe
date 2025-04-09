@@ -11,6 +11,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import {
   getClientParCode,
+  getDerniereCodeClient,
   getToutCodesClient,
   setInsertionDepuisDevisForm,
 } from "../../app/client_slices/clientSlice";
@@ -143,6 +144,7 @@ function DevisForm() {
   // * à partir de cette formulaire, ceci est nécessaire pour qu'on puisse
   // * consérver tous données de devis saisies avant l'ajout du client
   const handleAjoutClientRedirect = () => {
+    dispatch(getDerniereCodeClient())
     dispatch(setInsertionDepuisDevisForm(true));
 
     navi("/ClientFormTout");

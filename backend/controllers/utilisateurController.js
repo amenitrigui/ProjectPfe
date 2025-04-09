@@ -606,31 +606,39 @@ const reinitialiserMotPasse = async (req, res) => {
 
 // * récuperer les informations d'un utilisateur par son code
 // * verb : get
-// * http://localhost:5000/api/utilisateurs/getUtilisateurParCode
-const getUtilisateurParCode = async(req, res) => {
-  try{
-    const { codeuser } = req.query;
+// * http://localhost:5000/api/utilisateurs/getUtilisateurParCode/1
+const getUtilisateurParCode = async (req, res) => {
+  const { codeuser } = req.params;
+  
+
+  try {
 
     const dbConnection = await getDatabaseConnection("usererpsole", res);
+    
     const utilisateur = await dbConnection.query(
-      `SELECT codeuser, nom, directeur FROM utilisateur WHERE codeuser = :codeuser`,
+      "SELECT * FROM utilisateur WHERE codeuser = :codeuser", // <-- la requête SQL avec un paramètre nommé
       {
         type: dbConnection.QueryTypes.SELECT,
-        replacements: {
-          codeuser: codeuser
-        }
+        replacements: { codeuser: codeuser }
       }
-    )
+    );
 
     console.log(utilisateur);
 
-    if(utilisateur) {
-      return res.status(200).json({message: "utilisateur récuperé avec succès", utilisateur:utilisateur})
+    if (utilisateur.length > 0) {
+      return res.status(200).json({
+        message: "Utilisateur récupéré avec succès",
+        utilisateur
+      });
+    } else {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
     }
-  }catch(error) {
-    return res.status(500).json({message: error.message})
+
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
-}
+};
+
 
 // Exporter la méthode
 module.exports = {

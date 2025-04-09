@@ -36,7 +36,7 @@ import {
   setDevisClientInfos,
   viderChampsDevisInfo,
 } from "../../app/devis_slices/devisSlice";
-import { getUtilisateurCourantInfos } from "../../app/utilisateur_slices/utilisateurSlice";
+import { getUtilisateurParCode } from "../../app/utilisateur_slices/utilisateurSlice";
 import { viderChampsArticleInfo } from "../../app/article_slices/articleSlice";
 
 function ToolBar() {
@@ -84,7 +84,7 @@ function ToolBar() {
       dispatch(viderChampsClientInfo());
       dispatch(getDerniereCodeClient());
       // * dispatch une action pour récuperer le code + nom d'utilisateur courant
-      dispatch(getUtilisateurCourantInfos());
+      dispatch(getUtilisateurParCode());
     }
 
     if (toolbarTable == "article") {
