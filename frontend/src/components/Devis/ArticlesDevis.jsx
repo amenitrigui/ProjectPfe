@@ -32,14 +32,14 @@ function ArticlesDevis() {
   const articleInfos = useSelector((state) => state.ArticlesDevis.articleInfos)
 
   const handlecodeFamilleChange = (codeFamille) => {
-    dispatch(setArticleInfos({colonne: "famille", valeur: codeFamille}))
+    dispatch(setArticleInfos({ colonne: "famille", valeur: codeFamille }))
     dispatch(getListeCodesArticles(codeFamille));
   };
   const handleSubmiparcode = (codeArticle) => {
-    dispatch(setArticleInfos({colonne: "code", valeur: codeArticle}))
+    dispatch(setArticleInfos({ colonne: "code", valeur: codeArticle }))
     dispatch(getTousArticleparcode(codeArticle));
   };
-  const hadlesubmitquantiteparcode = () => {};
+  const hadlesubmitquantiteparcode = () => { };
   useEffect(() => {
     dispatch(getArticleFamiles());
   }, []);
@@ -52,7 +52,7 @@ function ArticlesDevis() {
     0;
 
   const handleChangementChamp = (colonne, e) => {
-    dispatch(setArticleInfos({colonne: colonne, valeur: e.target.value}))
+    dispatch(setArticleInfos({ colonne: colonne, valeur: e.target.value }))
   }
   const handleValiderLDFPBtnClick = () => {
     console.log(articleInfos);
@@ -66,7 +66,30 @@ function ArticlesDevis() {
         <div className="grid grid-cols-6 gap-4 items-center">
           <div>
             <label className="block font-medium">FAMILLE</label>
-            <select
+            <input
+              type="text"
+              className="border border-gray-300 rounded-md p-2"
+              value={ListeArticle.famille}
+
+              //  disabled={!activerChampsForm}
+              list="listeCodesFamilles"
+              placeholder="Sélectionner ou taper une famille"
+              onChange={(e) => {
+                handlecodeFamilleChange(e.target.value);
+              }}
+            />
+            <datalist id="listeCodesFamilles">
+              {ListeArticle.length > 0 ? (
+                ListeArticle.map((famille, indice) => (
+                  <option key={indice} value={famille.code}>
+                    {famille.code}
+                  </option>
+                ))
+              ) : (
+                <option disabled>Aucun article trouvé</option>
+              )}
+            </datalist>
+            {/* <select
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="Sélectionner ou taper une famille"
               onChange={(e) => {
@@ -76,12 +99,36 @@ function ArticlesDevis() {
               {ListeArticle.map((famille) => (
                 <option key={famille.code}>{famille.code}</option>
               ))}
-            </select>
+            </select> */}
           </div>
 
           <div>
             <label className="block font-medium">CODE ARTICLE</label>
-            <select
+            <input
+              type="text"
+              className="border border-gray-300 rounded-md p-2"
+              value={ListeCodeArticle.code}
+
+              //  disabled={!activerChampsForm}
+              list="listecodeArticle"
+              placeholder="Sélectionner ou taper un code d'article"
+              onChange={(e) => {
+                handleSubmiparcode(e.target.value);
+              }}
+            />
+            <datalist id="listecodeArticle">
+              {ListeCodeArticle.length > 0 ? (
+                ListeCodeArticle.map((article, indice) => (
+                  <option key={indice} value={article.code}>
+                    {article.code}
+                  </option>
+                ))
+              ) : (
+                <option disabled>Aucun article trouvé</option>
+              )}
+            </datalist>
+
+            {/* <select
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="Sélectionner ou taper une famille"
               onChange={(e) => {
@@ -91,7 +138,7 @@ function ArticlesDevis() {
               {ListeCodeArticle.map((article) => (
                 <option key={article.code}>{article.code}</option>
               ))}
-            </select>
+            </select> */}
           </div>
           <div>
             <label className="block font-medium">LIBELLE</label>
@@ -100,7 +147,7 @@ function ArticlesDevis() {
               placeholder="Sélectionner un code article"
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               value={codeTousArticleParCode.libelle || ""}
-              onChange={(e) => handleChangementChamp("libelle",e)}
+              onChange={(e) => handleChangementChamp("libelle", e)}
               readOnly
             />
           </div>
@@ -113,7 +160,7 @@ function ArticlesDevis() {
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               value={codeTousArticleParCode.unite || ""}
               readOnly
-              onChange={(e) => handleChangementChamp("unite",e)}
+              onChange={(e) => handleChangementChamp("unite", e)}
             />
           </div>
 
@@ -123,7 +170,7 @@ function ArticlesDevis() {
               type="text"
               placeholder="Sélectionner un code article"
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              onChange={(e) => handleChangementChamp("quantite",e)}
+              onChange={(e) => handleChangementChamp("quantite", e)}
             />
           </div>
 
@@ -133,7 +180,7 @@ function ArticlesDevis() {
               placeholder="Sélectionner un code article"
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               value={codeTousArticleParCode.CONFIG}
-              onChange={(e) => handleChangementChamp("CONFIG",e)}
+              onChange={(e) => handleChangementChamp("CONFIG", e)}
             />
           </div>
         </div>
@@ -146,7 +193,7 @@ function ArticlesDevis() {
             step="0.001"
             placeholder="Remise"
             className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            onChange={(e) => handleChangementChamp("DREMISE",e)}
+            onChange={(e) => handleChangementChamp("DREMISE", e)}
           />
         </div>
 
@@ -157,7 +204,7 @@ function ArticlesDevis() {
             placeholder="tauxtva"
             className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             value={codeTousArticleParCode.tauxtva || ""}
-            onChange={(e) => handleChangementChamp("tauxtva",e)}
+            onChange={(e) => handleChangementChamp("tauxtva", e)}
           />
         </div>
 

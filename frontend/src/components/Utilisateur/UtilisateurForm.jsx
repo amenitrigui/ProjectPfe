@@ -24,6 +24,8 @@ import {
 
 import ToolBar from "../Common/ToolBar";
 import { isAlphabetique, isNumerique } from "../../utils/validations";
+import { getUtilisateurParCode } from "../../app/utilisateur_slices/utilisateurSlice";
+
 
 const UtilisateurForm = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -42,8 +44,8 @@ const UtilisateurForm = () => {
     dispatch(getListeCodeRegions());
   }, []);
 
-  useEffect(() => {
-    dispatch(getToutCodesClient());
+  useEffect((valeur) => {
+    dispatch(getUtilisateurParCode(valeur));
   }, []);
 
   // Sélection des informations du client depuis le state Redux
@@ -52,6 +54,8 @@ const UtilisateurForm = () => {
   const infosUtilisateur = useSelector(
     (state) => state.UtilisateurInfo.infosUtilisateur
   );
+  const listeUtilisateur =useSelector((state)=>state.UtilisateurInfo.listeUtilisateur);
+  console.log(listeUtilisateur)
   const listeCodesRegion = useSelector(
     (state) => state.ClientCrud.listeCodesRegion
   );
@@ -78,138 +82,10 @@ const UtilisateurForm = () => {
   );
 
   const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
-
-  const handleChangeCheckbox = (e, colonne) => {
-    console.log(e.target.checked, " ", colonne);
-    if (toolbarMode == "ajout" || toolbarMode == "modification") {
-      dispatch(
-        setClientInfos({
-          colonne: colonne,
-          valeur: e.target.checked ? "O" : "N",
-        })
-      );
-    }
-  };
-
-  // Fonction pour gérer les changements dans les champs du formulaire
-  const handleChange = (e, colonne) => {
-    // * si aucun code client est selectionné
-    // * vider les champs
-    if (e.target.value == "") {
-      dispatch(viderChampsClientInfo());
-    }
-    if (e)
-      if (colonne == "cp" && e.target.value.length == 4) {
-        dispatch(getVilleParCodePostal(e.target.value));
-      }
-    dispatch(setClientInfos({ colonne, valeur: e.target.value }));
-    if (insertionDepuisDevisForm) {
-      dispatch(setDevisInfo({ colonne, valeur: e.target.value }));
-    }
-  };
-
-  const handleChangeCodePostal = (e) => {
-    if (e.target.value.length == 4) {
-      dispatch(getVilleParCodePostal(e.target.value));
-    }
-    if (e.target.value == "") {
-      dispatch(setClientInfos({ colonne: "desicp", valeur: "" }));
-    }
-    dispatch(setClientInfos({ colonne: "cp", valeur: e.target.value }));
-  };
-
-  const handleSecteurChange = (e) => {
-    if (e.target.value.length == 3) {
-      dispatch(getDesignationSecteurparCodeSecteur(e.target.value));
-    }
-    if (e.target.value == "") {
-      dispatch(setClientInfos({ colonne: "desisec", valeur: "" }));
-    }
-  };
-  const hundleRegionChange = (e) => {
-    if (e.target.value.length == 3) {
-      dispatch(getVilleParRegion(e.target.value));
-    }
-    if (e.target.value == "") {
-      dispatch(setClientInfos({ colonne: "desirgg", valeur: "" }));
-    }
-  };
-  const handleChangeCodeClient = (e, colonne) => {
-    if (isNumerique(e.target.value)) {
-      dispatch(setClientInfos({ colonne: "code", valeur: e.target.value }));
-    }
-    if (e.target.value == "") {
-      dispatch(viderChampsClientInfo());
-    }
-    // * on va récuperer les informations de client
-    // * à partir de son code
-    if (
-      colonne == "code" &&
-      e.target.value != "" &&
-      e.target.value.length == 8 &&
-      !isNaN(e.target.value)
-    ) {
-      dispatch(getClientParCode(e.target.value));
-    }
-  };
-  const handleChangeRib = (e, colonne) => {
-    if (isNumerique(e.target.value)) {
-      dispatch(setClientInfos({ colonne: "compteb", valeur: e.target.value }));
-    }
-    if (e.target.value == "") {
-      dispatch(setClientInfos({ colonne: "compteb", valeur: "" }));
-    }
-  };
-  const handleChangeNom = (e, colonne) => {
-    dispatch(setClientInfos({ colonne: "banque", valeur: e.target.value }));
-    if (e.target.value == "") {
-      dispatch(setClientInfos({ colonne: "banque", valeur: "" }));
-    }
-  };
-
-  const handleChangeFax = (e, colonne) => {
-    if (!isNaN(e.target.value)) {
-      dispatch(setClientInfos({ colonne: "fax", valeur: e.target.value }));
-    }
-    if (e.target.value == "") {
-      dispatch(setClientInfos({ colonne: "fax", valeur: "" }));
-    }
-  };
-
-  const handleCinChange = (e, colonne) => {
-    if (isNumerique(e.target.value)) {
-      dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
-    }
-  };
-
-  const handleChangeTel = (e, colonne) => {};
-
-  const handleChangeAlphaphetique = (e, colonne) => {
-    if (isAlphabetique(e.target.value)) {
-      dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
-    }
-  };
-  const handleChangeAlphaNumerique = (e, colonne) => {
-    if (isNaN(e.target.value)) {
-      dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
-    }
-  };
-  const handleChangeNumeriqueDouble = (e, colonne) => {
-    if (!isNaN(parseFloat(e.target.value))) {
-      dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
-    }
-  };
-
-  const handleChangeNumDecision = (e, colonne) => {
-    if (isNumerique(e.target.value))
-      dispatch(setClientInfos({ colonne: "decision", valeur: e.target.value }));
-  };
-  const hundleSelectTous = (e, champ) => {
-    dispatch(setClientInfos({ colonne: champ, valeur: e.target.value }));
-  };
-
-  const nombredevis = useSelector((state) => state.DevisCrud.nombreDeDevis);
-  const totalchifre = useSelector((state) => state.DevisCrud.totalchifre);
+const handleCodeUtilisateur= (codeuser)=>
+{
+  dispatch(getUtilisateurParCode(codeuser))
+}
   return (
     <div className="container">
       <div className={`navigation ${isSidebarOpen ? "active" : ""}`}>
@@ -342,22 +218,22 @@ const UtilisateurForm = () => {
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
                   list="listeCodesUtilisateur"
-                  value={clientInfos.code || ""}
-                  onChange={(e) => handleChangeCodeClient(e, "code")}
+                  value={infosUtilisateur.code || ""}
+                  onChange={() => handleCodeUtilisateur()}
                   disabled={activerChampsForm}
                   maxLength={8}
                 />
-                <datalist id="listeCodesUtilisateur">
-                  {listeToutCodesClients.length > 0 ? (
-                    listeToutCodesClients.map((client, indice) => (
-                      <option key={indice} value={client.code}>
-                        {client.code}
+                  {/*<datalist id="listeCodesUtilisateur">
+                  {listeUtilisateur.length > 0 ? (
+                    listeUtilisateur.map((utilisateur, indice) => (
+                      <option key={indice} value={utilisateur.code}>
+                        {utilisateur.code}
                       </option>
                     ))
                   ) : (
                     <option disabled>Aucun client trouvé</option>
                   )}
-                </datalist>
+                </datalist>  */}
               </div>
               <div className="flex flex-col w-1/3">
                 <label
@@ -384,7 +260,7 @@ const UtilisateurForm = () => {
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
                   value={clientInfos.cin || ""}
-                  onChange={(e) => handleCinChange(e, "cin")}
+             //     onChange={(e) => handleCinChange(e, "cin")}
                   disabled={!activerChampsForm}
                   maxLength={8}
                 />
@@ -401,7 +277,7 @@ const UtilisateurForm = () => {
                 type="text"
                 className="border border-gray-300 rounded-md p-2"
                 value={clientInfos.rsoc || ""}
-                onChange={(e) => handleChangeAlphaphetique(e, "rsoc")}
+                //onChange={(e) => handleChangeAlphaphetique(e, "rsoc")}
                 disabled={!activerChampsForm}
               />
             </div>
@@ -416,7 +292,7 @@ const UtilisateurForm = () => {
                 type="email"
                 className="border border-gray-300 rounded-md p-2"
                 value={clientInfos.adresse || ""}
-                onChange={(e) => handleChangeAlphaNumerique(e, "adresse")}
+                //onChange={(e) => handleChangeAlphaNumerique(e, "adresse")}
                 disabled={!activerChampsForm}
               />
             </div>
@@ -431,7 +307,7 @@ const UtilisateurForm = () => {
                 type="text"
                 className="border border-gray-300 rounded-md p-2"
                 value={clientInfos.activite || ""}
-                onChange={(e) => handleChangeAlphaphetique(e, "activite")}
+               // onChange={(e) => handleChangeAlphaphetique(e, "activite")}
                 disabled={!activerChampsForm}
               />
             </div>
@@ -447,7 +323,7 @@ const UtilisateurForm = () => {
                 type="text"
                 className="border border-gray-300 rounded-md p-2"
                 value={clientInfos.activite || ""}
-                onChange={(e) => handleChangeAlphaphetique(e, "activite")}
+            //    onChange={(e) => handleChangeAlphaphetique(e, "activite")}
                 disabled={!activerChampsForm}
               />
             </div>
@@ -474,7 +350,7 @@ const UtilisateurForm = () => {
                       clientInfos.usera ||
                       infosUtilisateur.codeuser + " // " + infosUtilisateur.nom
                     }
-                    onChange={(e) => handleChange(e, "usera")}
+                //    onChange={(e) => handleChange(e, "usera")}
                     disabled
                   />
                 </div>
@@ -491,7 +367,7 @@ const UtilisateurForm = () => {
                     type="text"
                     className="border border-gray-300 rounded-md p-2 w-2/3"
                     value={clientInfos.userm || ""}
-                    onChange={(e) => handleChange(e, "userm")}
+                 //   onChange={(e) => handleChange(e, "userm")}
                     disabled
                   />
                 </div>
@@ -508,7 +384,7 @@ const UtilisateurForm = () => {
                     type="date"
                     className="border border-gray-300 rounded-md p-2 w-2/3"
                     value={clientInfos.datemaj || ""}
-                    onChange={(e) => handleChange(e, "datemaj")}
+                  //  onChange={(e) => handleChange(e, "datemaj")}
                     disabled
                   />
                 </div>
@@ -526,7 +402,7 @@ const UtilisateurForm = () => {
                   cols={33}
                   rows={7}
                   value={clientInfos.Commentaire || ""}
-                  onChange={(e) => handleChange(e, "Commentaire")}
+              //    onChange={(e) => handleChange(e, "Commentaire")}
                   disabled={!activerChampsForm}
                 />
               </div>

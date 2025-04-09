@@ -514,7 +514,6 @@ export const clientSlice = createSlice({
       })
       .addCase(getDerniereCodeClient.fulfilled, (state, action) => {
         state.clientInfos.code = (parseInt(action.payload) + 1).toString();
-        console.log(action.payload)
         state.status = "réussi";
       })
       .addCase(getDerniereCodeClient.rejected, (state, action) => {

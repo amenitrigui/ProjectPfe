@@ -179,6 +179,11 @@ const ClientForm = () => {
   };
   
   const handleChangeTel = (e, colonne) => {
+    if (isNumerique(e.target.value))
+    {
+      dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
+
+    }
     
   };
 
@@ -214,6 +219,8 @@ const ClientForm = () => {
   const afficherRecherchePopup = () => {
     dispatch(setAfficherRecherchePopup(true))
   }
+
+  console.log(clientInfos);
   return (
     <div className="container">
       <div className={`navigation ${isSidebarOpen ? "active" : ""}`}>

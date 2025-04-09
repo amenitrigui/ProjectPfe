@@ -1,18 +1,20 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const getUtilisateurCourantInfos = createAsyncThunk(
-  "utilisateurSlice/getUtilisateurCourantInfos",
-  async (_, thunkAPI) => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/utilisateurs/getUtilisateurParCode`,
-      {
-        params: {
-          codeuser: thunkAPI.getState().UtilisateurInfo.codeuser,
-        },
-      }
-    );
-    return response.data.utilisateur[0]
+export const getUtilisateurParCode = createAsyncThunk(
+  "utilisateurSlice/getUtilisateurParCode",
+  async (codeuser, thunkAPI) => {
+    console.log(codeuser);
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/utilisateurs/getUtilisateurParCode/${codeuser}`);
+
+      console.log(response);
+      // return response.data.utilisateur;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message
+      );
+    }
   }
 );
 
@@ -24,10 +26,11 @@ export const utilisateurSlice = createSlice({
     codeuser: "",
     status: "",
     erreur: "",
+    listeUtilisateur: [],
     infosUtilisateur: {
       codeuser: "",
-      nom: ""
-    }
+      nom: "",
+    },
   },
   reducers: {
     setDbName: (state, action) => {
@@ -39,22 +42,28 @@ export const utilisateurSlice = createSlice({
     setCodeUser: (state, action) => {
       state.codeuser = action.payload;
     },
+    setListeUtilisateur: (state, action) => {
+      state.listeUtilisateur = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getUtilisateurCourantInfos.pending, (state) => {
+      .addCase(getUtilisateurParCode.pending, (state) => {
         state.status = "chargement";
       })
-      .addCase(getUtilisateurCourantInfos.fulfilled, (state, action) => {
+      .addCase(getUtilisateurParCode.fulfilled, (state, action) => {
         state.status = "réussi";
+        state.listeUtilisateur = action.payload;
+        console.log(state.listeUtilisateur);
         state.infosUtilisateur = action.payload;
       })
-      .addCase(getUtilisateurCourantInfos.rejected, (state, action) => {
+      .addCase(getUtilisateurParCode.rejected, (state, action) => {
         state.status = "échoué";
         state.erreur = action.erreur;
       });
   },
 });
 
-export const { setDbName, setToken, setCodeUser } = utilisateurSlice.actions;
+export const { setDbName, setToken, setCodeUser, setListeUtilisateur } =
+  utilisateurSlice.actions;
 export default utilisateurSlice.reducer;
