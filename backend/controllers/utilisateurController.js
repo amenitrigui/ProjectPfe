@@ -123,8 +123,8 @@ const loginUtilisateur = async (req, res) => {
       return res.status(401).json({ message: "Mot de passe incorrect." });
     }
 
-    // Requête pour récupérer les sociétés associées avec leur nom (rsoc)
-    // ceci est pour le composant de  liste des sociétés
+    // * Requête pour récupérer les sociétés (rsoc) associées avec le nom d'utilisateur
+    // * ceci est pour le composant de  liste des sociétés
     const societies = await sequelizeUserERP.query(
       `SELECT us.societe, s.rsoc
        FROM usersoc us
@@ -494,6 +494,7 @@ const envoyerDemandeReinitialisationMp = async (req, res) => {
   }
 
   try {
+    const User = defineUserModel(sequelizeUserERP);
     const user = await User.findOne({ where: { email } });
 
     if (!user) {
