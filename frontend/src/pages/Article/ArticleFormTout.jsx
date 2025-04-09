@@ -3,7 +3,7 @@ import ArticleForm from '../../components/Article/ArticleForm'
 import AlertModifier from '../../components/Common/AlertModifier'
 import { useDispatch, useSelector } from 'react-redux'
 import { setToolbarTable } from '../../app/interface_slices/uiSlice'
-import Recherche from '../Devis/recherche'
+import Recherche from '../../components/Common/recherche'
 
 function ArticleFormTout() {
   const dispatch = useDispatch()

@@ -13,7 +13,7 @@ const {
 // * inscription pour un utilisateur
 router.post("/inscrireUtilisteur", inscrireUtilisteur);
 // * connexion pour un utilisateur
-router.post("/  ", loginUtilisateur);
+router.post("/loginUtilisateur", loginUtilisateur);
 // * envoyer une demander de réinitialisation de mot de passe
 router.post("/envoyerDemandeReinitialisationMp", envoyerDemandeReinitialisationMp);
 // * réinitialiser un mot de passe

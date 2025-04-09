@@ -9,7 +9,7 @@ import {
 
 import DevisForm from "../../components/Devis/DevisForm";
 import ArticlesDevis from "../../components/Devis/ArticlesDevis";
-import Recherche from "./recherche";
+import Recherche from "../../components/Common/recherche";
 
 function DevisFormTout() {
   const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);

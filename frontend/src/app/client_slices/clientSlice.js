@@ -150,7 +150,6 @@ export const getDerniereCodeClient = createAsyncThunk(
         thunkAPI.getState().UtilisateurInfo.dbName
       }/getDerniereCodeClient`
     );
-    console.log(response)
     return response.data.derniereCodeClient.code;
   }
 );
@@ -333,6 +332,7 @@ export const clientSlice = createSlice({
     },
 
     insertionDepuisDevisForm: false,
+    dernierCodeClient: "",
   },
   reducers: {
     // * Action synchrone pour modifier les filtres
@@ -513,7 +513,7 @@ export const clientSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getDerniereCodeClient.fulfilled, (state, action) => {
-        state.clientInfos.code = (parseInt(action.payload) + 1).toString();
+        state.dernierCodeClient = (parseInt(action.payload) + 1).toString();
         state.status = "réussi";
       })
       .addCase(getDerniereCodeClient.rejected, (state, action) => {

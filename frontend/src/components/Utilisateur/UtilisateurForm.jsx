@@ -8,33 +8,26 @@ import {
   getTotalChiffres,
 } from "../../app/devis_slices/devisSlice";
 
-import { setDevisInfo } from "../../app/devis_slices/devisSlice";
 import {
-  getClientParCode,
-  getVilleParCodePostal,
-  getToutCodesClient,
-  setClientInfos,
-  viderChampsClientInfo,
   getListeCodesPosteaux,
   getListeCodesSecteur,
-  getDesignationSecteurparCodeSecteur,
   getListeCodeRegions,
-  getVilleParRegion,
 } from "../../app/client_slices/clientSlice";
 
 import ToolBar from "../Common/ToolBar";
-import { isAlphabetique, isNumerique } from "../../utils/validations";
 import { getUtilisateurParCode } from "../../app/utilisateur_slices/utilisateurSlice";
+import SideBar from "../Common/SideBar";
+import { setOuvrireDrawerMenu } from "../../app/interface_slices/uiSlice";
 
 
 const UtilisateurForm = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
+  // * pour afficher le sidebar
+  const ouvrireMenuDrawer = useSelector((state) => state.uiStates.ouvrireMenuDrawer);
   const dispatch = useDispatch();
 
-  // Fonction pour basculer la visibilité de la sidebar
   const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
+    dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
   };
   useEffect(() => {
     dispatch(getListeCodesPosteaux());
@@ -55,7 +48,6 @@ const UtilisateurForm = () => {
     (state) => state.UtilisateurInfo.infosUtilisateur
   );
   const listeUtilisateur =useSelector((state)=>state.UtilisateurInfo.listeUtilisateur);
-  console.log(listeUtilisateur)
   const listeCodesRegion = useSelector(
     (state) => state.ClientCrud.listeCodesRegion
   );
@@ -88,55 +80,8 @@ const handleCodeUtilisateur= (codeuser)=>
 }
   return (
     <div className="container">
-      <div className={`navigation ${isSidebarOpen ? "active" : ""}`}>
-        <ul>
-          <li>
-            <a href="#">
-              <span className="icon">
-                <ion-icon name="speedometer-outline"></ion-icon>
-              </span>
-              <span className="title">ERP Logicom</span>
-            </a>
-          </li>
-
-          {[
-            { name: "Dashboard", icon: "home-outline", path: "/dashboard" },
-            {
-              name: "Clients",
-              icon: "people-outline",
-              path: "/ClientFormTout",
-            },
-            { name: "devis", icon: "chatbubble-outline", path: "/DevisList" },
-            {
-              name: "devistout",
-              icon: "lock-closed-outline",
-              path: "/DevisFormTout",
-            },
-            {
-              name: "les societes",
-              icon: "help-outline",
-              path: "/SocietiesList",
-            },
-            { name: "Settings", icon: "settings-outline", path: "/" },
-            {
-              name: "Deconnexion",
-              icon: "log-out-outline",
-              path: "/deconnexion",
-            },
-          ].map((item, index) => (
-            <li key={index}>
-              {/* Use Link instead of <a> */}
-              <Link to={item.path}>
-                <span className="icon">
-                  <ion-icon name={item.icon}></ion-icon>
-                </span>
-                <span className="title">{item.name}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className={`main ${isSidebarOpen ? "active" : ""}`}>
+      <SideBar />
+      <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
         <div className="topbar">
           <div className="toggle" onClick={toggleSidebar}>
             <ion-icon name="menu-outline"></ion-icon>
