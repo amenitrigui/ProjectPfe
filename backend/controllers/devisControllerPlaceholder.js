@@ -12,7 +12,7 @@ const defineLdfpModel = require("../models/societe/ldfp");
 
 const getAllClients = async (req, res) => {
   const { dbName } = req.params;
-
+//* testttttttt
   if (!dbName) {
     return res.status(400).json({
       message: "Le nom de la base de données est requis.",

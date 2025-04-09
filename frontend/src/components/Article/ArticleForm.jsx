@@ -80,27 +80,29 @@ function ArticleForm() {
   };
 
   useEffect(() => {
-    if(articleInfos.codesousfam){
-      dispatch(getdesignationSousFamillebycodeSousFamille(articleInfos.codesousfam))
+    if (articleInfos.codesousfam) {
+      dispatch(
+        getdesignationSousFamillebycodeSousFamille(articleInfos.codesousfam)
+      );
     }
-  },[articleInfos.codesousfam])
+  }, [articleInfos.codesousfam]);
 
   useEffect(() => {
-    if(articleInfos.famille) {
-      dispatch(getDesignationFamilleParCodeFamille(articleInfos.famille))
+    if (articleInfos.famille) {
+      dispatch(getDesignationFamilleParCodeFamille(articleInfos.famille));
     }
-  },[articleInfos.famille])
+  }, [articleInfos.famille]);
 
   const activerChampsForm = useSelector(
     (state) => state.uiStates.activerChampsForm
   );
-  console.log(articleInfos)
+  console.log(articleInfos);
   const handleChangeCheckbox = (checked, colonne) => {
     if (toolbarMode == "ajout" || toolbarMode == "modification") {
       dispatch(
         setArticleInfos({
           colonne: colonne,
-          valeur: checked == true ? "O" : "N",
+          valeur: checked == true ? "1" : "0",
         })
       );
     }
@@ -367,7 +369,7 @@ function ArticleForm() {
                   className="border border-gray-300 rounded-md p-2"
                   disabled={toolbarMode == "modification"}
                   value={articleInfos.code}
-                  list={toolbarMode != "ajout" ? "listeCodesArticle" : ""}
+                  list={toolbarMode == "ajout" ? "listeCodesArticle" : ""}
                   onChange={(e) =>
                     hundlesubmitTousLesChamp(e.target.value, "code")
                   }
@@ -379,7 +381,7 @@ function ArticleForm() {
                   }}
                 />
 
-                {/* <datalist id="listeCodesArticle">
+                <datalist id="listeCodesArticle">
                   {ListeCodeArticles.length > 0 ? (
                     ListeCodeArticles.map((article, indice) => (
                       <option key={indice} value={article.code}>
@@ -389,26 +391,9 @@ function ArticleForm() {
                   ) : (
                     <option disabled>Aucun code d'article trouvé</option>
                   )}
-                </datalist>   */}
+                </datalist>
               </div>
-              <div className="flex flex-col w-1/3">
-                <label
-                  className="font-bold mb-1"
-                  style={{ color: "rgb(48, 60, 123)" }}
-                >
-                  code A bare
-                </label>
 
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2"
-                  value={articleInfos.codebarre}
-                  disabled={!activerChampsForm}
-                  onChange={(e) =>
-                    hundlesubmitTousLesChamp(e.target.value, "codebarre")
-                  }
-                />
-              </div>
               <div className="flex flex-col w-1/3">
                 <label
                   className="font-bold mb-1"
@@ -426,102 +411,63 @@ function ArticleForm() {
                   }
                 />
               </div>
-            </div>
-            <div className="flex flex-cols">
-              <button className="btn">Taxe</button>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-x-6">
-              {/* %TVA */}
-              <div className="flex flex-col w-1/3">
-                <label className="font-bold text-[rgb(48,60,123)]">
-                  {" "}
-                  %TVA{" "}
-                </label>
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2 w-full"
-                  value={articleInfos.tauxtva}
-                  onChange={(e) =>
-                    hundlesubmitTousLesChamp(e.target.value, "tauxtva")
-                  }
-                  disabled={!activerChampsForm}
-                />
-              </div>
-
-              {/* Fodek */}
-              <div className="flex flex-col w-1/3">
-                <label className="font-bold text-[rgb(48,60,123)]">Fodec</label>
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2 w-full"
-                  value={articleInfos.fodec}
-                  onChange={(e) =>
-                    hundlesubmitTousLesChamp(e.target.value, "fodec")
-                  }
-                  disabled={!activerChampsForm}
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-cols">
-              <button className="btn">Stockage</button>
-            </div>
-            <div className="flex flex-wrap">
               <div className="flex flex-col w-1/3">
                 <label
                   className="font-bold mb-1"
                   style={{ color: "rgb(48, 60, 123)" }}
                 >
-                  NGP
-                </label>
-
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2"
-                  value={articleInfos.NGP}
-                  onChange={(e) =>
-                    hundlesubmitTousLesChamp(e.target.value, "NGP")
-                  }
-                  disabled={!activerChampsForm}
-                />
-              </div>
-              <div className="flex flex-col w-1/3">
-                <label
-                  className="font-bold mb-1"
-                  style={{ color: "rgb(48, 60, 123)" }}
-                >
-                  Lieu de stockage
-                </label>
-
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2"
-                  value={articleInfos.lieustock}
-                  disabled={!activerChampsForm}
-                  onChange={(e) =>
-                    hundlesubmitTousLesChamp(e.target.value, "lieustock")
-                  }
-                />
-              </div>
-              <div className="flex flex-col w-1/3">
-                <label
-                  className="font-bold mb-1"
-                  style={{ color: "rgb(48, 60, 123)" }}
-                >
-                  Ref origine
+                  DC
                 </label>
                 <input
-                  type="text"
+                  type="checkbox"
                   className="border border-gray-300 rounded-md p-2"
-                  value={articleInfos.reforigine}
-                  onChange={(e) =>
-                    hundlesubmitTousLesChamp(e.target.value, "reforigine")
-                  }
+                  checked={articleInfos.dtcons == 1}
                   disabled={!activerChampsForm}
+                  onChange={(e) =>
+                    handleChangeCheckbox(e.target.checked, "dtcons")
+                  }
                 />
               </div>
             </div>
+            <fieldset className="border border-gray-300 p-4 rounded-md">
+              <legend className="text-lg font-semibold text-[rgb(48,60,123)] px-2">
+                Taxe
+              </legend>
+
+              <div className="flex flex-wrap items-center gap-x-6">
+                {/* %TVA */}
+                <div className="flex flex-col w-1/3">
+                  <label className="font-bold text-[rgb(48,60,123)]">
+                    %TVA
+                  </label>
+                  <input
+                    type="text"
+                    className="border border-gray-300 rounded-md p-2 w-full"
+                    value={articleInfos.tauxtva}
+                    onChange={(e) =>
+                      hundlesubmitTousLesChamp(e.target.value, "tauxtva")
+                    }
+                    disabled={!activerChampsForm}
+                  />
+                </div>
+
+                {/* Fodec */}
+                <div className="flex flex-col w-1/3">
+                  <label className="font-bold text-[rgb(48,60,123)]">
+                    Fodec
+                  </label>
+                  <input
+                    type="text"
+                    className="border border-gray-300 rounded-md p-2 w-full"
+                    value={articleInfos.fodec}
+                    onChange={(e) =>
+                      hundlesubmitTousLesChamp(e.target.value, "fodec")
+                    }
+                    disabled={!activerChampsForm}
+                  />
+                </div>
+              </div>
+            </fieldset>
           </div>
 
           <div className="recentCustomers">
@@ -624,42 +570,28 @@ function ArticleForm() {
                 </div>
               </div>
               <div className="flex flex-wrap">
-                <div className="flex flex-col w-1/3">
+                <div className="flex flex-col w-2/3">
                   <label
                     className="font-bold mb-1"
                     style={{ color: "rgb(48, 60, 123)" }}
                   >
                     Type
                   </label>
-                  <input
-                    type="text"
+                  <select
                     className="border border-gray-300 rounded-md p-2"
                     value={articleInfos.type}
                     onChange={(e) =>
                       hundlesubmitTousLesChamp(e.target.value, "type")
                     }
                     disabled={!activerChampsForm}
-                  />
-                </div>
-                <div className="flex flex-col w-2/3">
-                  <label
-                    className="font-bold mb-1"
-                    style={{ color: "rgb(48, 60, 123)" }}
                   >
-                    colisage
-                  </label>
-
-                  <input
-                    type="text"
-                    className="border border-gray-300 rounded-md p-2"
-                    value={articleInfos.colisage}
-                    onChange={(e) =>
-                      hundlesubmitTousLesChamp(e.target.value, "colisage")
-                    }
-                    disabled={!activerChampsForm}
-                  />
+                    <option value="">-- Sélectionner --</option>
+                    <option value="stock">sur Stock</option>
+                    <option value="service">de service</option>
+                  </select>
                 </div>
               </div>
+
               <div className="flex items-center gap-x-4">
                 <div className="flex items-center gap-x-2">
                   <input
@@ -696,259 +628,187 @@ function ArticleForm() {
                   />
                   <label className="text-[rgb(48,60,123)]">MP</label>
                 </div>
-
-                <div className="flex items-center gap-x-2">
-                  <input
-                    disabled={!activerChampsForm}
-                    type="radio"
-                    className="border border-gray-300 rounded-md"
-                    checked={articleInfos.import == "I"}
-                    onChange={(e) => handleChangeRadio("I", "import")}
-                  />
-                  <label className="text-[rgb(48,60,123)]">Importé</label>
-                </div>
-
-                <div className="flex items-center gap-x-2">
-                  <input
-                    disabled={!activerChampsForm}
-                    type="radio"
-                    className="border border-gray-300 rounded-md"
-                    checked={articleInfos.import == "L"}
-                    onChange={(e) => handleChangeRadio("L", "import")}
-                  />
-                  <label className="text-[rgb(48,60,123)]">Local</label>
-                </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="details">
-          <div className="recentOrders">
-            <div className="cardHeader">
-              <h2>Article</h2>
-            </div>
-            <div className="card rounded-box p-6 space-y-2">
-              <div className="flex flex-nowrap">
-                <div className="flex">
-                  <div className="flex flex-col items-start gap-y-4 p-8">
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        disabled={!activerChampsForm}
-                        className="border border-gray-300 rounded-md"
-                        checked={
-                          articleInfos.sav != "N" && articleInfos.sav != ""
-                        }
-                        onChange={(e) =>
-                          handleChangeCheckbox(e.target.checked, "sav")
-                        }
-                      />
-                      <label className="text-blue-900">Gestion SAv</label>
+        {/* name of each tab group should be unique */}
+        <div role="tablist" className="tabs tabs-lifted tabs-lg">
+          <input
+            type="radio"
+            name="my_tabs_6"
+            className="tab"
+            aria-label="Stock"
+          />
+          <div className="tab-content bg-base-100 border-base-300 p-6">
+            Tab content 1
+          </div>
+
+          <input
+            type="radio"
+            name="my_tabs_6"
+            className="tab"
+            aria-label="valorisation"
+            defaultChecked
+          />
+          <div className="tab-content bg-base-100 border-base-300 p-6">
+            Tab content 2
+          </div>
+
+          <input
+            type="radio"
+            name="my_tabs_6"
+            className="tab"
+            aria-label="utilitaire"
+          />
+          <div className="tab-content bg-base-100 border-base-300 p-6">
+            <div className="details">
+              <div className="recentOrders">
+                <div className="cardHeader">
+                  <h2>Article</h2>
+                </div>
+                <div className="card rounded-box p-6 space-y-2">
+                  <div className="flex flex-nowrap">
+                    <div className="flex">
+                      <div className="flex flex-col items-start gap-y-4 p-8">
+                        <div className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            disabled={!activerChampsForm}
+                            className="border border-gray-300 rounded-md"
+                            checked={
+                              articleInfos.gestionstock != "N" &&
+                              articleInfos.gestionstock != ""
+                            }
+                            onChange={(e) =>
+                              handleChangeCheckbox(
+                                e.target.checked,
+                                "gestionstock"
+                              )
+                            }
+                          />
+                          <label className="text-blue-900">
+                            Gestion de Stock
+                          </label>
+                        </div>
+
+                        <div className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            disabled={!activerChampsForm}
+                            className="border border-gray-300 rounded-md"
+                            checked={
+                              articleInfos.avecconfig != "N" &&
+                              articleInfos.avecconfig != ""
+                            }
+                            onChange={(e) =>
+                              handleChangeCheckbox(
+                                e.target.checked,
+                                "avecconfig"
+                              )
+                            }
+                          />
+                          <label className="text-blue-900">
+                            Configuration Art
+                          </label>
+                        </div>
+                      </div>
+                      <div className="flex flex-col">
+                        <label
+                          className="block font-bold text-center"
+                          style={{ color: "rgb(48, 60, 123)" }}
+                        >
+                          Configuiration
+                        </label>
+
+                        <textarea
+                          className="w-full border border-gray-300 rounded-md p-2"
+                          value={articleInfos.CONFIG}
+                          rows={10}
+                          cols={30}
+                          disabled={!activerChampsForm}
+                          onChange={(e) =>
+                            hundlesubmitTousLesChamp(e.target.value, "CONFIG")
+                          }
+                        />
+                      </div>
                     </div>
-
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        disabled={!activerChampsForm}
-                        className="border border-gray-300 rounded-md"
-                        checked={
-                          articleInfos.cons != "N" && articleInfos.cons != ""
-                        }
-                        onChange={(e) =>
-                          handleChangeCheckbox(e.target.checked, "cons")
-                        }
-                      />
-                      <label className="text-blue-900">Consigne</label>
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        disabled={!activerChampsForm}
-                        className="border border-gray-300 rounded-md"
-                        checked={
-                          articleInfos.nomenclature != "N" &&
-                          articleInfos.nomenclature != ""
-                        }
-                        onChange={(e) =>
-                          handleChangeCheckbox(e.target.checked, "nomenclature")
-                        }
-                      />
-                      <label className="text-blue-900">Nomenec fiche</label>
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        disabled={!activerChampsForm}
-                        className="border border-gray-300 rounded-md"
-                        checked={
-                          articleInfos.gestionstock != "N" &&
-                          articleInfos.gestionstock != ""
-                        }
-                        onChange={(e) =>
-                          handleChangeCheckbox(e.target.checked, "gestionstock")
-                        }
-                      />
-                      <label className="text-blue-900">Gestion de Stock</label>
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        disabled={!activerChampsForm}
-                        className="border border-gray-300 rounded-md"
-                        checked={
-                          articleInfos.avecconfig != "N" &&
-                          articleInfos.avecconfig != ""
-                        }
-                        onChange={(e) =>
-                          handleChangeCheckbox(e.target.checked, "avecconfig")
-                        }
-                      />
-                      <label className="text-blue-900">Configuration Art</label>
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        disabled={!activerChampsForm}
-                        className="border border-gray-300 rounded-md"
-                        checked={
-                          articleInfos.ventevrac != "N" &&
-                          articleInfos.ventevrac != ""
-                        }
-                        onChange={(e) =>
-                          handleChangeCheckbox(e.target.checked, "ventevrac")
-                        }
-                      />
-                      <label className="text-blue-900">Vente Vrac</label>
-                    </div>
-                  </div>
-                  <div className="flex flex-col">
-                    <label
-                      className="block font-bold text-center"
-                      style={{ color: "rgb(48, 60, 123)" }}
-                    >
-                      Configuiration
-                    </label>
-
-                    <textarea
-                      className="w-full border border-gray-300 rounded-md p-2"
-                      value={articleInfos.CONFIG}
-                      rows={10}
-                      cols={30}
-                      disabled={!activerChampsForm}
-                      onChange={(e) =>
-                        hundlesubmitTousLesChamp(e.target.value, "CONFIG")
-                      }
-                    />
-                  </div>
-                  <div className="flex flex-col items-center gap-4">
-                    <label className="block font-bold text-center text-[rgb(48,60,123)]"></label>
-                    <button className="w-full border border-gray-300 rounded-md p-2">
-                      {" "}
-                      Correction de Stock
-                    </button>
-
-                    <label className="block font-bold text-center text-[rgb(48,60,123)]"></label>
-                    <button className="w-full border border-gray-300 rounded-md p-2">
-                      Catalogue des prix
-                    </button>
-
-                    <label className="block font-bold text-center text-[rgb(48,60,123)]"></label>
-                    <button className="w-full border border-gray-300 rounded-md p-2">
-                      Valeur du Stock
-                    </button>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <div className="recentCustomers">
-            <div className="card rounded-box p-6 space-y-2">
-              <div className="flex flex-col w-full">
-                {/* Ligne pour "Creation" */}
-                <div className="flex items-center space-x-4">
-                  <label
-                    className="font-medium w-1/3 text-left block "
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Creation
-                  </label>
-
-                  <input
-                    type="text"
-                    className="border border-gray-300 rounded-md p-2 w-2/3"
-                    disabled
-                    value={articleInfos.usera || infosUtilisateur.codeuser}
-                  />
-                </div>
-                <div className="flex items-center space-x-4">
-                  <label
-                    className="font-medium w-1/3 text-left block "
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Date Creation
-                  </label>
-                  <input
-                    type="date"
-                    value={articleInfos.datecreate}
-                    className="border border-gray-300 rounded-md p-2 w-2/3"
-                    disabled
-                  />
-                </div>
-
-                {/* Ligne pour "Modification" */}
-                {toolbarMode == "modification" && (
-                  <>
+              <div className="recentCustomers">
+                <div className="card rounded-box p-6 space-y-2">
+                  <div className="flex flex-col w-full">
+                    {/* Ligne pour "Creation" */}
                     <div className="flex items-center space-x-4">
                       <label
                         className="font-medium w-1/3 text-left block "
                         style={{ color: "rgb(48, 60, 123)" }}
                       >
-                        Modification
+                        Creation
                       </label>
+
                       <input
                         type="text"
                         className="border border-gray-300 rounded-md p-2 w-2/3"
-                        value={articleInfos.userm || infosUtilisateur.codeuser}
                         disabled
+                        value={articleInfos.usera || infosUtilisateur.codeuser}
                       />
                     </div>
-
                     <div className="flex items-center space-x-4">
                       <label
                         className="font-medium w-1/3 text-left block "
                         style={{ color: "rgb(48, 60, 123)" }}
                       >
-                        Date modification
+                        Date Creation
                       </label>
                       <input
                         type="date"
-                        value={articleInfos.datemaj}
+                        value={articleInfos.datecreate}
                         className="border border-gray-300 rounded-md p-2 w-2/3"
                         disabled
                       />
                     </div>
-                  </>
-                )}
-              </div>
-              <div className="flex flex-col">
-                <label
-                  className="block font-bold text-center"
-                  style={{ color: "rgb(48, 60, 123)" }}
-                >
-                  commentaire
-                </label>
 
-                <textarea
-                  className="w-full border border-gray-300 rounded-md p-2"
-                  cols={33}
-                  rows={7}
-                  disabled={!activerChampsForm}
-                />
+                    {/* Ligne pour "Modification" */}
+                    {toolbarMode == "modification" && (
+                      <>
+                        <div className="flex items-center space-x-4">
+                          <label
+                            className="font-medium w-1/3 text-left block "
+                            style={{ color: "rgb(48, 60, 123)" }}
+                          >
+                            Modification
+                          </label>
+                          <input
+                            type="text"
+                            className="border border-gray-300 rounded-md p-2 w-2/3"
+                            value={
+                              articleInfos.userm || infosUtilisateur.codeuser
+                            }
+                            disabled
+                          />
+                        </div>
+
+                        <div className="flex items-center space-x-4">
+                          <label
+                            className="font-medium w-1/3 text-left block "
+                            style={{ color: "rgb(48, 60, 123)" }}
+                          >
+                            Date modification
+                          </label>
+                          <input
+                            type="date"
+                            value={articleInfos.datemaj}
+                            className="border border-gray-300 rounded-md p-2 w-2/3"
+                            disabled
+                          />
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
