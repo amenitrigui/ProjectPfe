@@ -1,21 +1,25 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
-import { setCodeUser, setDbName, setToken } from "../../app/utilisateur_slices/utilisateurSlice";
+import { loginUtilisateur, setCodeUser, setDbName, setToken } from "../../app/utilisateur_slices/utilisateurSlice";
 
 function SignInPage() {
   const [nom, setNom] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const erreur = useSelector((state) => state.UtilisateurInfo.erreur);
+  const [error, setError] = useState("");
+  const status = useSelector((state) => state.UtilisateurInfo.status);
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     const trimmedNom = nom.trim();
     const trimmedPassword = password.trim();
-
+    // dispatch(loginUtilisateur({nom: trimmedNom, motpasse: trimmedMotpasse}))
+    // if(status == "succès")
+    //   navigate("/SocietiesList");
     if (!trimmedNom || !trimmedPassword) {
       setError("Tous les champs doivent être remplis");
       return;
@@ -75,9 +79,9 @@ function SignInPage() {
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
             Connexion
           </h2>
-          {error && (
+          {(status === "échec") && (
             <div className="bg-red-100 text-red-700 p-3 rounded-lg mb-4 text-center">
-              {error}
+              {erreur}
             </div>
           )}
           <form onSubmit={handleSubmit}>

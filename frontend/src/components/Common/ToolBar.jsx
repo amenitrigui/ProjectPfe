@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheck,
-  faSearch,
   faArrowLeft,
   faArrowRight,
   faList,
@@ -14,16 +13,13 @@ import {
   faTrashAlt,
   faCancel,
 } from "@fortawesome/free-solid-svg-icons";
-import SideBar from "../Common/SideBar";
 import {
-  ajouterClient,
+  getClientParCode,
   getDerniereCodeClient,
-  getListeClient,
-  majClient,
+  setClientInfos,
   viderChampsClientInfo,
 } from "../../app/client_slices/clientSlice";
 import {
-  setAfficherAlertModal,
   setAlertMessage,
   setActiverChampsForm,
   setActiverBoutonsValiderAnnuler,
@@ -31,9 +27,7 @@ import {
   setAfficherAlert,
 } from "../../app/interface_slices/uiSlice";
 import {
-  AjouterDevis,
   getDerniereNumbl,
-  setDevisClientInfos,
   viderChampsDevisInfo,
 } from "../../app/devis_slices/devisSlice";
 import { getUtilisateurParCode } from "../../app/utilisateur_slices/utilisateurSlice";
@@ -57,6 +51,7 @@ function ToolBar() {
   const articleInfo =useSelector((state)=>state.ArticlesDevis.articleInfos)
 
   const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
+  const dernierCodeClient = useSelector((state) => state.ClientCrud.dernierCodeClient);
   const handleNaviguerVersListe = async () => {
     if (toolbarTable == "devis") {
       navigate("/DevisList");
@@ -83,6 +78,7 @@ function ToolBar() {
     if (toolbarTable == "client") {
       dispatch(viderChampsClientInfo());
       dispatch(getDerniereCodeClient());
+      dispatch(setClientInfos({colonne: "code", valeur: dernierCodeClient}))
       // * dispatch une action pour récuperer le code + nom d'utilisateur courant
       dispatch(getUtilisateurParCode());
     }
@@ -218,11 +214,26 @@ function ToolBar() {
   };
 
   const handleNaviguerVersPrecedent = () => {
-    console.log("naviguer ver précedent")
+    if(toolbarTable == "client") {
+      console.log(dernierCodeClient)
+      const clientCode = parseInt(clientInfos.code)-1;
+      dispatch(getClientParCode(clientCode.toString()));
+    }
+
+    if(toolbarTable == "devis"){
+
+    }
   };
 
   const handleNaviguerVersSuivant = () => {
-    console.log("naviguer vers suivant")
+    if(toolbarTable == "client") {
+      const clientCode = parseInt(clientInfos.code)+1;
+      dispatch(getClientParCode(clientCode.toString()));
+    }
+
+    if(toolbarTable == "devis"){
+      
+    }
   };
   return (
     <>
@@ -320,8 +331,8 @@ function ToolBar() {
               </button>
             </>
           )} */}
-
-          {!activerBoutonsValiderAnnuler && (
+          {/* // ! btn précedent */}
+          {(!activerBoutonsValiderAnnuler && toolbarTable != "article") && (
             <button
               className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100"
               onClick={handleNaviguerVersPrecedent}
@@ -329,9 +340,10 @@ function ToolBar() {
               <FontAwesomeIcon icon={faArrowLeft} className="text-3xl" />
             </button>
           )}
-
-          {!activerBoutonsValiderAnnuler && (
+          {/* // ! btn suivant */}
+          {(!activerBoutonsValiderAnnuler && toolbarTable != "article") && (
             <button
+              disabled={dernierCodeClient == clientInfos.code}
               className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100"
               onClick={handleNaviguerVersSuivant}
             >

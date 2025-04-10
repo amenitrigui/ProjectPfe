@@ -13,6 +13,7 @@ import {
   getClientParCode,
   getDerniereCodeClient,
   getToutCodesClient,
+  setClientInfos,
   setInsertionDepuisDevisForm,
 } from "../../app/client_slices/clientSlice";
 import { Link, useNavigate } from "react-router-dom";
@@ -32,9 +33,11 @@ import ArticlesDevis from "./ArticlesDevis";
 import {
   setActiverChampsForm,
   setAfficherRecherchePopup,
+  setOuvrireDrawerMenu,
   setToolbarMode,
   setToolbarTable,
 } from "../../app/interface_slices/uiSlice";
+import SideBar from "../Common/SideBar";
 
 function DevisForm() {
   const dispatch = useDispatch();
@@ -46,7 +49,6 @@ function DevisForm() {
     (state) => state.DevisCrud.listePointsVente
   );
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
   const listeToutCodesClients = useSelector(
@@ -73,6 +75,10 @@ function DevisForm() {
   const infosUtilisateur = useSelector(
     (state) => state.UtilisateurInfo.infosUtilisateur
   );
+
+  const dernierCodeClient = useSelector((state) => state.ClientCrud.dernierCodeClient);
+  // * pour afficher le sidebar
+  const ouvrireMenuDrawer = useSelector((state) => state.uiStates.ouvrireMenuDrawer);
   /*
   ============================================================================================================== 
   ============================================================================================================== 
@@ -85,9 +91,6 @@ function DevisForm() {
     dispatch(getListePointsVente());
   }, []);
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
   const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
 
   // * UseEffect #2 : Récuperer la liste de codes clients lorsque
@@ -145,6 +148,7 @@ function DevisForm() {
   // * consérver tous données de devis saisies avant l'ajout du client
   const handleAjoutClientRedirect = () => {
     dispatch(getDerniereCodeClient())
+    dispatch(setClientInfos({colonne: "code", valeur: dernierCodeClient}))
     dispatch(setInsertionDepuisDevisForm(true));
 
     navi("/ClientFormTout");
@@ -169,63 +173,14 @@ function DevisForm() {
   const afficherRecherchePopup = () => {
     dispatch(setAfficherRecherchePopup(true));
   };
+  const toggleSidebar = () => {
+    dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
+  };
   return (
     <>
-      <div className="container">
-        <div className={`navigation ${isSidebarOpen ? "active" : ""}`}>
-          <ul>
-            <li>
-              <a href="#">
-                <span className="icon">
-                  <ion-icon name="speedometer-outline"></ion-icon>
-                </span>
-                <span className="title">ERP Logicom</span>
-              </a>
-            </li>
-
-            {[
-              { name: "Dashboard", icon: "home-outline", path: "/dashboard" },
-              {
-                name: "Clients",
-                icon: "people-outline",
-                path: "/ClientFormTout",
-              },
-              {
-                name: "Article",
-                icon: "chatbubble-outline",
-                path: "/ArticleFormTout",
-              },
-              {
-                name: "devistout",
-                icon: "lock-closed-outline",
-                path: "/DevisFormTout",
-              },
-              {
-                name: "les societes",
-                icon: "help-outline",
-                path: "/SocietiesList",
-              },
-              { name: "Settings", icon: "settings-outline", path: "/" },
-              {
-                name: "Deconnexion",
-                icon: "log-out-outline",
-                path: "/deconnexion",
-              },
-            ].map((item, index) => (
-              <li key={index}>
-                {/* Use Link instead of <a> */}
-                <Link to={item.path}>
-                  <span className="icon">
-                    <ion-icon name={item.icon}></ion-icon>
-                  </span>
-                  <span className="title">{item.name}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className={`main ${isSidebarOpen ? "active" : ""}`}>
+    <div className="container">
+      <SideBar />
+        <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
           <div className="topbar">
             <div className="toggle" onClick={toggleSidebar}>
               <ion-icon name="menu-outline"></ion-icon>

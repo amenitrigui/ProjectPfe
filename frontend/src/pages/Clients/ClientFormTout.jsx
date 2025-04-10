@@ -1,12 +1,10 @@
 import React, { useEffect } from "react";
 import ClientForm from "../../components/Client/ClientForm";
-import ToolBar from "../../components/Common/ToolBar";
-import Alert from "../../components/Common/Alert";
-import AlertModalD from "../../components/Common/AlertModalD";
 import { setToolbarTable } from "../../app/interface_slices/uiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import AlertModifier from "../../components/Common/AlertModifier";
-import Recherche from "../Devis/recherche";
+import Recherche from "../../components/Common/recherche";
+import { getDerniereCodeClient } from "../../app/client_slices/clientSlice";
 
 function ClientFormTout() {
   const dispatch = useDispatch();
@@ -19,6 +17,7 @@ function ClientFormTout() {
   // ! no idea why that issue seems to sometimes happen while other times it will not
   useEffect(() => {
     dispatch(setToolbarTable("client"));
+    dispatch(getDerniereCodeClient());  
   }, []);
 
   return (

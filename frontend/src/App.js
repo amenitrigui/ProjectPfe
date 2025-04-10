@@ -10,7 +10,7 @@ import DevisList from "./pages/Devis/DevisList";
 import DevisDetails from "./components/Devis/DevisDetails";
 import Dashboard from "./pages/ErpPages/Dashboard";
 import SocietiesList from "./pages/ErpPages/SocietiesList";
-import Recherche from "./pages/Devis/recherche";
+import Recherche from "./components/Common/recherche";
 import ResetPassword from "./pages/authentication/ResetPassword";
 
 import GestionCommerciale from "./pages/ErpPages/GestionCommerciale";
@@ -38,8 +38,6 @@ import Test1 from "./test/Test1";
 function App() {
   const dispatch = useDispatch();
   const usera = useSelector((state) => state.UtilisateurInfo.codeuser);
-  const toolbartable=useSelector((state)=>state.uiStates.toolbarTable)
-  console.log(toolbartable)
   dispatch(setDevisInfo("usera",usera))
   // ! thou art a man of feeble spirit
   // const persistor = persistStore(store);

@@ -1,45 +1,39 @@
-  import React, { useState } from "react";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import {
-  FiHome,
-  FiLogOut,
-  FiShoppingCart,
-  FiUser,
-  FiBox,
-  FiSettings,
-  FiTruck,
-} from "react-icons/fi";
-
 function SideBar() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const ouvrireMenuDrawer = useSelector((state) => state.uiStates.ouvrireMenuDrawer);
 
-  // Fonction pour basculer la visibilité de la sidebar
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+  // // Fonction pour basculer la visibilité de la sidebar
+  // const toggleSidebar = () => {
+  //   dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
+  // };
 
   return (
     <>
-      <div className={`navigation ${isSidebarOpen ? "active" : ""}`}>
+      <div className={`navigation ${ouvrireMenuDrawer ? "active" : ""}`}>
         <ul>
           <li>
-            <a href="#" style={{ display: "flex", alignItems: "center" }}>
-              <img
-                src="logicom.jpg"  // Chemin vers votre logo
-                alt="Logicom Logo"
-                style={{
-                  width: "70px",
-                  height: "50px",
-                  marginRight: "10px",
-                }}
-              />
-              <span className="title">Logicom ERP</span>
+            <a href="#">
+              <span className="icon">
+                <ion-icon name="speedometer-outline"></ion-icon>
+              </span>
+              <span className="title">ERP Logicom</span>
             </a>
           </li>
+
           {[
-            { name: "Dashboard", icon: "home-outline", path: "/" },
-            { name: "Clients", icon: "people-outline", path: "/ClientList" },
-            { name: "Devis", icon: "chatbubble-outline", path: "/DevisList" },
+            { name: "Dashboard", icon: "home-outline", path: "/dashboard" },
+            {
+              name: "Clients",
+              icon: "people-outline",
+              path: "/ClientFormTout",
+            },
+            {
+              name: "Article",
+              icon: "chatbubble-outline",
+              path: "/ArticleFormTout",
+            },
             {
               name: "devistout",
               icon: "lock-closed-outline",
@@ -51,9 +45,14 @@ function SideBar() {
               path: "/SocietiesList",
             },
             { name: "Settings", icon: "settings-outline", path: "/" },
-            { name: "Deconnexion", icon: "log-out-outline", path: "/deconnexion" },
+            {
+              name: "Deconnexion",
+              icon: "log-out-outline",
+              path: "/deconnexion",
+            },
           ].map((item, index) => (
             <li key={index}>
+              {/* Use Link instead of <a> */}
               <Link to={item.path}>
                 <span className="icon">
                   <ion-icon name={item.icon}></ion-icon>
@@ -63,10 +62,6 @@ function SideBar() {
             </li>
           ))}
         </ul>
-      </div>
-
-      <div className="toggle" onClick={toggleSidebar}>
-        <ion-icon name="menu-outline"></ion-icon>
       </div>
     </>
   );

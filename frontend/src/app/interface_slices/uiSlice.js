@@ -26,6 +26,7 @@ export const uiSlice = createSlice({
     toolbarMode: "consultation",
     setAlertModifier:"",
     afficherRecherchePopup: false,
+    ouvrireMenuDrawer: true,
   },
 
   reducers: {
@@ -64,6 +65,10 @@ export const uiSlice = createSlice({
     setToolbarMode: (state, action) => {
       state.toolbarMode = action.payload;
     },
+
+    setOuvrireDrawerMenu: (state, action) => {
+      state.ouvrireMenuDrawer = action.payload;
+    }
   },
 });
 export const {
@@ -77,6 +82,7 @@ export const {
   setActiverChampsForm,
   setActiverBoutonsValiderAnnuler,
   setToolbarMode,
-  setAfficherRecherchePopup
+  setAfficherRecherchePopup,
+  setOuvrireDrawerMenu
 } = uiSlice.actions;
 export default uiSlice.reducer;

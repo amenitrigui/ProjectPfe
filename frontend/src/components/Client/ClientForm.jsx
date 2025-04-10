@@ -24,17 +24,15 @@ import {
 
 import ToolBar from "../Common/ToolBar";
 import { isAlphabetique, isNumerique } from "../../utils/validations";
-import { setAfficherRecherchePopup } from "../../app/interface_slices/uiSlice";
+import { setAfficherRecherchePopup, setOuvrireDrawerMenu } from "../../app/interface_slices/uiSlice";
+import SideBar from "../Common/SideBar";
 
 const ClientForm = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  // * pour afficher le sidebar
+  const ouvrireMenuDrawer = useSelector((state) => state.uiStates.ouvrireMenuDrawer);
+  // * pour afficher le menu déroulante pour l'avatar
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
-
-  // Fonction pour basculer la visibilité de la sidebar
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
   useEffect(() => {
     dispatch(getListeCodesPosteaux());
     dispatch(getNombreTotalDevis());
@@ -187,8 +185,6 @@ const ClientForm = () => {
     
   };
 
-
-
   const handleChangeAlphaphetique = (e, colonne) => {
     if (isAlphabetique(e.target.value)) {
       dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
@@ -220,58 +216,14 @@ const ClientForm = () => {
     dispatch(setAfficherRecherchePopup(true))
   }
 
-  console.log(clientInfos);
+  // Fonction pour basculer la visibilité de la sidebar
+  const toggleSidebar = () => {
+    dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
+  };
   return (
     <div className="container">
-      <div className={`navigation ${isSidebarOpen ? "active" : ""}`}>
-        <ul>
-          <li>
-            <a href="#">
-              <span className="icon">
-                <ion-icon name="speedometer-outline"></ion-icon>
-              </span>
-              <span className="title">ERP Logicom</span>
-            </a>
-          </li>
-
-          {[
-            { name: "Dashboard", icon: "home-outline", path: "/dashboard" },
-            {
-              name: "Clients",
-              icon: "people-outline",
-              path: "/ClientFormTout",
-            },
-            { name: "Article", icon: "chatbubble-outline", path: "/ArticleFormTout" },
-            {
-              name: "devistout",
-              icon: "lock-closed-outline",
-              path: "/DevisFormTout",
-            },
-            {
-              name: "les societes",
-              icon: "help-outline",
-              path: "/SocietiesList",
-            },
-            { name: "Settings", icon: "settings-outline", path: "/" },
-            {
-              name: "Deconnexion",
-              icon: "log-out-outline",
-              path: "/deconnexion",
-            },
-          ].map((item, index) => (
-            <li key={index}>
-              {/* Use Link instead of <a> */}
-              <Link to={item.path}>
-                <span className="icon">
-                  <ion-icon name={item.icon}></ion-icon>
-                </span>
-                <span className="title">{item.name}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className={`main ${isSidebarOpen ? "active" : ""}`}>
+      <SideBar />
+      <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
         <div className="topbar">
           <div className="toggle" onClick={toggleSidebar}>
             <ion-icon name="menu-outline"></ion-icon>
