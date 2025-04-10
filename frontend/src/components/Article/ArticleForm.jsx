@@ -355,18 +355,17 @@ function ArticleForm() {
                 />
               </div>
             </div>
-            <div className="flex flex-wrap">
-              <div className="flex flex-col w-1/3">
+            <div className="flex items-center gap-4">
+              <div className="flex-1">
                 <label
-                  className="font-bold mb-1"
+                  className="font-bold mb-1 block"
                   style={{ color: "rgb(48, 60, 123)" }}
                 >
                   Code Article
                 </label>
-
                 <input
                   type="text"
-                  className="border border-gray-300 rounded-md p-2"
+                  className="border border-gray-300 rounded-md p-2 w-full"
                   disabled={toolbarMode == "modification"}
                   value={articleInfos.code}
                   list={toolbarMode == "ajout" ? "listeCodesArticle" : ""}
@@ -380,7 +379,6 @@ function ArticleForm() {
                     }
                   }}
                 />
-
                 <datalist id="listeCodesArticle">
                   {ListeCodeArticles.length > 0 ? (
                     ListeCodeArticles.map((article, indice) => (
@@ -394,16 +392,16 @@ function ArticleForm() {
                 </datalist>
               </div>
 
-              <div className="flex flex-col w-1/3">
+              <div className="flex-1">
                 <label
-                  className="font-bold mb-1"
+                  className="font-bold mb-1 block"
                   style={{ color: "rgb(48, 60, 123)" }}
                 >
                   Designation Article
                 </label>
                 <input
                   type="text"
-                  className="border border-gray-300 rounded-md p-2"
+                  className="border border-gray-300 rounded-md p-2 w-full"
                   value={articleInfos.libelle}
                   disabled={!activerChampsForm}
                   onChange={(e) =>
@@ -411,9 +409,10 @@ function ArticleForm() {
                   }
                 />
               </div>
-              <div className="flex flex-col w-1/3">
+
+              <div className="flex items-center gap-2">
                 <label
-                  className="font-bold mb-1"
+                  className="font-bold"
                   style={{ color: "rgb(48, 60, 123)" }}
                 >
                   DC
@@ -632,176 +631,360 @@ function ArticleForm() {
             </div>
           </div>
         </div>
-        {/* name of each tab group should be unique */}
-        <div role="tablist" className="tabs tabs-lifted tabs-lg">
-          <input
-            type="radio"
-            name="my_tabs_6"
-            className="tab"
-            aria-label="Stock"
-          />
-          <div className="tab-content bg-base-100 border-base-300 p-6">
-            Tab content 1
-          </div>
-
-          <input
-            type="radio"
-            name="my_tabs_6"
-            className="tab"
-            aria-label="valorisation"
-            defaultChecked
-          />
-          <div className="tab-content bg-base-100 border-base-300 p-6">
-            Tab content 2
-          </div>
-
-          <input
-            type="radio"
-            name="my_tabs_6"
-            className="tab"
-            aria-label="utilitaire"
-          />
-          <div className="tab-content bg-base-100 border-base-300 p-6">
-            <div className="details">
-              <div className="recentOrders">
-                <div className="cardHeader">
-                  <h2>Article</h2>
+        <div className="w-full min-h-screen p-4">
+          {/* Conteneur principal des onglets - Taille augmentée */}
+          <div
+            role="tablist"
+            className="tabs tabs-lifted tabs-lg w-full [&>.tab]:flex-1 [&>.tab]:px-6 [&>.tab]:py-4 [&>.tab]:text-lg"
+           >
+            {/* Onglet Stock */}
+            <input
+              type="radio"
+              name="my_tabs_6"
+              className="tab"
+              aria-label="Stock"
+            />
+            <div className="tab-content bg-base-100 border-base-300 rounded-lg p-8 w-full min-h-[400px]">
+              <div className="w-full h-full flex flex-col">
+                {/* Partie supérieure (Tables - 49%) */}
+                <div className="flex flex-nowrap w-full h-[49%] mb-6">
+                  {" "}
+                  {/* Added mb-4 for space */}
+                  {/* Première table */}
+                  <div className="h-full overflow-y-auto w-1/2 pr-2">
+                    <table className="table table-pin-rows bg-base-200 w-full">
+                      <thead>
+                        <tr>
+                          <th>N°</th>
+                          <th>Point de Vente</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>1</td>
+                          <td>Ant-Man</td>
+                        </tr>
+                        <tr>
+                          <td>2</td>
+                          <td>Aquaman</td>
+                        </tr>
+                        <tr>
+                          <td>3</td>
+                          <td>Asterix</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  {/* Deuxième table */}
+                  <div className="h-full overflow-y-auto w-1/2 pl-2">
+                    <table className="table table-pin-rows bg-base-200 w-full">
+                      <thead>
+                        <tr>
+                          <th>N°</th>
+                          <th>Dépôt de stock</th>
+                          <th>QTE ART</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>1</td>
+                          <td>Cy Ganderton</td>
+                          <td>Quality Control Specialist</td>
+                        </tr>
+                        <tr>
+                          <td>2</td>
+                          <td>Hart Hagerty</td>
+                          <td>Desktop Support Technician</td>
+                        </tr>
+                        <tr>
+                          <td>3</td>
+                          <td>Brice Swyre</td>
+                          <td>Tax Accountant</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-                <div className="card rounded-box p-6 space-y-2">
-                  <div className="flex flex-nowrap">
-                    <div className="flex">
-                      <div className="flex flex-col items-start gap-y-4 p-8">
-                        <div className="flex items-center space-x-2">
-                          <input
-                            type="checkbox"
-                            disabled={!activerChampsForm}
-                            className="border border-gray-300 rounded-md"
-                            checked={
-                              articleInfos.gestionstock != "N" &&
-                              articleInfos.gestionstock != ""
-                            }
-                            onChange={(e) =>
-                              handleChangeCheckbox(
-                                e.target.checked,
-                                "gestionstock"
-                              )
-                            }
-                          />
-                          <label className="text-blue-900">
-                            Gestion de Stock
-                          </label>
-                        </div>
 
-                        <div className="flex items-center space-x-2">
-                          <input
-                            type="checkbox"
-                            disabled={!activerChampsForm}
-                            className="border border-gray-300 rounded-md"
-                            checked={
-                              articleInfos.avecconfig != "N" &&
-                              articleInfos.avecconfig != ""
-                            }
-                            onChange={(e) =>
-                              handleChangeCheckbox(
-                                e.target.checked,
-                                "avecconfig"
-                              )
-                            }
-                          />
-                          <label className="text-blue-900">
-                            Configuration Art
-                          </label>
-                        </div>
-                      </div>
-                      <div className="flex flex-col">
-                        <label
-                          className="block font-bold text-center"
-                          style={{ color: "rgb(48, 60, 123)" }}
-                        >
-                          Configuiration
-                        </label>
-
-                        <textarea
-                          className="w-full border border-gray-300 rounded-md p-2"
-                          value={articleInfos.CONFIG}
-                          rows={10}
-                          cols={30}
-                          disabled={!activerChampsForm}
-                          onChange={(e) =>
-                            hundlesubmitTousLesChamp(e.target.value, "CONFIG")
-                          }
-                        />
-                      </div>
+                {/* Partie inférieure (Stats - 49%) */}
+                <div className="flex flex-nowrap w-full h-[49%] mt-9">
+                  {" "}
+                  {/* Added mt-4 for space */}
+                  {/* Section Siege Local */}
+                  <div className="w-1/2 flex flex-col justify-center items-center border border-base-300 rounded-lg p-4">
+                    <h1 className="text-lg font-bold mb-2">Siege Local</h1>
+                    <div className="grid grid-cols-2 gap-x-4 w-full">
+                      <div>Qte en Stock</div>
+                      <div className="text-right">1000</div>
+                    </div>
+                  </div>
+                  {/* Section Stock global */}
+                  <div className="w-1/2 flex flex-col justify-center items-center border border-base-300 rounded-lg p-4 ml-4">
+                    <h1 className="text-lg font-bold mb-2">
+                      Stock tous points de vente
+                    </h1>
+                    <div className="grid grid-cols-2 gap-x-4 w-full">
+                      <div>Qte en Stock</div>
+                      <div className="text-right">1000</div>
+                      <div>Qte Reserve</div>
+                      <div className="text-right">9</div>
+                      <div>Qte Disponible</div>
+                      <div className="text-right">9</div>
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
 
-              <div className="recentCustomers">
-                <div className="card rounded-box p-6 space-y-2">
-                  <div className="flex flex-col w-full">
-                    {/* Ligne pour "Creation" */}
-                    <div className="flex items-center space-x-4">
-                      <label
-                        className="font-medium w-1/3 text-left block "
-                        style={{ color: "rgb(48, 60, 123)" }}
-                      >
-                        Creation
+            {/* Onglet Valorisation (par défaut) */}
+            <input
+              type="radio"
+              name="my_tabs_6"
+              className="tab"
+              aria-label="Valorisation"
+              defaultChecked
+            />
+            <div className="tab-content bg-base-100 border-base-300 rounded-lg p-8 w-full min-h-[400px] space-y-6">
+              <div className="w-full h-full">
+                {/* Contenu Valorisation */}
+                <div className="overflow-x-auto">
+                  <table className="table table-zebra">
+                    {/* head */}
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>Prix Ht</th>
+                        <th>Prix TTC</th>
+                        <th>Rem.Max</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {/* row 1 */}
+                      <tr>
+                        <th>Prix 1</th>
+                        <td>
+                          <input
+                            type="text"
+                            placeholder="Extra Small"
+                            className="input input-xs"
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            placeholder="Extra Small"
+                            className="input input-xs"
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            placeholder="Extra Small"
+                            className="input input-xs"
+                          />
+                        </td>
+                      </tr>
+                      {/* row 2 */}
+                      <tr>
+                        <th>prix2</th>
+                        <td>
+                          <input
+                            type="text"
+                            placeholder="Extra Small"
+                            className="input input-xs"
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            placeholder="Extra Small"
+                            className="input input-xs"
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            placeholder="Extra Small"
+                            className="input input-xs"
+                          />
+                        </td>
+                      </tr>
+                      {/* row 3 */}
+                      <tr>
+                        <th>prix 3</th>
+                        <td>
+                          <input
+                            type="text"
+                            placeholder="Extra Small"
+                            className="input input-xs"
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            placeholder="Extra Small"
+                            className="input input-xs"
+                          />
+                        </td>
+                      </tr>
+                      {/* row 4 */}
+                      <tr>
+                        <th>prix 4</th>
+                        <td>
+                          <input
+                            type="text"
+                            placeholder="Extra Small"
+                            className="input input-xs"
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            placeholder="Extra Small"
+                            className="input input-xs"
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            placeholder="Extra Small"
+                            className="input input-xs"
+                          />
+                        </td>
+                      </tr>
+                      {/* row 5 */}
+                      <tr>
+                        <th>prix 1 publique</th>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            {/* Onglet Utilitaire - Version améliorée */}
+            {/* Onglet Utilitaire - Version alignée sur une ligne */}
+            <input
+              type="radio"
+              name="my_tabs_6"
+              className="tab"
+              aria-label="Utilitaire"
+            />
+            <div className="tab-content bg-base-100 border border-gray-200 rounded-lg p-6 w-full min-h-[400px]">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Section Options */}
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                  <h3 className="text-lg font-semibold text-blue-800 mb-4">
+                    Options
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        disabled={!activerChampsForm}
+                        className="h-5 w-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300"
+                        checked={
+                          articleInfos.gestionstock != "N" &&
+                          articleInfos.gestionstock != ""
+                        }
+                        onChange={(e) =>
+                          handleChangeCheckbox(e.target.checked, "gestionstock")
+                        }
+                      />
+                      <label className="ml-3 text-gray-700 font-medium">
+                        Gestion de Stock
                       </label>
+                    </div>
 
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        disabled={!activerChampsForm}
+                        className="h-5 w-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300"
+                        checked={
+                          articleInfos.avecconfig != "N" &&
+                          articleInfos.avecconfig != ""
+                        }
+                        onChange={(e) =>
+                          handleChangeCheckbox(e.target.checked, "avecconfig")
+                        }
+                      />
+                      <label className="ml-3 text-gray-700 font-medium">
+                        Configuration Art
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section Configuration */}
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                  <h3 className="text-lg font-semibold text-blue-800 mb-4">
+                    Configuration
+                  </h3>
+                  <textarea
+                    className="w-full h-48 border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    value={articleInfos.CONFIG}
+                    disabled={!activerChampsForm}
+                    onChange={(e) =>
+                      hundlesubmitTousLesChamp(e.target.value, "CONFIG")
+                    }
+                  />
+                </div>
+
+                {/* Section Historique */}
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                  <h3 className="text-lg font-semibold text-blue-800 mb-4">
+                    Historique
+                  </h3>
+                  <div className="space-y-4">
+                    {/* Création */}
+                    <div className="flex flex-col">
+                      <label className="text-sm font-medium text-gray-700 mb-1">
+                        Création
+                      </label>
                       <input
                         type="text"
-                        className="border border-gray-300 rounded-md p-2 w-2/3"
+                        className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
                         disabled
                         value={articleInfos.usera || infosUtilisateur.codeuser}
                       />
                     </div>
-                    <div className="flex items-center space-x-4">
-                      <label
-                        className="font-medium w-1/3 text-left block "
-                        style={{ color: "rgb(48, 60, 123)" }}
-                      >
-                        Date Creation
+                    <div className="flex flex-col">
+                      <label className="text-sm font-medium text-gray-700 mb-1">
+                        Date Création
                       </label>
                       <input
                         type="date"
                         value={articleInfos.datecreate}
-                        className="border border-gray-300 rounded-md p-2 w-2/3"
+                        className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
                         disabled
                       />
                     </div>
 
-                    {/* Ligne pour "Modification" */}
+                    {/* Modification (si en mode modification) */}
                     {toolbarMode == "modification" && (
                       <>
-                        <div className="flex items-center space-x-4">
-                          <label
-                            className="font-medium w-1/3 text-left block "
-                            style={{ color: "rgb(48, 60, 123)" }}
-                          >
+                        <div className="flex flex-col">
+                          <label className="text-sm font-medium text-gray-700 mb-1">
                             Modification
                           </label>
                           <input
                             type="text"
-                            className="border border-gray-300 rounded-md p-2 w-2/3"
+                            className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
                             value={
                               articleInfos.userm || infosUtilisateur.codeuser
                             }
                             disabled
                           />
                         </div>
-
-                        <div className="flex items-center space-x-4">
-                          <label
-                            className="font-medium w-1/3 text-left block "
-                            style={{ color: "rgb(48, 60, 123)" }}
-                          >
+                        <div className="flex flex-col">
+                          <label className="text-sm font-medium text-gray-700 mb-1">
                             Date modification
                           </label>
                           <input
                             type="date"
                             value={articleInfos.datemaj}
-                            className="border border-gray-300 rounded-md p-2 w-2/3"
+                            className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
                             disabled
                           />
                         </div>
@@ -814,6 +997,7 @@ function ArticleForm() {
           </div>
         </div>
       </div>
+
       <script src="%PUBLIC_URL%/assets/js/main.js"></script>
     </div>
   );
