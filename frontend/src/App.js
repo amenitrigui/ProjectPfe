@@ -60,7 +60,6 @@ function App() {
         <Route path="/DevisFormTout" element={<DevisFormTout />}></Route>
         <Route path="/ArticleFormTout" element={<ArticleFormTout/>}></Route>
         <Route path="/ArticleList" element={<ArticleList/>}></Route>
-
         <Route
           path="/DevisFormPlaceholder"
           element={<DevisFormPlaceholder></DevisFormPlaceholder>}

@@ -41,9 +41,7 @@ const ClientForm = () => {
     dispatch(getListeCodeRegions());
   }, []);
 
-  useEffect(() => {
-    dispatch(getToutCodesClient());
-  }, []);
+  
 
   // Sélection des informations du client depuis le state Redux
   const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
@@ -65,10 +63,6 @@ const ClientForm = () => {
     (state) => state.ClientCrud.insertionDepuisDevisForm
   );
 
-  // liste de client
-  const listeToutCodesClients = useSelector(
-    (state) => state.ClientCrud.listeToutCodesClients
-  );
   const listeToutCodesPosteaux = useSelector(
     (state) => state.ClientCrud.listeToutCodesPosteaux
   );
@@ -314,17 +308,6 @@ const ClientForm = () => {
                   maxLength={8}
                   onClick = {() => afficherRecherchePopup()}
                 />
-                <datalist id="listeCodesClients">
-                  {listeToutCodesClients.length > 0 ? (
-                    listeToutCodesClients.map((client, indice) => (
-                      <option key={indice} value={client.code}>
-                        {client.code}
-                      </option>
-                    ))
-                  ) : (
-                    <option disabled>Aucun client trouvé</option>
-                  )}
-                </datalist>
               </div>
               <div className="flex flex-col w-1/3">
                 <label

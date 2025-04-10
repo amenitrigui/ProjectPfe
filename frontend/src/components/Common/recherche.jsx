@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
@@ -8,6 +8,7 @@ import {
   getDevisParPeriode,
   setDevisInfoEntiere,
   setDevisList,
+  getListeNumbl,
 } from "../../app/devis_slices/devisSlice";
 import DataTable from "react-data-table-component";
 import { FaArrowLeft } from "react-icons/fa"; // Import de l'icône
@@ -15,6 +16,8 @@ import {
   getClientParCin,
   getClientParCode,
   getClientParTypecli,
+  getListeClient,
+  getToutCodesClient,
   setClientInfosEntiere,
   setListeClients,
 } from "../../app/client_slices/clientSlice";
@@ -25,6 +28,7 @@ import {
   getListeArticleparFamille,
   getListeArticleparLibelle,
   getListeArticleParSousFamille,
+  getListeCodesArticles,
   setArticleInfos,
   setArticleInfosEntiere,
   setListeArticle,
@@ -42,6 +46,27 @@ import {
 } from "../../app/sousfamille_slices/sousfamilleSlice";
 
 const Recherche = () => {
+  const toolbarTable = useSelector((state) => state.uiStates.toolbarTable);
+  // liste de client
+  const listeToutCodesClients = useSelector(
+    (state) => state.ClientCrud.listeToutCodesClients
+  );
+  // * tableau contenant la liste des codes des devis
+  const listeNUMBL = useSelector((state) => state.DevisCrud.listeNUMBL);
+  // * récuperer la liste de codes sélon table choisit
+  useEffect(() => {
+    if (toolbarTable == "client") {
+      dispatch(getToutCodesClient());
+    }
+
+    if (toolbarTable == "article") {
+      dispatch(getListeCodesArticles());
+    }
+
+    if (toolbarTable == "devis") {
+      dispatch(getListeNumbl());
+    }
+  }, [toolbarTable]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   // * valeur de champs de recherche
@@ -55,6 +80,9 @@ const Recherche = () => {
   const listeFamilles = useSelector(
     (state) => state.familleSlice.listeFamilles
   );
+  const ListeCodeArticles = useSelector(
+    (state) => state.ArticlesDevis.ListeCodeArticles
+  );
   const listeSousfamille = useSelector(
     (state) => state.sousfamilleSlice.listeSousfamille
   );
@@ -63,7 +91,6 @@ const Recherche = () => {
     {}
   );
   // * pour obtenir les informations de dévis séléctionné
-
   const handleDatatableSelection = ({ selectedRows }) => {
     if (selectedRows.length != 0) {
       setDatatableElementSelection(selectedRows[0]);
@@ -72,8 +99,6 @@ const Recherche = () => {
       setDatatableElementSelection({});
     }
   };
-  const toolbarTable = useSelector((state) => state.uiStates.toolbarTable);
-
   // * pour filtrer la liste des devis
   const handleBtnRechercheClick = () => {
     if (!valeurRecherche) {
@@ -294,18 +319,6 @@ const Recherche = () => {
     { name: "Libelle", selector: (row) => row.libelle, sortable: true },
   ];
 
-  // const handleRetourBtnClick = () => {
-  //   console.log("ok");
-  //   if (toolbarTable == "devis") {
-  //     dispatch(setDevisList([]));
-  //   }
-  //   if (toolbarTable == "client") {
-  //     dispatch(setListeClients([]));
-  //   }
-
-  //   navigate(-1);
-  // };
-
   const fermerPopupRecherche = () => {
     dispatch(setAfficherRecherchePopup(false));
   };
@@ -320,16 +333,6 @@ const Recherche = () => {
         >
           ✕
         </button>
-
-        {/* Bouton retour
-        <button
-          onClick={() => {
-            handleRetourBtnClick();
-          }}
-          className="flex items-center text-blue-600 hover:text-blue-800 transition duration-200 mb-4"
-        >
-          <FaArrowLeft className="mr-2" /> Retour
-        </button> */}
 
         <h2
           className="text-2xl font-semibold mb-6 text-center"
@@ -438,7 +441,43 @@ const Recherche = () => {
                 onChange={(e) => setValeurRecherche(e.target.value)}
                 className="p-2 border border-gray-300 rounded-lg w-full"
                 placeholder="Entrez votre recherche..."
+                list={
+                  (toolbarTable === "client" && filtrerPar === "code")
+                    ? "listeCodesClients"
+                    : (toolbarTable === "article" && filtrerPar === "code")
+                    ? "listeCodesArticle"
+                    : (toolbarTable === "devis" && filtrerPar === "numbl")
+                    ? "listeCodesNumbl"
+                    : ""
+                }
               />
+              <datalist id="listeCodesClients">
+                {listeToutCodesClients.length > 0 ? (
+                  listeToutCodesClients.map((client, indice) => (
+                    <option key={indice} value={client.code}>
+                      {client.code}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>Aucun client trouvé</option>
+                )}
+              </datalist>
+
+              <datalist id="listeCodesArticle">
+                {ListeCodeArticles.map((article, indice) => (
+                  <option key={indice} value={article.code}>
+                    {article.code}
+                  </option>
+                ))}
+              </datalist>
+
+              <datalist id="listeCodesNumbl">
+                {listeNUMBL.map((codeDevis) => (
+                  <option key={codeDevis.NUMBL} value={codeDevis.NUMBL}>
+                    {codeDevis.NUMBL}
+                  </option>
+                ))}
+              </datalist>
               <button
                 onClick={handleBtnRechercheClick}
                 style={{ backgroundColor: "#2a2185" }}

@@ -57,9 +57,10 @@ const getTotalChiffres = async (req, res) => {
     });
   }
   try {
-    const dbConnection = getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName, res);
     const Devis = defineDfpModel(dbConnection);
     const totalchifre = await Devis.sum("MTTC");
+
     return res.status(200).json({
       message: "Total de chifre  de devis récupéré avec succès.",
       totalchifre: totalchifre,
@@ -89,20 +90,14 @@ const getNombreDevis = async (req, res) => {
       message: "Le nom de la base de données est requis.",
     });
   }
-
+  
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = await getDatabaseConnection(dbName, res);
     const Devis = defineDfpModel(dbConnection);
-
     const devisCount = await Devis.count({
       distinct: true,
       col: "NUMBL",
     });
-
-    console.log(
-      "Total des devis (distinct NUMBL) avec Sequelize : ",
-      devisCount
-    );
 
     return res.status(200).json({
       message: "Total des devis récupéré avec succès.",
@@ -110,7 +105,7 @@ const getNombreDevis = async (req, res) => {
     });
   } catch (error) {
     console.error(
-      "Erreur lors de la récupération du total des devis :",
+      "Erreur lors de la récupération du nombre total des devis :",
       error.message
     );
     return res.status(500).json({
