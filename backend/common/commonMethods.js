@@ -36,6 +36,7 @@ const getDatabaseConnection = async (databaseName, res) => {
       `mysql://root:@127.0.0.1:3306/${databaseName}`,
       {
         dialect: "mysql",
+        dialectModule: "mysql2",
         logging: console.log,
         pool: {
           max: 5,
