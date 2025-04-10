@@ -10,6 +10,8 @@ const regionRoutes = require("./routes/regionRoutes");
 const secteurRoutes = require("./routes/secteurRoutes");
 const familleRoutes = require("./routes/familleRoutes")
 const sousfamilleRoutes = require("./routes/sousfamilleRoutes")
+const Stock_ArticleRoutes= require("./routes/Stock_ArticleRoutes")
+const Valorisation_ArticleRoutes= require("./routes/Valorisation_ArticleRoutes")
 require("dotenv").config();
 
 // * Création de l'application Express
@@ -38,6 +40,10 @@ app.use("/api/region", regionRoutes);
 app.use("/api/secteur", secteurRoutes);
 app.use("/api/famille", familleRoutes)
 app.use("/api/sousfamille", sousfamilleRoutes);
+app.use("/api/Stock_Article",Stock_ArticleRoutes );
+app.use("/api/Valorisation_Article",Valorisation_ArticleRoutes );
+
+
 
 // * Test de connexion à la base de données
 app.get("/", async (req, res) => {
