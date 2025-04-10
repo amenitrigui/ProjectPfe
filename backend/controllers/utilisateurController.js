@@ -3,7 +3,6 @@ const bcrypt = require("bcryptjs");
 
 // const Representant = require("../models/representant");
 const defineUserModel = require("../models/utilisateur/utilisateur");
-const { sequelizeUserERP } = require("../db/config");
 const nodeMailer = require("nodemailer");
 const { google } = require("googleapis");
 const handlebars = require("handlebars");
@@ -49,8 +48,8 @@ const inscrireUtilisteur = async (req, res) => {
         .status(400)
         .json({ message: "Tous les champs doivent être remplis." });
     }
-
-    const User = defineUserModel(sequelizeUserERP);
+    const dbConnection = await getDatabaseConnection(process.env.DB_USERS_NAME);
+    const User = defineUserModel(dbConnection);
     const existingUser = await User.findOne({ where: { email } });
 
     if (existingUser) {
@@ -60,12 +59,11 @@ const inscrireUtilisteur = async (req, res) => {
     const hashedPassword = await bcrypt.hash(motpasse, 10);
     console.log(hashedPassword);
 
-
     const newUser = await User.create({
       email,
       motpasse: hashedPassword,
       nom,
-      type: "Utilisateur"
+      type: "Utilisateur",
     });
 
     return res.status(201).json({
@@ -91,16 +89,18 @@ const inscrireUtilisteur = async (req, res) => {
 // * Generer un jwt d'accès pour un utilisateur déjà inscrit
 // * exemple
 // * input : {nom: "test", motpasse: "test"}
-// * outpout : jwt 
+// * outpout : jwt
 // * verb : post
 // * http://localhost:5000/api/utilisateurs/loginUtilisateur
 const loginUtilisateur = async (req, res) => {
   const { nom, motpasse } = req.body;
-  console.log(nom," ",motpasse);
-  const User = defineUserModel(sequelizeUserERP);
-  console.log(User);
 
   try {
+    const dbConnection = await getDatabaseConnection(
+      process.env.DB_USERS_NAME,
+      res
+    );
+    const User = defineUserModel(dbConnection);
     // Vérification que tous les champs sont remplis
     if (!nom || !motpasse) {
       return res
@@ -125,14 +125,14 @@ const loginUtilisateur = async (req, res) => {
 
     // * Requête pour récupérer les sociétés (rsoc) associées avec le nom d'utilisateur
     // * ceci est pour le composant de  liste des sociétés
-    const societies = await sequelizeUserERP.query(
+    const societies = await dbConnection.query(
       `SELECT us.societe, s.rsoc
        FROM usersoc us
        JOIN societe s ON us.societe = s.code
        WHERE us.codeuser = :codeuser`,
       {
         replacements: { codeuser: user.codeuser },
-        type: sequelizeUserERP.QueryTypes.SELECT,
+        type: dbConnection.QueryTypes.SELECT,
       }
     );
     // Création du token JWT
@@ -218,7 +218,11 @@ const envoyerDemandeReinitialisationMp = async (req, res) => {
   }
 
   try {
-    const User = defineUserModel(sequelizeUserERP);
+    const dbConnection = await getDatabaseConnection(
+      process.env.DB_USERS_NAME,
+      res
+    );
+    const User = defineUserModel(dbConnection);
     const user = await User.findOne({ where: { email } });
 
     if (!user) {
@@ -334,17 +338,15 @@ const reinitialiserMotPasse = async (req, res) => {
 // * http://localhost:5000/api/utilisateurs/getUtilisateurParCode/1
 const getUtilisateurParCode = async (req, res) => {
   const { codeuser } = req.params;
-  
 
   try {
-
     const dbConnection = await getDatabaseConnection("usererpsole", res);
-    
+
     const utilisateur = await dbConnection.query(
       "SELECT * FROM utilisateur WHERE codeuser = :codeuser", // <-- la requête SQL avec un paramètre nommé
       {
         type: dbConnection.QueryTypes.SELECT,
-        replacements: { codeuser: codeuser }
+        replacements: { codeuser: codeuser },
       }
     );
 
@@ -353,17 +355,15 @@ const getUtilisateurParCode = async (req, res) => {
     if (utilisateur.length > 0) {
       return res.status(200).json({
         message: "Utilisateur récupéré avec succès",
-        utilisateur
+        utilisateur,
       });
     } else {
       return res.status(404).json({ message: "Utilisateur non trouvé" });
     }
-
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
-
 
 // Exporter la méthode
 module.exports = {
@@ -372,5 +372,5 @@ module.exports = {
   selectDatabase,
   envoyerDemandeReinitialisationMp,
   reinitialiserMotPasse,
-  getUtilisateurParCode
+  getUtilisateurParCode,
 };

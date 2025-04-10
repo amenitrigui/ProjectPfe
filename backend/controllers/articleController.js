@@ -1,18 +1,11 @@
-const { Sequelize } = require("sequelize");
+const { Op } = require("sequelize");
 const defineArticleModel = require("../models/societe/article");
 const defineFamilleModel = require("../models/societe/famille");
 const defineLdfpModel = require("../models/societe/ldfp");
 const defineSousFamilleModel = require("../models/societe/sousfamille");
-const { getSequelizeConnection } = require("../db/config");
 const { getDatabaseConnection } = require("../common/commonMethods");
 const article = require("../models/societe/article");
 
-const initializeDynamicModels = (sequelize) => {
-  const Article = defineArticleModel(sequelize);
-  const Ldfp = defineLdfpModel(sequelize);
-
-  return { Article, Ldfp };
-};
 // * méthode pour récuperer la liste de familles (code+libelle)
 // * exemple :
 // * input : ""
@@ -59,6 +52,7 @@ const getListeFamilles = async (req, res) => {
 // * exemple :
 // * input : 02-SP
 // * output : liste d'articles ayant le code famille 02-SP
+// * http://localhost:5000/api/article/SOLEVO/codes/famille?famille=test
 const getCodesArticlesByFamille = async (req, res) => {
   const { dbName } = req.params;
   const { famille } = req.query;
@@ -69,16 +63,15 @@ const getCodesArticlesByFamille = async (req, res) => {
   }
 
   try {
-    const dynamicSequelize = getSequelizeConnection(dbName);
-    await dynamicSequelize.authenticate();
-
-    const { Article } = initializeDynamicModels(dynamicSequelize);
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const Article = defineArticleModel(dbConnection);
 
     const articles = await Article.findAll({
       attributes: ["code", "libelle", "unite", "puht", "tauxtva", "prix1"],
       where: {
-        famille: famille,
+        famille: {[Op.like] : '%'+famille+'%'},
       },
+      order: [["libelle","ASC"]]
     });
 
     if (articles.length === 0) {
@@ -166,7 +159,7 @@ const getArticleParCode = async (req, res) => {
   }
 };
 //* ajouter un artile  lorsque tu veux ajoute un meme code d'article il s'affiche erreur
-//* vic url http://localhost:5000/api/article/SOLEVO/ajouterArticle
+//* voici url http://localhost:5000/api/article/SOLEVO/ajouterArticle
 //* input: {"articleAjoute": {  "code": "122",  "libelle": "bnn" }}
 //* il va etre ajouter 
 const ajouterArticle = async (req, res) => {
@@ -541,15 +534,15 @@ const getCodeSousFamilleParDesignationSousFamille = async (req, res) => {
 // * exemple
 // * input : MATELAS, SOLEVO
 // * output : informations article
-// * url : http://localhost:5000/api/article/SOLEVO/getArticleParLibelle/Logicom Test
+// * url : http://localhost:5000/api/article/SOLEVO/getArticleParLibelle/Logicom
 const getArticleParLibelle = async (req, res) => {
   const { dbName, libelle } = req.params;
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const Article = defineArticleModel(dbConnection);
     const articlesTrouves = await Article.findAll({
-      where: { libelle: { [Sequelize.like]: libelle } },
-      order: ["libelle", "ASC"],
+      where: { libelle: { [Op.like]: '%'+libelle+'%' } },
+      order: [["libelle", "ASC"]],
     });
     if (articlesTrouves.length == 1) {
       return res.status(200).json({
