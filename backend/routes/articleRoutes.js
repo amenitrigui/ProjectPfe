@@ -20,9 +20,6 @@ const {
   getListeArticleParSousFamille,
   getListeArticleParCodeArticle
 } = require("../controllers/articleController");
-const {
-  getArticleDetailsByCode,
-} = require("../controllers/articleControllerPlaceholder");
 //const {  getArticleDetailsByCode } = require("../controllers/articleControllerPlaceholder");
 const router = express.Router();
 
@@ -30,7 +27,6 @@ const router = express.Router();
 router.get("/:dbName/getListeFamilles", getListeFamilles);
 // ! ddddd
 router.get("/:dbName/codes/famille", getCodesArticlesByFamille);
-router.get("/:dbName/articles/details/:code", getArticleDetailsByCode);
 router.delete("/:dbName/suprimerArticle", suprimerArticle);
 router.get("/:dbName/getArticleParCode", getArticleParCode);
 router.post("/:dbName/ajouterArticle", ajouterArticle);

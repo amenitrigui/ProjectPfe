@@ -1,5 +1,4 @@
-const { QueryTypes, Sequelize, Op } = require("sequelize");
-const { getSequelizeConnection } = require("../db/config");
+const { QueryTypes, Op } = require("sequelize");
 const defineDfpModel = require("../models/societe/dfp");
 const defineLdfpModel = require("../models/societe/ldfp");
 const { getDatabaseConnection } = require("../common/commonMethods");
@@ -19,11 +18,9 @@ const getTousDevis = async (req, res) => {
   }
 
   try {
-    const dynamicSequelize = getSequelizeConnection(dbName);
-    await dynamicSequelize.authenticate();
-    console.log(`Connecté à la base de données : ${dbName}`);
+    const dbConnection = await getDatabaseConnection(dbName, res);
 
-    const result = await dynamicSequelize.query(
+    const result = await dbConnection.query(
       `SELECT NUMBL, DATEBL,libpv, datt,CODECLI,ADRCLI,RSCLI,MTTC,CODEFACTURE,usera,RSREP,codesecteur FROM dfp `,
       { type: QueryTypes.SELECT }
     );
@@ -60,8 +57,8 @@ const getTotalChiffres = async (req, res) => {
     });
   }
   try {
-    const dynamicSequelize = getSequelizeConnection(dbName);
-    const Devis = defineDfpModel(dynamicSequelize);
+    const dbConnection = getDatabaseConnection(dbName, res);
+    const Devis = defineDfpModel(dbConnection);
     const totalchifre = await Devis.sum("MTTC");
     return res.status(200).json({
       message: "Total de chifre  de devis récupéré avec succès.",
@@ -94,8 +91,8 @@ const getNombreDevis = async (req, res) => {
   }
 
   try {
-    const dynamicSequelize = getSequelizeConnection(dbName);
-    const Devis = defineDfpModel(dynamicSequelize);
+    const dbConnection = await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
 
     const devisCount = await Devis.count({
       distinct: true,
@@ -551,11 +548,10 @@ const deleteDevis = async (req, res) => {
       .json({ message: "Le numéro du devis (NUMBL) est requis." });
   }
   try {
-    const dynamicSequelize = getSequelizeConnection(dbName);
-    await dynamicSequelize.authenticate();
+    const dbConnection = await getDatabaseConnection(dbName, res);
 
-    const Dfp = defineDfpModel(dynamicSequelize);
-    const Ldfp = defineLdfpModel(dynamicSequelize);
+    const Dfp = defineDfpModel(dbConnection);
+    const Ldfp = defineLdfpModel(dbConnection);
 
     const existingDevis = await Dfp.findOne({ where: { NUMBL } });
     if (!existingDevis) {
@@ -564,7 +560,7 @@ const deleteDevis = async (req, res) => {
         .json({ message: `Aucun devis trouvé avec le numéro ${NUMBL}.` });
     }
 
-    const transaction = await dynamicSequelize.transaction();
+    const transaction = await dbConnection.transaction();
 
     try {
       await Ldfp.destroy({ where: { NUMBL }, transaction });
