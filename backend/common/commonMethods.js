@@ -33,7 +33,7 @@ function verifyTokenValidity(req, res) {
 const getDatabaseConnection = async (databaseName, res) => {
   try {
     const dbConnection = new Sequelize(
-      `mysql://root:@127.0.0.1:3306/${databaseName}`,
+      `mysql://${process.env.DB_USER}:${process.env.DB_HOST}:${process.env.DB_PORT}/${databaseName}`,
       {
         dialect: "mysql",
         dialectModule: require("mysql2"),
