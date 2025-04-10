@@ -172,7 +172,7 @@ const handleCodeUtilisateur= (codeuser)=>
                   {listeUtilisateur.length > 0 ? (
                     listeUtilisateur.map((utilisateur, indice) => (
                       <option key={indice} value={utilisateur.code}>
-                        {utilisateur.code}
+                        {utilisateur.code}  
                       </option>
                     ))
                   ) : (
