@@ -11,6 +11,7 @@ function SignInPage() {
   const erreur = useSelector((state) => state.UtilisateurInfo.erreur);
   const [error, setError] = useState("");
   const status = useSelector((state) => state.UtilisateurInfo.status);
+  console.log(status)
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,12 +80,12 @@ function SignInPage() {
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
             Connexion
           </h2>
-          {(status === "échec") && (
+          {(error) && (
             <div className="bg-red-100 text-red-700 p-3 rounded-lg mb-4 text-center">
-              {erreur}
+              {error}
             </div>
           )}
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={(e) => handleSubmit(e)}>
             <div className="mb-6">
               <label
                 htmlFor="nom"

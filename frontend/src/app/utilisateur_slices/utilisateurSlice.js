@@ -29,7 +29,6 @@ export const getUtilisateurParCode = createAsyncThunk(
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/utilisateurs/getUtilisateurParCode/${codeuser}`);
 
       console.log(response);
-      // return response.data.utilisateur;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || error.message
@@ -78,7 +77,7 @@ export const utilisateurSlice = createSlice({
         state.infosUtilisateur = action.payload;
       })
       .addCase(getUtilisateurParCode.rejected, (state, action) => {
-        state.status = "échoué";
+        state.status = "échec";
         state.erreur = action.erreur;
       })
       

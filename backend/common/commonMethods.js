@@ -51,6 +51,7 @@ const getDatabaseConnection = async (databaseName, res) => {
   } catch (error) {
     return res.status(500).json({
       message: `un erreur est survenu lors de récupération d'une connexion avec db ${databaseName}`,
+      erreur: error.message
     });
   }
 };
