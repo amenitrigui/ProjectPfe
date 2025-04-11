@@ -1,3 +1,4 @@
+const defineLignedepot = require("../models/societe/lignedepot");
 const { getDatabaseConnection } = require("../common/commonMethods");
 //* url : http://localhost:5000/api/Stock_Article/SOLEVO/getlistepointvente
 const getlistepointvente = async (req, res) => {
@@ -25,18 +26,24 @@ const getlistepointvente = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+// * méthode pour récuperer la liste de dépots pour une point de vente
+// * ou un article données a de stock
+// * url : http://localhost:5000/api/Stock_Article/SOLEVO/getListedepotdeStockparpcodepointvente?codepv=01&codeArticle=0
 const getListedepotdeStockparpcodepointvente = async (req, res) => {
   const { dbName } = req.params;
-  const { codepv } = req.query;
+  const { codepv,codeArticle } = req.query;
   if (!dbName) {
     return res.status(400).json({
-      message: "Le nom de la base de données est requis .",
+      message: "Le nom de la base de données est requis.",
     });
   }
   if (!codepv) {
     return res.status(400).json({
-      message: "Le query codepv est requis .",
+      message: "Le code de point de vente est requis .",
     });
+  }
+  if(!codeArticle) {
+    return res.status(400).json({message: "Le code d'article est requis ."})
   }
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
@@ -60,6 +67,29 @@ const getListedepotdeStockparpcodepointvente = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+const getNbTotalArticle = async(req, res) => {
+  const { dbName } = req.params;
+  const { codeArticle } = req.query;
+
+  if(!dbName) {
+    return res.status(400).json({message: "le nom de base de données est requis ."})
+  }
+
+  if(!codeArticle) {
+    return res.status(400).json({message: "le code d'article est requis ."})
+  }
+  try{
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const LigneDepot = defineLignedepot(dbConnection);
+
+    const nbTotQteArticleDispo = LigneDepot.count({
+      attribute
+    })
+  }catch(error) {
+    return res.status(500).json({message: error.message})
+  }
+}
 
 module.exports = {
   getlistepointvente,

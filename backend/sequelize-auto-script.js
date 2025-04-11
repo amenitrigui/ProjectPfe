@@ -11,7 +11,7 @@ const autoChampsSociete = new SequelizeAuto('SOLEVO', 'root', '', {
   additional: {
       timestamps: false
   },
-  tables: ['dfp', 'client', 'ldfp', 'article', 'famille', 'sousfamille', 'cpostal', 'region', 'secteur','pointvente','depot'] // use all tables, if omitted
+  tables: ['dfp', 'client', 'ldfp', 'article', 'famille', 'sousfamille', 'cpostal', 'region', 'secteur','pointvente','depot', 'lignedepot'] // use all tables, if omitted
 })
 
 const autoChampsUtilisateur = new SequelizeAuto('usererpsole', 'root', '', {
