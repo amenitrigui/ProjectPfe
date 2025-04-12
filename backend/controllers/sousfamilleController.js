@@ -1,7 +1,7 @@
 const defineFamilleModel = require("../models/societe/famille");
 const { getDatabaseConnection } = require("../common/commonMethods");
 const { Sequelize } = require("sequelize");
-
+const defineSousFamille = require("../models/societe/sousfamille")
 //* url :http://localhost:5000/api/sousfamille/SOLEVO/getListeSousFamillesParCodeSousFamille/PAN
 //* input CODE :Pan
 //* output libelle, code : "code": "PAN-JA", "libelle": "PANNEAUX PV JA SOLAR""code": "PAN-SOLU", "libelle": "PANNEAUX PV SOLUXTEC"//*
@@ -54,8 +54,38 @@ const getListeSousFamillesParLibelleSousFamille = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+//*url : http://localhost:5000/api/sousfamille/SOLEVO/ajouterSousFamille
+const ajouterSousFamille=async(req,res)=>{
+  const { dbName } = req.params;
+    const { SousFamilleAjoute } = req.body;
+    try {
+      const dbConnection = await getDatabaseConnection(dbName, res);
+      const SousFamille = defineSousFamille(dbConnection);
+      const sousfamille = await SousFamille.findOne({
+        where: {
+          code: SousFamilleAjoute.code,
+        },
+      });
+      if (sousfamille) {
+        return res
+          .status(500)
+          .json({ message: "sous famille deja existant on ne peut pas le reajoute" });
+      } else {
+        const SousFamilleCree = await SousFamille.create({
+          code: SousFamilleAjoute.code,
+          libelle: SousFamilleAjoute.libelle,
+        });
+        return res
+          .status(200)
+          .json({ message: "Sous Famille ajoute avec succes", SousFamilleCree });
+      }
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+}
 
 module.exports = {
   getListeSousFamillesParCodeSousFamille,
   getListeSousFamillesParLibelleSousFamille,
+  ajouterSousFamille
 };

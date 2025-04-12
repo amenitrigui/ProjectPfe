@@ -147,7 +147,7 @@ const loginUtilisateur = async (req, res) => {
     return res.status(200).json({
       message: "Connexion réussie.",
       token,
-      codeuser: user.codeuser,
+      user: user,
       societies: societies.map((s) => ({
         societe: s.societe, // Code de la société
         rsoc: s.rsoc, // Nom de la société
@@ -290,6 +290,7 @@ const envoyerDemandeReinitialisationMp = async (req, res) => {
 const reinitialiserMotPasse = async (req, res) => {
   const { email, password, token } = req.body;
 
+
   if (!token) {
     return res
       .status(401)
@@ -303,9 +304,13 @@ const reinitialiserMotPasse = async (req, res) => {
     });
   }
   const decodedJWT = verifyTokenValidity(req, res);
+  const dbConnection = await getDatabaseConnection("usererpsole",res)
 
   try {
+    const User = defineUserModel(dbConnection)
+    
     const user = await User.findOne({ where: { email } });
+    console.log(user)
     if (!user) {
       return res.status(404).json({
         message: "Cette email n'est pas associé à aucun utilisateur",

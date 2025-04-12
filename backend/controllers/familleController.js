@@ -1,6 +1,7 @@
 const defineFamilleModel = require("../models/societe/famille");
 const { getDatabaseConnection } = require("../common/commonMethods");
 const { Sequelize } = require("sequelize");
+const famille = require("../models/societe/famille");
 // * méthode pour récuperer la liste de familles d'articles
 // * exemple :
 // * input : 02-SP
@@ -58,8 +59,39 @@ const getListeFamillesParLibelleFamille = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+//* url :http://localhost:5000/api/famille/SOLEVO/ajouterFamille
+const ajouterFamille = async(req,res)=>{
+const { dbName } = req.params;
+  const { FamilleAjoute } = req.body;
+  try {
+    const dbConnection = await getDatabaseConnection(dbName, res);
+    const Famille = defineFamilleModel(dbConnection);
+    const famille = await Famille.findOne({
+      where: {
+        code: FamilleAjoute.code,
+      },
+    });
+    if (famille) {
+      return res
+        .status(500)
+        .json({ message: "famille deja existant on ne peut pas le reajoute" });
+    } else {
+      const FamilleCree = await Famille.create({
+        code: FamilleAjoute.code,
+        libelle: FamilleAjoute.libelle,
+      });
+      return res
+        .status(200)
+        .json({ message: "Famille ajoute avec succes", FamilleCree });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
 
 module.exports = {
   getListeFamillesParCodeFamille,
-  getListeFamillesParLibelleFamille
+  getListeFamillesParLibelleFamille,
+  ajouterFamille
+  
 };

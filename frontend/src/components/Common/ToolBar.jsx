@@ -32,9 +32,10 @@ import {
 } from "../../app/devis_slices/devisSlice";
 import { getUtilisateurParCode } from "../../app/utilisateur_slices/utilisateurSlice";
 import { viderChampsArticleInfo } from "../../app/article_slices/articleSlice";
-
+import { FaUser, FaCog, FaCreditCard, FaSignOutAlt } from "react-icons/fa";
 function ToolBar() {
   const dispatch = useDispatch();
+  const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
   const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
@@ -48,10 +49,12 @@ function ToolBar() {
   const activerBoutonsValiderAnnuler = useSelector(
     (state) => state.uiStates.activerBoutonsValiderAnnuler
   );
-  const articleInfo =useSelector((state)=>state.ArticlesDevis.articleInfos)
+  const articleInfo = useSelector((state) => state.ArticlesDevis.articleInfos);
 
   const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
-  const dernierCodeClient = useSelector((state) => state.ClientCrud.dernierCodeClient);
+  const dernierCodeClient = useSelector(
+    (state) => state.ClientCrud.dernierCodeClient
+  );
   const handleNaviguerVersListe = async () => {
     if (toolbarTable == "devis") {
       navigate("/DevisList");
@@ -78,7 +81,7 @@ function ToolBar() {
     if (toolbarTable == "client") {
       dispatch(viderChampsClientInfo());
       dispatch(getDerniereCodeClient());
-      dispatch(setClientInfos({colonne: "code", valeur: dernierCodeClient}))
+      dispatch(setClientInfos({ colonne: "code", valeur: dernierCodeClient }));
       // * dispatch une action pour récuperer le code + nom d'utilisateur courant
       dispatch(getUtilisateurParCode());
     }
@@ -105,16 +108,16 @@ function ToolBar() {
         alert("aucun client est selectionné pour la modification");
       }
     }
-    if (toolbarTable=="article"){
-      if (!articleInfo.code)
-      {
-        alert ("aucun article est selectionne pour la modification")
+    if (toolbarTable == "article") {
+      if (!articleInfo.code) {
+        alert("aucun article est selectionne pour la modification");
       }
     }
 
     if (
       (toolbarTable == "client" && clientInfos.code) ||
-      (toolbarTable == "devis" && devisInfo.NUMBL)|| (toolbarTable == "article"&& articleInfo.code)
+      (toolbarTable == "devis" && devisInfo.NUMBL) ||
+      (toolbarTable == "article" && articleInfo.code)
     ) {
       dispatch(setToolbarMode("modification"));
       dispatch(setActiverBoutonsValiderAnnuler(true));
@@ -214,25 +217,23 @@ function ToolBar() {
   };
 
   const handleNaviguerVersPrecedent = () => {
-    if(toolbarTable == "client") {
-      console.log(dernierCodeClient)
-      const clientCode = parseInt(clientInfos.code)-1;
+    if (toolbarTable == "client") {
+      console.log(dernierCodeClient);
+      const clientCode = parseInt(clientInfos.code) - 1;
       dispatch(getClientParCode(clientCode.toString()));
     }
 
-    if(toolbarTable == "devis"){
-
+    if (toolbarTable == "devis") {
     }
   };
 
   const handleNaviguerVersSuivant = () => {
-    if(toolbarTable == "client") {
-      const clientCode = parseInt(clientInfos.code)+1;
+    if (toolbarTable == "client") {
+      const clientCode = parseInt(clientInfos.code) + 1;
       dispatch(getClientParCode(clientCode.toString()));
     }
 
-    if(toolbarTable == "devis"){
-      
+    if (toolbarTable == "devis") {
     }
   };
   return (
@@ -332,7 +333,7 @@ function ToolBar() {
             </>
           )} */}
           {/* // ! btn précedent */}
-          {(!activerBoutonsValiderAnnuler && toolbarTable != "article") && (
+          {!activerBoutonsValiderAnnuler && toolbarTable != "article" && (
             <button
               className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100"
               onClick={handleNaviguerVersPrecedent}
@@ -341,7 +342,7 @@ function ToolBar() {
             </button>
           )}
           {/* // ! btn suivant */}
-          {(!activerBoutonsValiderAnnuler && toolbarTable != "article") && (
+          {!activerBoutonsValiderAnnuler && toolbarTable != "article" && (
             <button
               disabled={dernierCodeClient == clientInfos.code}
               className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100"
@@ -402,7 +403,12 @@ function ToolBar() {
               </span>
             </button>
           )}
+
+
+
+          
         </div>
+      
       </nav>
     </>
   );

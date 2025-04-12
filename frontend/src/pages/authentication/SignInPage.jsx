@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
-import { loginUtilisateur, setCodeUser, setDbName, setToken } from "../../app/utilisateur_slices/utilisateurSlice";
+import { loginUtilisateur, setCodeUser, setDbName, setToken, setUtilisateurInfoEntire } from "../../app/utilisateur_slices/utilisateurSlice";
 
 function SignInPage() {
   const [nom, setNom] = useState("");
@@ -43,7 +43,7 @@ function SignInPage() {
       const data = await response.json(); // convertir la reponse de seurveur en objet javascript
 
       if (response.ok) {
-        dispatch(setCodeUser(data.codeuser))
+        dispatch(setUtilisateurInfoEntire(data.user))
         dispatch(setToken(data.token));
         localStorage.setItem("societies", JSON.stringify(data.societies));
         // localStorage.setItem("codeuser", JSON.stringify(data.codeuser));

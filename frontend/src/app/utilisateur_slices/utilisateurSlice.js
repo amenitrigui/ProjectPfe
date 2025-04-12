@@ -65,6 +65,9 @@ export const utilisateurSlice = createSlice({
     setListeUtilisateur: (state, action) => {
       state.listeUtilisateur = action.payload;
     },
+    setUtilisateurInfoEntire: (state,action)=>{
+      state.infosUtilisateur=action.payload
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -96,6 +99,6 @@ export const utilisateurSlice = createSlice({
   },
 });
 
-export const { setDbName, setToken, setCodeUser, setListeUtilisateur } =
+export const { setDbName, setToken, setCodeUser, setListeUtilisateur,setUtilisateurInfoEntire } =
   utilisateurSlice.actions;
 export default utilisateurSlice.reducer;

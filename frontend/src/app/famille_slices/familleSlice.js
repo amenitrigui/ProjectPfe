@@ -27,15 +27,15 @@ export const getListeFamillesParCodeFamille = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/famille/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/getListeFamillesParCodeFamille`, {
+      }/getListeFamillesParCodeFamille`,
+      {
         params: {
-          codeFamille: codeFamille
-        }
+          codeFamille: codeFamille,
+        },
       }
     );
     console.log(response);
     return response.data.getListeFamillesParCodeFamille;
-
   }
 );
 
@@ -53,7 +53,24 @@ export const getListeFamillesParLibelleFamille = createAsyncThunk(
   }
 );
 
-// * thunk pour récuperer la liste de sous-familles par code
+// * thunk pour ajouter une famille
+export const ajouterFamille = createAsyncThunk(
+  "FamilleSlice/ajouterFamille",
+  async (_, thunkAPI) => {
+    console.log(thunkAPI.getState().familleSlice.FamilleInfos);
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/api/famille/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/ajouterFamille`,
+      {
+        FamilleAjoute: thunkAPI.getState().familleSlice.FamilleInfos,
+      }
+    );
+
+ 
+    return response.data.FamilleCree;
+  }
+);
 
 // * thunk pour récuperer la liste de sous-familles par libelle
 
@@ -74,6 +91,11 @@ export const familleSlice = createSlice({
     },
     setFamilleInfosEntiere: (state, action) => {
       state.FamilleInfos = action.payload;
+    },
+    setFamilleInfo: (state, action) => {
+      const { colonne, valeur } = action.payload;
+
+      state.FamilleInfos[colonne] = valeur;
     },
   },
 
@@ -106,7 +128,7 @@ export const familleSlice = createSlice({
       });
   },
 });
-export const { setListeFamilles, setFamilleInfosEntiere } =
+export const { setListeFamilles, setFamilleInfosEntiere, setFamilleInfo } =
   familleSlice.actions;
 
 export default familleSlice.reducer;
