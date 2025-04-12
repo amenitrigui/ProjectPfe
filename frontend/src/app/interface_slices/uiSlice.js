@@ -27,11 +27,15 @@ export const uiSlice = createSlice({
     setAlertModifier:"",
     afficherRecherchePopup: false,
     ouvrireMenuDrawer: true,
+    afficherFamillePopub: false
   },
 
   reducers: {
     setAfficherRecherchePopup: (state, action) => {
       state.afficherRecherchePopup = action.payload;
+    },
+    setAfficherFamillePopub: (state,action)=>{
+      state.afficherFamillePopub=action.payload
     },
     setAlertMessage: (state, action) => {
       state.message = action.payload;
@@ -83,6 +87,7 @@ export const {
   setActiverBoutonsValiderAnnuler,
   setToolbarMode,
   setAfficherRecherchePopup,
-  setOuvrireDrawerMenu
+  setOuvrireDrawerMenu,
+  setAfficherFamillePopub
 } = uiSlice.actions;
 export default uiSlice.reducer;

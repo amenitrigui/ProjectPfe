@@ -26,16 +26,42 @@ export const getListeSousFamillesParLibelleSousFamille = createAsyncThunk(
     return response.data.LibellesousFamilles;
   }
 );
+//* thunk pour ajouter un sous famille
+export const ajouterSousFamille = createAsyncThunk(
+  "sousfamilleSlice/ajouterSousFamille",
+  async (_, thunkAPI) => {
+    console.log(thunkAPI.getState().sousfamilleSlice.SousFamilleInfos);
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/api/sousfamille/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/ajouterSousFamille`,
+      {
+        SousFamilleAjoute:
+          thunkAPI.getState().sousfamilleSlice.SousFamilleInfos,
+      }
+    );
+    console.log(response);
+    return response.data.SousFamilleCree;
+  }
+);
 
 export const sousfamilleSlice = createSlice({
   name: "sousfamilleSlice",
   initialState: {
     listeSousfamille: [],
+    SousFamilleInfos: {
+      code: "",
+      libelle: "",
+    },
   },
   reducers: {
     setListeSousfamille: (state, action) => {
       state.listeSousfamille = action.payload;
-    }
+    },
+    setSousFamilleInfos: (state, action) => {
+      const { colonne, valeur } = action.payload;
+      state.SousFamilleInfos[colonne] = valeur;
+    },
   },
 
   extraReducers: (builder) => {
@@ -80,6 +106,7 @@ export const sousfamilleSlice = createSlice({
       );
   },
 });
-export const {setListeSousfamille} = sousfamilleSlice.actions;
+export const { setListeSousfamille, setSousFamilleInfos } =
+  sousfamilleSlice.actions;
 
 export default sousfamilleSlice.reducer;

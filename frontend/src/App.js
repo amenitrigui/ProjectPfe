@@ -27,6 +27,8 @@ import { setDevisInfo } from "./app/devis_slices/devisSlice";
 import UtilisateurFormTout from "./pages/Utilisateurs/UtilisateurFormTout";
 import ArticleFormTout from "./pages/Article/ArticleFormTout"
 import ArticleList from "./pages/Article/ArticleList"
+import FamilleFormTout from "./pages/Famille/FamilleFormTout"
+import Settings from "./pages/ErpPages/Settings"
 
 function App() {
   const dispatch = useDispatch();
@@ -60,6 +62,8 @@ function App() {
         <Route path="/DevisFormTout" element={<DevisFormTout />}></Route>
         <Route path="/ArticleFormTout" element={<ArticleFormTout/>}></Route>
         <Route path="/ArticleList" element={<ArticleList/>}></Route>
+        <Route path="/FamilleFormTout" element={<FamilleFormTout/>}></Route>
+        <Route path="/Settings" element={<Settings/>}></Route>
         <Route
           path="/DevisFormPlaceholder"
           element={<DevisFormPlaceholder></DevisFormPlaceholder>}

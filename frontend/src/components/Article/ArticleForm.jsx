@@ -1,7 +1,8 @@
 import React from "react";
 import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { FaUser, FaCog, FaCreditCard, FaSignOutAlt } from "react-icons/fa";
+import { FaUser, FaCog, FaCreditCard, FaSignOutAlt,FaRegUserCircle } from "react-icons/fa";
 import ToolBar from "../Common/ToolBar";
 import ValorisationTab from "./ValorisationTab";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +16,7 @@ import {
   viderChampsArticleInfo,
 } from "../../app/article_slices/articleSlice";
 import {
+  setAfficherFamillePopub,
   setAfficherRecherchePopup,
   setOuvrireDrawerMenu,
   setToolbarTable,
@@ -40,6 +42,15 @@ function ArticleForm() {
   const ListeSousFamille = useSelector(
     (state) => state.ArticlesDevis.ListeSousFamille
   );
+  const listePointVente = useSelector(
+    (state) => state.Stock_Slice.listePointVente
+  );
+  const listedepot = useSelector((state) => state.Stock_Slice.listedepot);
+
+  const listePrixVente = useSelector(
+    (state) => state.valorisation_Slice.listePrixVente
+  );
+  console.log(listePrixVente);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -51,9 +62,15 @@ function ArticleForm() {
     if (articleInfos.code && articleInfos.code != "")
       dispatch(getPrixVente(articleInfos.code));
   }, [articleInfos.code]);
-  const ListeCodeArticles = useSelector(
-    (state) => state.ArticlesDevis.ListeCodeArticles
+  useEffect(() => {
+    if (articleInfos.code) dispatch(getPrixVente(articleInfos.code));
+  }, [articleInfos.code]);
+
+  const infosUtilisateur = useSelector(
+    (state) => state.UtilisateurInfo.infosUtilisateur
   );
+  
+
   const hundlesubmitTousLesChamp = (valeur, colonne) => {
     // console.log(colonne, " ", valeur);
     dispatch(setArticleInfos({ valeur, colonne }));
@@ -118,7 +135,7 @@ function ArticleForm() {
       dispatch(setArticleInfos({ colonne: colonne, valeur: valeur }));
     }
   };
-
+  const nav = useNavigate();
   const afficherRecherchePopup = () => {
     dispatch(setAfficherRecherchePopup(true));
   };
@@ -138,6 +155,13 @@ function ArticleForm() {
       dispatch(getlistepointvente());
     }
   }, [articleInfos.code]);
+ 
+  const togglePopup = (NomTable) => {
+    dispatch(setToolbarTable(NomTable));
+
+    dispatch(setAfficherFamillePopub(true));
+  };
+
   return (
     <div className="container">
       <SideBar />
@@ -150,51 +174,47 @@ function ArticleForm() {
           <ToolBar></ToolBar>
 
           <div className="relative inline-block text-left">
-            {/* Avatar avec événement de clic */}
-            <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
-              <img
-                src="assets/imgs/customer01.jpg"
-                alt="User"
-                className="w-10 h-10 rounded-full border-2 border-white shadow-md"
-              />
-              {/* Indicateur de statut en ligne */}
-              <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
-            </div>
-
-            {/* Menu déroulant */}
-            {isOpen && (
-              <div className="absolute right-0 mt-3 w-56 bg-white border rounded-lg shadow-lg z-50">
-                <div className="p-4 flex items-center border-b">
-                  <img
-                    src="assets/imgs/customer01.jpg"
-                    alt="User"
-                    className="w-10 h-10 rounded-full mr-3"
-                  />
-                  <div>
-                    <p className="font-semibold">John Doe</p>
-                    <p className="text-sm text-gray-500">Admin</p>
-                  </div>
-                </div>
-                <ul className="py-2">
-                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
-                    <FaUser className="mr-3" /> My Profile
-                  </li>
-                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
-                    <FaCog className="mr-3" /> Settings
-                  </li>
-                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer relative">
-                    <FaCreditCard className="mr-3" /> Billing
-                    <span className="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                      4
-                    </span>
-                  </li>
-                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer border-t">
-                    <FaSignOutAlt className="mr-3" /> Log Out
-                  </li>
-                </ul>
-              </div>
-            )}
-          </div>
+                      {/* Avatar avec événement de clic */}
+                      <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
+                      <FaRegUserCircle className="mr-3 text-3xl" />
+                        {/* Indicateur de statut en ligne */}
+                        <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+                      </div>
+          
+                      {/* Menu déroulant */}
+                      {isOpen && (
+                        <div className="absolute right-0 mt-3 w-56 bg-white border rounded-lg shadow-lg z-50">
+                          <div className="p-4 flex items-center border-b">
+                          <FaRegUserCircle className="mr-3 text-3xl" />
+                            <div>
+                              <p className="font-semibold">{infosUtilisateur.nom}</p>
+                              <p className="text-sm text-gray-500">
+                                {infosUtilisateur.type}
+                              </p>
+                            </div>
+                          </div>
+                          <ul className="py-2">
+                            <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
+                            <Link to="/UtilisateurFormTout" className="flex items-center w-full">
+          
+                              <FaUser className="mr-3" /> My Profile
+                              </Link>
+                            </li>
+                            <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
+                            <Link to="/Settings" className="flex items-center w-full">
+                              <FaCog className="mr-3" /> Settings
+                              </Link>
+                            </li>
+          
+                            <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer border-t">
+                              <Link to="/" className="flex items-center w-full">
+                                <FaSignOutAlt className="mr-3" /> Log Out
+                              </Link>
+                            </li>
+                          </ul>
+                        </div>
+                      )}
+                    </div>
         </div>
         <div className="details p-6">
           <div className="ameni">
@@ -210,8 +230,9 @@ function ArticleForm() {
               {/* Section Article (gauche) */}
               <div className="flex-1 space-y-4">
                 {/* Famille/Sous-Famille */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-1">
+
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                  <div className="col-span-12 md:col-span-3 space-y-1">
                     <label className="block font-semibold text-blue-900">
                       Code Famille
                     </label>
@@ -237,7 +258,8 @@ function ArticleForm() {
                       ))}
                     </datalist>
                   </div>
-                  <div className="space-y-1">
+
+                  <div className="col-span-12 md:col-span-7 space-y-1">
                     <label className="block font-semibold text-blue-900">
                       Désignation Famille
                     </label>
@@ -254,12 +276,22 @@ function ArticleForm() {
                       disabled={!activerChampsForm}
                     />
                   </div>
+
+                  <div className="col-span-12 md:col-span-2 flex items-end">
+                    <button
+                      className="btn btn-outline btn-accent w-full"
+                      onClick={() => togglePopup("famille")}
+                    >
+                      <i className="fas fa-plus-circle"></i>
+                    </button>
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-1">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                  {/* Code Sous-Famille */}
+                  <div className="col-span-12 md:col-span-3 space-y-1">
                     <label className="block font-semibold text-blue-900">
-                      Code Sous-Famille
+                      Code Sous-Fam
                     </label>
                     <input
                       type="text"
@@ -283,7 +315,9 @@ function ArticleForm() {
                       ))}
                     </datalist>
                   </div>
-                  <div className="space-y-1">
+
+                  {/* Désignation Sous-Famille */}
+                  <div className="col-span-12 md:col-span-7 space-y-1">
                     <label className="block font-semibold text-blue-900">
                       Désignation Sous-Famille
                     </label>
@@ -300,11 +334,22 @@ function ArticleForm() {
                       }
                     />
                   </div>
+
+                  {/* Bouton */}
+                  <div className="col-span-12 md:col-span-2 flex items-end">
+                    <button
+                      className="btn btn-outline btn-accent w-full"
+                      onClick={() => togglePopup("sousfamille")}
+                    >
+                      <i className="fas fa-plus-circle"></i>
+                    </button>
+                  </div>
                 </div>
 
                 {/* Code Article et Désignation */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-1">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                  {/* Code Article */}
+                  <div className="col-span-12 md:col-span-4 space-y-1">
                     <label className="block font-semibold text-blue-900">
                       Code Article
                     </label>
@@ -325,14 +370,9 @@ function ArticleForm() {
                       }}
                     />
                   </div>
-                  <datalist id="listeCodesArticle">
-                    {ListeCodeArticles.map((article, indice) => (
-                      <option key={indice} value={article.code}>
-                        {article.code}
-                      </option>
-                    ))}
-                  </datalist>
-                  <div className="space-y-1">
+
+                  {/* Désignation Article */}
+                  <div className="col-span-12 md:col-span-8 space-y-1">
                     <label className="block font-semibold text-blue-900">
                       Désignation Article
                     </label>

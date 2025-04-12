@@ -285,7 +285,8 @@ body {
 }
 .details .mahdi table tbody tr:hover {
   background: var(--blue);
-  color: var(--white);
+ 
+  
 }
 .details .mahdi {
   position: relative;
