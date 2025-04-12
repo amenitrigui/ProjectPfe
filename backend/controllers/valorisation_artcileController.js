@@ -16,8 +16,8 @@ const getPrixVente = async (req, res) => {
       `select prix1,prix2,prix3,prix4, prix1ttc,prix2ttc,prix3ttc,prix4ttc ,remmax,prixpub from article where code =:code `,
 
       {
-        replacements : {
-            code:code
+        replacements: {
+          code: code,
         },
         type: dbConnection.QueryTypes.SELECT,
       }

@@ -141,12 +141,6 @@ const creerDevis = async (req, res) => {
     articles,
   } = req.body.devisInfo;
 
-  console.log("NUMBL reçu:", NUMBL);
-  console.log("Code client reçu:", CODECLI);
-  console.log("Articles reçus :", articles);
-  console.log("CODECLI: ", CODECLI);
-  console.log("ADRCLI: ", ADRCLI);
-
   articles.map((article) => {
     article.NumBL = NUMBL;
   });

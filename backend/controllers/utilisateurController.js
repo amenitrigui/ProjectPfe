@@ -292,8 +292,7 @@ const envoyerDemandeReinitialisationMp = async (req, res) => {
 // * verb : put
 // * http://localhost:5000/api/utilisateurs/reinitialiserMotPasse
 const reinitialiserMotPasse = async (req, res) => {
-  const { email, password, token } = req.body;
-
+  const { email, password, token, dbName } = req.body;
   if (!token) {
     return res
       .status(401)
@@ -309,6 +308,8 @@ const reinitialiserMotPasse = async (req, res) => {
   const decodedJWT = verifyTokenValidity(req, res);
 
   try {
+    const dbConnection = await getDatabaseConnection(dbName, res)
+    const User = defineUserModel(dbConnection);
     const user = await User.findOne({ where: { email } });
     if (!user) {
       return res.status(404).json({

@@ -80,6 +80,12 @@ function AlertModifier() {
         dispatch(viderChampsArticleInfo())
       }
     }
+
+    if(toolbarTable == "famille") {
+      if(toolbarMode == "ajout") {
+        
+      }
+    }
     dispatch(setAfficherAlert(false));
     closeToast();
 
