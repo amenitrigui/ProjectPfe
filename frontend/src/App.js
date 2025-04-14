@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 
 import DevisForm from "./components/Devis/DevisForm";
 import HomePage from "./pages/ErpPages/HomePage";
@@ -25,52 +25,61 @@ import ClientFormTout from "./pages/Clients/ClientFormTout";
 import { useDispatch, useSelector } from "react-redux";
 import { setDevisInfo } from "./app/devis_slices/devisSlice";
 import UtilisateurFormTout from "./pages/Utilisateurs/UtilisateurFormTout";
-import ArticleFormTout from "./pages/Article/ArticleFormTout"
-import ArticleList from "./pages/Article/ArticleList"
-import FamilleFormTout from "./pages/Famille/FamilleFormTout"
-import Settings from "./pages/ErpPages/Settings"
+import ArticleFormTout from "./pages/Article/ArticleFormTout";
+import ArticleList from "./pages/Article/ArticleList";
+import FamilleFormTout from "./pages/Famille/FamilleFormTout";
+import Settings from "./pages/ErpPages/Settings";
+import { setActiverBoutonsValiderAnnuler, setToolbarMode, setToolbarTable } from "./app/interface_slices/uiSlice";
 
 function App() {
+  //?==================================================================================================================
+  //?=====================================================variables====================================================
+  //?==================================================================================================================
   const dispatch = useDispatch();
   const usera = useSelector((state) => state.UtilisateurInfo.codeuser);
-  dispatch(setDevisInfo("usera",usera))
-  // ! thou art a man of feeble spirit
-  // const persistor = persistStore(store);
-  // // ! whomst has awakened the ancient one
-  // useEffect(() => {
-  //   persistor.purge();
-  // }, [dispatch]);
+  const location = useLocation();
+  const toolbarTable = useSelector((state) => state.uiStates.toolbarTable);
+  //?==================================================================================================================
+  //?==================================================appels UseEffect================================================
+  //?==================================================================================================================
+  useEffect(() => {
+    dispatch(setToolbarMode("consultation"))
+    dispatch(setActiverBoutonsValiderAnnuler(false))
+  }, [location.pathname])
+
+  //?==================================================================================================================
+  //?=====================================================fonctions====================================================
+  //?==================================================================================================================
+  // dispatch(setDevisInfo("usera", usera));
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<SignInPage />} />
-        <Route path="/deconnexion" element={<Deconnexion />} />
-        <Route path="/Devis-Form" element={<DevisForm />} />
-        <Route path="/Home-Page" element={<HomePage />} />
-        <Route path="/DevisList" element={<DevisList />} />
-        <Route path="/dvis-details/e:numbl" element={<DevisDetails />} />
-        <Route path="/Dashboard" element={<Dashboard />} />
-        <Route path="/SocietiesList" element={<SocietiesList />} />
-        <Route path="/recherche" element={<Recherche />} />
-        <Route path="/GestionCommerciale" element={<GestionCommerciale />} />
-        <Route path="/GestionDesVentes" element={<GestionDesVentes />} />
-        <Route path="/RegisterPage" element={<RegisterPage />} />
-        <Route path="/ResetPassword" element={<ResetPassword />}></Route>
-        <Route path="/EmailEnvoye" element={<EmailEnvoye />}></Route>
-        <Route path="/ClientList" element={<ClientList />}></Route>
-        <Route path="/ClientFormTout" element={<ClientFormTout />} />
-        <Route path="/DevisFormTout" element={<DevisFormTout />}></Route>
-        <Route path="/ArticleFormTout" element={<ArticleFormTout/>}></Route>
-        <Route path="/ArticleList" element={<ArticleList/>}></Route>
-        <Route path="/FamilleFormTout" element={<FamilleFormTout/>}></Route>
-        <Route path="/Settings" element={<Settings/>}></Route>
-        <Route
-          path="/DevisFormPlaceholder"
-          element={<DevisFormPlaceholder></DevisFormPlaceholder>}
-        ></Route>
-        <Route path="/UtilisateurFormTout" element={<UtilisateurFormTout />} />
-      </Routes>
-    </Router>
+    <Routes>
+      <Route path="/" element={<SignInPage />} />
+      <Route path="/deconnexion" element={<Deconnexion />} />
+      <Route path="/Devis-Form" element={<DevisForm />} />
+      <Route path="/Home-Page" element={<HomePage />} />
+      <Route path="/DevisList" element={<DevisList />} />
+      <Route path="/dvis-details/e:numbl" element={<DevisDetails />} />
+      <Route path="/Dashboard" element={<Dashboard />} />
+      <Route path="/SocietiesList" element={<SocietiesList />} />
+      <Route path="/recherche" element={<Recherche />} />
+      <Route path="/GestionCommerciale" element={<GestionCommerciale />} />
+      <Route path="/GestionDesVentes" element={<GestionDesVentes />} />
+      <Route path="/RegisterPage" element={<RegisterPage />} />
+      <Route path="/ResetPassword" element={<ResetPassword />}></Route>
+      <Route path="/EmailEnvoye" element={<EmailEnvoye />}></Route>
+      <Route path="/ClientList" element={<ClientList />}></Route>
+      <Route path="/ClientFormTout" element={<ClientFormTout />} />
+      <Route path="/DevisFormTout" element={<DevisFormTout />}></Route>
+      <Route path="/ArticleFormTout" element={<ArticleFormTout />}></Route>
+      <Route path="/ArticleList" element={<ArticleList />}></Route>
+      <Route path="/FamilleFormTout" element={<FamilleFormTout />}></Route>
+      <Route path="/Settings" element={<Settings />}></Route>
+      <Route
+        path="/DevisFormPlaceholder"
+        element={<DevisFormPlaceholder></DevisFormPlaceholder>}
+      ></Route>
+      <Route path="/UtilisateurFormTout" element={<UtilisateurFormTout />} />
+    </Routes>
   );
 }
 

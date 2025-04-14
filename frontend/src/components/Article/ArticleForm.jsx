@@ -2,7 +2,13 @@ import React from "react";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { FaUser, FaCog, FaCreditCard, FaSignOutAlt,FaRegUserCircle } from "react-icons/fa";
+import {
+  FaUser,
+  FaCog,
+  FaCreditCard,
+  FaSignOutAlt,
+  FaRegUserCircle,
+} from "react-icons/fa";
 import ToolBar from "../Common/ToolBar";
 import ValorisationTab from "./ValorisationTab";
 import { useDispatch, useSelector } from "react-redux";
@@ -31,6 +37,9 @@ import {
   getQteTotalArticle,
 } from "../../app/Stock_valorisation_utilitaires/Stock_Slice";
 function ArticleForm() {
+  //?==================================================================================================================
+  //?=====================================================variables====================================================
+  //?==================================================================================================================
   // * pour afficher le sidebar
   const ouvrireMenuDrawer = useSelector(
     (state) => state.uiStates.ouvrireMenuDrawer
@@ -42,17 +51,13 @@ function ArticleForm() {
   const ListeSousFamille = useSelector(
     (state) => state.ArticlesDevis.ListeSousFamille
   );
-  const listePointVente = useSelector(
-    (state) => state.Stock_Slice.listePointVente
-  );
-  const listedepot = useSelector((state) => state.Stock_Slice.listedepot);
-
-  const listePrixVente = useSelector(
-    (state) => state.valorisation_Slice.listePrixVente
-  );
-  console.log(listePrixVente);
   const dispatch = useDispatch();
-
+  const infosUtilisateur = useSelector(
+    (state) => state.UtilisateurInfo.infosUtilisateur
+  );
+  //?==================================================================================================================
+  //?==============================================appels UseEffect====================================================
+  //?==================================================================================================================
   useEffect(() => {
     dispatch(getListeFamillesArticle()); //* la colonne code Famille
     dispatch(getListecodesousFamille()); //** la collone de code sous famille */
@@ -65,16 +70,43 @@ function ArticleForm() {
   useEffect(() => {
     if (articleInfos.code) dispatch(getPrixVente(articleInfos.code));
   }, [articleInfos.code]);
-
-  const infosUtilisateur = useSelector(
-    (state) => state.UtilisateurInfo.infosUtilisateur
-  );
+  useEffect(() => {
+    if (articleInfos.codesousfam && articleInfos.codesousfam != "") {
+      dispatch(
+        getdesignationSousFamillebycodeSousFamille(articleInfos.codesousfam)
+      );
+    }
+  }, [articleInfos.codesousfam]);
   
+  useEffect(() => {
+    if (articleInfos.famille && articleInfos.famille != "") {
+      dispatch(getDesignationFamilleParCodeFamille(articleInfos.famille));
+    }
+  }, [articleInfos.famille]);
+  
+  const activerChampsForm = useSelector(
+    (state) => state.uiStates.activerChampsForm
+  );
+  useEffect(() => {
+    if (articleInfos.code && articleInfos.code != "") {
+      dispatch(
+        getListedepotdeStockparpcodepointvente({
+          codepv: "01",
+          codeArticle: articleInfos.code,
+        })
+      );
+      dispatch(getQteTotalArticle(articleInfos.code));
+      dispatch(getlistepointvente());
+    }
+  }, [articleInfos.code]);
 
+  //?==================================================================================================================
+  //?=====================================================fonctions====================================================
+  //?==================================================================================================================
   const hundlesubmitTousLesChamp = (valeur, colonne) => {
     // console.log(colonne, " ", valeur);
     dispatch(setArticleInfos({ valeur, colonne }));
-
+    
     if (colonne == "code") {
       if (valeur == "") {
         {
@@ -82,7 +114,7 @@ function ArticleForm() {
         }
       }
     }
-
+    
     if (colonne == "famille") {
       if (valeur != "") {
         dispatch(getDesignationFamilleParCodeFamille(valeur));
@@ -90,7 +122,7 @@ function ArticleForm() {
         dispatch(setArticleInfos({ colonne: "libelleFamille", valeur: "" }));
       }
     }
-
+    
     if (colonne == "codesousfam") {
       if (valeur != "") {
         dispatch(getdesignationSousFamillebycodeSousFamille(valeur));
@@ -101,24 +133,7 @@ function ArticleForm() {
       }
     }
   };
-
-  useEffect(() => {
-    if (articleInfos.codesousfam && articleInfos.codesousfam != "") {
-      dispatch(
-        getdesignationSousFamillebycodeSousFamille(articleInfos.codesousfam)
-      );
-    }
-  }, [articleInfos.codesousfam]);
-
-  useEffect(() => {
-    if (articleInfos.famille && articleInfos.famille != "") {
-      dispatch(getDesignationFamilleParCodeFamille(articleInfos.famille));
-    }
-  }, [articleInfos.famille]);
-
-  const activerChampsForm = useSelector(
-    (state) => state.uiStates.activerChampsForm
-  );
+  
   const handleChangeCheckbox = (checked, colonne) => {
     if (toolbarMode == "ajout" || toolbarMode == "modification") {
       dispatch(
@@ -135,7 +150,6 @@ function ArticleForm() {
       dispatch(setArticleInfos({ colonne: colonne, valeur: valeur }));
     }
   };
-  const nav = useNavigate();
   const afficherRecherchePopup = () => {
     dispatch(setAfficherRecherchePopup(true));
   };
@@ -143,19 +157,7 @@ function ArticleForm() {
   const toggleSidebar = () => {
     dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
   };
-  useEffect(() => {
-    if (articleInfos.code != "") {
-      dispatch(
-        getListedepotdeStockparpcodepointvente({
-          codepv: "01",
-          codeArticle: articleInfos.code,
-        })
-      );
-      dispatch(getQteTotalArticle(articleInfos.code));
-      dispatch(getlistepointvente());
-    }
-  }, [articleInfos.code]);
- 
+
   const togglePopup = (NomTable) => {
     dispatch(setToolbarTable(NomTable));
 
@@ -174,47 +176,49 @@ function ArticleForm() {
           <ToolBar></ToolBar>
 
           <div className="relative inline-block text-left">
-                      {/* Avatar avec événement de clic */}
-                      <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
-                      <FaRegUserCircle className="mr-3 text-3xl" />
-                        {/* Indicateur de statut en ligne */}
-                        <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
-                      </div>
-          
-                      {/* Menu déroulant */}
-                      {isOpen && (
-                        <div className="absolute right-0 mt-3 w-56 bg-white border rounded-lg shadow-lg z-50">
-                          <div className="p-4 flex items-center border-b">
-                          <FaRegUserCircle className="mr-3 text-3xl" />
-                            <div>
-                              <p className="font-semibold">{infosUtilisateur.nom}</p>
-                              <p className="text-sm text-gray-500">
-                                {infosUtilisateur.type}
-                              </p>
-                            </div>
-                          </div>
-                          <ul className="py-2">
-                            <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
-                            <Link to="/UtilisateurFormTout" className="flex items-center w-full">
-          
-                              <FaUser className="mr-3" /> My Profile
-                              </Link>
-                            </li>
-                            <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
-                            <Link to="/Settings" className="flex items-center w-full">
-                              <FaCog className="mr-3" /> Settings
-                              </Link>
-                            </li>
-          
-                            <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer border-t">
-                              <Link to="/" className="flex items-center w-full">
-                                <FaSignOutAlt className="mr-3" /> Log Out
-                              </Link>
-                            </li>
-                          </ul>
-                        </div>
-                      )}
-                    </div>
+            {/* Avatar avec événement de clic */}
+            <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
+              <FaRegUserCircle className="mr-3 text-3xl" />
+              {/* Indicateur de statut en ligne */}
+              <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+            </div>
+
+            {/* Menu déroulant */}
+            {isOpen && (
+              <div className="absolute right-0 mt-3 w-56 bg-white border rounded-lg shadow-lg z-50">
+                <div className="p-4 flex items-center border-b">
+                  <FaRegUserCircle className="mr-3 text-3xl" />
+                  <div>
+                    <p className="font-semibold">{infosUtilisateur.nom}</p>
+                    <p className="text-sm text-gray-500">
+                      {infosUtilisateur.type}
+                    </p>
+                  </div>
+                </div>
+                <ul className="py-2">
+                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
+                    <Link
+                      to="/UtilisateurFormTout"
+                      className="flex items-center w-full"
+                    >
+                      <FaUser className="mr-3" /> My Profile
+                    </Link>
+                  </li>
+                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
+                    <Link to="/Settings" className="flex items-center w-full">
+                      <FaCog className="mr-3" /> Settings
+                    </Link>
+                  </li>
+
+                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer border-t">
+                    <Link to="/" className="flex items-center w-full">
+                      <FaSignOutAlt className="mr-3" /> Log Out
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
         </div>
         <div className="details p-6">
           <div className="ameni">

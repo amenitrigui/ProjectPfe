@@ -21,9 +21,14 @@ import {
   suprimerArticle,
   viderChampsArticleInfo,
 } from "../../app/article_slices/articleSlice";
-function AlertModifier() {
-  const dispatch = useDispatch();
 
+import { validerChampsForm } from "../../utils/validations"
+import { AjouterDevis, viderChampsDevisInfo } from "../../app/devis_slices/devisSlice";
+function AlertModifier() {
+  //?==================================================================================================================
+  //?=====================================================variables====================================================
+  //?==================================================================================================================
+  const dispatch = useDispatch();
   const afficherAlert = useSelector((state) => state.uiStates.afficherAlert);
   const message = useSelector((state) => state.uiStates.message);
   const toolbarTable = useSelector((state) => state.uiStates.toolbarTable);
@@ -34,6 +39,19 @@ function AlertModifier() {
   const articleCode = useSelector(
     (state) => state.ArticlesDevis.articleInfos
   ).code;
+  const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
+  //?==================================================================================================================
+  //?=================================================appels UseEffect=================================================
+  //?==================================================================================================================
+  // useEffect(() => {
+  //   console.log(validerChampsForm("devis", {"nice": "val"}))
+  // }, [])
+  
+
+  //?==================================================================================================================
+  //?=====================================================fonctions====================================================
+  //?==================================================================================================================
+
 
   const handleConfirmerClick = async (closeToast) => {
     //*pour le client
@@ -57,6 +75,13 @@ function AlertModifier() {
     // * pour devis
     if (toolbarTable == "devis") {
       if (toolbarMode == "ajout") {
+        if(validerChampsForm("devis", devisInfo)){
+          dispatch(AjouterDevis());
+          dispatch(viderChampsDevisInfo())
+        }
+        else {
+          alert("veuillez vérifier les données de formulaire")
+        }
       }
       if (toolbarMode == "modification") {
       }
@@ -80,16 +105,16 @@ function AlertModifier() {
         dispatch(viderChampsArticleInfo())
       }
     }
-
+    // * pour la famille
     if(toolbarTable == "famille") {
       if(toolbarMode == "ajout") {
         
       }
     }
     dispatch(setAfficherAlert(false));
-    closeToast();
-
+    dispatch(setActiverBoutonsValiderAnnuler(false))
     dispatch(setToolbarMode("consultation"));
+    closeToast();
   };
 
   useEffect(() => {
@@ -97,10 +122,10 @@ function AlertModifier() {
       toast(
         ({ closeToast }) => (
           <div
-            style={{
-              borderRadius: "20px",
-              boxShadow: "0px 4px 10px rgb(42, 33, 133)",
-            }}
+            // style={{
+            //   borderRadius: "20px",
+            //   boxShadow: "0px 4px 10px rgb(42, 33, 133)",
+            // }}
           >
             <p
               style={{
@@ -134,13 +159,7 @@ function AlertModifier() {
                 }
                 onMouseOut={(e) => (e.target.style.backgroundColor = "#2a2185")}
               >
-                {toolbarMode == "ajout"
-                  ? "Ajouter"
-                  : toolbarMode == "modification"
-                  ? "Modifier"
-                  : toolbarMode == "suppression"
-                  ? "Supprimer"
-                  : "par defaut"}
+                Confirmer
               </button>
               <button
                 style={{

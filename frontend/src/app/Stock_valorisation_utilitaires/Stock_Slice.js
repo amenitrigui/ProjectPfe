@@ -13,14 +13,14 @@ export const getlistepointvente = createAsyncThunk(
   }
 );
 export const getListedepotdeStockparpcodepointvente = createAsyncThunk(
-  "StockSlice/getListedepotdeStockparpcodepointvente", // Ajout du type d'action
+  "StockSlice/getListedepotdeStockparpcodepointvente",
   async (parames, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/Stock_Article/${
         thunkAPI.getState().UtilisateurInfo.dbName
       }/getListedepotdeStockparpcodepointvente`,
       {
-        params: { codepv: parames.codepv, codeArticle: parames.codeArticle }, // Correction de la syntaxe des params
+        params: { codepv: parames.codepv, codeArticle: parames.codeArticle },
       }
     );
 
@@ -64,7 +64,6 @@ export const Stock_Slice = createSlice({
       state.listedepot = action.payload;
     },
     setStockInfosEntiere: (state, action) => {
-      // Correction du nom (cohérence avec l'export)
       state.StockInfo = action.payload;
     },
   },

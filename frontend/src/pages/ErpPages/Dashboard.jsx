@@ -6,92 +6,46 @@ import {
   getNombreTotalDevis,
   getTotalChiffres,
 } from "../../app/devis_slices/devisSlice";
+import SideBar from "../../components/Common/SideBar";
+import { setOuvrireDrawerMenu } from "../../app/interface_slices/uiSlice";
 
 const Dashboard = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [isOpen, setIsOpen] = useState(false);
-  // Fonction pour basculer la visibilité de la sidebar
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+  //?==================================================================================================================
+  //?=====================================================variables====================================================
+  //?==================================================================================================================
   const dispatch = useDispatch();
+  const [isOpen, setIsOpen] = useState(false);
+  
+  const ouvrireMenuDrawer = useSelector((state) => state.uiStates.ouvrireMenuDrawer);
+  const nombredevis = useSelector((state) => state.DevisCrud.nombreDeDevis);
+  const totalchifre = useSelector((state) => state.DevisCrud.totalchifre);
+  
+  const infosUtilisateur = useSelector(
+    (state) => state.UtilisateurInfo.infosUtilisateur
+  );
+  //?==================================================================================================================
+  //?==================================================appels UseEffect================================================
+  //?==================================================================================================================
   useEffect(() => {
     dispatch(getNombreTotalDevis());
     dispatch(getTotalChiffres());
   }, []);
-  const infosUtilisateur = useSelector(
-    (state) => state.UtilisateurInfo.infosUtilisateur
-  );
+  //?==================================================================================================================
+  //?=====================================================fonctions====================================================
+  //?==================================================================================================================
+  const toggleSidebar = () => {
+    dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
+  };
 
-  const nombredevis = useSelector((state) => state.DevisCrud.nombreDeDevis);
-  const totalchifre = useSelector((state) => state.DevisCrud.totalchifre);
   return (
     <div className="container">
-      <div className={`navigation ${isSidebarOpen ? "active" : ""}`}>
-        <ul>
-          <li>
-            <a href="#">
-              <span className="icon">
-                <ion-icon name="speedometer-outline"></ion-icon>
-              </span>
-              <span className="title">ERP Logicom</span>
-            </a>
-          </li>
+      <SideBar />
 
-          {[
-            { name: "Dashboard", icon: "home-outline", path: "/dashboard" },
-            {
-              name: "Clients",
-              icon: "people-outline",
-              path: "/ClientFormTout",
-            },
-            {
-              name: "Article",
-              icon: "chatbubble-outline",
-              path: "/ArticleFormTout",
-            },
-            {
-              name: "devistout",
-              icon: "lock-closed-outline",
-              path: "/DevisFormTout",
-            },
-            {
-              name: "les societes",
-              icon: "help-outline",
-              path: "/SocietiesList",
-            },
-            {
-              name: "utilisateur",
-              icon: "help-outline",
-              path: "/UtilisateurFormTout",
-            },
-            { name: "Settings", icon: "settings-outline", path: "/" },
-            {
-              name: "Deconnexion",
-              icon: "log-out-outline",
-              path: "/deconnexion",
-            },
-          ].map((item, index) => (
-            <li key={index}>
-              {/* Use Link instead of <a> */}
-              <Link to={item.path}>
-                <span className="icon">
-                  <ion-icon name={item.icon}></ion-icon>
-                </span>
-                <span className="title">{item.name}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className={`main ${isSidebarOpen ? "active" : ""}`}>
+      <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
         <div className="topbar">
           <div className="toggle" onClick={toggleSidebar}>
             <ion-icon name="menu-outline"></ion-icon>
           </div>
-
-         
 
           <div className="relative inline-block text-left">
             {/* Avatar avec événement de clic */}
@@ -146,7 +100,7 @@ const Dashboard = () => {
             },
             {
               number: totalchifre.toFixed(2),
-              name: "total chifre",
+              name: "total chiffre",
               icon: "cash-outline",
             },
             {
@@ -156,7 +110,7 @@ const Dashboard = () => {
             },
             {
               number: totalchifre.toFixed(2),
-              name: "total chifre",
+              name: "total chiffre",
               icon: "cash-outline",
             },
           ].map((card, index) => (

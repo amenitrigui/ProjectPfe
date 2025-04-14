@@ -15,7 +15,6 @@ import valorisation_Slice from "./Stock_valorisation_utilitaires/valorisation_Sl
 const persistConfig = {
   key: "root",
   storage: localStorage, // pour utiliser LocalStorage
-  // ! le magique au chocolat
   // whitelist: [ // pour specifier quelles slices on persiste
   //   "ClientCrud",
   //   "UtilisateurInfo",

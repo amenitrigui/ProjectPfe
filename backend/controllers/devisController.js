@@ -90,7 +90,7 @@ const getNombreDevis = async (req, res) => {
       message: "Le nom de la base de données est requis.",
     });
   }
-  
+
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
     const Devis = defineDfpModel(dbConnection);
@@ -119,8 +119,8 @@ const getNombreDevis = async (req, res) => {
 // * example:
 // * input : devis
 // * output : un nouveau devis est ajouté au base de données
-// * http://localhost:5000/api/devis/SOLEVO/creerDevis
-const creerDevis = async (req, res) => {
+// * http://localhost:5000/api/devis/SOLEVO/ajouterDevis
+const ajouterDevis = async (req, res) => {
   const { dbName } = req.params;
   const {
     NUMBL,
@@ -144,6 +144,8 @@ const creerDevis = async (req, res) => {
   articles.map((article) => {
     article.NumBL = NUMBL;
   });
+
+  console.log(articles);
 
   try {
     const dbConnection = await getDatabaseConnection(dbName, res);
@@ -243,7 +245,9 @@ const GetDevisParPeriode = async (req, res) => {
     const dbConnection = await getDatabaseConnection(dbName, res);
 
     if (!DATEBL || !codeuser) {
-      return res.status(400).json({ message: "DATEBL ou codeuser est manquant" });
+      return res
+        .status(400)
+        .json({ message: "DATEBL ou codeuser est manquant" });
     }
 
     const devis = await dbConnection.query(
@@ -261,14 +265,12 @@ const GetDevisParPeriode = async (req, res) => {
 
     return res.status(200).json({
       message: "Période récupérée avec succès par devis",
-      devis: devis
+      devis: devis,
     });
-
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
-
 
 // * récuperer la liste de devis créés pour un client spécifique (CODECLI)
 // * pour une societé donnée (dbName)
@@ -279,7 +281,7 @@ const GetDevisListParClient = async (req, res) => {
     const { CODECLI, codeuser } = req.query;
 
     console.log(dbName, " ", CODECLI, " ", codeuser);
-    
+
     const dbConnection = await getDatabaseConnection(dbName, res);
 
     const devis = await dbConnection.query(
@@ -290,7 +292,7 @@ const GetDevisListParClient = async (req, res) => {
        WHERE CODECLI LIKE :codecli AND usera = :codeuser`,
       {
         replacements: {
-          codecli: `%${CODECLI}%`,  // LIKE sur CODECLI
+          codecli: `%${CODECLI}%`, // LIKE sur CODECLI
           codeuser,
         },
         type: dbConnection.QueryTypes.SELECT,
@@ -305,7 +307,6 @@ const GetDevisListParClient = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
 
 // * récuperer la liste des codes de devis (NUMBL)
 // * pour une societé donnée (dbName)
@@ -342,7 +343,7 @@ const getCodesDevis = async (req, res) => {
 // * example:
 // * input : NUMBL = DV2300002, usera=4
 // * output : le devis ayant le NUMBL DV2300002, créé par l'utilisateur 4
-// * http://localhost:5000/api/devis/SOLEVO/getDevisParNUMBL/DV2300002
+// * http://localhost:5000/api/devis/SOLEVO/getDevisParNUMBL/DV2300002?codeuser=4
 const getDevisParNUMBL = async (req, res) => {
   try {
     const { dbName, NUMBL } = req.params;
@@ -357,19 +358,24 @@ const getDevisParNUMBL = async (req, res) => {
           NUMBL, libpv, ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, 
           comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT 
          FROM dfp 
-         WHERE NUMBL LIKE :numbl 
+         WHERE NUMBL = :numbl 
            AND usera = :codeuser`,
         {
           replacements: {
-            numbl: `%${NUMBL}%`,  // Ajout du LIKE ici
+            numbl: `${NUMBL}`,
             codeuser,
           },
           type: dbConnection.QueryTypes.SELECT,
         }
       );
-      return res
-        .status(200)
-        .json({ message: "devis recupere avec succes", devis: devis });
+
+      if (devis && devis.length > 0) {
+        return res
+          .status(200)
+          .json({ message: "devis recupere avec succes", devis: devis });
+      } else {
+        return res.status(404).json({ message: "aucun devis n'est trouvé" });
+      }
     } else {
       return res.status(500).json({ message: "récupération de devis échoué" });
     }
@@ -377,7 +383,6 @@ const getDevisParNUMBL = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
 
 // * récuperer l'utilisateur qui a crée un devis à partir
 // * de la base des données ErpSole
@@ -449,8 +454,8 @@ const getDevisParMontant = async (req, res) => {
         WHERE MTTC  LIKE :montant AND usera = :codeuser`,
         {
           replacements: {
-            montant: `%${montant}%`,  // LIKE avec wildcard
-            codeuser
+            montant: `%${montant}%`, // LIKE avec wildcard
+            codeuser,
           },
           type: dbConnection.QueryTypes.SELECT,
         }
@@ -467,7 +472,6 @@ const getDevisParMontant = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
 
 // * méthode pour récuperer la liste de points de vente
 // * exemple :
@@ -611,11 +615,58 @@ const getListeDevisParCodeClient = async (req, res) => {
   }
 };
 
+// * récuperer un devis par son code (NUMBL)
+// * pour une societé donnée (dbName)
+// * example:
+// * input : NUMBL = DV2300, usera=4
+// * output : la liste de devis ayant le NUMBL DV2300%, créés par l'utilisateur 4
+// * http://localhost:5000/api/devis/SOLEVO/getListeDevisParNUMBL/?NUMBL=DV2300&codeuser=4
+const getListeDevisParNUMBL = async (req, res) => {
+  try {
+    const { dbName } = req.params;
+    const { codeuser,NUMBL } = req.query;
+
+    const dbConnection = await getDatabaseConnection(dbName, res);
+
+    if (NUMBL && codeuser) {
+      const listeDevis = await dbConnection.query(
+        `SELECT 
+          NUMBL, libpv, ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, 
+          comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT 
+         FROM dfp 
+         WHERE NUMBL LIKE :numbl 
+           AND usera = :codeuser`,
+        {
+          replacements: {
+            numbl: `%${NUMBL}%`,
+            codeuser,
+          },
+          type: dbConnection.QueryTypes.SELECT,
+        }
+      );
+
+      if (listeDevis && listeDevis.length>0) {
+        return res
+          .status(200)
+          .json({ message: "Liste de devis récuperé avec succes", listeDevis: listeDevis });
+      } else {
+        return res
+          .status(404)
+          .json({ message: "aucun devis n'est trouvé" });
+      }
+    } else {
+      return res.status(500).json({ message: "récupération de devis échoué" });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getTousDevis,
   getNombreDevis,
   getTotalChiffres,
-  creerDevis,
+  ajouterDevis,
   getDevisParNUMBL,
   getCodesDevis,
   getDevisParMontant,
@@ -629,4 +680,5 @@ module.exports = {
   getDerniereNumbl,
   deleteDevis,
   getListeDevisParCodeClient,
+  getListeDevisParNUMBL
 };

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import {
   getDevisParNUMBL,
   getDevisParCodeClient,
@@ -9,21 +8,22 @@ import {
   setDevisInfoEntiere,
   setDevisList,
   getListeNumbl,
+  getListeDevisParNUMBL,
 } from "../../app/devis_slices/devisSlice";
 import DataTable from "react-data-table-component";
-import { FaArrowLeft } from "react-icons/fa"; // Import de l'icône
 import {
   getClientParCin,
   getClientParCode,
   getClientParTypecli,
-  getListeClient,
   getToutCodesClient,
   setClientInfosEntiere,
   setListeClients,
 } from "../../app/client_slices/clientSlice";
-import { setAfficherRecherchePopup } from "../../app/interface_slices/uiSlice";
 import {
-  getArticleParCode,
+  setAfficherRecherchePopup,
+  setToolbarTable,
+} from "../../app/interface_slices/uiSlice";
+import {
   getListeArticleParCodeArticle,
   getListeArticleparFamille,
   getListeArticleparLibelle,
@@ -44,30 +44,19 @@ import {
   getListeSousFamillesParLibelleSousFamille,
   setListeSousfamille,
 } from "../../app/sousfamille_slices/sousfamilleSlice";
+import { useLocation } from "react-router-dom";
 
 const Recherche = () => {
+  //?==================================================================================================================
+  //?=====================================================variables====================================================
+  //?==================================================================================================================
   const toolbarTable = useSelector((state) => state.uiStates.toolbarTable);
-  // liste de client
   const listeToutCodesClients = useSelector(
     (state) => state.ClientCrud.listeToutCodesClients
   );
   // * tableau contenant la liste des codes des devis
   const listeNUMBL = useSelector((state) => state.DevisCrud.listeNUMBL);
   // * récuperer la liste de codes sélon table choisit
-  useEffect(() => {
-    if (toolbarTable == "client") {
-      dispatch(getToutCodesClient());
-    }
-
-    if (toolbarTable == "article") {
-      dispatch(getListeCodesArticles());
-    }
-
-    if (toolbarTable == "devis") {
-      dispatch(getListeNumbl());
-    }
-  }, [toolbarTable]);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   // * valeur de champs de recherche
   const [valeurRecherche, setValeurRecherche] = useState("");
@@ -90,6 +79,97 @@ const Recherche = () => {
   const [datatableElementSelection, setDatatableElementSelection] = useState(
     {}
   );
+  const customStyles = {
+    headCells: {
+      style: {
+        fontWeight: "bold",
+        fontSize: "18px",
+        backgroundColor: "#e0f2fe",
+        color: "#2a2185",
+        padding: "12px",
+      },
+    },
+    rows: {
+      style: {
+        fontSize: "16px",
+        backgroundColor: "#f8fafc",
+        "&:hover": {
+          backgroundColor: "#dbeafe",
+        },
+      },
+    },
+    pagination: {
+      style: {
+        fontSize: "16px",
+        fontWeight: "bold",
+        backgroundColor: "#e0f2fe",
+      },
+    },
+  };
+  //devis
+  const collonesDevis = [
+    { name: "Numéro de devis", selector: (row) => row.NUMBL, sortable: true },
+    { name: "Code client", selector: (row) => row.CODECLI, sortable: true },
+    { name: "Raison Sociale", selector: (row) => row.RSCLI },
+    { name: "Point de vente", selector: (row) => row.cp },
+
+    { name: "Montant", selector: (row) => row.MTTC },
+    { name: "Date", selector: (row) => row.DATEBL },
+    { name: "Vendeur", selector: (row) => row.usera },
+
+    { name: "RS Représentant", selector: (row) => row.RSREP },
+    { name: "Code secteur", selector: (row) => row.codesecteur },
+  ];
+  //client
+  const collonesClient = [
+    { name: "Code", selector: (row) => row.code, sortable: true },
+    { name: "Raison Sociale", selector: (row) => row.rsoc, sortable: true },
+    { name: "cin", selector: (row) => row.cin, sortable: true },
+    { name: "typecli", selector: (row) => row.typecli, sortable: true },
+  ];
+  //article
+  const colonnesArticle = [
+    { name: "Code", selector: (row) => row.code, sortable: true },
+    { name: "Libelle", selector: (row) => row.libelle, sortable: true },
+    { name: "Famille", selector: (row) => row.famille, sortable: true },
+    {
+      name: "Sous Famille",
+      selector: (row) => row.codesousfam,
+      sortable: true,
+    },
+  ];
+  //famille
+  const colonnesFamille = [
+    { name: "code", selector: (row) => row.code, sortable: true },
+    { name: "Libelle", selector: (row) => row.libelle, sortable: true },
+  ];
+  //sousfamille
+  const colonnesSousFamille = [
+    { name: "code", selector: (row) => row.code, sortable: true },
+    { name: "Libelle", selector: (row) => row.libelle, sortable: true },
+  ];
+
+  const location = useLocation();
+
+  //?==================================================================================================================
+  //?=================================================appels UseEffect=================================================
+  //?==================================================================================================================
+  useEffect(() => {
+    if (toolbarTable == "client") {
+      dispatch(getToutCodesClient());
+    }
+
+    if (toolbarTable == "article") {
+      dispatch(getListeCodesArticles());
+    }
+
+    if (toolbarTable == "devis") {
+      dispatch(getListeNumbl());
+    }
+  }, [toolbarTable]);
+  //?==================================================================================================================
+  //?=====================================================fonctions====================================================
+  //?==================================================================================================================
   // * pour obtenir les informations de dévis séléctionné
   const handleDatatableSelection = ({ selectedRows }) => {
     if (selectedRows.length != 0) {
@@ -116,7 +196,7 @@ const Recherche = () => {
           dispatch(getDevisParCodeClient(valeurRecherche));
           break;
         case "numbl":
-          dispatch(getDevisParNUMBL(valeurRecherche));
+          dispatch(getListeDevisParNUMBL(valeurRecherche));
           break;
         case "montant":
           dispatch(getDevisParMontant(valeurRecherche));
@@ -194,46 +274,15 @@ const Recherche = () => {
     }
   };
 
-  const customStyles = {
-    headCells: {
-      style: {
-        fontWeight: "bold",
-        fontSize: "18px",
-        backgroundColor: "#e0f2fe",
-        color: "#2a2185",
-        padding: "12px",
-      },
-    },
-    rows: {
-      style: {
-        fontSize: "16px",
-        backgroundColor: "#f8fafc",
-        "&:hover": {
-          backgroundColor: "#dbeafe",
-        },
-      },
-    },
-    pagination: {
-      style: {
-        fontSize: "16px",
-        fontWeight: "bold",
-        backgroundColor: "#e0f2fe",
-      },
-    },
-  };
-
   const handleBtnValiderClick = () => {
     if (toolbarTable == "devis") {
       dispatch(setDevisInfoEntiere(datatableElementSelection));
       dispatch(setDevisList([]));
-      //  navigate("/DevisFormTout");
       dispatch(setAfficherRecherchePopup(false));
     }
     if (toolbarTable == "client") {
       dispatch(setClientInfosEntiere(datatableElementSelection));
-
       dispatch(setListeClients([]));
-      // navigate("/ClientFormTout");
       dispatch(setAfficherRecherchePopup(false));
     }
     if (toolbarTable == "article") {
@@ -274,54 +323,31 @@ const Recherche = () => {
       dispatch(setListeSousfamille([]));
       dispatch(setAfficherRecherchePopup(false));
     }
+
+    revenirToolbarTablePrecedent();
   };
-
-  //devis
-  const collonesDevis = [
-    { name: "Numéro de devis", selector: (row) => row.NUMBL, sortable: true },
-    { name: "Code client", selector: (row) => row.CODECLI, sortable: true },
-    { name: "Raison Sociale", selector: (row) => row.RSCLI },
-    { name: "Point de vente", selector: (row) => row.cp },
-
-    { name: "Montant", selector: (row) => row.MTTC },
-    { name: "Date", selector: (row) => row.DATEBL },
-    { name: "Vendeur", selector: (row) => row.usera },
-
-    { name: "RS Représentant", selector: (row) => row.RSREP },
-    { name: "Code secteur", selector: (row) => row.codesecteur },
-  ];
-  //client
-  const collonesClient = [
-    { name: "Code", selector: (row) => row.code, sortable: true },
-    { name: "Raison Sociale", selector: (row) => row.rsoc, sortable: true },
-    { name: "cin", selector: (row) => row.cin, sortable: true },
-    { name: "typecli", selector: (row) => row.typecli, sortable: true },
-  ];
-  //article
-  const colonnesArticle = [
-    { name: "Code", selector: (row) => row.code, sortable: true },
-    { name: "Libelle", selector: (row) => row.libelle, sortable: true },
-    { name: "Famille", selector: (row) => row.famille, sortable: true },
-    {
-      name: "Sous Famille",
-      selector: (row) => row.codesousfam,
-      sortable: true,
-    },
-  ];
-  //famille
-  const colonnesFamille = [
-    { name: "code", selector: (row) => row.code, sortable: true },
-    { name: "Libelle", selector: (row) => row.libelle, sortable: true },
-  ];
-  //sousfamille
-  const colonnesSousFamille = [
-    { name: "code", selector: (row) => row.code, sortable: true },
-    { name: "Libelle", selector: (row) => row.libelle, sortable: true },
-  ];
 
   const fermerPopupRecherche = () => {
+    revenirToolbarTablePrecedent();
     dispatch(setAfficherRecherchePopup(false));
   };
+
+  const revenirToolbarTablePrecedent = () => {
+    switch (location.pathname) {
+      case "/DevisFormTout":
+        dispatch(setToolbarTable("devis"));
+        break;
+      case "/UtilisateurFormTout":
+        dispatch(setToolbarTable("utilisateur"));
+        break;
+      case "/articleFormTout":
+        dispatch(setToolbarTable("article"));
+        break;
+      case "/clientFormTout":
+        dispatch(setToolbarTable("client"));
+        break;
+    }
+  }
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
@@ -442,12 +468,14 @@ const Recherche = () => {
                 className="p-2 border border-gray-300 rounded-lg w-full"
                 placeholder="Entrez votre recherche..."
                 list={
-                  (toolbarTable === "client" && filtrerPar === "code")
+                  toolbarTable === "client" && filtrerPar === "code"
                     ? "listeCodesClients"
-                    : (toolbarTable === "article" && filtrerPar === "code")
+                    : toolbarTable === "article" && filtrerPar === "code"
                     ? "listeCodesArticle"
-                    : (toolbarTable === "devis" && filtrerPar === "numbl")
+                    : toolbarTable === "devis" && filtrerPar === "numbl"
                     ? "listeCodesNumbl"
+                    : toolbarTable === "famille" && filtrerPar === "code"
+                    ? "listeCodesFamilles"
                     : ""
                 }
               />
@@ -477,6 +505,18 @@ const Recherche = () => {
                     {codeDevis.NUMBL}
                   </option>
                 ))}
+              </datalist>
+
+              <datalist id="listeCodesFamilles">
+                {ListeArticle.length > 0 ? (
+                  ListeArticle.map((famille, indice) => (
+                    <option key={indice} value={famille.code}>
+                      {famille.code}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>Aucun article trouvé</option>
+                )}
               </datalist>
               <button
                 onClick={handleBtnRechercheClick}
