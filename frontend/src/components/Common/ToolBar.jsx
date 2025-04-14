@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -33,6 +33,11 @@ import {
 import { getUtilisateurParCode } from "../../app/utilisateur_slices/utilisateurSlice";
 import { viderChampsArticleInfo } from "../../app/article_slices/articleSlice";
 import { FaUser, FaCog, FaCreditCard, FaSignOutAlt } from "react-icons/fa";
+import {
+  AjouterUtilisateur,
+  getDerniereCodeUtilisateur,
+  setViderChampsUtilisateur,
+} from "../../app/Utilisateur_SuperviseurSlices/Utilisateur_SuperviseurSlices";
 function ToolBar() {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
@@ -50,7 +55,7 @@ function ToolBar() {
     (state) => state.uiStates.activerBoutonsValiderAnnuler
   );
   const articleInfo = useSelector((state) => state.ArticlesDevis.articleInfos);
-
+const Utilisateur_SuperviseurInfos= useSelector((state)=>state.Utilisateur_SuperviseurSlices.Utilisateur_SuperviseurInfos)
   const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
   const dernierCodeClient = useSelector(
     (state) => state.ClientCrud.dernierCodeClient
@@ -66,11 +71,13 @@ function ToolBar() {
       navigate("/ArticleList");
     }
   };
+
   // * ajout d'un client/devi
   const handleAjoutBtnClick = async () => {
     dispatch(setActiverBoutonsValiderAnnuler(true));
     dispatch(setActiverChampsForm(true));
     dispatch(setToolbarMode("ajout"));
+
     // * vider les champs du formulaires
     if (toolbarTable == "devis") {
       dispatch(viderChampsDevisInfo());
@@ -88,6 +95,9 @@ function ToolBar() {
 
     if (toolbarTable == "article") {
       dispatch(viderChampsArticleInfo());
+    }
+    if (toolbarTable == "utilisateur") {
+      dispatch(setViderChampsUtilisateur())
     }
   };
   const HandleRecherche = async () => {
@@ -117,7 +127,7 @@ function ToolBar() {
     if (
       (toolbarTable == "client" && clientInfos.code) ||
       (toolbarTable == "devis" && devisInfo.NUMBL) ||
-      (toolbarTable == "article" && articleInfo.code)
+      (toolbarTable == "article" && articleInfo.code)||(toolbarTable=="utilisateur"&& Utilisateur_SuperviseurInfos.codeuser )
     ) {
       dispatch(setToolbarMode("modification"));
       dispatch(setActiverBoutonsValiderAnnuler(true));
@@ -170,18 +180,20 @@ function ToolBar() {
         dispatch(setAlertMessage("Confirmez-vous modifier de ce client ?"));
       }
     }
+
+    //* pour devis
     if (toolbarTable == "devis") {
       if (toolbarMode == "ajout") {
         // dispatch(AjouterDevis());
         // dispatch(setActiverChampsForm(true));
         dispatch(setAlertMessage("Confirmez-vous ajouter de ce devis ?"));
-        dispatch(setAfficherAlert(true));
       }
 
       if (toolbarMode == "modification") {
         // dispatch(majDevis())
       }
     }
+    //* pour l'article
     if (toolbarTable == "article") {
       if (toolbarMode == "ajout") {
         dispatch(setAlertMessage("Confirmez-vous ajouter de ce article ?"));
@@ -189,6 +201,18 @@ function ToolBar() {
       if (toolbarMode == "modification") {
         dispatch(setAlertMessage("confirmer vous de modifier de article?"));
       }
+    }
+    //*pour utilisateur
+    if (toolbarTable == "utilisateur") {
+      if (toolbarMode == "ajout") {
+        dispatch(setAlertMessage("Confirmez-vous ajouter de ce utilisateur ?"));
+      }
+      if (toolbarMode == "modification") {
+        dispatch(setAlertMessage("confirmer vous de modifier de utilisateur?"));
+      }
+      
+
+
     }
 
     dispatch(setAfficherAlert(true));
@@ -403,12 +427,7 @@ function ToolBar() {
               </span>
             </button>
           )}
-
-
-
-          
         </div>
-      
       </nav>
     </>
   );

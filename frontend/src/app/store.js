@@ -11,6 +11,7 @@ import  familleSlice  from "./famille_slices/familleSlice";
 import  sousfamilleSlice  from "./sousfamille_slices/sousfamilleSlice";
 import Stock_Slice from "./Stock_valorisation_utilitaires/Stock_Slice"
 import valorisation_Slice from "./Stock_valorisation_utilitaires/valorisation_Slice"
+import Utilisateur_SuperviseurSlices from "./Utilisateur_SuperviseurSlices/Utilisateur_SuperviseurSlices"
 
 const persistConfig = {
   key: "root",
@@ -35,7 +36,8 @@ const rootReducer = combineReducers({
   familleSlice: familleSlice,
   sousfamilleSlice: sousfamilleSlice,
   Stock_Slice: Stock_Slice,
-  valorisation_Slice:valorisation_Slice
+  valorisation_Slice:valorisation_Slice,
+  Utilisateur_SuperviseurSlices:Utilisateur_SuperviseurSlices
 
 });
 

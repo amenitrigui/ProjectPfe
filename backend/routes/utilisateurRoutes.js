@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const authenticateJWT = require("../authentification/authenticateToken");
 const {
-  inscrireUtilisteur,
+  
   loginUtilisateur,
   selectDatabase,
   envoyerDemandeReinitialisationMp,
@@ -10,8 +10,6 @@ const {
   getUtilisateurParCode
 } = require("../controllers/utilisateurController");
 
-// * inscription pour un utilisateur
-router.post("/inscrireUtilisteur", inscrireUtilisteur);
 // * connexion pour un utilisateur
 router.post("/loginUtilisateur", loginUtilisateur);
 // * envoyer une demander de réinitialisation de mot de passe

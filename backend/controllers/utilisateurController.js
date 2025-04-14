@@ -33,60 +33,6 @@ oAuth2Client.setCredentials({
   refresh_token: process.env.NODEMAILER_REFRESH_TOKEN,
 });
 
-// * enregistrer une nouvelle utilisateur
-// * dans la base des données ErpSole
-// * exemple
-// * input : {nom: "testUser", "motpasse": "testUserMotPasse", "email": "testUser@test.test"}
-// * output : aucune, l'utilisateur sera enregistré dans la base de données
-// * verb : post
-// * http://localhost:5000/api/utilisateurs/inscrireUtilisteur
-const inscrireUtilisteur = async (req, res) => {
-  const { email, motpasse, nom } = req.body;
-
-  try {
-    if (!email || !motpasse || !nom) {
-      return res
-        .status(400)
-        .json({ message: "Tous les champs doivent être remplis." });
-    }
-
-    const User = defineUserModel(sequelizeUserERP);
-    const existingUser = await User.findOne({ where: { email } });
-
-    if (existingUser) {
-      return res.status(400).json({ message: "Cet email est déjà utilisé." });
-    }
-
-    const hashedPassword = await bcrypt.hash(motpasse, 10);
-    console.log(hashedPassword);
-
-
-    const newUser = await User.create({
-      email,
-      motpasse: hashedPassword,
-      nom,
-      type: "Utilisateur"
-    });
-
-    return res.status(201).json({
-      message: "Utilisateur créé avec succès.",
-      user: {
-        codeuser: newUser.codeuser,
-        email: newUser.email,
-        nom: newUser.nom,
-      },
-    });
-  } catch (error) {
-    console.error(
-      "Erreur lors de la création de l'utilisateur:",
-      error.message || error
-    );
-    return res.status(500).json({
-      message: "Une erreur est survenue lors de la création de l'utilisateur.",
-      error: error.message,
-    });
-  }
-};
 
 // * Generer un jwt d'accès pour un utilisateur déjà inscrit
 // * exemple
@@ -370,12 +316,13 @@ const getUtilisateurParCode = async (req, res) => {
 };
 
 
+
 // Exporter la méthode
 module.exports = {
-  inscrireUtilisteur,
   loginUtilisateur,
   selectDatabase,
   envoyerDemandeReinitialisationMp,
   reinitialiserMotPasse,
-  getUtilisateurParCode
+  getUtilisateurParCode,
+ 
 };

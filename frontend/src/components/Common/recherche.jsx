@@ -40,6 +40,8 @@ import {
   getListeSousFamillesParLibelleSousFamille,
   setListeSousfamille,
 } from "../../app/sousfamille_slices/sousfamilleSlice";
+import { getCodeUtilisateurParCode, getListeCodeUtilisateurParCode, setUtilisateurSupInfo } from "../../app/Utilisateur_SuperviseurSlices/Utilisateur_SuperviseurSlices";
+import { setUtilisateurInfoEntire } from "../../app/utilisateur_slices/utilisateurSlice";
 
 const Recherche = () => {
   const navigate = useNavigate();
@@ -57,6 +59,9 @@ const Recherche = () => {
   );
   const listeSousfamille = useSelector(
     (state) => state.sousfamilleSlice.listeSousfamille
+  );
+  const listeUtilisateur_Superviseur = useSelector(
+    (state) => state.Utilisateur_SuperviseurSlices.listeUtilisateur_Superviseur
   );
   // * state qui contient l'information d'élèment selectionné
   const [datatableElementSelection, setDatatableElementSelection] = useState(
@@ -98,6 +103,19 @@ const Recherche = () => {
           break;
         case "periode":
           dispatch(getDevisParPeriode(valeurRecherche));
+          break;
+
+        default:
+          console.log("Valeur de filtre non définie");
+      }
+    }
+    if (toolbarTable == "utilisateur") {
+      switch (filtrerPar) {
+        case "code":
+          dispatch(getCodeUtilisateurParCode(valeurRecherche));
+          break;
+        case "nom":
+          // dispatch(getDevisParNUMBL(valeurRecherche));
           break;
 
         default:
@@ -232,6 +250,12 @@ const Recherche = () => {
       dispatch(setListeFamilles([]));
       dispatch(setAfficherRecherchePopup(false));
     }
+    if (toolbarTable=="utilisateur")
+    {
+      dispatch(setUtilisateurSupInfo(datatableElementSelection))
+      dispatch(setAfficherRecherchePopup(false));
+
+    }
     if (toolbarTable == "sousfamille") {
       dispatch(
         setArticleInfos({
@@ -293,6 +317,11 @@ const Recherche = () => {
     { name: "code", selector: (row) => row.code, sortable: true },
     { name: "Libelle", selector: (row) => row.libelle, sortable: true },
   ];
+  //* utillisateur
+  const colonnesUtilisateur = [
+    { name: "code", selector: (row) => row.codeuser, sortable: true },
+    { name: "nom", selector: (row) => row.nom, sortable: true },
+  ];
 
   // const handleRetourBtnClick = () => {
   //   console.log("ok");
@@ -341,6 +370,8 @@ const Recherche = () => {
           {toolbarTable === "article" && "  par article"}{" "}
           {toolbarTable === "sousfamille" && "  par sous famille"}{" "}
           {toolbarTable === "famille" && "  par famille"}{" "}
+          {toolbarTable === "utilisateur" && "  par utilisateur"}{" "}
+
         </h2>
 
         <div className="flex space-x-6">
@@ -415,6 +446,20 @@ const Recherche = () => {
 
               {toolbarTable === "sousfamille" &&
                 ["code", "libelle"].map((filtre) => (
+                  <label key={filtre} className="flex items-center">
+                    <input
+                      type="radio"
+                      name="filtres"
+                      value={filtre}
+                      className="mr-2"
+                      onChange={() => setFiltrerPar(filtre)}
+                    />
+                    {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
+                  </label>
+                ))}
+
+              {toolbarTable === "utilisateur" &&
+                ["code", "nom"].map((filtre) => (
                   <label key={filtre} className="flex items-center">
                     <input
                       type="radio"
@@ -513,6 +558,20 @@ const Recherche = () => {
                 <DataTable
                   data={listeSousfamille}
                   columns={colonnesSousFamille}
+                  pagination
+                  fixedHeader
+                  customStyles={customStyles}
+                  striped
+                  selectableRows
+                  onSelectedRowsChange={handleDatatableSelection}
+                />
+              </div>
+            )}
+            {toolbarTable === "utilisateur" && (
+              <div className="max-h-[400px] overflow-y-auto">
+                <DataTable
+                  data={listeUtilisateur_Superviseur}
+                  columns={colonnesUtilisateur}
                   pagination
                   fixedHeader
                   customStyles={customStyles}
