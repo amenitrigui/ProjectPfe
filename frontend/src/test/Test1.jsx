@@ -53,7 +53,7 @@ const data = {
 
 function Test1() {
   return (
-    <div style={{ width: '600px', height: '400px' }}>
+    <div style={{ width: '100vw', height: '400px' }}>
       <Bar options={options} data={data} />
     </div>
   );
