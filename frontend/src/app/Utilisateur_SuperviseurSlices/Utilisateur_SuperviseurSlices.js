@@ -54,11 +54,11 @@ export const supprimerUtilisateur = createAsyncThunk(
     console.log(response);
   }
 );
-export const getCodeUtilisateurParCode = createAsyncThunk(
-  "Utilisateur_SuperviseurSlice/getCodeUtilisateurParCode",
+export const getListeUtilisateurParCode = createAsyncThunk(
+  "Utilisateur_SuperviseurSlice/getListeUtilisateurParCode",
   async (codeuser) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/Utilisateur_Superviseur/getCodeUtilisateurParCode`,
+      `${process.env.REACT_APP_API_URL}/api/Utilisateur_Superviseur/getListeUtilisateurParCode`,
       {
         params: {
           codeuser: codeuser,
@@ -69,7 +69,88 @@ export const getCodeUtilisateurParCode = createAsyncThunk(
     return response.data.result;
   }
 );
-
+export const getListeUtilisateurParNom = createAsyncThunk(
+  "Utilisateur_SuperviseurSlice/getListeUtilisateurParNom",
+  async (nom) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/Utilisateur_Superviseur/getListeUtilisateurParNom`,
+      {
+        params: {
+          nom: nom,
+        },
+      }
+    );
+    console.log(response);
+    return response.data.result;
+  }
+);
+export const getListeUtilisateurParDirecteur = createAsyncThunk(
+  "Utilisateur_SuperviseurSlice/getListeUtilisateurParDirecteur",
+  async (directeur) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/Utilisateur_Superviseur/getListeUtilisateurParDirecteur`,
+      {
+        params: {
+          directeur: directeur,
+        },
+      }
+    );
+    console.log(response);
+    return response.data.result;
+  }
+);
+export const getListeUtilisateurParType = createAsyncThunk(
+  "Utilisateur_SuperviseurSlice/getListeUtilisateurParType",
+  async (type) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/Utilisateur_Superviseur/getListeUtilisateurParType`,
+      {
+        params: {
+          type: type,
+        },
+      }
+    );
+    console.log(response);
+    return response.data.result;
+  }
+);
+export const getListeUtilisateur = createAsyncThunk(
+  "Utilisateur_SuperviseurSlice/getListeUtilisateur",
+  async () => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/Utilisateur_Superviseur/getListeUtilisateur`
+    );
+    console.log(response);
+    return response.data.result;
+  }
+);
+export const filterListeUtilisateur = createAsyncThunk(
+  "Utilisateur_SuperviseurSlice/filterListeUtilisateur",
+  async (_, thunkAPI) => {
+    // Passer `filters` en paramètre
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/Utilisateur_Superviseur/filterListeUtilisateur`,
+      {
+        params: {
+          filters:
+            thunkAPI.getState().Utilisateur_Superviseur.filtersUtilisateur, // Utiliser filters ici
+        },
+      }
+    );
+    console.log(response);
+    return response.data.data; // Retourner la réponse
+  }
+);
+export const getCodeUtilisateurSuivant = createAsyncThunk(
+  "Utilisateur_SuperviseurSlice/getCodeUtilisateurSuivant",
+  async () => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/Utilisateur_Superviseur/getCodeUtilisateurSuivant`
+    );
+    console.log(response)
+    return response
+  }
+);
 export const Utilisateur_SuperviseurSlices = createSlice({
   name: "Utilisateur_SuperviseurSlices",
   initialState: {
@@ -86,6 +167,13 @@ export const Utilisateur_SuperviseurSlices = createSlice({
       nom: "",
       type: "",
     },
+    filtersUtilisateur: {
+      codeuser: "",
+      type: "",
+      email: "",
+      directeur: "",
+      nom: "",
+    },
 
     derniereCodeUtilisateur: "",
   },
@@ -93,8 +181,8 @@ export const Utilisateur_SuperviseurSlices = createSlice({
     setListeUtilisateur_Superviseur: (state, action) => {
       state.listeUtilisateur_Superviseur = action.payload;
     },
-    setUtilisateurSupInfo:(state,action)=>{
-state.Utilisateur_SuperviseurInfos=action.payload
+    setUtilisateurSupInfo: (state, action) => {
+      state.Utilisateur_SuperviseurInfos = action.payload;
     },
     setUtilisateur_SuperviseurInfos: (state, action) => {
       const { colonne, valeur } = action.payload;
@@ -106,6 +194,11 @@ state.Utilisateur_SuperviseurInfos=action.payload
     setutilisateurConnecte: (state, action) => {
       const { colonne, valeur } = action.payload;
       state.utilisateurConnecte[colonne] = valeur;
+    },
+    setFiltresSaisient: (state, action) => {
+      const { colonne, valeur } = action.payload;
+      console.log(action.payload);
+      state.filtersUtilisateur[colonne] = valeur;
     },
     setViderChampsUtilisateur: (state, action) => {
       state.Utilisateur_SuperviseurInfos = {
@@ -142,14 +235,59 @@ state.Utilisateur_SuperviseurInfos=action.payload
         state.status = "échec";
       })
 
-      .addCase(getCodeUtilisateurParCode.pending, (state, action) => {
+      .addCase(getListeUtilisateurParCode.pending, (state, action) => {
         state.status = "chagement";
       })
-      .addCase(getCodeUtilisateurParCode.fulfilled, (state, action) => {
+      .addCase(getListeUtilisateurParCode.fulfilled, (state, action) => {
+        state.status = "succès";
+        state.Utilisateur_SuperviseurInfos=action.payload[0]
+        state.listeUtilisateur_Superviseur = action.payload;
+      })
+      .addCase(getListeUtilisateurParCode.rejected, (state, action) => {
+        state.status = "échec";
+      })
+
+      .addCase(getListeUtilisateurParNom.pending, (state, action) => {
+        state.status = "chagement";
+      })
+      .addCase(getListeUtilisateurParNom.fulfilled, (state, action) => {
         state.status = "succès";
         state.listeUtilisateur_Superviseur = action.payload;
       })
-      .addCase(getCodeUtilisateurParCode.rejected, (state, action) => {
+      .addCase(getListeUtilisateurParNom.rejected, (state, action) => {
+        state.status = "échec";
+      })
+
+      .addCase(getListeUtilisateurParDirecteur.pending, (state, action) => {
+        state.status = "chagement";
+      })
+      .addCase(getListeUtilisateurParDirecteur.fulfilled, (state, action) => {
+        state.status = "succès";
+        state.listeUtilisateur_Superviseur = action.payload;
+      })
+      .addCase(getListeUtilisateurParDirecteur.rejected, (state, action) => {
+        state.status = "échec";
+      })
+
+      .addCase(getListeUtilisateurParType.pending, (state, action) => {
+        state.status = "chagement";
+      })
+      .addCase(getListeUtilisateurParType.fulfilled, (state, action) => {
+        state.status = "succès";
+        state.listeUtilisateur_Superviseur = action.payload;
+      })
+      .addCase(getListeUtilisateurParType.rejected, (state, action) => {
+        state.status = "échec";
+      })
+
+      .addCase(getListeUtilisateur.pending, (state, action) => {
+        state.status = "chagement";
+      })
+      .addCase(getListeUtilisateur.fulfilled, (state, action) => {
+        state.status = "succès";
+        state.listeUtilisateur_Superviseur = action.payload;
+      })
+      .addCase(getListeUtilisateur.rejected, (state, action) => {
         state.status = "échec";
       });
   },
@@ -159,7 +297,9 @@ export const {
   setUtilisateur_SuperviseurInfos,
   setutilisateurConnecte,
   setutilisateurConnecteEntiere,
-  setViderChampsUtilisateur,setUtilisateurSupInfo
+  setViderChampsUtilisateur,
+  setUtilisateurSupInfo,
+  setFiltresSaisient,
 } = Utilisateur_SuperviseurSlices.actions;
 
 export default Utilisateur_SuperviseurSlices.reducer;

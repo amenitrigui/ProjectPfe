@@ -40,7 +40,13 @@ import {
   getListeSousFamillesParLibelleSousFamille,
   setListeSousfamille,
 } from "../../app/sousfamille_slices/sousfamilleSlice";
-import { getCodeUtilisateurParCode, getListeCodeUtilisateurParCode, setUtilisateurSupInfo } from "../../app/Utilisateur_SuperviseurSlices/Utilisateur_SuperviseurSlices";
+import {
+  getListeUtilisateurParCode,
+  getListeUtilisateurParDirecteur,
+  getListeUtilisateurParNom,
+  getListeUtilisateurParType,
+  setUtilisateurSupInfo,
+} from "../../app/Utilisateur_SuperviseurSlices/Utilisateur_SuperviseurSlices";
 import { setUtilisateurInfoEntire } from "../../app/utilisateur_slices/utilisateurSlice";
 
 const Recherche = () => {
@@ -112,11 +118,15 @@ const Recherche = () => {
     if (toolbarTable == "utilisateur") {
       switch (filtrerPar) {
         case "code":
-          dispatch(getCodeUtilisateurParCode(valeurRecherche));
+          dispatch(getListeUtilisateurParCode(valeurRecherche));
           break;
         case "nom":
-          // dispatch(getDevisParNUMBL(valeurRecherche));
+          dispatch(getListeUtilisateurParNom(valeurRecherche));
           break;
+        case "directeur":
+          dispatch(getListeUtilisateurParDirecteur(valeurRecherche));
+          case "type":
+            dispatch(getListeUtilisateurParType(valeurRecherche))
 
         default:
           console.log("Valeur de filtre non définie");
@@ -250,11 +260,9 @@ const Recherche = () => {
       dispatch(setListeFamilles([]));
       dispatch(setAfficherRecherchePopup(false));
     }
-    if (toolbarTable=="utilisateur")
-    {
-      dispatch(setUtilisateurSupInfo(datatableElementSelection))
+    if (toolbarTable == "utilisateur") {
+      dispatch(setUtilisateurSupInfo(datatableElementSelection));
       dispatch(setAfficherRecherchePopup(false));
-
     }
     if (toolbarTable == "sousfamille") {
       dispatch(
@@ -321,6 +329,8 @@ const Recherche = () => {
   const colonnesUtilisateur = [
     { name: "code", selector: (row) => row.codeuser, sortable: true },
     { name: "nom", selector: (row) => row.nom, sortable: true },
+    { name: "directeur", selector: (row) => row.directeur, sortable: true },
+    { name: "type", selector: (row) => row.type, sortable: true },
   ];
 
   // const handleRetourBtnClick = () => {
@@ -371,7 +381,6 @@ const Recherche = () => {
           {toolbarTable === "sousfamille" && "  par sous famille"}{" "}
           {toolbarTable === "famille" && "  par famille"}{" "}
           {toolbarTable === "utilisateur" && "  par utilisateur"}{" "}
-
         </h2>
 
         <div className="flex space-x-6">
@@ -459,7 +468,7 @@ const Recherche = () => {
                 ))}
 
               {toolbarTable === "utilisateur" &&
-                ["code", "nom"].map((filtre) => (
+                ["code", "nom", "directeur", "type"].map((filtre) => (
                   <label key={filtre} className="flex items-center">
                     <input
                       type="radio"

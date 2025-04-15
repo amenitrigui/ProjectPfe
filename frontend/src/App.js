@@ -35,6 +35,7 @@ import ArticleFormTout from "./pages/Article/ArticleFormTout"
 import ArticleList from "./pages/Article/ArticleList"
 import FamilleFormTout from "./pages/Famille/FamilleFormTout"
 import Settings from "./pages/ErpPages/Settings"
+import UtilisateurList from "./pages/Utilisateurs/UtilisateurList"
 
 
 import Test1 from "./test/Test1";
@@ -42,6 +43,12 @@ import Test1 from "./test/Test1";
 function App() {
   const dispatch = useDispatch();
   const usera = useSelector((state) => state.UtilisateurInfo.codeuser);
+  const utilisateurConnecte = useSelector(
+      (state) => state.Utilisateur_SuperviseurSlices.utilisateurConnecte
+    );
+    useEffect(()=>{
+ console.log(utilisateurConnecte)
+    },[utilisateurConnecte])
   dispatch(setDevisInfo("usera",usera))
   // ! thou art a man of feeble spirit
   // const persistor = persistStore(store);
@@ -76,6 +83,8 @@ function App() {
         <Route path="/Test1" element={<Test1/>}></Route>
         <Route path="/FamilleFormTout" element={<FamilleFormTout/>}></Route>
         <Route path="/Settings" element={<Settings/>}></Route>
+        <Route path="/UtilisateurList" element={<UtilisateurList/>}></Route>
+
 
         
 

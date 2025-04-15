@@ -97,13 +97,13 @@ const ModifierUtilisateur = async (req, res) => {
     const user = await Utilisateur.findOne({
       where: { codeuser: MajUtilisateur.codeuser },
     });
-    
+
     if (user) {
-      const usermodifie =  await Utilisateur.update(
+      const usermodifie = await Utilisateur.update(
         {
           type: MajUtilisateur.type,
           directeur: MajUtilisateur.directeur,
-          email:  MajUtilisateur.email,
+          email: MajUtilisateur.email,
           nom: MajUtilisateur.nom,
           motpasse: MajUtilisateur.motpasse,
         },
@@ -141,7 +141,8 @@ const supprimerUtilisateur = async (req, res) => {
     });
   }
 };
-const getCodeUtilisateurParCode = async (req, res) => {
+/* cette methode elle fait 2 onas elle fais la liste de utilisateur en interface de recherche 3.jsx et aussi pou les bouton suivant eet derniers  */
+const getListeUtilisateurParCode = async (req, res) => {
   const { codeuser } = req.query;
   console.log(codeuser);
   try {
@@ -149,7 +150,7 @@ const getCodeUtilisateurParCode = async (req, res) => {
     const dbConnection = await getDatabaseConnection("usererpsole", res);
 
     const result = await dbConnection.query(
-      `select codeuser,nom,directeur from utilisateur where codeuser = :codeuser `,
+      `select codeuser,nom,directeur, type from utilisateur where codeuser = :codeuser `,
       {
         replacements: {
           codeuser: codeuser,
@@ -166,11 +167,188 @@ const getCodeUtilisateurParCode = async (req, res) => {
     return res.status(500).json({ message: error });
   }
 };
+//* url :http://localhost:5000/api/Utilisateur_Superviseur/getListeUtilisateurParNom?nom=mariam
+const getListeUtilisateurParNom = async (req, res) => {
+  const { nom } = req.query;
+  console.log(nom);
+  try {
+    //const decoded = verifyTokenValidity(req, res);
+    const dbConnection = await getDatabaseConnection("usererpsole", res);
+
+    const result = await dbConnection.query(
+      `select codeuser,nom,directeur,type from utilisateur where nom LIKE :nom `,
+      {
+        replacements: {
+          nom: "%" + nom + "%",
+        },
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    );
+
+    return res.status(200).json({
+      message: "liste utilisteur recupere",
+      result,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error });
+  }
+};
+//* url : http://localhost:5000/api/Utilisateur_Superviseur/getListeUtilisateurParDirecteur?directeur=02
+const getListeUtilisateurParDirecteur = async (req, res) => {
+  const { directeur } = req.query;
+
+  try {
+    //const decoded = verifyTokenValidity(req, res);
+    const dbConnection = await getDatabaseConnection("usererpsole", res);
+
+    const result = await dbConnection.query(
+      `select codeuser,nom,directeur,type from utilisateur where directeur LIKE :directeur `,
+      {
+        replacements: {
+          directeur: "%" + directeur + "%",
+        },
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    );
+
+    return res.status(200).json({
+      message: "liste utilisteur des directeur recupere",
+      result,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error });
+  }
+};
+//* url : http://localhost:5000/api/Utilisateur_Superviseur/getListeUtilisateurParType?type=Utilisateur
+const getListeUtilisateurParType = async (req, res) => {
+  const { type } = req.query;
+
+  try {
+    //const decoded = verifyTokenValidity(req, res);
+    const dbConnection = await getDatabaseConnection("usererpsole", res);
+
+    const result = await dbConnection.query(
+      `select codeuser,nom,directeur,type from utilisateur where type LIKE :type `,
+      {
+        replacements: {
+          type: "%" + type + "%",
+        },
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    );
+
+    return res.status(200).json({
+      message: "liste utilisteur des type recupere",
+      result,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error });
+  }
+};
+
+const getListeUtilisateur = async (req, res) => {
+  try {
+    //const decoded = verifyTokenValidity(req, res);
+    const dbConnection = await getDatabaseConnection("usererpsole", res);
+
+    const result = await dbConnection.query(
+      `select codeuser,nom,directeur, email ,type from utilisateur `,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    );
+
+    return res.status(200).json({
+      message: "liste utilisteur recupere",
+      result,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error });
+  }
+};
+//* url :http://localhost:5000/api/Utilisateur_Superviseur/filterListeUtilisateur?filters=1
+const filterListeUtilisateur = async (req, res) => {
+  const { filters } = req.query;
+  console.log(filters);
+  const dbConnection = await getDatabaseConnection("usererpsole", res);
+
+  let whereClauses = [];
+
+  let replacements = {};
+
+  if (filters.codeuser) {
+    whereClauses.push("codeuser like :codeuser");
+    replacements.codeuser = `%${filters.codeuser}%`;
+  }
+  if (filters.email) {
+    whereClauses.push("email like :email");
+    replacements.email = `%${filters.email}%`;
+  }
+  if (filters.type) {
+    whereClauses.push("type like :type");
+    replacements.type = `%${filters.type}%`;
+  }
+  if (filters.directeur) {
+    whereClauses.push("directeur like :directeur");
+    replacements.directeur = `%${filters.directeur}%`;
+  }
+  if (filters.nom) {
+    whereClauses.push("nom like :nom");
+    replacements.nom = `%${filters.nom}%`;
+  }
+
+  // ? concatenation de l'opérateur logique après chaque ajout d'un nouvelle condition
+  let whereCondition = whereClauses.join(" AND ");
+
+  // ? Si on on a aucune condition on effectue une requete de select * from dfp
+  let query = `SELECT codeuser, email, type, directeur, nom
+     FROM utilisateur 
+      ${whereCondition ? "WHERE " + whereCondition : ""}`;
+
+  const result = await dbConnection.query(query, {
+    replacements: replacements,
+    type: dbConnection.QueryTypes.SELECT,
+  });
+
+  return res.status(200).json({
+    message: "Filtrage réussi",
+    data: result,
+  });
+};
+//* url :http://localhost:5000/api/Utilisateur_Superviseur/getCodeUtilisateurSuivant
+const getCodeUtilisateurSuivant = async (req, res) => {
+ 
+  try {
+    const dbConnection = await getDatabaseConnection("usererpsole", res);
+
+    // On récupère le code max existant
+    const [rows] = await dbConnection.query(`SELECT MAX(codeuser) AS maxCode FROM utilisateur`);
+
+    let codeSuivant = 1; // Valeur par défaut si aucun utilisateur
+
+    if (rows.length > 0 && rows[0].maxCode !== null) {
+      codeSuivant = parseInt(rows[0].maxCode) + 1;
+    }
+console.log(codeSuivant)
+    return res.status(200).json({ 
+      message: "Code utilisateur suivant récupéré",
+      codeSuivant: codeSuivant 
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 
 module.exports = {
   AjouterUtilisateur,
   getDerniereCodeUtilisateur,
   ModifierUtilisateur,
   supprimerUtilisateur,
-  getCodeUtilisateurParCode,
+  getListeUtilisateurParCode,
+  getListeUtilisateurParNom,
+  getListeUtilisateurParDirecteur,
+  getListeUtilisateurParType,
+  getListeUtilisateur,
+  filterListeUtilisateur,
+  getCodeUtilisateurSuivant
 };

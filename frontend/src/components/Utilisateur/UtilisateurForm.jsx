@@ -164,6 +164,7 @@ const UtilisateurForm = () => {
                             ? derniereCodeUtilisateur.codeuser
                             : Utilisateur_SuperviseurInfos.codeuser
                         }
+                        
                         onChange={(e) =>
                           hundlechange("codeuser", e.target.value)
                         }
@@ -172,6 +173,7 @@ const UtilisateurForm = () => {
                         disabled={activerChampsForm}
                         maxLength={8}
                       />
+                      {console.log(Utilisateur_SuperviseurInfos)}
                     </div>
 
                     <div className="flex flex-col w-1/2 ">
@@ -226,6 +228,18 @@ const UtilisateurForm = () => {
                       className="border border-gray-300 rounded-md p-2"
                       value={Utilisateur_SuperviseurInfos.type || ""}
                       onChange={(e) => hundlechange("type", e.target.value)}
+                      disabled={!activerChampsForm}
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label className="font-bold mb-1 text-[rgb(48,60,123)]">
+                      MotPasse
+                    </label>
+                    <input
+                      type="text"
+                      className="border border-gray-300 rounded-md p-2"
+                      value={Utilisateur_SuperviseurInfos.motpasse || ""}
+                      onChange={(e) => hundlechange("motpasse", e.target.value)}
                       disabled={!activerChampsForm}
                     />
                   </div>
