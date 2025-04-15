@@ -85,7 +85,7 @@ function SignInPage() {
           <img
             src="/logo.png"
             alt="Logo"
-            className="max-w-full h-auto object-contain transform hover:scale-105 transition-transform duration-300"
+            className="max-w-full h-[800px] object-contain transform hover:scale-105 transition-transform duration-300"
           />
         </div>
         <div className="w-full md:w-1/2 p-8">
