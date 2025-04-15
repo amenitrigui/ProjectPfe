@@ -279,16 +279,16 @@ body {
   border-radius: 40px;
 
 }
-.details .mahdi table tr {
+.details .test table tr {
   color: var(--black1);
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
-.details .mahdi table tbody tr:hover {
+.details .test table tbody tr:hover {
   background: var(--blue);
  
   
 }
-.details .mahdi {
+.details .test {
   position: relative;
   display: grid;
   min-height: 500px;

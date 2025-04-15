@@ -343,14 +343,6 @@ function DevisForm() {
                         className="w-full border border-gray-300 rounded-md p-2"
                         disabled={!activerChampsForm}
                       />
-                      <label className="block font-medium mt-4">
-                        Commentaire :
-                      </label>
-                      <textarea
-                        rows="3"
-                        className="w-full border border-gray-300 rounded-md p-2"
-                        disabled={!activerChampsForm}
-                      ></textarea>
                     </div>
                     {/* Information Client */}
                     <div className="col-span-2 space-y-0 p-6 border rounded-lg shadow-md bg-white">
@@ -501,6 +493,17 @@ function DevisForm() {
                       disabled
                     />
                   </div>
+                  <br></br>
+                  <br></br>
+                  <br></br>
+                  <label className="block font-medium mt-4">
+                    Commentaire :
+                  </label>
+                  <textarea
+                    rows="10"
+                    className="w-full border border-gray-300 rounded-md p-2"
+                    disabled={!activerChampsForm}
+                  ></textarea>
                 </div>
               </div>
             </div>

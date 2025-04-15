@@ -1,8 +1,17 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
-import { loginUtilisateur, setCodeUser, setDbName, setToken, setUtilisateurInfoEntire } from "../../app/utilisateur_slices/utilisateurSlice";
-import { setutilisateurConnecte, setutilisateurConnecteEntiere } from "../../app/Utilisateur_SuperviseurSlices/Utilisateur_SuperviseurSlices";
+import {
+  loginUtilisateur,
+  setCodeUser,
+  setDbName,
+  setToken,
+  setUtilisateurInfoEntire,
+} from "../../app/utilisateur_slices/utilisateurSlice";
+import {
+  setutilisateurConnecte,
+  setutilisateurConnecteEntiere,
+} from "../../app/Utilisateur_SuperviseurSlices/Utilisateur_SuperviseurSlices";
 
 function SignInPage() {
   const [nom, setNom] = useState("");
@@ -12,11 +21,11 @@ function SignInPage() {
   const erreur = useSelector((state) => state.UtilisateurInfo.erreur);
   const [error, setError] = useState("");
   const status = useSelector((state) => state.UtilisateurInfo.status);
-  console.log(status)
-  
+  console.log(status);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const trimmedNom = nom.trim();
     const trimmedPassword = password.trim();
     // dispatch(loginUtilisateur({nom: trimmedNom, motpasse: trimmedMotpasse}))
@@ -46,7 +55,7 @@ function SignInPage() {
 
       if (response.ok) {
         // dispatch(setUtilisateurInfoEntire(data.user))
-        dispatch(setutilisateurConnecteEntiere(data.user))
+        dispatch(setutilisateurConnecteEntiere(data.user));
         dispatch(setToken(data.token));
         localStorage.setItem("societies", JSON.stringify(data.societies));
         // localStorage.setItem("codeuser", JSON.stringify(data.codeuser));
@@ -70,8 +79,9 @@ function SignInPage() {
         backgroundAttachment: "fixed",
       }}
     >
-      <div className="flex bg-white bg-opacity-90 rounded-xl shadow-2xl w-full max-w-4xl overflow-hidden">
-        <div className="hidden md:flex items-center justify-center w-1/2 bg-gradient-to-r from-blue-600 to-purple-700 p-6">
+      <div className="flex bg-white h-[600px] bg-opacity-90 rounded-xl shadow-2xl w-full max-w-4xl overflow-hidden">
+        {" "}
+        <div className="flex items-center justify-center w-1/2 bg-gradient-to-r from-blue-600 to-purple-700 p-6">
           <img
             src="/logo.png"
             alt="Logo"
@@ -79,10 +89,12 @@ function SignInPage() {
           />
         </div>
         <div className="w-full md:w-1/2 p-8">
+          {/* <img className="md:hidden" src="/logo.png" /> */}
+
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
             Connexion
           </h2>
-          {(error) && (
+          {error && (
             <div className="bg-red-100 text-red-700 p-3 rounded-lg mb-4 text-center">
               {error}
             </div>

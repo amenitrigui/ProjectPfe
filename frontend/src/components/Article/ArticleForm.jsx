@@ -2,15 +2,8 @@ import React from "react";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import {
-  FaUser,
-  FaCog,
-  FaCreditCard,
-  FaSignOutAlt,
-  FaRegUserCircle,
-} from "react-icons/fa";
+import { FaUser, FaCog, FaSignOutAlt, FaRegUserCircle } from "react-icons/fa";
 import ToolBar from "../Common/ToolBar";
-import ValorisationTab from "./ValorisationTab";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getDesignationFamilleParCodeFamille,
@@ -29,13 +22,12 @@ import {
 } from "../../app/interface_slices/uiSlice";
 import SideBar from "../Common/SideBar";
 import { getPrixVente } from "../../app/Stock_valorisation_utilitaires/valorisation_Slice";
-import StockTab from "./StockTab";
-import UtilitaireTab from "./UtilitaireTab";
 import {
   getListedepotdeStockparpcodepointvente,
   getlistepointvente,
   getQteTotalArticle,
 } from "../../app/Stock_valorisation_utilitaires/Stock_Slice";
+import Tab from "./Tab";
 function ArticleForm() {
   //?==================================================================================================================
   //?=====================================================variables====================================================
@@ -77,13 +69,13 @@ function ArticleForm() {
       );
     }
   }, [articleInfos.codesousfam]);
-  
+
   useEffect(() => {
     if (articleInfos.famille && articleInfos.famille != "") {
       dispatch(getDesignationFamilleParCodeFamille(articleInfos.famille));
     }
   }, [articleInfos.famille]);
-  
+
   const activerChampsForm = useSelector(
     (state) => state.uiStates.activerChampsForm
   );
@@ -106,7 +98,7 @@ function ArticleForm() {
   const hundlesubmitTousLesChamp = (valeur, colonne) => {
     // console.log(colonne, " ", valeur);
     dispatch(setArticleInfos({ valeur, colonne }));
-    
+
     if (colonne == "code") {
       if (valeur == "") {
         {
@@ -114,7 +106,7 @@ function ArticleForm() {
         }
       }
     }
-    
+
     if (colonne == "famille") {
       if (valeur != "") {
         dispatch(getDesignationFamilleParCodeFamille(valeur));
@@ -122,7 +114,7 @@ function ArticleForm() {
         dispatch(setArticleInfos({ colonne: "libelleFamille", valeur: "" }));
       }
     }
-    
+
     if (colonne == "codesousfam") {
       if (valeur != "") {
         dispatch(getdesignationSousFamillebycodeSousFamille(valeur));
@@ -133,7 +125,7 @@ function ArticleForm() {
       }
     }
   };
-  
+
   const handleChangeCheckbox = (checked, colonne) => {
     if (toolbarMode == "ajout" || toolbarMode == "modification") {
       dispatch(
@@ -590,51 +582,7 @@ function ArticleForm() {
           </div>
         </div>
         <div className="details ">
-          <div className="mahdi">
-            <div className="w-full min-h-screen p-4">
-              {/* Conteneur principal des onglets - Taille augmentée */}
-              <div
-                role="tablist"
-                className="tabs tabs-lifted tabs-lg w-full [&>.tab]:flex-1 [&>.tab]:px-6 [&>.tab]:py-4 [&>.tab]:text-lg"
-              >
-                {/* Onglet Stock */}
-                <input
-                  type="radio"
-                  name="my_tabs_6"
-                  className="tab"
-                  aria-label="Stock"
-                />
-                <StockTab />
-
-                {/* Onglet Valorisation (par défaut) */}
-                <input
-                  type="radio"
-                  name="my_tabs_6"
-                  className="tab"
-                  aria-label="Valorisation"
-                  defaultChecked
-                />
-                <div className="tab-content bg-base-100 border-base-300 rounded-lg p-8 w-full min-h-[400px] space-y-6">
-                  <div className="w-full h-full">
-                    {/* Contenu Valorisation */}
-                    <ValorisationTab />
-                  </div>
-                </div>
-
-                {/* Onglet Utilitaire - Version améliorée */}
-                {/* Onglet Utilitaire - Version alignée sur une ligne */}
-                <input
-                  type="radio"
-                  name="my_tabs_6"
-                  className="tab"
-                  aria-label="Utilitaire"
-                />
-                <div className="tab-content bg-base-100 border border-gray-200 rounded-lg p-6 w-full min-h-[400px]">
-                  <UtilitaireTab />
-                </div>
-              </div>
-            </div>
-          </div>
+          <Tab />
         </div>
       </div>
 
