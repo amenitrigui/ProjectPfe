@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
-import { loginUtilisateur, setCodeUser, setDbName, setToken } from "../../app/utilisateur_slices/utilisateurSlice";
+import { loginUtilisateur, setCodeUser, setDbName, setToken, setUtilisateurInfoEntire } from "../../app/utilisateur_slices/utilisateurSlice";
+import { setutilisateurConnecte, setutilisateurConnecteEntiere } from "../../app/Utilisateur_SuperviseurSlices/Utilisateur_SuperviseurSlices";
 
 function SignInPage() {
   const [nom, setNom] = useState("");
@@ -11,6 +12,7 @@ function SignInPage() {
   const erreur = useSelector((state) => state.UtilisateurInfo.erreur);
   const [error, setError] = useState("");
   const status = useSelector((state) => state.UtilisateurInfo.status);
+  console.log(status)
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,7 +45,8 @@ function SignInPage() {
       const data = await response.json(); // convertir la reponse de seurveur en objet javascript
 
       if (response.ok) {
-        dispatch(setCodeUser(data.codeuser))
+        // dispatch(setUtilisateurInfoEntire(data.user))
+        dispatch(setutilisateurConnecteEntiere(data.user))
         dispatch(setToken(data.token));
         localStorage.setItem("societies", JSON.stringify(data.societies));
         // localStorage.setItem("codeuser", JSON.stringify(data.codeuser));
@@ -79,12 +82,12 @@ function SignInPage() {
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
             Connexion
           </h2>
-          {(status === "échec") && (
+          {(error) && (
             <div className="bg-red-100 text-red-700 p-3 rounded-lg mb-4 text-center">
-              {erreur}
+              {error}
             </div>
           )}
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={(e) => handleSubmit(e)}>
             <div className="mb-6">
               <label
                 htmlFor="nom"

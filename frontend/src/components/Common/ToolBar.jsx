@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -32,8 +32,20 @@ import {
 } from "../../app/devis_slices/devisSlice";
 import { getUtilisateurParCode } from "../../app/utilisateur_slices/utilisateurSlice";
 import { viderChampsArticleInfo } from "../../app/article_slices/articleSlice";
-
+import { FaUser, FaCog, FaCreditCard, FaSignOutAlt } from "react-icons/fa";
+import {
+  AjouterUtilisateur,
+  getCodeUtilisateurSuivant,
+  getDerniereCodeUtilisateur,
+  getListeUtilisateur,
+  getListeUtilisateurParCode,
+  setViderChampsUtilisateur,
+} from "../../app/Utilisateur_SuperviseurSlices/Utilisateur_SuperviseurSlices";
 function ToolBar() {
+  //?==================================================================================================================
+  //?=====================================================variables====================================================
+  //?==================================================================================================================
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
@@ -48,10 +60,21 @@ function ToolBar() {
   const activerBoutonsValiderAnnuler = useSelector(
     (state) => state.uiStates.activerBoutonsValiderAnnuler
   );
-  const articleInfo =useSelector((state)=>state.ArticlesDevis.articleInfos)
-
+  const articleInfo = useSelector((state) => state.ArticlesDevis.articleInfos);
+  const Utilisateur_SuperviseurInfos = useSelector(
+    (state) => state.Utilisateur_SuperviseurSlices.Utilisateur_SuperviseurInfos
+  );
   const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
-  const dernierCodeClient = useSelector((state) => state.ClientCrud.dernierCodeClient);
+  const dernierCodeClient = useSelector(
+    (state) => state.ClientCrud.dernierCodeClient
+  );
+  //?==================================================================================================================
+  //?==================================================appels UseEffect================================================
+  //?==================================================================================================================
+
+  //?==================================================================================================================
+  //?=====================================================fonctions====================================================
+  //?==================================================================================================================
   const handleNaviguerVersListe = async () => {
     if (toolbarTable == "devis") {
       navigate("/DevisList");
@@ -62,12 +85,17 @@ function ToolBar() {
     if (toolbarTable == "article") {
       navigate("/ArticleList");
     }
+    if (toolbarTable == "utilisateur") {
+      navigate("/UtilisateurList");
+    }
   };
+
   // * ajout d'un client/devi
   const handleAjoutBtnClick = async () => {
     dispatch(setActiverBoutonsValiderAnnuler(true));
     dispatch(setActiverChampsForm(true));
     dispatch(setToolbarMode("ajout"));
+
     // * vider les champs du formulaires
     if (toolbarTable == "devis") {
       dispatch(viderChampsDevisInfo());
@@ -78,7 +106,7 @@ function ToolBar() {
     if (toolbarTable == "client") {
       dispatch(viderChampsClientInfo());
       dispatch(getDerniereCodeClient());
-      dispatch(setClientInfos({colonne: "code", valeur: dernierCodeClient}))
+      dispatch(setClientInfos({ colonne: "code", valeur: dernierCodeClient }));
       // * dispatch une action pour récuperer le code + nom d'utilisateur courant
       dispatch(getUtilisateurParCode());
     }
@@ -86,9 +114,9 @@ function ToolBar() {
     if (toolbarTable == "article") {
       dispatch(viderChampsArticleInfo());
     }
-  };
-  const HandleRecherche = async () => {
-    navigate("/recherche");
+    if (toolbarTable == "utilisateur") {
+      dispatch(setViderChampsUtilisateur());
+    }
   };
   // * méthode pour mettre à jour un client/devis
   const handleModifierBtnClick = async () => {
@@ -105,16 +133,17 @@ function ToolBar() {
         alert("aucun client est selectionné pour la modification");
       }
     }
-    if (toolbarTable=="article"){
-      if (!articleInfo.code)
-      {
-        alert ("aucun article est selectionne pour la modification")
+    if (toolbarTable == "article") {
+      if (!articleInfo.code) {
+        alert("aucun article est selectionne pour la modification");
       }
     }
 
     if (
       (toolbarTable == "client" && clientInfos.code) ||
-      (toolbarTable == "devis" && devisInfo.NUMBL)|| (toolbarTable == "article"&& articleInfo.code)
+      (toolbarTable == "devis" && devisInfo.NUMBL) ||
+      (toolbarTable == "article" && articleInfo.code) ||
+      (toolbarTable == "utilisateur" && Utilisateur_SuperviseurInfos.codeuser)
     ) {
       dispatch(setToolbarMode("modification"));
       dispatch(setActiverBoutonsValiderAnnuler(true));
@@ -125,26 +154,6 @@ function ToolBar() {
   // * afficher la fenetre de confirmation
   // * pour supprimer un ou plusieurs clients/devis
   const handleSupprimerBtnClick = async () => {
-    // if (toolbarTable == "devis") {
-    //   if (!devisInfo.NUMBL) {
-    //     // ! a remplacer par toast
-    //     alert("aucune devis est selectionné pour la suppression");
-    //   }
-    // }
-
-    // if (toolbarTable == "client") {
-    //   if (!clientInfos.code) {
-    //     // ! a remplacer par toast
-    //     alert("aucun client est selectionné pour la suppression");
-    //   }
-    // }
-
-    // if (
-    //   (toolbarTable == "client" && clientInfos.code) ||
-    //   (toolbarTable == "devis" && devisInfo.NUMBL)
-    // ) {
-    //   dispatch(setAfficherAlertModal(true));
-    // }
     dispatch(setActiverChampsForm(false));
     dispatch(setToolbarMode("suppression"));
     dispatch(setAlertMessage("Êtes-vous sûr de vouloir supprimer ce client ?"));
@@ -153,25 +162,20 @@ function ToolBar() {
 
   // * méthode pour valider l'ajout d'un client/devis
   const handleValiderBtnClick = () => {
-    console.log(toolbarTable);
     if (toolbarTable == "client") {
       if (toolbarMode == "ajout") {
         dispatch(setAlertMessage("Confirmez-vous ajouter de ce client ?"));
       }
 
       if (toolbarMode == "modification") {
-        // dispatch(majClient());
-        // dispatch(setActiverChampsForm(false));
-        // dispatch(setActiverBoutonsValiderAnnuler(false));
-        // dispatch(viderChampsClientInfo());
         dispatch(setAlertMessage("Confirmez-vous modifier de ce client ?"));
       }
     }
+
+    //* pour devis
     if (toolbarTable == "devis") {
       if (toolbarMode == "ajout") {
-        // dispatch(AjouterDevis());
-        // dispatch(setActiverChampsForm(true));
-        dispatch(setAlertMessage("Confirmez-vous ajouter de ce devis ?"));
+        dispatch(setAlertMessage("Confirmez-vous l'ajout de ce devis ?"));
         dispatch(setAfficherAlert(true));
       }
 
@@ -179,12 +183,22 @@ function ToolBar() {
         // dispatch(majDevis())
       }
     }
+    //* pour l'article
     if (toolbarTable == "article") {
       if (toolbarMode == "ajout") {
         dispatch(setAlertMessage("Confirmez-vous ajouter de ce article ?"));
       }
       if (toolbarMode == "modification") {
         dispatch(setAlertMessage("confirmer vous de modifier de article?"));
+      }
+    }
+    //*pour utilisateur
+    if (toolbarTable == "utilisateur") {
+      if (toolbarMode == "ajout") {
+        dispatch(setAlertMessage("Confirmez-vous ajouter de ce utilisateur ?"));
+      }
+      if (toolbarMode == "modification") {
+        dispatch(setAlertMessage("confirmer vous de modifier de utilisateur?"));
       }
     }
 
@@ -200,6 +214,7 @@ function ToolBar() {
     dispatch(viderChampsClientInfo());
     dispatch(viderChampsDevisInfo());
     dispatch(viderChampsArticleInfo());
+
     dispatch(setToolbarMode("consultation"));
   };
 
@@ -214,25 +229,35 @@ function ToolBar() {
   };
 
   const handleNaviguerVersPrecedent = () => {
-    if(toolbarTable == "client") {
-      console.log(dernierCodeClient)
-      const clientCode = parseInt(clientInfos.code)-1;
+    if (toolbarTable == "client") {
+      console.log(dernierCodeClient);
+      const clientCode = parseInt(clientInfos.code) - 1;
       dispatch(getClientParCode(clientCode.toString()));
     }
 
-    if(toolbarTable == "devis"){
-
+    if (toolbarTable == "devis") {
+    }
+    if (toolbarTable == "utilisateur"){
+      const codeUser = parseInt(Utilisateur_SuperviseurInfos.codeuser) - 1;
+      console.log(codeUser)
+      dispatch(getListeUtilisateurParCode(codeUser.toString()));
     }
   };
 
   const handleNaviguerVersSuivant = () => {
-    if(toolbarTable == "client") {
-      const clientCode = parseInt(clientInfos.code)+1;
+    console.log("ttt: ",toolbarTable);
+    if (toolbarTable == "client") {
+      const clientCode = parseInt(clientInfos.code) + 1;
       dispatch(getClientParCode(clientCode.toString()));
     }
 
-    if(toolbarTable == "devis"){
-      
+    if (toolbarTable == "devis") {
+    }
+    if (toolbarTable == "utilisateur") {
+      const codeUser = parseInt(Utilisateur_SuperviseurInfos.codeuser) + 1;
+      console.log(codeUser);
+      dispatch(getListeUtilisateurParCode(codeUser.toString()));
+      //  dispatch(getCodeUtilisateurSuivant())
     }
   };
   return (
@@ -332,7 +357,7 @@ function ToolBar() {
             </>
           )} */}
           {/* // ! btn précedent */}
-          {(!activerBoutonsValiderAnnuler && toolbarTable != "article") && (
+          {!activerBoutonsValiderAnnuler && toolbarTable != "article" && (
             <button
               className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100"
               onClick={handleNaviguerVersPrecedent}
@@ -341,9 +366,9 @@ function ToolBar() {
             </button>
           )}
           {/* // ! btn suivant */}
-          {(!activerBoutonsValiderAnnuler && toolbarTable != "article") && (
+          {!activerBoutonsValiderAnnuler && toolbarTable != "article" && (
             <button
-              disabled={dernierCodeClient == clientInfos.code}
+              //disabled={dernierCodeClient == clientInfos.code}
               className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100"
               onClick={handleNaviguerVersSuivant}
             >

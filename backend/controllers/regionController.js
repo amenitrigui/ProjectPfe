@@ -8,7 +8,7 @@ const { getDatabaseConnection } = require("../common/commonMethods");
 const getListeCodeRegions = async (req, res) => {
   const { dbName } = req.params;
   try {
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
     const listeCodesRegion = await dbConnection.query(
       `SELECT codergg from region`,
       {
@@ -33,7 +33,7 @@ const getVilleParRegion = async (req, res) => {
   const { dbName, codeRegion } = req.params;
   console.log(dbName, " ", codeRegion);
   try {
-    const dbConnexion = await getDatabaseConnection(dbName, res);
+    const dbConnexion = await getDatabaseConnection(dbName);
     const ListRegion = await dbConnexion.query(
       `Select desirgg from region where codergg = :codeRegion`,
       {

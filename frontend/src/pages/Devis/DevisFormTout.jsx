@@ -10,12 +10,23 @@ import {
 import DevisForm from "../../components/Devis/DevisForm";
 import ArticlesDevis from "../../components/Devis/ArticlesDevis";
 import Recherche from "../../components/Common/recherche";
+import AlertModifier from "../../components/Common/AlertModifier";
 
 function DevisFormTout() {
+  //?==================================================================================================================
+  //?====================================================Variables=====================================================
+  //?==================================================================================================================
   const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
   const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
   const toobarTable = useSelector((state) => state.uiStates.toolbarTable);
+  const afficherAlert = useSelector((state) => state.uiStates.afficherAlert);
   const afficherRecherchePopup = useSelector((state) => state.uiStates.afficherRecherchePopup);
+  const NETHTGLOBAL = devisInfo.MHT - devisInfo.MREMISE || 0;
+  const taxe = devisInfo.MTTC - NETHTGLOBAL || 0;
+  const apayer = devisInfo.MTTC + devisInfo.TIMBRE || 0;
+  //?==================================================================================================================
+  //?=================================================appels useEffect=================================================
+  //?==================================================================================================================
   // * useEffect #1 : désactiver tous les champs
   // * et indiquer qu'on va utiliser la table de devis
   const dispatch = useDispatch();
@@ -23,13 +34,14 @@ function DevisFormTout() {
     dispatch(setToolbarTable("devis"));
     dispatch(setActiverChampsForm(false));
   }, []);
-  const NETHTGLOBAL = devisInfo.MHT - devisInfo.MREMISE || 0;
-  const taxe = devisInfo.MTTC - NETHTGLOBAL || 0;
-  const apayer = devisInfo.MTTC + devisInfo.TIMBRE || 0;
+  //?==================================================================================================================
+  //?=====================================================fonctions====================================================
+  //?==================================================================================================================
 
   return (
-    <div className="bg-gray-100 min-h-screen p-1 mb-1/2">
+    <div className="bg-gray-100 min-h-screen">
       { afficherRecherchePopup == true && <Recherche/> }
+      { afficherAlert && <AlertModifier /> }
       <DevisForm />
     </div>
   );

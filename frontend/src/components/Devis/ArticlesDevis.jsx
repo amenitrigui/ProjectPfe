@@ -1,62 +1,75 @@
-import Select from "react-select";
 import {
   CheckIcon,
   PencilIcon,
-  PrinterIcon,
   TrashIcon,
 } from "@heroicons/react/20/solid";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   getArticleFamiles,
+  getArticleParCode,
   getListeCodesArticles,
-  getTousArticleparcode,
   setArticleInfos,
+  viderChampsArticleInfo,
 } from "../../app/article_slices/articleSlice";
-import { useState } from "react";
 import { setDevisArticles } from "../../app/devis_slices/devisSlice";
+import { setAfficherRecherchePopup, setToolbarTable } from "../../app/interface_slices/uiSlice";
 
 function ArticlesDevis() {
+  //?==================================================================================================================
+  //?====================================================Variables=====================================================
+  //?==================================================================================================================
   const dispatch = useDispatch();
-  const [Quantite, setQauntite] = useState(0);
-  const [remise, setRemise] = useState(0);
-  const ListeArticle = useSelector((state) => state.ArticlesDevis.ListeArticle);
-  const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
-  const ListeCodeArticle = useSelector(
-    (state) => state.ArticlesDevis.ListeCodeArticles
-  );
-  const codeTousArticleParCode = useSelector(
-    (state) => state.ArticlesDevis.ListeCodeArticlesparLib
-  );
-
+  const [netHt, setNetHt] = useState(0);
+  const [puttc, setPuttc] = useState(0);
   const articleInfos = useSelector((state) => state.ArticlesDevis.articleInfos)
+  const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
 
+  //?==================================================================================================================
+  //?=================================================appels useEffect=================================================
+  //?==================================================================================================================
+  useEffect(() => {
+    dispatch(getArticleFamiles());
+  }, []);
+  useEffect(() => {
+    setNetHt((articleInfos.quantite * articleInfos.prix1 * (1 - articleInfos.DREMISE / 100)).toFixed(3) || 0);
+  }, [articleInfos.quantite, articleInfos.prix1, articleInfos.DREMISE])
+
+  useEffect(() => {
+    setPuttc((articleInfos.prix1 * (1 + articleInfos.tauxtva / 100)).toFixed(3) || 0)
+  }, [articleInfos.prix1, articleInfos.tauxtva])
+  //?==================================================================================================================
+  //?=====================================================fonctions====================================================
+  //?==================================================================================================================
   const handlecodeFamilleChange = (codeFamille) => {
     dispatch(setArticleInfos({ colonne: "famille", valeur: codeFamille }))
     dispatch(getListeCodesArticles(codeFamille));
   };
-  const handleSubmiparcode = (codeArticle) => {
+  const handleCodeArticleChange = (codeArticle) => {
     dispatch(setArticleInfos({ colonne: "code", valeur: codeArticle }))
-    dispatch(getTousArticleparcode(codeArticle));
+    dispatch(getArticleParCode(codeArticle));
   };
-  const hadlesubmitquantiteparcode = () => { };
-  useEffect(() => {
-    dispatch(getArticleFamiles());
-  }, []);
-
-  const netHt =
-    articleInfos.quantite * codeTousArticleParCode.prix1 * (1 - remise / 100).toFixed(3) || 0;
-
-  const puttc =
-    codeTousArticleParCode.prix1 * (1 + codeTousArticleParCode.tauxtva / 100).toFixed(3) ||
-    0;
-
   const handleChangementChamp = (colonne, e) => {
     dispatch(setArticleInfos({ colonne: colonne, valeur: e.target.value }))
   }
   const handleValiderLDFPBtnClick = () => {
-    console.log(articleInfos);
-    dispatch(setDevisArticles(articleInfos))
+    if(!articleInfos.quantite) {
+      alert("la quantité est necessaire");
+      return false;
+    }
+
+    if(!articleInfos.DREMISE) {
+      alert("le champ remise est necessaire");
+      return false;
+    }
+
+    dispatch(setDevisArticles(articleInfos));
+    dispatch(viderChampsArticleInfo());
+  }
+
+  const afficherRecherchePopup = (nomTable) => {
+    dispatch(setToolbarTable(nomTable));
+    dispatch(setAfficherRecherchePopup(true));
   }
   return (
     <div className="space-y-4 p-4 border rounded-md mt-4">
@@ -69,37 +82,14 @@ function ArticlesDevis() {
             <input
               type="text"
               className="border border-gray-300 rounded-md p-2"
-              value={ListeArticle.famille}
+              value={articleInfos.famille}
+              placeholder="Sélectionner ou taper une famille"
+              onChange={(e) => {
+                handlecodeFamilleChange(e.target.value);
+              }}
 
-              //  disabled={!activerChampsForm}
-              list="listeCodesFamilles"
-              placeholder="Sélectionner ou taper une famille"
-              onChange={(e) => {
-                handlecodeFamilleChange(e.target.value);
-              }}
+              onClick={() => {afficherRecherchePopup("famille")}}
             />
-            <datalist id="listeCodesFamilles">
-              {ListeArticle.length > 0 ? (
-                ListeArticle.map((famille, indice) => (
-                  <option key={indice} value={famille.code}>
-                    {famille.code}
-                  </option>
-                ))
-              ) : (
-                <option disabled>Aucun article trouvé</option>
-              )}
-            </datalist>
-            {/* <select
-              className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Sélectionner ou taper une famille"
-              onChange={(e) => {
-                handlecodeFamilleChange(e.target.value);
-              }}
-            >
-              {ListeArticle.map((famille) => (
-                <option key={famille.code}>{famille.code}</option>
-              ))}
-            </select> */}
           </div>
 
           <div>
@@ -107,38 +97,14 @@ function ArticlesDevis() {
             <input
               type="text"
               className="border border-gray-300 rounded-md p-2"
-              value={ListeCodeArticle.code}
-
-              //  disabled={!activerChampsForm}
+              value={articleInfos.code || ""}
               list="listecodeArticle"
               placeholder="Sélectionner ou taper un code d'article"
               onChange={(e) => {
-                handleSubmiparcode(e.target.value);
+                handleCodeArticleChange(e.target.value);
               }}
+              onClick={() => afficherRecherchePopup("article")}
             />
-            <datalist id="listecodeArticle">
-              {ListeCodeArticle.length > 0 ? (
-                ListeCodeArticle.map((article, indice) => (
-                  <option key={indice} value={article.code}>
-                    {article.code}
-                  </option>
-                ))
-              ) : (
-                <option disabled>Aucun article trouvé</option>
-              )}
-            </datalist>
-
-            {/* <select
-              className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Sélectionner ou taper une famille"
-              onChange={(e) => {
-                handleSubmiparcode(e.target.value);
-              }}
-            >
-              {ListeCodeArticle.map((article) => (
-                <option key={article.code}>{article.code}</option>
-              ))}
-            </select> */}
           </div>
           <div>
             <label className="block font-medium">LIBELLE</label>
@@ -146,7 +112,7 @@ function ArticlesDevis() {
               type="text"
               placeholder="Sélectionner un code article"
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              value={codeTousArticleParCode.libelle || ""}
+              value={articleInfos.libelle || ""}
               onChange={(e) => handleChangementChamp("libelle", e)}
               readOnly
             />
@@ -158,7 +124,7 @@ function ArticlesDevis() {
               type="text"
               placeholder="Sélectionner un code article"
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              value={codeTousArticleParCode.unite || ""}
+              value={articleInfos.unite || ""}
               readOnly
               onChange={(e) => handleChangementChamp("unite", e)}
             />
@@ -179,12 +145,12 @@ function ArticlesDevis() {
             <textarea
               placeholder="Sélectionner un code article"
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              value={codeTousArticleParCode.CONFIG}
+              value={articleInfos.CONFIG}
               onChange={(e) => handleChangementChamp("CONFIG", e)}
             />
           </div>
         </div>
-      </div>
+      
       <div className="grid grid-cols-6 gap-4 items-center">
         <div>
           <label className="block font-medium">REMISE</label>
@@ -203,7 +169,7 @@ function ArticlesDevis() {
             type="text"
             placeholder="tauxtva"
             className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            value={codeTousArticleParCode.tauxtva || ""}
+            value={articleInfos.tauxtva || ""}
             onChange={(e) => handleChangementChamp("tauxtva", e)}
           />
         </div>
@@ -214,7 +180,7 @@ function ArticlesDevis() {
             type="text"
             step="0.001"
             placeholder="puttc"
-            value={puttc.toFixed(3)}
+            value={puttc}
             readOnly
             className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
@@ -236,7 +202,7 @@ function ArticlesDevis() {
             type="text"
             placeholder="nbrunite"
             className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            value={codeTousArticleParCode.nbrunite || ""}
+            value={articleInfos.nbrunite || ""}
             readOnly
           />
         </div>
@@ -247,7 +213,7 @@ function ArticlesDevis() {
               type="text"
               step="0.001"
               placeholder="prix1"
-              value={codeTousArticleParCode.prix1 || ""}
+              value={articleInfos.prix1 || ""}
               readOnly
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
@@ -277,6 +243,7 @@ function ArticlesDevis() {
             <TrashIcon className="h-6 w-6" />
           </button>
         </div>
+      </div>
       </div>
     </div>
   );

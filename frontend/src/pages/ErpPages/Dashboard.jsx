@@ -1,100 +1,56 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { FaUser, FaCog, FaCreditCard, FaSignOutAlt } from "react-icons/fa";
+import { FaUser, FaCog, FaCreditCard, FaSignOutAlt , FaRegUserCircle} from "react-icons/fa";
 import {
   getNombreTotalDevis,
   getTotalChiffres,
 } from "../../app/devis_slices/devisSlice";
+import SideBar from "../../components/Common/SideBar";
+import { setOuvrireDrawerMenu } from "../../app/interface_slices/uiSlice";
 
 const Dashboard = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [isOpen, setIsOpen] = useState(false);
-  // Fonction pour basculer la visibilité de la sidebar
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+  //?==================================================================================================================
+  //?=====================================================variables====================================================
+  //?==================================================================================================================
   const dispatch = useDispatch();
+  const [isOpen, setIsOpen] = useState(false);
+  
+  const ouvrireMenuDrawer = useSelector((state) => state.uiStates.ouvrireMenuDrawer);
+  const nombredevis = useSelector((state) => state.DevisCrud.nombreDeDevis);
+  const totalchifre = useSelector((state) => state.DevisCrud.totalchifre);
+  
+  const infosUtilisateur = useSelector(
+    (state) => state.UtilisateurInfo.infosUtilisateur
+  );
+  //?==================================================================================================================
+  //?==================================================appels UseEffect================================================
+  //?==================================================================================================================
   useEffect(() => {
     dispatch(getNombreTotalDevis());
     dispatch(getTotalChiffres());
   }, []);
+  //?==================================================================================================================
+  //?=====================================================fonctions====================================================
+  //?==================================================================================================================
+  const toggleSidebar = () => {
+    dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
+  };
 
-  const nombredevis = useSelector((state) => state.DevisCrud.nombreDeDevis);
-  const totalchifre = useSelector((state) => state.DevisCrud.totalchifre);
   return (
     <div className="container">
-      <div className={`navigation ${isSidebarOpen ? "active" : ""}`}>
-        <ul>
-          <li>
-            <a href="#">
-              <span className="icon">
-                <ion-icon name="speedometer-outline"></ion-icon>
-              </span>
-              <span className="title">ERP Logicom</span>
-            </a>
-          </li>
+      <SideBar />
 
-          {[
-            { name: "Dashboard", icon: "home-outline", path: "/dashboard" },
-            { name: "Clients", icon: "people-outline", path: "/ClientFormTout" },
-            { name: "Article", icon: "chatbubble-outline", path: "/ArticleFormTout" },
-            {
-              name: "devistout",
-              icon: "lock-closed-outline",
-              path: "/DevisFormTout",
-            },
-            {
-              name: "les societes",
-              icon: "help-outline",
-              path: "/SocietiesList",
-            },
-            {
-              name: "utilisateur",
-              icon: "help-outline",
-              path: "/UtilisateurFormTout",
-            },
-            { name: "Settings", icon: "settings-outline", path: "/" },
-            {
-              name: "Deconnexion",
-              icon: "log-out-outline",
-              path: "/deconnexion",
-            },
-          ].map((item, index) => (
-            <li key={index}>
-              {/* Use Link instead of <a> */}
-              <Link to={item.path}>
-                <span className="icon">
-                  <ion-icon name={item.icon}></ion-icon>
-                </span>
-                <span className="title">{item.name}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className={`main ${isSidebarOpen ? "active" : ""}`}>
+      <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
         <div className="topbar">
           <div className="toggle" onClick={toggleSidebar}>
             <ion-icon name="menu-outline"></ion-icon>
           </div>
 
-          <div className="search">
-            <label>
-              <input type="text" placeholder="Search here" />
-              <ion-icon name="search-outline"></ion-icon>
-            </label>
-          </div>
-
           <div className="relative inline-block text-left">
             {/* Avatar avec événement de clic */}
             <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
-              <img
-                src="assets/imgs/customer01.jpg"
-                alt="User"
-                className="w-10 h-10 rounded-full border-2 border-white shadow-md"
-              />
+            <FaRegUserCircle className="mr-3 text-3xl" />
               {/* Indicateur de statut en ligne */}
               <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
             </div>
@@ -103,31 +59,31 @@ const Dashboard = () => {
             {isOpen && (
               <div className="absolute right-0 mt-3 w-56 bg-white border rounded-lg shadow-lg z-50">
                 <div className="p-4 flex items-center border-b">
-                  <img
-                    src="assets/imgs/customer01.jpg"
-                    alt="User"
-                    className="w-10 h-10 rounded-full mr-3"
-                  />
+                <FaRegUserCircle className="mr-3 text-3xl" />
                   <div>
-                    <p className="font-semibold">John Doe</p>
-                    <p className="text-sm text-gray-500">Admin</p>
+                    <p className="font-semibold">{infosUtilisateur.nom}</p>
+                    <p className="text-sm text-gray-500">
+                      {infosUtilisateur.type}
+                    </p>
                   </div>
                 </div>
                 <ul className="py-2">
                   <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
+                  <Link to="/UtilisateurFormTout" className="flex items-center w-full">
+
                     <FaUser className="mr-3" /> My Profile
+                    </Link>
                   </li>
                   <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
+                  <Link to="/Settings" className="flex items-center w-full">
                     <FaCog className="mr-3" /> Settings
+                    </Link>
                   </li>
-                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer relative">
-                    <FaCreditCard className="mr-3" /> Billing
-                    <span className="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                      4
-                    </span>
-                  </li>
+
                   <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer border-t">
-                    <FaSignOutAlt className="mr-3" /> Log Out
+                    <Link to="/" className="flex items-center w-full">
+                      <FaSignOutAlt className="mr-3" /> Log Out
+                    </Link>
                   </li>
                 </ul>
               </div>
@@ -144,7 +100,7 @@ const Dashboard = () => {
             },
             {
               number: totalchifre.toFixed(2),
-              name: "total chifre",
+              name: "total chiffre",
               icon: "cash-outline",
             },
             {
@@ -154,7 +110,7 @@ const Dashboard = () => {
             },
             {
               number: totalchifre.toFixed(2),
-              name: "total chifre",
+              name: "total chiffre",
               icon: "cash-outline",
             },
           ].map((card, index) => (
@@ -266,8 +222,8 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-      
-    <script src="%PUBLIC_URL%/assets/js/main.js"></script>
+
+      <script src="%PUBLIC_URL%/assets/js/main.js"></script>
     </div>
   );
 };

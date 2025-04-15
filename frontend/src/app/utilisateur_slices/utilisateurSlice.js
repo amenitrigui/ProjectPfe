@@ -29,7 +29,6 @@ export const getUtilisateurParCode = createAsyncThunk(
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/utilisateurs/getUtilisateurParCode/${codeuser}`);
 
       console.log(response);
-      // return response.data.utilisateur;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || error.message
@@ -65,6 +64,9 @@ export const utilisateurSlice = createSlice({
     setListeUtilisateur: (state, action) => {
       state.listeUtilisateur = action.payload;
     },
+    setUtilisateurInfoEntire: (state,action)=>{
+      state.infosUtilisateur=action.payload
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -78,7 +80,7 @@ export const utilisateurSlice = createSlice({
         state.infosUtilisateur = action.payload;
       })
       .addCase(getUtilisateurParCode.rejected, (state, action) => {
-        state.status = "échoué";
+        state.status = "échec";
         state.erreur = action.erreur;
       })
       
@@ -96,6 +98,6 @@ export const utilisateurSlice = createSlice({
   },
 });
 
-export const { setDbName, setToken, setCodeUser, setListeUtilisateur } =
+export const { setDbName, setToken, setCodeUser, setListeUtilisateur,setUtilisateurInfoEntire } =
   utilisateurSlice.actions;
 export default utilisateurSlice.reducer;

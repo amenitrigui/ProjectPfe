@@ -30,29 +30,23 @@ function verifyTokenValidity(req, res) {
 // * obtention d'un objet Sequelize qui établit la connexion
 // * avec une base des données databaseName donnée en paramètres
 
-const getDatabaseConnection = async (databaseName, res) => {
-  try {
-    const dbConnection = new Sequelize(
-      `mysql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${databaseName}`,
-      {
-        dialect: "mysql",
-        dialectModule: require("mysql2"),
-        logging: console.log,
-        pool: {
-          max: 5,
-          min: 0,
-          acquire: 30000,
-          idle: 10000,
-        },
-      }
-    );
-    await dbConnection.authenticate();
-    return dbConnection;
-  } catch (error) {
-    return res.status(500).json({
-      message: `un erreur est survenu lors de récupération d'une connexion avec db ${databaseName}`,
-    });
-  }
+const getDatabaseConnection = async (databaseName) => {
+  const dbConnection = new Sequelize(
+    `mysql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${databaseName}`,
+    {
+      dialect: "mysql",
+      dialectModule: require("mysql2"),
+      logging: console.log,
+      pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000,
+      },
+    }
+  );
+  await dbConnection.authenticate();
+  return dbConnection;
 };
 
 module.exports = {
