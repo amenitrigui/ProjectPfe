@@ -1,4 +1,3 @@
-var DataTypes = require("sequelize").DataTypes;
 var _article = require("./article");
 var _client = require("./client");
 var _cpostal = require("./cpostal");
@@ -6,23 +5,25 @@ var _depot = require("./depot");
 var _dfp = require("./dfp");
 var _famille = require("./famille");
 var _ldfp = require("./ldfp");
+var _lignedepot = require("./lignedepot");
 var _pointvente = require("./pointvente");
 var _region = require("./region");
 var _secteur = require("./secteur");
 var _sousfamille = require("./sousfamille");
 
 function initModels(sequelize) {
-  var article = _article(sequelize, DataTypes);
-  var client = _client(sequelize, DataTypes);
-  var cpostal = _cpostal(sequelize, DataTypes);
-  var depot = _depot(sequelize, DataTypes);
-  var dfp = _dfp(sequelize, DataTypes);
-  var famille = _famille(sequelize, DataTypes);
-  var ldfp = _ldfp(sequelize, DataTypes);
-  var pointvente = _pointvente(sequelize, DataTypes);
-  var region = _region(sequelize, DataTypes);
-  var secteur = _secteur(sequelize, DataTypes);
-  var sousfamille = _sousfamille(sequelize, DataTypes);
+  var article = _article(sequelize);
+  var client = _client(sequelize);
+  var cpostal = _cpostal(sequelize);
+  var depot = _depot(sequelize);
+  var dfp = _dfp(sequelize);
+  var famille = _famille(sequelize);
+  var ldfp = _ldfp(sequelize);
+  var lignedepot = _lignedepot(sequelize);
+  var pointvente = _pointvente(sequelize);
+  var region = _region(sequelize);
+  var secteur = _secteur(sequelize);
+  var sousfamille = _sousfamille(sequelize);
 
 
   return {
@@ -33,6 +34,7 @@ function initModels(sequelize) {
     dfp,
     famille,
     ldfp,
+    lignedepot,
     pointvente,
     region,
     secteur,

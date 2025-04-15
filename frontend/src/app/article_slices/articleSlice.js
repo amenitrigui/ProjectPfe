@@ -56,21 +56,6 @@ export const suprimerArticle = createAsyncThunk(
   }
 );
 
-// * méthode pour récuperer toutes les articles par un code
-// * exemple : input :
-// ! outdated
-export const getTousArticleparcode = createAsyncThunk(
-  "Slice/getArticleLibeleparcode",
-  async (code, thunkAPI) => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/articles/details/${code}`
-    );
-    return response.data.article;
-  }
-);
-
 // * méthode pour récuperer la liste de codes familles
 // * exemple :
 // * input : ""
@@ -373,19 +358,6 @@ export const articleSlice = createSlice({
         state.status = "echoue";
       })
 
-      .addCase(getTousArticleparcode.pending, (state) => {
-        state.status = "chargement";
-      })
-      .addCase(getTousArticleparcode.fulfilled, (state, action) => {
-        // state.devisInfo = action.payload[0];
-        state.ListeCodeArticlesparLib = action.payload;
-        state.status = "reussi";
-      })
-      .addCase(getTousArticleparcode.rejected, (state, action) => {
-        state.erreur = action.payload;
-        state.status = "echoue";
-      })
-
       .addCase(suprimerArticle.pending, (state) => {
         state.status = "chargement";
       })
@@ -485,6 +457,8 @@ export const articleSlice = createSlice({
       })
       .addCase(getArticleParCode.fulfilled, (state, action) => {
         if (action.payload && action.payload != []) {
+          // ! ceci est pour l'interface de recherche qui nécissite
+          // ! une tableau pour populer le data table
           state.ListeArticle = action.payload;
           state.articleInfos = action.payload[0];
         }

@@ -53,7 +53,6 @@ export const getClientParCode = createAsyncThunk(
         thunkAPI.getState().UtilisateurInfo.dbName
       }/getClientParCode/${code}`
     );
-    console.log(response)
     return response.data.client;
   }
 );

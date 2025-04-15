@@ -42,8 +42,11 @@ import {
   setViderChampsUtilisateur,
 } from "../../app/Utilisateur_SuperviseurSlices/Utilisateur_SuperviseurSlices";
 function ToolBar() {
+  //?==================================================================================================================
+  //?=====================================================variables====================================================
+  //?==================================================================================================================
+
   const dispatch = useDispatch();
-  const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
   const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
@@ -65,6 +68,13 @@ function ToolBar() {
   const dernierCodeClient = useSelector(
     (state) => state.ClientCrud.dernierCodeClient
   );
+  //?==================================================================================================================
+  //?==================================================appels UseEffect================================================
+  //?==================================================================================================================
+
+  //?==================================================================================================================
+  //?=====================================================fonctions====================================================
+  //?==================================================================================================================
   const handleNaviguerVersListe = async () => {
     if (toolbarTable == "devis") {
       navigate("/DevisList");
@@ -108,9 +118,6 @@ function ToolBar() {
       dispatch(setViderChampsUtilisateur());
     }
   };
-  const HandleRecherche = async () => {
-    navigate("/recherche");
-  };
   // * méthode pour mettre à jour un client/devis
   const handleModifierBtnClick = async () => {
     if (toolbarTable == "devis") {
@@ -147,26 +154,6 @@ function ToolBar() {
   // * afficher la fenetre de confirmation
   // * pour supprimer un ou plusieurs clients/devis
   const handleSupprimerBtnClick = async () => {
-    // if (toolbarTable == "devis") {
-    //   if (!devisInfo.NUMBL) {
-    //     // ! a remplacer par toast
-    //     alert("aucune devis est selectionné pour la suppression");
-    //   }
-    // }
-
-    // if (toolbarTable == "client") {
-    //   if (!clientInfos.code) {
-    //     // ! a remplacer par toast
-    //     alert("aucun client est selectionné pour la suppression");
-    //   }
-    // }
-
-    // if (
-    //   (toolbarTable == "client" && clientInfos.code) ||
-    //   (toolbarTable == "devis" && devisInfo.NUMBL)
-    // ) {
-    //   dispatch(setAfficherAlertModal(true));
-    // }
     dispatch(setActiverChampsForm(false));
     dispatch(setToolbarMode("suppression"));
     dispatch(setAlertMessage("Êtes-vous sûr de vouloir supprimer ce client ?"));
@@ -175,17 +162,12 @@ function ToolBar() {
 
   // * méthode pour valider l'ajout d'un client/devis
   const handleValiderBtnClick = () => {
-    console.log(toolbarTable);
     if (toolbarTable == "client") {
       if (toolbarMode == "ajout") {
         dispatch(setAlertMessage("Confirmez-vous ajouter de ce client ?"));
       }
 
       if (toolbarMode == "modification") {
-        // dispatch(majClient());
-        // dispatch(setActiverChampsForm(false));
-        // dispatch(setActiverBoutonsValiderAnnuler(false));
-        // dispatch(viderChampsClientInfo());
         dispatch(setAlertMessage("Confirmez-vous modifier de ce client ?"));
       }
     }
@@ -193,9 +175,8 @@ function ToolBar() {
     //* pour devis
     if (toolbarTable == "devis") {
       if (toolbarMode == "ajout") {
-        // dispatch(AjouterDevis());
-        // dispatch(setActiverChampsForm(true));
-        dispatch(setAlertMessage("Confirmez-vous ajouter de ce devis ?"));
+        dispatch(setAlertMessage("Confirmez-vous l'ajout de ce devis ?"));
+        dispatch(setAfficherAlert(true));
       }
 
       if (toolbarMode == "modification") {
@@ -233,6 +214,7 @@ function ToolBar() {
     dispatch(viderChampsClientInfo());
     dispatch(viderChampsDevisInfo());
     dispatch(viderChampsArticleInfo());
+
     dispatch(setToolbarMode("consultation"));
   };
 

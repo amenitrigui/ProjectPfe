@@ -3,13 +3,18 @@ const defineArticleModel = require("../models/societe/article");
 const defineFamilleModel = require("../models/societe/famille");
 const defineLdfpModel = require("../models/societe/ldfp");
 const defineSousFamilleModel = require("../models/societe/sousfamille");
-const { getSequelizeConnection } = require("../db/config");
 const { getDatabaseConnection } = require("../common/commonMethods");
 const article = require("../models/societe/article");
 const defineUtilisateurModel = require("../models/utilisateur/utilisateur");
 const defineUserModel = require("../models/utilisateur/utilisateur");
-const { sequelizeUserERP } = require("../db/config");
+let connexionDbUserErp;
 
+const getUtilisateurDbConnection = async () => {
+  if (!connexionDbUserErp) {
+    connexionDbUserErp = await getDatabaseConnection("usererpsole");
+  }
+  return connexionDbUserErp;
+};
 const bcrypt = require("bcryptjs");
 
 // * enregistrer une nouvelle utilisateur
@@ -24,13 +29,14 @@ const AjouterUtilisateur = async (req, res) => {
   console.log(User);
   // User.motpasse = "ter"
   try {
+    await getUtilisateurDbConnection();
     if (!User.email || !User.motpasse || !User.nom) {
       return res
         .status(400)
         .json({ message: "Tous les champs doivent être remplis." });
     }
 
-    const user = defineUserModel(sequelizeUserERP);
+    const user = defineUserModel(connexionDbUserErp);
     const existingUser = await user.findOne({ where: { email: User.email } });
 
     if (existingUser) {
@@ -70,11 +76,11 @@ const AjouterUtilisateur = async (req, res) => {
 // * http://localhost:5000/api/Utilisateur_Superviseur/getDerniereCodeUtilisateur
 const getDerniereCodeUtilisateur = async (req, res) => {
   try {
-    const dbConnection = await getDatabaseConnection("usererpsole", res);
-    const derniereCodeUtilisateur = await dbConnection.query(
+    await getUtilisateurDbConnection();
+    const derniereCodeUtilisateur = await connexionDbUserErp.query(
       `SELECT codeuser FROM utilisateur ORDER BY CAST(codeuser AS UNSIGNED) DESC LIMIT 1`,
       {
-        type: dbConnection.QueryTypes.SELECT,
+        type: connexionDbUserErp.QueryTypes.SELECT,
       }
     );
 
@@ -92,8 +98,7 @@ const ModifierUtilisateur = async (req, res) => {
   const { MajUtilisateur } = req.body;
 
   try {
-    const dbConnection = await getDatabaseConnection("usererpsole", res);
-    const Utilisateur = defineUtilisateurModel(dbConnection);
+    const Utilisateur = defineUtilisateurModel(connexionDbUserErp);
     const user = await Utilisateur.findOne({
       where: { codeuser: MajUtilisateur.codeuser },
     });
@@ -127,8 +132,7 @@ const ModifierUtilisateur = async (req, res) => {
 const supprimerUtilisateur = async (req, res) => {
   const { codeuser } = req.query;
   try {
-    const dbConnection = await getDatabaseConnection("usererpsole", res);
-    const Utilisateur = defineUtilisateurModel(dbConnection);
+    const Utilisateur = defineUtilisateurModel(connexionDbUserErp);
 
     await Utilisateur.destroy({ where: { codeuser: codeuser } });
 
@@ -147,15 +151,14 @@ const getListeUtilisateurParCode = async (req, res) => {
   console.log(codeuser);
   try {
     //const decoded = verifyTokenValidity(req, res);
-    const dbConnection = await getDatabaseConnection("usererpsole", res);
 
-    const result = await dbConnection.query(
-      `select codeuser,nom,directeur, type from utilisateur where codeuser = :codeuser `,
+    const result = await connexionDbUserErp.query(
+      `select codeuser,nom,directeur,type from utilisateur where codeuser = :codeuser `,
       {
         replacements: {
           codeuser: codeuser,
         },
-        type: dbConnection.QueryTypes.SELECT,
+        type: connexionDbUserErp.QueryTypes.SELECT,
       }
     );
 

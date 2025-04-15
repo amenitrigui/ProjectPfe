@@ -16,7 +16,6 @@ import Utilisateur_SuperviseurSlices from "./Utilisateur_SuperviseurSlices/Utili
 const persistConfig = {
   key: "root",
   storage: localStorage, // pour utiliser LocalStorage
-  // ! le magique au chocolat
   // whitelist: [ // pour specifier quelles slices on persiste
   //   "ClientCrud",
   //   "UtilisateurInfo",

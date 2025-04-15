@@ -35,7 +35,7 @@ export const AjouterDevis = createAsyncThunk(
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/creerDevis`,
+      }/ajouterDevis`,
       { devisInfo }
     );
     return response.data.devis;
@@ -82,10 +82,29 @@ export const getDevisParNUMBL = createAsyncThunk(
         },
       }
     );
-    console.log(response)
     return response.data.devis;
   }
 );
+
+// * thunk pur récuperer la liste de devis par NUMBL
+export const getListeDevisParNUMBL = createAsyncThunk(
+  "devisSlice/getListeDevisParNUMBL",
+  async(NUMBL, thunkAPI) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/devis/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getListeDevisParNUMBL`,{
+        params: {
+          NUMBL: NUMBL,
+          codeuser: thunkAPI.getState().UtilisateurInfo.infosUtilisateur.codeuser
+        }
+      }
+    )
+
+    console.log(response)
+    return response.data.listeDevis;
+  }
+)
 
 // * Action asynchrone pour récupérer la liste des devis par montant
 // ! on peut retourner des devis dont le montant est
@@ -207,6 +226,7 @@ export const getDerniereNumbl = createAsyncThunk(
     return response.data.derniereNumbl;
   }
 );
+
 export const deleteDevis = createAsyncThunk(
   "devisSlice/deleteDevis",
   async (NUMBL, thunkAPI) => {
@@ -285,6 +305,8 @@ export const devisSlice = createSlice({
         codesecteur: "",
         MHT: "",
         articles: [],
+        quantite: 0,
+        DREMISE: 0
       };
     },
     setDevisClientInfos: (state, action) => {
@@ -350,7 +372,7 @@ export const devisSlice = createSlice({
         state.status = "chargeement";
       })
       .addCase(getDevisParNUMBL.fulfilled, (state, action) => {
-        state.devisList = action.payload;
+        // state.devisList = action.payload;
         state.devisInfo = action.payload[0];
         state.status = "reussi";
       })
@@ -454,6 +476,18 @@ export const devisSlice = createSlice({
         state.status = "reussi";
       })
       .addCase(getDerniereNumbl.rejected, (state, action) => {
+        state.erreur = action.payload;
+        state.status = "echoue";
+      })
+      
+      .addCase(getListeDevisParNUMBL.pending, (state) => {
+        state.status = "chargeement";
+      })
+      .addCase(getListeDevisParNUMBL.fulfilled, (state, action) => {
+        state.devisList = action.payload;
+        state.status = "reussi";
+      })
+      .addCase(getListeDevisParNUMBL.rejected, (state, action) => {
         state.erreur = action.payload;
         state.status = "echoue";
       });

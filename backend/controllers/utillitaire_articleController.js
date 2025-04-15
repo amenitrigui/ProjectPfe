@@ -7,15 +7,4 @@ const defineSousFamilleModel = require("../models/societe/sousfamille");
 const { getSequelizeConnection } = require("../db/config");
 const { getDatabaseConnection } = require("../common/commonMethods");
 const article = require("../models/societe/article");
-
-
-
-
-
-
-
-
-
-module.exports = {
-  
-  };
+module.exports = {};

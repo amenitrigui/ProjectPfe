@@ -17,12 +17,12 @@ export const getPrixVente = createAsyncThunk(
     );
 
     console.log(response);
-    return response.data.getPrixVente; // très important pour que le payload soit stocké dans le slice
+    return response.data.getPrixVente;
   }
 );
 
 export const valorisation_Slice = createSlice({
-  name: "valorisation_Slice", // J'ai corrigé le nom pour qu'il corresponde au préfixe de l'action
+  name: "valorisation_Slice",
   initialState: {
     listePrixVente: [],
 

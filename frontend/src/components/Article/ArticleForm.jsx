@@ -2,11 +2,17 @@ import React from "react";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { FaUser, FaCog, FaCreditCard, FaSignOutAlt,FaRegUserCircle } from "react-icons/fa";
+import {
+  FaUser,
+  FaCog,
+  FaCreditCard,
+  FaSignOutAlt,
+  FaRegUserCircle,
+} from "react-icons/fa";
 import ToolBar from "../Common/ToolBar";
+import ValorisationTab from "./ValorisationTab";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getArticleParCode,
   getDesignationFamilleParCodeFamille,
   getdesignationSousFamillebycodeSousFamille,
   getListeCodesArticles,
@@ -19,62 +25,88 @@ import {
   setAfficherFamillePopub,
   setAfficherRecherchePopup,
   setOuvrireDrawerMenu,
-  setToolbarMode,
   setToolbarTable,
 } from "../../app/interface_slices/uiSlice";
 import SideBar from "../Common/SideBar";
-
+import { getPrixVente } from "../../app/Stock_valorisation_utilitaires/valorisation_Slice";
+import StockTab from "./StockTab";
+import UtilitaireTab from "./UtilitaireTab";
 import {
   getListedepotdeStockparpcodepointvente,
   getlistepointvente,
+  getQteTotalArticle,
 } from "../../app/Stock_valorisation_utilitaires/Stock_Slice";
-import { getPrixVente } from "../../app/Stock_valorisation_utilitaires/valorisation_Slice";
 function ArticleForm() {
+  //?==================================================================================================================
+  //?=====================================================variables====================================================
+  //?==================================================================================================================
   // * pour afficher le sidebar
   const ouvrireMenuDrawer = useSelector(
     (state) => state.uiStates.ouvrireMenuDrawer
   );
   const [isOpen, setIsOpen] = useState(false);
   const articleInfos = useSelector((state) => state.ArticlesDevis.articleInfos);
-  const ListeCodeArticles = useSelector(
-    (state) => state.ArticlesDevis.ListeCodeArticles
-  );
   const ListeFamille = useSelector((state) => state.ArticlesDevis.ListeFamille);
   const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
   const ListeSousFamille = useSelector(
     (state) => state.ArticlesDevis.ListeSousFamille
   );
-  const listePointVente = useSelector(
-    (state) => state.Stock_Slice.listePointVente
-  );
-  const listedepot = useSelector((state) => state.Stock_Slice.listedepot);
-
-  const listePrixVente = useSelector(
-    (state) => state.valorisation_Slice.listePrixVente
-  );
-  console.log(listePrixVente);
   const dispatch = useDispatch();
-
+  const infosUtilisateur = useSelector(
+    (state) => state.UtilisateurInfo.infosUtilisateur
+  );
+  //?==================================================================================================================
+  //?==============================================appels UseEffect====================================================
+  //?==================================================================================================================
   useEffect(() => {
     dispatch(getListeFamillesArticle()); //* la colonne code Famille
     dispatch(getListecodesousFamille()); //** la collone de code sous famille */
     dispatch(getListeCodesArticles()); // * la colonne de code article
-    dispatch(getlistepointvente());
-    dispatch(getListedepotdeStockparpcodepointvente("01"));
   }, []);
+  useEffect(() => {
+    if (articleInfos.code && articleInfos.code != "")
+      dispatch(getPrixVente(articleInfos.code));
+  }, [articleInfos.code]);
   useEffect(() => {
     if (articleInfos.code) dispatch(getPrixVente(articleInfos.code));
   }, [articleInfos.code]);
-
-  const infosUtilisateur = useSelector(
-    (state) => state.UtilisateurInfo.infosUtilisateur
-  );
+  useEffect(() => {
+    if (articleInfos.codesousfam && articleInfos.codesousfam != "") {
+      dispatch(
+        getdesignationSousFamillebycodeSousFamille(articleInfos.codesousfam)
+      );
+    }
+  }, [articleInfos.codesousfam]);
   
+  useEffect(() => {
+    if (articleInfos.famille && articleInfos.famille != "") {
+      dispatch(getDesignationFamilleParCodeFamille(articleInfos.famille));
+    }
+  }, [articleInfos.famille]);
+  
+  const activerChampsForm = useSelector(
+    (state) => state.uiStates.activerChampsForm
+  );
+  useEffect(() => {
+    if (articleInfos.code && articleInfos.code != "") {
+      dispatch(
+        getListedepotdeStockparpcodepointvente({
+          codepv: "01",
+          codeArticle: articleInfos.code,
+        })
+      );
+      dispatch(getQteTotalArticle(articleInfos.code));
+      dispatch(getlistepointvente());
+    }
+  }, [articleInfos.code]);
 
+  //?==================================================================================================================
+  //?=====================================================fonctions====================================================
+  //?==================================================================================================================
   const hundlesubmitTousLesChamp = (valeur, colonne) => {
     // console.log(colonne, " ", valeur);
     dispatch(setArticleInfos({ valeur, colonne }));
-
+    
     if (colonne == "code") {
       if (valeur == "") {
         {
@@ -82,7 +114,7 @@ function ArticleForm() {
         }
       }
     }
-
+    
     if (colonne == "famille") {
       if (valeur != "") {
         dispatch(getDesignationFamilleParCodeFamille(valeur));
@@ -90,7 +122,7 @@ function ArticleForm() {
         dispatch(setArticleInfos({ colonne: "libelleFamille", valeur: "" }));
       }
     }
-
+    
     if (colonne == "codesousfam") {
       if (valeur != "") {
         dispatch(getdesignationSousFamillebycodeSousFamille(valeur));
@@ -101,24 +133,7 @@ function ArticleForm() {
       }
     }
   };
-
-  useEffect(() => {
-    if (articleInfos.codesousfam) {
-      dispatch(
-        getdesignationSousFamillebycodeSousFamille(articleInfos.codesousfam)
-      );
-    }
-  }, [articleInfos.codesousfam]);
-
-  useEffect(() => {
-    if (articleInfos.famille) {
-      dispatch(getDesignationFamilleParCodeFamille(articleInfos.famille));
-    }
-  }, [articleInfos.famille]);
-
-  const activerChampsForm = useSelector(
-    (state) => state.uiStates.activerChampsForm
-  );
+  
   const handleChangeCheckbox = (checked, colonne) => {
     if (toolbarMode == "ajout" || toolbarMode == "modification") {
       dispatch(
@@ -135,7 +150,6 @@ function ArticleForm() {
       dispatch(setArticleInfos({ colonne: colonne, valeur: valeur }));
     }
   };
-  const nav = useNavigate();
   const afficherRecherchePopup = () => {
     dispatch(setAfficherRecherchePopup(true));
   };
@@ -143,7 +157,7 @@ function ArticleForm() {
   const toggleSidebar = () => {
     dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
   };
- 
+
   const togglePopup = (NomTable) => {
     dispatch(setToolbarTable(NomTable));
 
@@ -162,47 +176,49 @@ function ArticleForm() {
           <ToolBar></ToolBar>
 
           <div className="relative inline-block text-left">
-                      {/* Avatar avec événement de clic */}
-                      <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
-                      <FaRegUserCircle className="mr-3 text-3xl" />
-                        {/* Indicateur de statut en ligne */}
-                        <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
-                      </div>
-          
-                      {/* Menu déroulant */}
-                      {isOpen && (
-                        <div className="absolute right-0 mt-3 w-56 bg-white border rounded-lg shadow-lg z-50">
-                          <div className="p-4 flex items-center border-b">
-                          <FaRegUserCircle className="mr-3 text-3xl" />
-                            <div>
-                              <p className="font-semibold">{infosUtilisateur.nom}</p>
-                              <p className="text-sm text-gray-500">
-                                {infosUtilisateur.type}
-                              </p>
-                            </div>
-                          </div>
-                          <ul className="py-2">
-                            <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
-                            <Link to="/UtilisateurFormTout" className="flex items-center w-full">
-          
-                              <FaUser className="mr-3" /> My Profile
-                              </Link>
-                            </li>
-                            <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
-                            <Link to="/Settings" className="flex items-center w-full">
-                              <FaCog className="mr-3" /> Settings
-                              </Link>
-                            </li>
-          
-                            <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer border-t">
-                              <Link to="/" className="flex items-center w-full">
-                                <FaSignOutAlt className="mr-3" /> Log Out
-                              </Link>
-                            </li>
-                          </ul>
-                        </div>
-                      )}
-                    </div>
+            {/* Avatar avec événement de clic */}
+            <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
+              <FaRegUserCircle className="mr-3 text-3xl" />
+              {/* Indicateur de statut en ligne */}
+              <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+            </div>
+
+            {/* Menu déroulant */}
+            {isOpen && (
+              <div className="absolute right-0 mt-3 w-56 bg-white border rounded-lg shadow-lg z-50">
+                <div className="p-4 flex items-center border-b">
+                  <FaRegUserCircle className="mr-3 text-3xl" />
+                  <div>
+                    <p className="font-semibold">{infosUtilisateur.nom}</p>
+                    <p className="text-sm text-gray-500">
+                      {infosUtilisateur.type}
+                    </p>
+                  </div>
+                </div>
+                <ul className="py-2">
+                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
+                    <Link
+                      to="/UtilisateurFormTout"
+                      className="flex items-center w-full"
+                    >
+                      <FaUser className="mr-3" /> My Profile
+                    </Link>
+                  </li>
+                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
+                    <Link to="/Settings" className="flex items-center w-full">
+                      <FaCog className="mr-3" /> Settings
+                    </Link>
+                  </li>
+
+                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer border-t">
+                    <Link to="/" className="flex items-center w-full">
+                      <FaSignOutAlt className="mr-3" /> Log Out
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
         </div>
         <div className="details p-6">
           <div className="ameni">
@@ -357,13 +373,6 @@ function ArticleForm() {
                         }
                       }}
                     />
-                    <datalist id="listeCodesArticle">
-                      {ListeCodeArticles.map((article, indice) => (
-                        <option key={indice} value={article.code}>
-                          {article.code}
-                        </option>
-                      ))}
-                    </datalist>
                   </div>
 
                   {/* Désignation Article */}
@@ -595,99 +604,7 @@ function ArticleForm() {
                   className="tab"
                   aria-label="Stock"
                 />
-                <div className="tab-content bg-base-100 border-base-300 rounded-lg p-8 w-full min-h-[400px]">
-                  <div className="w-full h-full flex flex-col">
-                    {/* Partie supérieure (Tables - 49%) */}
-                    <div className="flex flex-nowrap w-full h-[49%] mb-6">
-                      {" "}
-                      {/* Added mb-4 for space */}
-                      {/* Première table */}
-                      <div className="h-full overflow-y-auto w-1/2 pr-2">
-                        <table className="table table-pin-rows bg-base-200 w-full">
-                          <thead>
-                            <tr>
-                              <th>N°</th>
-                              <th>Point de Vente</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {listePointVente.length > 0 ? (
-                              listePointVente.map((PV, indice) => (
-                                <tr key={indice}>
-                                  {" "}
-                                  {/* N'oubliez pas la prop key */}
-                                  <td>{PV.Code}</td>
-                                  <td>{PV.Libelle}</td>
-                                </tr>
-                              ))
-                            ) : (
-                              <tr>
-                                <td colSpan={2}>
-                                  Aucune liste de point de vente
-                                </td>
-                              </tr>
-                            )}
-                          </tbody>
-                        </table>
-                      </div>
-                      {/* Deuxième table */}
-                      <div className="h-[400px] overflow-y-auto w-1/2 pl-2">
-                        <table className="table table-pin-rows bg-base-200 w-full">
-                          <thead>
-                            <tr>
-                              <th>N°</th>
-                              <th>Dépôt de stock</th>
-                              <th>QTE ART</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {listedepot.length > 0 ? (
-                              listedepot.map((depot, indice) => (
-                                <tr key={indice}>
-                                  <td>{depot.Code}</td>
-                                  <td>{depot.Libelle}</td>
-                                  <td>{depot.SAISIQTENEG}</td>
-                                </tr>
-                              ))
-                            ) : (
-                              <tr>
-                                <td colSpan={3}>Aucune liste de depot</td>
-                              </tr>
-                            )}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-
-                    {/* Partie inférieure (Stats - 49%) */}
-                    <div className="flex flex-nowrap w-full h-[49%] mt-9">
-                      {" "}
-                      {/* Added mt-4 for space */}
-                      {/* Section Siege Local */}
-                      <div className="w-1/2 flex flex-col justify-center items-center border border-base-300 rounded-lg p-4">
-                        <h1 className="text-lg font-bold mb-2">Siege Local</h1>
-                        <div className="grid grid-cols-2 gap-x-4 w-full">
-                          <div>Qte en Stock</div>
-                          <div className="text-right">1000</div>
-                        </div>
-                      </div>
-                      {/* Section Stock global */}
-                      <div className="w-1/2 flex flex-col justify-center items-center border border-base-300 rounded-lg p-4 ml-4">
-                        <h1 className="text-lg font-bold mb-2">
-                          Stock tous points de vente
-                        </h1>
-                        <div className="grid grid-cols-2 gap-x-4 w-full">
-                          <div>Qte en Stock</div>
-                          <div className="text-right">1000</div>
-                          <div>Qte Reserve</div>
-                          <div className="text-right">9</div>
-                          <div>Qte Disponible</div>
-                          <div className="text-right">9</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <StockTab />
 
                 {/* Onglet Valorisation (par défaut) */}
                 <input
@@ -700,130 +617,7 @@ function ArticleForm() {
                 <div className="tab-content bg-base-100 border-base-300 rounded-lg p-8 w-full min-h-[400px] space-y-6">
                   <div className="w-full h-full">
                     {/* Contenu Valorisation */}
-                    <div className="overflow-x-auto">
-                      <table className="table table-zebra">
-                        {/* head */}
-                        <thead>
-                          <tr>
-                            <th></th>
-                            <th>Prix Ht</th>
-                            <th>Prix TTC</th>
-                            <th>Rem.Max</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {/* row 1 */}
-                          <tr>
-                            <th>Prix 1</th>
-                            <td>
-                              <input
-                                type="text"
-                                placeholder="Extra Small"
-                                className="input input-xs"
-                                value={
-                                  listePrixVente.length > 0
-                                    ? listePrixVente[0].prix1
-                                    : ""
-                                }
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="text"
-                                placeholder="Extra Small"
-                                className="input input-xs"
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="text"
-                                placeholder="Extra Small"
-                                className="input input-xs"
-                              />
-                            </td>
-                          </tr>
-                          {/* row 2 */}
-                          <tr>
-                            <th>prix2</th>
-                            <td>
-                              <input
-                                type="text"
-                                placeholder="Extra Small"
-                                className="input input-xs"
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="text"
-                                placeholder="Extra Small"
-                                className="input input-xs"
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="text"
-                                placeholder="Extra Small"
-                                className="input input-xs"
-                              />
-                            </td>
-                          </tr>
-                          {/* row 3 */}
-                          <tr>
-                            <th>prix 3</th>
-                            <td>
-                              <input
-                                type="text"
-                                placeholder="Extra Small"
-                                className="input input-xs"
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="text"
-                                placeholder="Extra Small"
-                                className="input input-xs"
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="text"
-                                placeholder="Extra Small"
-                                className="input input-xs"
-                              />
-                            </td>
-                          </tr>
-                          {/* row 4 */}
-                          <tr>
-                            <th>prix 4</th>
-                            <td>
-                              <input
-                                type="text"
-                                placeholder="Extra Small"
-                                className="input input-xs"
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="text"
-                                placeholder="Extra Small"
-                                className="input input-xs"
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="text"
-                                placeholder="Extra Small"
-                                className="input input-xs"
-                              />
-                            </td>
-                          </tr>
-                          {/* row 5 */}
-                          <tr>
-                            <th>prix 1 publique</th>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
+                    <ValorisationTab />
                   </div>
                 </div>
 
@@ -836,137 +630,7 @@ function ArticleForm() {
                   aria-label="Utilitaire"
                 />
                 <div className="tab-content bg-base-100 border border-gray-200 rounded-lg p-6 w-full min-h-[400px]">
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Section Options */}
-                    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                      <h3 className="text-lg font-semibold text-blue-800 mb-4">
-                        Options
-                      </h3>
-                      <div className="space-y-4">
-                        <div className="flex items-center">
-                          <input
-                            type="checkbox"
-                            disabled={!activerChampsForm}
-                            className="h-5 w-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300"
-                            checked={
-                              articleInfos.gestionstock != "N" &&
-                              articleInfos.gestionstock != ""
-                            }
-                            onChange={(e) =>
-                              handleChangeCheckbox(
-                                e.target.checked,
-                                "gestionstock"
-                              )
-                            }
-                          />
-                          <label className="ml-3 text-gray-700 font-medium">
-                            Gestion de Stock
-                          </label>
-                        </div>
-
-                        <div className="flex items-center">
-                          <input
-                            type="checkbox"
-                            disabled={!activerChampsForm}
-                            className="h-5 w-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300"
-                            checked={
-                              articleInfos.avecconfig != "N" &&
-                              articleInfos.avecconfig != ""
-                            }
-                            onChange={(e) =>
-                              handleChangeCheckbox(
-                                e.target.checked,
-                                "avecconfig"
-                              )
-                            }
-                          />
-                          <label className="ml-3 text-gray-700 font-medium">
-                            Configuration Art
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Section Configuration */}
-                    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                      <h3 className="text-lg font-semibold text-blue-800 mb-4">
-                        Configuration
-                      </h3>
-                      <textarea
-                        className="w-full h-48 border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        value={articleInfos.CONFIG}
-                        disabled={!activerChampsForm}
-                        onChange={(e) =>
-                          hundlesubmitTousLesChamp(e.target.value, "CONFIG")
-                        }
-                      />
-                    </div>
-
-                    {/* Section Historique */}
-                    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                      <h3 className="text-lg font-semibold text-blue-800 mb-4">
-                        Historique
-                      </h3>
-                      <div className="space-y-4">
-                        {/* Création */}
-                        <div className="flex flex-col">
-                          <label className="text-sm font-medium text-gray-700 mb-1">
-                            Création
-                          </label>
-                          <input
-                            type="text"
-                            className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
-                            disabled
-                            value={
-                              articleInfos.usera || infosUtilisateur.codeuser
-                            }
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <label className="text-sm font-medium text-gray-700 mb-1">
-                            Date Création
-                          </label>
-                          <input
-                            type="date"
-                            value={articleInfos.datecreate}
-                            className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
-                            disabled
-                          />
-                        </div>
-
-                        {/* Modification (si en mode modification) */}
-                        {toolbarMode == "modification" && (
-                          <>
-                            <div className="flex flex-col">
-                              <label className="text-sm font-medium text-gray-700 mb-1">
-                                Modification
-                              </label>
-                              <input
-                                type="text"
-                                className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
-                                value={
-                                  articleInfos.userm ||
-                                  infosUtilisateur.codeuser
-                                }
-                                disabled
-                              />
-                            </div>
-                            <div className="flex flex-col">
-                              <label className="text-sm font-medium text-gray-700 mb-1">
-                                Date modification
-                              </label>
-                              <input
-                                type="date"
-                                value={articleInfos.datemaj}
-                                className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
-                                disabled
-                              />
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+                  <UtilitaireTab />
                 </div>
               </div>
             </div>

@@ -17,7 +17,7 @@ const getListeFamillesParCodeFamille = async (req, res) => {
   const { dbName } = req.params;
   const { codeFamille } = req.query;
   try {
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
     const getListeFamillesParCodeFamille = await dbConnection.query(
       `select code , libelle from famille where code LIKE :code`,
       {
@@ -41,7 +41,7 @@ const getListeFamillesParCodeFamille = async (req, res) => {
 const getListeFamillesParLibelleFamille = async (req, res) => {
   const { dbName, LibelleFamille } = req.params;
   try {
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
     const result = await dbConnection.query(
       "SELECT code, libelle FROM famille WHERE libelle LIKE :libelle",
       {
@@ -64,7 +64,7 @@ const ajouterFamille = async(req,res)=>{
 const { dbName } = req.params;
   const { FamilleAjoute } = req.body;
   try {
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
     const Famille = defineFamilleModel(dbConnection);
     const famille = await Famille.findOne({
       where: {

@@ -1,8 +1,8 @@
-const { QueryTypes, Sequelize, Op } = require("sequelize");
-const { getSequelizeConnection } = require("../db/config");
+const { QueryTypes, Op } = require("sequelize");
 const defineDfpModel = require("../models/societe/dfp");
 const defineLdfpModel = require("../models/societe/ldfp");
 const { getDatabaseConnection } = require("../common/commonMethods");
+
 
 // * récuperer la liste des dévis d'une societé donnée (dbName)
 // * example:
@@ -19,11 +19,9 @@ const getTousDevis = async (req, res) => {
   }
 
   try {
-    const dynamicSequelize = getSequelizeConnection(dbName);
-    await dynamicSequelize.authenticate();
-    console.log(`Connecté à la base de données : ${dbName}`);
+    const dbConnection = await getDatabaseConnection(dbName);
 
-    const result = await dynamicSequelize.query(
+    const result = await dbConnection.query(
       `SELECT NUMBL, DATEBL,libpv, datt,CODECLI,ADRCLI,RSCLI,MTTC,CODEFACTURE,usera,RSREP,codesecteur FROM dfp `,
       { type: QueryTypes.SELECT }
     );
@@ -60,9 +58,10 @@ const getTotalChiffres = async (req, res) => {
     });
   }
   try {
-    const dynamicSequelize = getSequelizeConnection(dbName);
-    const Devis = defineDfpModel(dynamicSequelize);
+    const dbConnection = await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
     const totalchifre = await Devis.sum("MTTC");
+
     return res.status(200).json({
       message: "Total de chifre  de devis récupéré avec succès.",
       totalchifre: totalchifre,
@@ -94,18 +93,12 @@ const getNombreDevis = async (req, res) => {
   }
 
   try {
-    const dynamicSequelize = getSequelizeConnection(dbName);
-    const Devis = defineDfpModel(dynamicSequelize);
-
+    const dbConnection = await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
     const devisCount = await Devis.count({
       distinct: true,
       col: "NUMBL",
     });
-
-    console.log(
-      "Total des devis (distinct NUMBL) avec Sequelize : ",
-      devisCount
-    );
 
     return res.status(200).json({
       message: "Total des devis récupéré avec succès.",
@@ -113,7 +106,7 @@ const getNombreDevis = async (req, res) => {
     });
   } catch (error) {
     console.error(
-      "Erreur lors de la récupération du total des devis :",
+      "Erreur lors de la récupération du nombre total des devis :",
       error.message
     );
     return res.status(500).json({
@@ -127,8 +120,8 @@ const getNombreDevis = async (req, res) => {
 // * example:
 // * input : devis
 // * output : un nouveau devis est ajouté au base de données
-// * http://localhost:5000/api/devis/SOLEVO/creerDevis
-const creerDevis = async (req, res) => {
+// * http://localhost:5000/api/devis/SOLEVO/ajouterDevis
+const ajouterDevis = async (req, res) => {
   const { dbName } = req.params;
   const {
     NUMBL,
@@ -149,18 +142,12 @@ const creerDevis = async (req, res) => {
     articles,
   } = req.body.devisInfo;
 
-  console.log("NUMBL reçu:", NUMBL);
-  console.log("Code client reçu:", CODECLI);
-  console.log("Articles reçus :", articles);
-  console.log("CODECLI: ", CODECLI);
-  console.log("ADRCLI: ", ADRCLI);
-
   articles.map((article) => {
     article.NumBL = NUMBL;
   });
 
   try {
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
 
     const Dfp = defineDfpModel(dbConnection);
     const ldfp = defineLdfpModel(dbConnection);
@@ -228,7 +215,7 @@ const getLignesDevis = async (req, res) => {
     const { dbName } = req.params;
     const { NumBL } = req.params;
     console.log(NumBL);
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
     const listeArticle = await dbConnection.query(
       `Select CodeART,Remise,Unite,QteART,DesART,TauxTVA,famille,PUART from ldfp where NumBL = :NumBL`,
       {
@@ -254,10 +241,12 @@ const GetDevisParPeriode = async (req, res) => {
     const { dbName } = req.params;
     const { DATEBL, codeuser } = req.query;
 
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
 
     if (!DATEBL || !codeuser) {
-      return res.status(400).json({ message: "DATEBL ou codeuser est manquant" });
+      return res
+        .status(400)
+        .json({ message: "DATEBL ou codeuser est manquant" });
     }
 
     const devis = await dbConnection.query(
@@ -275,14 +264,12 @@ const GetDevisParPeriode = async (req, res) => {
 
     return res.status(200).json({
       message: "Période récupérée avec succès par devis",
-      devis: devis
+      devis: devis,
     });
-
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
-
 
 // * récuperer la liste de devis créés pour un client spécifique (CODECLI)
 // * pour une societé donnée (dbName)
@@ -293,8 +280,8 @@ const GetDevisListParClient = async (req, res) => {
     const { CODECLI, codeuser } = req.query;
 
     console.log(dbName, " ", CODECLI, " ", codeuser);
-    
-    const dbConnection = await getDatabaseConnection(dbName, res);
+
+    const dbConnection = await getDatabaseConnection(dbName);
 
     const devis = await dbConnection.query(
       `SELECT 
@@ -304,7 +291,7 @@ const GetDevisListParClient = async (req, res) => {
        WHERE CODECLI LIKE :codecli AND usera = :codeuser`,
       {
         replacements: {
-          codecli: `%${CODECLI}%`,  // LIKE sur CODECLI
+          codecli: `%${CODECLI}%`, // LIKE sur CODECLI
           codeuser,
         },
         type: dbConnection.QueryTypes.SELECT,
@@ -320,7 +307,6 @@ const GetDevisListParClient = async (req, res) => {
   }
 };
 
-
 // * récuperer la liste des codes de devis (NUMBL)
 // * pour une societé donnée (dbName)
 // * example:
@@ -331,7 +317,7 @@ const getCodesDevis = async (req, res) => {
   try {
     const { dbName } = req.params;
     const { usera } = req.params;
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
     const listeNUMBL = await dbConnection.query(
       `SELECT NUMBL from dfp where usera = :usera order by CAST(NUMBL AS UNSIGNED) ASC`,
       {
@@ -356,13 +342,13 @@ const getCodesDevis = async (req, res) => {
 // * example:
 // * input : NUMBL = DV2300002, usera=4
 // * output : le devis ayant le NUMBL DV2300002, créé par l'utilisateur 4
-// * http://localhost:5000/api/devis/SOLEVO/getDevisParNUMBL/DV2300002
+// * http://localhost:5000/api/devis/SOLEVO/getDevisParNUMBL/DV2300002?codeuser=4
 const getDevisParNUMBL = async (req, res) => {
   try {
     const { dbName, NUMBL } = req.params;
     const { codeuser } = req.query;
 
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
     console.log(NUMBL, " ", codeuser);
 
     if (NUMBL && codeuser) {
@@ -371,19 +357,24 @@ const getDevisParNUMBL = async (req, res) => {
           NUMBL, libpv, ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, 
           comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT 
          FROM dfp 
-         WHERE NUMBL LIKE :numbl 
+         WHERE NUMBL = :numbl 
            AND usera = :codeuser`,
         {
           replacements: {
-            numbl: `%${NUMBL}%`,  // Ajout du LIKE ici
+            numbl: `${NUMBL}`,
             codeuser,
           },
           type: dbConnection.QueryTypes.SELECT,
         }
       );
-      return res
-        .status(200)
-        .json({ message: "devis recupere avec succes", devis: devis });
+
+      if (devis && devis.length > 0) {
+        return res
+          .status(200)
+          .json({ message: "devis recupere avec succes", devis: devis });
+      } else {
+        return res.status(404).json({ message: "aucun devis n'est trouvé" });
+      }
     } else {
       return res.status(500).json({ message: "récupération de devis échoué" });
     }
@@ -392,7 +383,6 @@ const getDevisParNUMBL = async (req, res) => {
   }
 };
 
-
 // * récuperer l'utilisateur qui a crée un devis à partir
 // * de la base des données ErpSole
 // * pour une societé donnée
@@ -400,7 +390,7 @@ const getDevisParNUMBL = async (req, res) => {
 const getDevisCreator = async (req, res) => {
   try {
     const { codea } = req.params;
-    const dbConnection = getDatabaseConnection("UserErpSole", res);
+    const dbConnection = getDatabaseConnection("UserErpSole");
     const resultat = await dbConnection.query(
       `SELECT * FROM utlisateur u, dfp d where d.codea = u.codeuser`,
       {
@@ -422,7 +412,7 @@ const getInfoUtilisateur = async (req, res) => {
     const { dbName } = req.params;
     const { usera } = req.query;
     console.log(usera);
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
     if (usera) {
       const utilisateur = await dbConnection.query(
         `SELECT NUMBL,libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where usera = :usera`,
@@ -451,7 +441,7 @@ const getDevisParMontant = async (req, res) => {
     const { dbName, montant } = req.params;
     const { codeuser } = req.query;
 
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
 
     if (montant && codeuser) {
       // Ici on convertit le montant en nombre pour s'assurer que la comparaison fonctionne
@@ -463,8 +453,8 @@ const getDevisParMontant = async (req, res) => {
         WHERE MTTC  LIKE :montant AND usera = :codeuser`,
         {
           replacements: {
-            montant: `%${montant}%`,  // LIKE avec wildcard
-            codeuser
+            montant: `%${montant}%`, // LIKE avec wildcard
+            codeuser,
           },
           type: dbConnection.QueryTypes.SELECT,
         }
@@ -482,7 +472,6 @@ const getDevisParMontant = async (req, res) => {
   }
 };
 
-
 // * méthode pour récuperer la liste de points de vente
 // * exemple :
 // * input :
@@ -491,7 +480,7 @@ const getDevisParMontant = async (req, res) => {
 const getListePointVente = async (req, res) => {
   try {
     const { dbName } = req.params;
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
     const pointsVenteDistincts = await dbConnection.query(
       `SELECT DISTINCT(Libelle) from pointvente`,
       {
@@ -518,7 +507,7 @@ const getListePointVente = async (req, res) => {
 const getDerniereNumbl = async (req, res) => {
   try {
     const { dbName } = req.params;
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
     const derniereNumbl = await dbConnection.query(
       `SELECT NUMBL from dfp where DateBl = (SELECT MAX(DATEBL) from dfp) ORDER BY (NUMBL) DESC LIMIT 1`,
       {
@@ -551,11 +540,10 @@ const deleteDevis = async (req, res) => {
       .json({ message: "Le numéro du devis (NUMBL) est requis." });
   }
   try {
-    const dynamicSequelize = getSequelizeConnection(dbName);
-    await dynamicSequelize.authenticate();
+    const dbConnection = await getDatabaseConnection(dbName);
 
-    const Dfp = defineDfpModel(dynamicSequelize);
-    const Ldfp = defineLdfpModel(dynamicSequelize);
+    const Dfp = defineDfpModel(dbConnection);
+    const Ldfp = defineLdfpModel(dbConnection);
 
     const existingDevis = await Dfp.findOne({ where: { NUMBL } });
     if (!existingDevis) {
@@ -564,7 +552,7 @@ const deleteDevis = async (req, res) => {
         .json({ message: `Aucun devis trouvé avec le numéro ${NUMBL}.` });
     }
 
-    const transaction = await dynamicSequelize.transaction();
+    const transaction = await dbConnection.transaction();
 
     try {
       await Ldfp.destroy({ where: { NUMBL }, transaction });
@@ -601,7 +589,7 @@ const getListeDevisParCodeClient = async (req, res) => {
   }
 
   try {
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     const listeDevis = await Devis.findAll({
       where: {
@@ -626,11 +614,58 @@ const getListeDevisParCodeClient = async (req, res) => {
   }
 };
 
+// * récuperer un devis par son code (NUMBL)
+// * pour une societé donnée (dbName)
+// * example:
+// * input : NUMBL = DV2300, usera=4
+// * output : la liste de devis ayant le NUMBL DV2300%, créés par l'utilisateur 4
+// * http://localhost:5000/api/devis/SOLEVO/getListeDevisParNUMBL/?NUMBL=DV2300&codeuser=4
+const getListeDevisParNUMBL = async (req, res) => {
+  try {
+    const { dbName } = req.params;
+    const { codeuser,NUMBL } = req.query;
+
+    const dbConnection = await getDatabaseConnection(dbName);
+
+    if (NUMBL && codeuser) {
+      const listeDevis = await dbConnection.query(
+        `SELECT 
+          NUMBL, libpv, ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, 
+          comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT 
+         FROM dfp 
+         WHERE NUMBL LIKE :numbl 
+           AND usera = :codeuser`,
+        {
+          replacements: {
+            numbl: `%${NUMBL}%`,
+            codeuser,
+          },
+          type: dbConnection.QueryTypes.SELECT,
+        }
+      );
+
+      if (listeDevis && listeDevis.length>0) {
+        return res
+          .status(200)
+          .json({ message: "Liste de devis récuperé avec succes", listeDevis: listeDevis });
+      } else {
+        return res
+          .status(404)
+          .json({ message: "aucun devis n'est trouvé" });
+      }
+    } else {
+      return res.status(500).json({ message: "récupération de devis échoué" });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getTousDevis,
   getNombreDevis,
   getTotalChiffres,
-  creerDevis,
+  ajouterDevis,
   getDevisParNUMBL,
   getCodesDevis,
   getDevisParMontant,
@@ -644,4 +679,5 @@ module.exports = {
   getDerniereNumbl,
   deleteDevis,
   getListeDevisParCodeClient,
+  getListeDevisParNUMBL
 };

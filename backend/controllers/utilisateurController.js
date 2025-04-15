@@ -3,7 +3,6 @@ const bcrypt = require("bcryptjs");
 
 // const Representant = require("../models/representant");
 const defineUserModel = require("../models/utilisateur/utilisateur");
-const { sequelizeUserERP } = require("../db/config");
 const nodeMailer = require("nodemailer");
 const { google } = require("googleapis");
 const handlebars = require("handlebars");
@@ -13,6 +12,14 @@ const {
   getDatabaseConnection,
   verifyTokenValidity,
 } = require("../common/commonMethods");
+let connexionDbUserErp;
+
+const getDbConnection = async () => {
+  if (!connexionDbUserErp) {
+    connexionDbUserErp = await getDatabaseConnection("usererpsole");
+  }
+  return connexionDbUserErp;
+};
 
 // * initialisation de client OAuth2 avec
 // * les paramètres: clientId, clientSecret, redirectUrl
@@ -37,16 +44,16 @@ oAuth2Client.setCredentials({
 // * Generer un jwt d'accès pour un utilisateur déjà inscrit
 // * exemple
 // * input : {nom: "test", motpasse: "test"}
-// * outpout : jwt 
+// * outpout : jwt
 // * verb : post
 // * http://localhost:5000/api/utilisateurs/loginUtilisateur
 const loginUtilisateur = async (req, res) => {
   const { nom, motpasse } = req.body;
-  console.log(nom," ",motpasse);
-  const User = defineUserModel(sequelizeUserERP);
-  console.log(User);
 
   try {
+    //* 
+  await getDbConnection();
+    const User = defineUserModel(connexionDbUserErp);
     // Vérification que tous les champs sont remplis
     if (!nom || !motpasse) {
       return res
@@ -71,14 +78,14 @@ const loginUtilisateur = async (req, res) => {
 
     // * Requête pour récupérer les sociétés (rsoc) associées avec le nom d'utilisateur
     // * ceci est pour le composant de  liste des sociétés
-    const societies = await sequelizeUserERP.query(
+    const societies = await connexionDbUserErp.query(
       `SELECT us.societe, s.rsoc
        FROM usersoc us
        JOIN societe s ON us.societe = s.code
        WHERE us.codeuser = :codeuser`,
       {
         replacements: { codeuser: user.codeuser },
-        type: sequelizeUserERP.QueryTypes.SELECT,
+        type: connexionDbUserErp.QueryTypes.SELECT,
       }
     );
     // Création du token JWT
@@ -123,27 +130,11 @@ const selectDatabase = async (req, res) => {
   try {
     const decoded = verifyTokenValidity(req);
     const codeuser = decoded.codeuser;
-
-    // ! await keyword is VERY important
-    const dbConnection = await getDatabaseConnection(databaseName, res);
-
-    const devisList = await dbConnection.query(
-      `SELECT YEAR(datebl) AS year, MAX(numbl) AS numbl
-       FROM dfp
-       WHERE usera = :codeuser
-       GROUP BY YEAR(datebl)
-       ORDER BY year DESC`,
-      {
-        replacements: { codeuser },
-        type: dbConnection.QueryTypes.SELECT,
-      }
-    );
-    console.log(devisList);
+    await getDbConnection(databaseName);
 
     return res.status(200).json({
       message: `Connecté à la base ${databaseName}`,
       databaseName,
-      devis: devisList,
     });
   } catch (error) {
     console.error("Erreur lors de la connexion à la base de données :", error);
@@ -164,7 +155,7 @@ const envoyerDemandeReinitialisationMp = async (req, res) => {
   }
 
   try {
-    const User = defineUserModel(sequelizeUserERP);
+    const User = defineUserModel(connexionDbUserErp);
     const user = await User.findOne({ where: { email } });
 
     if (!user) {
@@ -235,8 +226,6 @@ const envoyerDemandeReinitialisationMp = async (req, res) => {
 // * http://localhost:5000/api/utilisateurs/reinitialiserMotPasse
 const reinitialiserMotPasse = async (req, res) => {
   const { email, password, token } = req.body;
-
-
   if (!token) {
     return res
       .status(401)
@@ -249,14 +238,12 @@ const reinitialiserMotPasse = async (req, res) => {
         "Le mot de passe à utiliser lors de réinitialisation ne peut pas etre vide",
     });
   }
-  const decodedJWT = verifyTokenValidity(req, res);
-  const dbConnection = await getDatabaseConnection("usererpsole",res)
-
+  
   try {
-    const User = defineUserModel(dbConnection)
+    const decodedJWT = verifyTokenValidity(req, res);
+    const User = defineUserModel(connexionDbUserErp)
     
     const user = await User.findOne({ where: { email } });
-    console.log(user)
     if (!user) {
       return res.status(404).json({
         message: "Cette email n'est pas associé à aucun utilisateur",
@@ -285,44 +272,34 @@ const reinitialiserMotPasse = async (req, res) => {
 // * http://localhost:5000/api/utilisateurs/getUtilisateurParCode/1
 const getUtilisateurParCode = async (req, res) => {
   const { codeuser } = req.params;
-  
 
   try {
 
-    const dbConnection = await getDatabaseConnection("usererpsole", res);
-    
-    const utilisateur = await dbConnection.query(
-      "SELECT * FROM utilisateur WHERE codeuser = :codeuser", // <-- la requête SQL avec un paramètre nommé
+    const utilisateur = await connexionDbUserErp.query(
+      "SELECT * FROM utilisateur WHERE codeuser = :codeuser",
       {
-        type: dbConnection.QueryTypes.SELECT,
-        replacements: { codeuser: codeuser }
+        type: connexionDbUserErp.QueryTypes.SELECT,
+        replacements: { codeuser: codeuser },
       }
     );
-
-    console.log(utilisateur);
 
     if (utilisateur.length > 0) {
       return res.status(200).json({
         message: "Utilisateur récupéré avec succès",
-        utilisateur
+        utilisateur,
       });
     } else {
       return res.status(404).json({ message: "Utilisateur non trouvé" });
     }
-
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
 
-
-
-// Exporter la méthode
 module.exports = {
   loginUtilisateur,
   selectDatabase,
   envoyerDemandeReinitialisationMp,
   reinitialiserMotPasse,
   getUtilisateurParCode,
- 
 };

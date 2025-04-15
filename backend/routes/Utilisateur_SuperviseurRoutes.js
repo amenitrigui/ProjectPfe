@@ -14,18 +14,4 @@ router.get("/getListeUtilisateurParType", getListeUtilisateurParType);
 router.get("/getListeUtilisateur", getListeUtilisateur);
 router.get("/filterListeUtilisateur", filterListeUtilisateur);
 router.get("/getCodeUtilisateurSuivant", getCodeUtilisateurSuivant);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 module.exports = router;
