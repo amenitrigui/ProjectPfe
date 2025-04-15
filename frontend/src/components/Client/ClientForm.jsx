@@ -41,8 +41,6 @@ const ClientForm = () => {
     dispatch(getListeCodeRegions());
   }, []);
 
-  
-
   // Sélection des informations du client depuis le state Redux
   const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
 
