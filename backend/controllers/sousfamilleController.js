@@ -1,5 +1,6 @@
 const defineFamilleModel = require("../models/societe/famille");
 const { getDatabaseConnection } = require("../common/commonMethods");
+const { getUtilisateurDbConnexion } = require("../common/commonMethods");
 const { Sequelize } = require("sequelize");
 const defineSousFamille = require("../models/societe/sousfamille")
 //* url :http://localhost:5000/api/sousfamille/SOLEVO/getListeSousFamillesParCodeSousFamille/PAN
@@ -8,7 +9,7 @@ const defineSousFamille = require("../models/societe/sousfamille")
 const getListeSousFamillesParCodeSousFamille = async (req, res) => {
   const { dbName, codeSousFamille } = req.params;
   try {
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
 
     const result = await dbConnection.query(
       `SELECT code, libelle FROM sousfamille WHERE code LIKE :code`,
@@ -34,7 +35,7 @@ const getListeSousFamillesParCodeSousFamille = async (req, res) => {
 const getListeSousFamillesParLibelleSousFamille = async (req, res) => {
   const { dbName, LibelleSousFamille } = req.params;
   try {
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
 
     const result = await dbConnection.query(
       `SELECT code, libelle FROM sousfamille WHERE libelle LIKE :libelle`,
@@ -59,7 +60,7 @@ const ajouterSousFamille=async(req,res)=>{
   const { dbName } = req.params;
     const { SousFamilleAjoute } = req.body;
     try {
-      const dbConnection = await getDatabaseConnection(dbName, res);
+      const dbConnection = await getDatabaseConnection(dbName);
       const SousFamille = defineSousFamille(dbConnection);
       const sousfamille = await SousFamille.findOne({
         where: {

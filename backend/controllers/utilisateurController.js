@@ -12,6 +12,14 @@ const {
   getDatabaseConnection,
   verifyTokenValidity,
 } = require("../common/commonMethods");
+let connexionDbUserErp;
+
+const getDbConnection = async () => {
+  if (!connexionDbUserErp) {
+    connexionDbUserErp = await getDatabaseConnection("usererpsole");
+  }
+  return connexionDbUserErp;
+};
 
 // * initialisation de client OAuth2 avec
 // * les paramètres: clientId, clientSecret, redirectUrl
@@ -32,59 +40,6 @@ oAuth2Client.setCredentials({
   refresh_token: process.env.NODEMAILER_REFRESH_TOKEN,
 });
 
-// * enregistrer une nouvelle utilisateur
-// * dans la base des données ErpSole
-// * exemple
-// * input : {nom: "testUser", "motpasse": "testUserMotPasse", "email": "testUser@test.test"}
-// * output : aucune, l'utilisateur sera enregistré dans la base de données
-// * verb : post
-// * http://localhost:5000/api/utilisateurs/inscrireUtilisteur
-const inscrireUtilisteur = async (req, res) => {
-  const { email, motpasse, nom } = req.body;
-
-  try {
-    if (!email || !motpasse || !nom) {
-      return res
-        .status(400)
-        .json({ message: "Tous les champs doivent être remplis." });
-    }
-    const dbConnection = await getDatabaseConnection(process.env.DB_USERS_NAME);
-    const User = defineUserModel(dbConnection);
-    const existingUser = await User.findOne({ where: { email } });
-
-    if (existingUser) {
-      return res.status(400).json({ message: "Cet email est déjà utilisé." });
-    }
-
-    const hashedPassword = await bcrypt.hash(motpasse, 10);
-    console.log(hashedPassword);
-
-    const newUser = await User.create({
-      email,
-      motpasse: hashedPassword,
-      nom,
-      type: "Utilisateur",
-    });
-
-    return res.status(201).json({
-      message: "Utilisateur créé avec succès.",
-      user: {
-        codeuser: newUser.codeuser,
-        email: newUser.email,
-        nom: newUser.nom,
-      },
-    });
-  } catch (error) {
-    console.error(
-      "Erreur lors de la création de l'utilisateur:",
-      error.message || error
-    );
-    return res.status(500).json({
-      message: "Une erreur est survenue lors de la création de l'utilisateur.",
-      error: error.message,
-    });
-  }
-};
 
 // * Generer un jwt d'accès pour un utilisateur déjà inscrit
 // * exemple
@@ -96,11 +51,7 @@ const loginUtilisateur = async (req, res) => {
   const { nom, motpasse } = req.body;
 
   try {
-    const dbConnection = await getDatabaseConnection(
-      process.env.DB_USERS_NAME,
-      res
-    );
-    const User = defineUserModel(dbConnection);
+    const User = defineUserModel(connexionDbUserErp);
     // Vérification que tous les champs sont remplis
     if (!nom || !motpasse) {
       return res
@@ -125,14 +76,14 @@ const loginUtilisateur = async (req, res) => {
 
     // * Requête pour récupérer les sociétés (rsoc) associées avec le nom d'utilisateur
     // * ceci est pour le composant de  liste des sociétés
-    const societies = await dbConnection.query(
+    const societies = await connexionDbUserErp.query(
       `SELECT us.societe, s.rsoc
        FROM usersoc us
        JOIN societe s ON us.societe = s.code
        WHERE us.codeuser = :codeuser`,
       {
         replacements: { codeuser: user.codeuser },
-        type: dbConnection.QueryTypes.SELECT,
+        type: connexionDbUserErp.QueryTypes.SELECT,
       }
     );
     // Création du token JWT
@@ -177,27 +128,11 @@ const selectDatabase = async (req, res) => {
   try {
     const decoded = verifyTokenValidity(req);
     const codeuser = decoded.codeuser;
-
-    // ! await keyword is VERY important
-    const dbConnection = await getDatabaseConnection(databaseName, res);
-
-    const devisList = await dbConnection.query(
-      `SELECT YEAR(datebl) AS year, MAX(numbl) AS numbl
-       FROM dfp
-       WHERE usera = :codeuser
-       GROUP BY YEAR(datebl)
-       ORDER BY year DESC`,
-      {
-        replacements: { codeuser },
-        type: dbConnection.QueryTypes.SELECT,
-      }
-    );
-    console.log(devisList);
+    await getDbConnection(databaseName);
 
     return res.status(200).json({
       message: `Connecté à la base ${databaseName}`,
       databaseName,
-      devis: devisList,
     });
   } catch (error) {
     console.error("Erreur lors de la connexion à la base de données :", error);
@@ -218,11 +153,7 @@ const envoyerDemandeReinitialisationMp = async (req, res) => {
   }
 
   try {
-    const dbConnection = await getDatabaseConnection(
-      process.env.DB_USERS_NAME,
-      res
-    );
-    const User = defineUserModel(dbConnection);
+    const User = defineUserModel(connexionDbUserErp);
     const user = await User.findOne({ where: { email } });
 
     if (!user) {
@@ -308,11 +239,9 @@ const reinitialiserMotPasse = async (req, res) => {
   
   try {
     const decodedJWT = verifyTokenValidity(req, res);
-    const dbConnection = await getDatabaseConnection("usererpsole",res)
-    const User = defineUserModel(dbConnection)
+    const User = defineUserModel(connexionDbUserErp)
     
     const user = await User.findOne({ where: { email } });
-    console.log(user)
     if (!user) {
       return res.status(404).json({
         message: "Cette email n'est pas associé à aucun utilisateur",
@@ -343,17 +272,14 @@ const getUtilisateurParCode = async (req, res) => {
   const { codeuser } = req.params;
 
   try {
-    const dbConnection = await getDatabaseConnection("usererpsole", res);
 
-    const utilisateur = await dbConnection.query(
-      "SELECT * FROM utilisateur WHERE codeuser = :codeuser", // <-- la requête SQL avec un paramètre nommé
+    const utilisateur = await connexionDbUserErp.query(
+      "SELECT * FROM utilisateur WHERE codeuser = :codeuser",
       {
-        type: dbConnection.QueryTypes.SELECT,
+        type: connexionDbUserErp.QueryTypes.SELECT,
         replacements: { codeuser: codeuser },
       }
     );
-
-    console.log(utilisateur);
 
     if (utilisateur.length > 0) {
       return res.status(200).json({
@@ -368,9 +294,7 @@ const getUtilisateurParCode = async (req, res) => {
   }
 };
 
-// Exporter la méthode
 module.exports = {
-  inscrireUtilisteur,
   loginUtilisateur,
   selectDatabase,
   envoyerDemandeReinitialisationMp,

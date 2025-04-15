@@ -11,7 +11,7 @@ const getPrixVente = async (req, res) => {
   }
 
   try {
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
     const getPrixVente = await dbConnection.query(
       `select prix1,prix2,prix3,prix4, prix1ttc,prix2ttc,prix3ttc,prix4ttc ,remmax,prixpub from article where code =:code `,
 

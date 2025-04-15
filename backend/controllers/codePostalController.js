@@ -8,7 +8,7 @@ const getVilleParCodePostale = async (req, res) => {
   const { dbName, cp } = req.params;
   try {
     console.log(dbName, " ", cp);
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
     const ville = await dbConnection.query(
       `SELECT desicp from cpostal where CODEp = :cp`,
       {
@@ -35,7 +35,7 @@ const getVilleParCodePostale = async (req, res) => {
 const getListeCodesPosteaux = async (req, res) => {
   const { dbName } = req.params;
   try {
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
     const listeCodesPosteaux = await dbConnection.query(
       `SELECT CODEp from cpostal`,
       {
@@ -61,7 +61,7 @@ const getCodePostalParVille = async (req, res) => {
   const { ville } = req.query;
 
   try {
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
     const codePostal = await dbConnection.query(
       `
           SELECT CODEp from cpostal where desicp = :ville

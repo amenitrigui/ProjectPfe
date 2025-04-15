@@ -24,12 +24,20 @@ import {
 
 import { validerChampsForm } from "../../utils/validations"
 import { AjouterDevis, viderChampsDevisInfo } from "../../app/devis_slices/devisSlice";
+  
+import {
+  AjouterUtilisateur,
+  ModifierUtilisateur,
+  setViderChampsUtilisateur,
+  supprimerUtilisateur,
+} from "../../app/Utilisateur_SuperviseurSlices/Utilisateur_SuperviseurSlices";
 function AlertModifier() {
   //?==================================================================================================================
   //?=====================================================variables====================================================
   //?==================================================================================================================
   const dispatch = useDispatch();
   const afficherAlert = useSelector((state) => state.uiStates.afficherAlert);
+const Utilisateur_SuperviseurInfos=useSelector((state)=>state.Utilisateur_SuperviseurSlices.Utilisateur_SuperviseurInfos)
   const message = useSelector((state) => state.uiStates.message);
   const toolbarTable = useSelector((state) => state.uiStates.toolbarTable);
   const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
@@ -92,17 +100,33 @@ function AlertModifier() {
     if (toolbarTable == "article") {
       if (toolbarMode == "ajout") {
         dispatch(ajouterArticle());
-        dispatch(viderChampsArticleInfo())
+        dispatch(viderChampsArticleInfo());
       }
       if (toolbarMode == "modification") {
         dispatch(modifierarticle(articleCode));
-        dispatch(viderChampsArticleInfo())
-
+        dispatch(viderChampsArticleInfo());
       }
       if (toolbarMode == "suppression") {
         console.log("dd");
         dispatch(suprimerArticle(articleCode));
-        dispatch(viderChampsArticleInfo())
+        dispatch(viderChampsArticleInfo());
+      }
+    }
+    //* pour l'utilisateur
+    if (toolbarTable == "utilisateur") {
+
+      if (toolbarMode == "ajout") {
+        dispatch(AjouterUtilisateur());
+       
+      }
+      if (toolbarMode == "modification")
+      {
+        dispatch(ModifierUtilisateur())
+      }
+      if (toolbarMode=="suppression")
+      {
+        dispatch(supprimerUtilisateur(Utilisateur_SuperviseurInfos.codeuser))
+        dispatch(setViderChampsUtilisateur())
       }
     }
     // * pour la famille
@@ -112,7 +136,11 @@ function AlertModifier() {
       }
     }
     dispatch(setAfficherAlert(false));
-    dispatch(setActiverBoutonsValiderAnnuler(false))
+    dispatch(setViderChampsUtilisateur())
+
+    dispatch(setActiverBoutonsValiderAnnuler(false));
+    closeToast();
+
     dispatch(setToolbarMode("consultation"));
     closeToast();
   };

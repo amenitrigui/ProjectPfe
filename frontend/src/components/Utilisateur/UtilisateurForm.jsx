@@ -23,7 +23,12 @@ import {
 import ToolBar from "../Common/ToolBar";
 import { getUtilisateurParCode } from "../../app/utilisateur_slices/utilisateurSlice";
 import SideBar from "../Common/SideBar";
-import { setOuvrireDrawerMenu } from "../../app/interface_slices/uiSlice";
+import {  setAfficherRecherchePopup, setOuvrireDrawerMenu } from "../../app/interface_slices/uiSlice";
+import {
+  getDerniereCodeUtilisateur,
+  setUtilisateur_SuperviseurInfos,
+ 
+} from "../../app/Utilisateur_SuperviseurSlices/Utilisateur_SuperviseurSlices";
 
 const UtilisateurForm = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,55 +41,48 @@ const UtilisateurForm = () => {
   const toggleSidebar = () => {
     dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
   };
-  useEffect(() => {
-    dispatch(getListeCodesPosteaux());
-    dispatch(getNombreTotalDevis());
-    dispatch(getTotalChiffres());
-    dispatch(getListeCodesSecteur());
-    dispatch(getListeCodeRegions());
-  }, []);
-
-  useEffect((valeur) => {
-    dispatch(getUtilisateurParCode(valeur));
-  }, []);
 
   // Sélection des informations du client depuis le state Redux
   const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
-
-  const infosUtilisateur = useSelector(
-    (state) => state.UtilisateurInfo.infosUtilisateur
+  const utilisateurConnecte = useSelector(
+    (state) => state.Utilisateur_SuperviseurSlices.utilisateurConnecte
   );
+  const Utilisateur_SuperviseurInfos = useSelector(
+    (state) => state.Utilisateur_SuperviseurSlices.Utilisateur_SuperviseurInfos
+  );
+  const derniereCodeUtilisateur = useSelector(
+    (state) => state.Utilisateur_SuperviseurSlices.derniereCodeUtilisateur
+  );
+
+  console.log(Utilisateur_SuperviseurInfos);
   const listeUtilisateur = useSelector(
     (state) => state.UtilisateurInfo.listeUtilisateur
   );
-  const listeCodesRegion = useSelector(
-    (state) => state.ClientCrud.listeCodesRegion
-  );
+  
   // state pour désactiver/activer les champs lors de changement de modes editables (ajout/modification)
   // vers le mode de consultation respectivement
   const activerChampsForm = useSelector(
     (state) => state.uiStates.activerChampsForm
   );
 
-  // Sélection du booléen pour détecter si l'insertion est faite depuis le formulaire de devis
-  const insertionDepuisDevisForm = useSelector(
-    (state) => state.ClientCrud.insertionDepuisDevisForm
-  );
 
-  // liste de client
-  const listeToutCodesClients = useSelector(
-    (state) => state.ClientCrud.listeToutCodesClients
-  );
-  const listeToutCodesPosteaux = useSelector(
-    (state) => state.ClientCrud.listeToutCodesPosteaux
-  );
-  const listeCodesSecteur = useSelector(
-    (state) => state.ClientCrud.listeCodesSecteur
-  );
+  useEffect(() => {
+    dispatch(getDerniereCodeUtilisateur());
 
+  
+  }, []);
   const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
   const handleCodeUtilisateur = (codeuser) => {
     dispatch(getUtilisateurParCode(codeuser));
+  };
+ 
+  const afficherRecherchePopup = () => {
+    dispatch(setAfficherRecherchePopup(true))
+  }
+  const hundlechange = (colonne, valeur) => {
+    dispatch(
+      setUtilisateur_SuperviseurInfos({ colonne: colonne, valeur: valeur })
+    );
   };
   return (
     <div className="container">
@@ -111,9 +109,9 @@ const UtilisateurForm = () => {
                 <div className="p-4 flex items-center border-b">
                   <FaRegUserCircle className="mr-3 text-3xl" />
                   <div>
-                    <p className="font-semibold">{infosUtilisateur.nom}</p>
+                    <p className="font-semibold">{utilisateurConnecte.nom}</p>
                     <p className="text-sm text-gray-500">
-                      {infosUtilisateur.type}
+                      {utilisateurConnecte.type}
                     </p>
                   </div>
                 </div>
@@ -161,8 +159,16 @@ const UtilisateurForm = () => {
                       <input
                         type="text"
                         className="border border-gray-300 rounded-md p-2"
-                        value={infosUtilisateur.code || ""}
-                        onChange={handleCodeUtilisateur}
+                        value={
+                          toolbarMode == "ajout"
+                            ? derniereCodeUtilisateur.codeuser
+                            : Utilisateur_SuperviseurInfos.codeuser
+                        }
+                        onChange={(e) =>
+                          hundlechange("codeuser", e.target.value)
+                        }
+                        onClick = {() => afficherRecherchePopup()}
+
                         disabled={activerChampsForm}
                         maxLength={8}
                       />
@@ -175,7 +181,8 @@ const UtilisateurForm = () => {
                       <input
                         type="text"
                         className="border border-gray-300 rounded-md p-2"
-                        value={clientInfos.cin || ""}
+                        value={Utilisateur_SuperviseurInfos.nom || ""}
+                        onChange={(e) => hundlechange("nom", e.target.value)}
                         disabled={!activerChampsForm}
                         maxLength={8}
                       />
@@ -189,7 +196,8 @@ const UtilisateurForm = () => {
                     <input
                       type="email"
                       className="border border-gray-300 rounded-md p-2"
-                      value={clientInfos.adresse || ""}
+                      value={Utilisateur_SuperviseurInfos.email || ""}
+                      onChange={(e) => hundlechange("email", e.target.value)}
                       disabled={!activerChampsForm}
                     />
                   </div>
@@ -201,7 +209,10 @@ const UtilisateurForm = () => {
                     <input
                       type="text"
                       className="border border-gray-300 rounded-md p-2"
-                      value={clientInfos.activite || ""}
+                      value={Utilisateur_SuperviseurInfos.directeur || ""}
+                      onChange={(e) =>
+                        hundlechange("directeur", e.target.value)
+                      }
                       disabled={!activerChampsForm}
                     />
                   </div>
@@ -213,14 +224,15 @@ const UtilisateurForm = () => {
                     <input
                       type="text"
                       className="border border-gray-300 rounded-md p-2"
-                      value={clientInfos.activite || ""}
+                      value={Utilisateur_SuperviseurInfos.type || ""}
+                      onChange={(e) => hundlechange("type", e.target.value)}
                       disabled={!activerChampsForm}
                     />
                   </div>
                 </div>
 
                 {/* Colonne droite - Informations de création/modification */}
-                <div className="flex-1 max-w-[700px]">
+                {/* <div className="flex-1 max-w-[700px]">
                   <div className="card rounded-box p-4 space-y-6 bg-gray-50">
                     <div className="flex items-center space-x-4">
                       <label className="font-medium w-1/3 text-left block text-[rgb(48,60,123)]">
@@ -230,9 +242,9 @@ const UtilisateurForm = () => {
                         type="text"
                         className="border border-gray-300 rounded-md p-2 flex-1"
                         value={
-                          infosUtilisateur.codeuser +
+                          Utilisateur_SuperviseurInfos.codeuser +
                           " // " +
-                          infosUtilisateur.nom
+                          Utilisateur_SuperviseurInfos.nom
                         }
                         disabled
                       />
@@ -262,7 +274,7 @@ const UtilisateurForm = () => {
                       />
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </fieldset>
           </div>

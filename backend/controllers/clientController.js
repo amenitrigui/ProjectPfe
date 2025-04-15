@@ -14,7 +14,7 @@ const getListeClients = async (req, res) => {
   const { dbName } = req.params;
   try {
     //const decoded = verifyTokenValidity(req, res);
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
 
     const result = await dbConnection.query(`select * from client`, {
       type: dbConnection.QueryTypes.SELECT,
@@ -39,7 +39,7 @@ const filtrerListeClients = async (req, res) => {
   const { dbName } = req.params;
   const { filters } = req.query;
 
-  const dbConnection = await getDatabaseConnection(dbName, res);
+  const dbConnection = await getDatabaseConnection(dbName);
   // ? liste des conditions
   // ? exemple : ["NUML like :numbl, "libpv like :libpv"...]
   let whereClauses = [];
@@ -104,7 +104,7 @@ const AjouterClient = async (req, res) => {
   console.log("ajouterClient infos :",clientInfos)
   
   try {
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
     const Client = defineClientModel(dbConnection);
     const newClient = await Client.create({
       //add + save min base 3ibrt 3ml insert into mn base de donnes
@@ -181,7 +181,7 @@ const supprimerClient = async (req, res) => {
   // ? tableau contenant les codes des clients à supprimer
   const { code } = req.params;
   try {
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
     const Client = defineClientModel(dbConnection);
 
     await Client.destroy({ where: { code: code } });
@@ -207,7 +207,7 @@ const getClientParCode = async (req, res) => {
   const { dbName } = req.params;
   const { code } = req.params;
   try {
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
     const client = await dbConnection.query(
       `select * from client where code LIKE :code`,
       {
@@ -239,7 +239,7 @@ const majClient = async (req, res) => {
   const { clientMaj } = req.body;
   console.log("majClient: ", clientMaj);
   try {
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
     const Client = defineClientModel(dbConnection);
     const client = await Client.findOne({ where: { code: clientMaj.code } });
 
@@ -323,7 +323,7 @@ const majClient = async (req, res) => {
 const getToutCodesClient = async (req, res) => {
   try {
     const { dbName } = req.params;
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
 
     const listeCodesClients = await dbConnection.query(
       `SELECT code FROM client ORDER BY code`,
@@ -350,7 +350,7 @@ const getClientParTypecli = async (req, res) => {
   try {
     const { dbName } = req.params;
     const { typecli } = req.params;
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
     const client = await dbConnection.query(
       `SELECT * FROM CLIENT where typecli = :typecli`,
       {
@@ -378,7 +378,7 @@ const getClientParCin = async (req, res) => {
   try {
     const { dbName } = req.params;
     const { cin } = req.params;
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
     const client = await dbConnection.query(
       `SELECT * FROM CLIENT where cin LIKE :cin`,
       {
@@ -404,7 +404,7 @@ const getClientParCin = async (req, res) => {
 const getDerniereCodeClient = async (req, res) => {
   try {
     const { dbName } = req.params;
-    const dbConnection = await getDatabaseConnection(dbName, res);
+    const dbConnection = await getDatabaseConnection(dbName);
     const derniereCodeClient = await dbConnection.query(
       `SELECT code FROM CLIENT ORDER BY CAST(code AS UNSIGNED) DESC LIMIT 1`,
       {

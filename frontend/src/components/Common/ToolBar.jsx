@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -32,6 +32,12 @@ import {
 } from "../../app/devis_slices/devisSlice";
 import { getUtilisateurParCode } from "../../app/utilisateur_slices/utilisateurSlice";
 import { viderChampsArticleInfo } from "../../app/article_slices/articleSlice";
+import { FaUser, FaCog, FaCreditCard, FaSignOutAlt } from "react-icons/fa";
+import {
+  AjouterUtilisateur,
+  getDerniereCodeUtilisateur,
+  setViderChampsUtilisateur,
+} from "../../app/Utilisateur_SuperviseurSlices/Utilisateur_SuperviseurSlices";
 function ToolBar() {
   //?==================================================================================================================
   //?=====================================================variables====================================================
@@ -52,7 +58,9 @@ function ToolBar() {
     (state) => state.uiStates.activerBoutonsValiderAnnuler
   );
   const articleInfo = useSelector((state) => state.ArticlesDevis.articleInfos);
-
+  const Utilisateur_SuperviseurInfos = useSelector(
+    (state) => state.Utilisateur_SuperviseurSlices.Utilisateur_SuperviseurInfos
+  );
   const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
   const dernierCodeClient = useSelector(
     (state) => state.ClientCrud.dernierCodeClient
@@ -75,11 +83,13 @@ function ToolBar() {
       navigate("/ArticleList");
     }
   };
+
   // * ajout d'un client/devi
   const handleAjoutBtnClick = async () => {
     dispatch(setActiverBoutonsValiderAnnuler(true));
     dispatch(setActiverChampsForm(true));
     dispatch(setToolbarMode("ajout"));
+
     // * vider les champs du formulaires
     if (toolbarTable == "devis") {
       dispatch(viderChampsDevisInfo());
@@ -97,6 +107,9 @@ function ToolBar() {
 
     if (toolbarTable == "article") {
       dispatch(viderChampsArticleInfo());
+    }
+    if (toolbarTable == "utilisateur") {
+      dispatch(setViderChampsUtilisateur());
     }
   };
   // * méthode pour mettre à jour un client/devis
@@ -123,7 +136,8 @@ function ToolBar() {
     if (
       (toolbarTable == "client" && clientInfos.code) ||
       (toolbarTable == "devis" && devisInfo.NUMBL) ||
-      (toolbarTable == "article" && articleInfo.code)
+      (toolbarTable == "article" && articleInfo.code) ||
+      (toolbarTable == "utilisateur" && Utilisateur_SuperviseurInfos.codeuser)
     ) {
       dispatch(setToolbarMode("modification"));
       dispatch(setActiverBoutonsValiderAnnuler(true));
@@ -151,6 +165,8 @@ function ToolBar() {
         dispatch(setAlertMessage("Confirmez-vous modifier de ce client ?"));
       }
     }
+
+    //* pour devis
     if (toolbarTable == "devis") {
       if (toolbarMode == "ajout") {
         dispatch(setAlertMessage("Confirmez-vous l'ajout de ce devis ?"));
@@ -161,12 +177,22 @@ function ToolBar() {
         // dispatch(majDevis())
       }
     }
+    //* pour l'article
     if (toolbarTable == "article") {
       if (toolbarMode == "ajout") {
         dispatch(setAlertMessage("Confirmez-vous ajouter de ce article ?"));
       }
       if (toolbarMode == "modification") {
         dispatch(setAlertMessage("confirmer vous de modifier de article?"));
+      }
+    }
+    //*pour utilisateur
+    if (toolbarTable == "utilisateur") {
+      if (toolbarMode == "ajout") {
+        dispatch(setAlertMessage("Confirmez-vous ajouter de ce utilisateur ?"));
+      }
+      if (toolbarMode == "modification") {
+        dispatch(setAlertMessage("confirmer vous de modifier de utilisateur?"));
       }
     }
 
@@ -182,7 +208,7 @@ function ToolBar() {
     dispatch(viderChampsClientInfo());
     dispatch(viderChampsDevisInfo());
     dispatch(viderChampsArticleInfo());
-    
+
     dispatch(setToolbarMode("consultation"));
   };
 
@@ -223,7 +249,6 @@ function ToolBar() {
           {!activerBoutonsValiderAnnuler && (
             <button
               type="button"
-              
               onClick={handleAjoutBtnClick}
               className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
             >
@@ -384,12 +409,7 @@ function ToolBar() {
               </span>
             </button>
           )}
-
-
-
-          
         </div>
-      
       </nav>
     </>
   );

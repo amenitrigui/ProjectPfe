@@ -9,7 +9,7 @@ const { getDatabaseConnection } = require("../common/commonMethods");
 const getListeCodesSecteur = async (req, res) => {
     const { dbName } = req.params;
     try {
-      const dbConnection = await getDatabaseConnection(dbName, res);
+      const dbConnection = await getDatabaseConnection(dbName);
       const listeCodesSecteurs = await dbConnection.query(
         `SELECT codesec from secteur`,
         {
@@ -38,7 +38,7 @@ const getListeCodesSecteur = async (req, res) => {
     const { dbName, codesecteur } = req.params;
     console.log(dbName, " ", codesecteur);
     try {
-      const dbConnection = await getDatabaseConnection(dbName, res);
+      const dbConnection = await getDatabaseConnection(dbName);
       const secteurInfo = await dbConnection.query(
         `Select codesec, desisec from secteur where codesec = :codesecteur `,
         {
