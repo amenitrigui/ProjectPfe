@@ -79,7 +79,7 @@ function SignInPage() {
         backgroundAttachment: "fixed",
       }}
     >
-      <div className="flex bg-white md:h-[600px] h-[50vh] bg-opacity-90 rounded-xl shadow-2xl w-full max-w-4xl overflow-hidden">
+      <div className="flex bg-white md:h-[600px] h-[55vh] bg-opacity-90 rounded-xl shadow-2xl w-full max-w-4xl overflow-hidden">
         {" "}
         <div className="flex items-center justify-center w-1/2 bg-gradient-to-r from-blue-600 to-purple-700 p-6">
           <img
