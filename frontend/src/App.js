@@ -29,6 +29,8 @@ import ArticleFormTout from "./pages/Article/ArticleFormTout";
 import ArticleList from "./pages/Article/ArticleList";
 import FamilleFormTout from "./pages/Famille/FamilleFormTout";
 import Settings from "./pages/ErpPages/Settings";
+import UtilisateurList from "./pages/Utilisateurs/UtilisateurList"
+
 import { setActiverBoutonsValiderAnnuler, setToolbarMode, setToolbarTable } from "./app/interface_slices/uiSlice";
 
 function App() {
@@ -79,6 +81,7 @@ function App() {
         element={<DevisFormPlaceholder></DevisFormPlaceholder>}
       ></Route>
       <Route path="/UtilisateurFormTout" element={<UtilisateurFormTout />} />
+      <Route path="/UtilisateurList" element={<UtilisateurList/>}></Route>
     </Routes>
   );
 }

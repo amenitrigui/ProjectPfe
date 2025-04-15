@@ -48,6 +48,10 @@ import { useLocation } from "react-router-dom";
 import {
   getCodeUtilisateurParCode,
   getListeCodeUtilisateurParCode,
+  getListeUtilisateurParCode,
+  getListeUtilisateurParDirecteur,
+  getListeUtilisateurParNom,
+  getListeUtilisateurParType,
   setUtilisateurSupInfo,
 } from "../../app/Utilisateur_SuperviseurSlices/Utilisateur_SuperviseurSlices";
 import { setUtilisateurInfoEntire } from "../../app/utilisateur_slices/utilisateurSlice";
@@ -226,11 +230,15 @@ const Recherche = () => {
     if (toolbarTable == "utilisateur") {
       switch (filtrerPar) {
         case "code":
-          dispatch(getCodeUtilisateurParCode(valeurRecherche));
+          dispatch(getListeUtilisateurParCode(valeurRecherche));
           break;
         case "nom":
-          // dispatch(getDevisParNUMBL(valeurRecherche));
+          dispatch(getListeUtilisateurParNom(valeurRecherche));
           break;
+        case "directeur":
+          dispatch(getListeUtilisateurParDirecteur(valeurRecherche));
+          case "type":
+            dispatch(getListeUtilisateurParType(valeurRecherche))
 
         default:
           console.log("Valeur de filtre non définie");
@@ -489,7 +497,7 @@ const Recherche = () => {
                 ))}
 
               {toolbarTable === "utilisateur" &&
-                ["code", "nom"].map((filtre) => (
+                ["code", "nom", "directeur", "type"].map((filtre) => (
                   <label key={filtre} className="flex items-center">
                     <input
                       type="radio"

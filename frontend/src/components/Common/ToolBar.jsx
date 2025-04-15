@@ -35,7 +35,10 @@ import { viderChampsArticleInfo } from "../../app/article_slices/articleSlice";
 import { FaUser, FaCog, FaCreditCard, FaSignOutAlt } from "react-icons/fa";
 import {
   AjouterUtilisateur,
+  getCodeUtilisateurSuivant,
   getDerniereCodeUtilisateur,
+  getListeUtilisateur,
+  getListeUtilisateurParCode,
   setViderChampsUtilisateur,
 } from "../../app/Utilisateur_SuperviseurSlices/Utilisateur_SuperviseurSlices";
 function ToolBar() {
@@ -81,6 +84,9 @@ function ToolBar() {
     }
     if (toolbarTable == "article") {
       navigate("/ArticleList");
+    }
+    if (toolbarTable == "utilisateur") {
+      navigate("/UtilisateurList");
     }
   };
 
@@ -231,15 +237,27 @@ function ToolBar() {
 
     if (toolbarTable == "devis") {
     }
+    if (toolbarTable == "utilisateur"){
+      const codeUser = parseInt(Utilisateur_SuperviseurInfos.codeuser) - 1;
+      console.log(codeUser)
+      dispatch(getListeUtilisateurParCode(codeUser.toString()));
+    }
   };
 
   const handleNaviguerVersSuivant = () => {
+    console.log("ttt: ",toolbarTable);
     if (toolbarTable == "client") {
       const clientCode = parseInt(clientInfos.code) + 1;
       dispatch(getClientParCode(clientCode.toString()));
     }
 
     if (toolbarTable == "devis") {
+    }
+    if (toolbarTable == "utilisateur") {
+      const codeUser = parseInt(Utilisateur_SuperviseurInfos.codeuser) + 1;
+      console.log(codeUser);
+      dispatch(getListeUtilisateurParCode(codeUser.toString()));
+      //  dispatch(getCodeUtilisateurSuivant())
     }
   };
   return (
@@ -350,7 +368,7 @@ function ToolBar() {
           {/* // ! btn suivant */}
           {!activerBoutonsValiderAnnuler && toolbarTable != "article" && (
             <button
-              disabled={dernierCodeClient == clientInfos.code}
+              //disabled={dernierCodeClient == clientInfos.code}
               className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100"
               onClick={handleNaviguerVersSuivant}
             >

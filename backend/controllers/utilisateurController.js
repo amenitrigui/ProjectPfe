@@ -51,6 +51,7 @@ const loginUtilisateur = async (req, res) => {
   const { nom, motpasse } = req.body;
 
   try {
+    await getDbConnection();
     const User = defineUserModel(connexionDbUserErp);
     // Vérification que tous les champs sont remplis
     if (!nom || !motpasse) {
