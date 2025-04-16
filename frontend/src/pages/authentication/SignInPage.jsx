@@ -2,14 +2,10 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import {
-  loginUtilisateur,
-  setCodeUser,
-  setDbName,
   setToken,
-  setUtilisateurInfoEntire,
+  setUtilisateurInfoEntire, 
 } from "../../app/utilisateur_slices/utilisateurSlice";
 import {
-  setutilisateurConnecte,
   setutilisateurConnecteEntiere,
 } from "../../app/Utilisateur_SuperviseurSlices/Utilisateur_SuperviseurSlices";
 
@@ -21,7 +17,6 @@ function SignInPage() {
   const erreur = useSelector((state) => state.UtilisateurInfo.erreur);
   const [error, setError] = useState("");
   const status = useSelector((state) => state.UtilisateurInfo.status);
-  console.log(status);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,7 +49,7 @@ function SignInPage() {
       const data = await response.json(); // convertir la reponse de seurveur en objet javascript
 
       if (response.ok) {
-        // dispatch(setUtilisateurInfoEntire(data.user))
+        dispatch(setUtilisateurInfoEntire(data.user))  
         dispatch(setutilisateurConnecteEntiere(data.user));
         dispatch(setToken(data.token));
         localStorage.setItem("societies", JSON.stringify(data.societies));

@@ -27,6 +27,10 @@ import {
   getDevisCountByMonthAndYear,
   getNombreTotalDevis,
   getTotalChiffres,
+  getNbTotalDevisGeneresParUtilisateur,
+  getNbDevisNonGeneresParUtilisateur,
+  getNbTotalDevisAnnulees,
+  getNbTotalDevisEnCours,
 } from "../../app/devis_slices/devisSlice";
 
 import SideBar from "../../components/Common/SideBar";
@@ -43,7 +47,6 @@ const data01 = [
 
 const data02 = [
   { name: "Validés", value: 2400 },
-  { name: "En attente", value: 4567 },
   { name: "Refusés", value: 1398 },
   { name: "En cours", value: 9800 },
 ];
@@ -60,7 +63,32 @@ const data03 = [
 
 const Dashboard = () => {
   const devisMonthYear = useSelector((state) => state.DevisCrud.devisMonthYear);
+  const dispatch = useDispatch();
+  const [isOpen, setIsOpen] = useState(false);
 
+  const ouvrireMenuDrawer = useSelector(
+    (state) => state.uiStates.ouvrireMenuDrawer
+  );
+  const nombredevis = useSelector((state) => state.DevisCrud.nombreDeDevis);
+  const totalchifre = useSelector((state) => state.DevisCrud.totalchifre);
+  const nbTotalDevisAnnulees = useSelector((state) => state.DevisCrud.nbTotalDevisAnnulees);
+  const nbDevisEncours = useSelector((state) => state.DevisCrud.nbDevisEncours);
+
+  const utilisateurConnecte = useSelector(
+    (state) => state.Utilisateur_SuperviseurSlices.utilisateurConnecte
+  );
+  const nbTotalDevisGeneres = useSelector(
+    (state) => state.DevisCrud.nbTotalDevisGeneres
+  );
+
+  const nbTotalDevisGeneresParUtilisateur = useSelector(
+    (state) => state.DevisCrud.nbTotalDevisGeneresParUtilisateur
+  );
+
+  const nbTotalDevisNonGeneresParUtilisateur = useSelector(
+    (state) => state.DevisCrud.nbTotalDevisNonGeneresParUtilisateur
+  );
+  
   // Transformer les données pour le BarChart
   const chartData = devisMonthYear.map((item) => {
     // Créer un label comme "01/2024" ou "Janvier 2024"
@@ -84,6 +112,12 @@ const Dashboard = () => {
     };
   });
 
+  const statsDevis = [
+    { name: "Générés", value: nbTotalDevisGeneres },
+    { name: "Annulées", value: nbTotalDevisAnnulees },
+    { name: "En cours", value: nbDevisEncours },
+  ];
+
   const data03 = [
     { name: "Jan", devis: 400 },
     { name: "Fév", devis: 300 },
@@ -93,37 +127,22 @@ const Dashboard = () => {
     { name: "Juin", devis: 239 },
     { name: "Juil", devis: 349 },
   ];
-  const dispatch = useDispatch();
-  const [isOpen, setIsOpen] = useState(false);
-
-  const ouvrireMenuDrawer = useSelector(
-    (state) => state.uiStates.ouvrireMenuDrawer
-  );
-  const nombredevis = useSelector((state) => state.DevisCrud.nombreDeDevis);
-  const totalchifre = useSelector((state) => state.DevisCrud.totalchifre);
-  const infosUtilisateur = useSelector(
-    (state) => state.UtilisateurInfo.infosUtilisateur
-  );
-
-  const utilisateurConnecte = useSelector(
-    (state) => state.Utilisateur_SuperviseurSlices.utilisateurConnecte
-  );
   useEffect(() => {
     dispatch(getNombreTotalDevis());
     dispatch(getTotalChiffres());
+    dispatch(getNbTotalDevisGeneres());
     dispatch(getDevisCountByMonthAndYear());
+    dispatch(getNbTotalDevisAnnulees())
+    dispatch(getNbTotalDevisEnCours())
   }, []);
+  useEffect(() => {
+    dispatch(getNbTotalDevisGeneresParUtilisateur());
+    dispatch(getNbDevisNonGeneresParUtilisateur());
+  }, []);
+
   const toggleSidebar = () => {
     dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
   };
-
-  useEffect(() => {
-    dispatch(getNbTotalDevisGeneres());
-  }, []);
-
-  const nbTotalDevisGeneres = useSelector(
-    (state) => state.DevisCrud.nbTotalDevisGeneres
-  );
 
   return (
     <div className="container">
@@ -145,9 +164,9 @@ const Dashboard = () => {
                 <div className="p-4 flex items-center border-b">
                   <FaRegUserCircle className="mr-3 text-3xl" />
                   <div>
-                    <p className="font-semibold">{infosUtilisateur.nom}</p>
+                    <p className="font-semibold">{utilisateurConnecte.nom}</p>
                     <p className="text-sm text-gray-500">
-                      {infosUtilisateur.type}
+                      {utilisateurConnecte.type}
                     </p>
                   </div>
                 </div>
@@ -184,20 +203,18 @@ const Dashboard = () => {
             },
             {
               number: nbTotalDevisGeneres,
-              name: "Nombre devis générés Total",
+              name: "Nombre Total de devis générés",
+            },
+            {
+              number: nbTotalDevisGeneresParUtilisateur,
+              name: "Nombre de devis générés par l'utilisateur",
               user: `${utilisateurConnecte.codeuser}//${utilisateurConnecte.nom}`,
             },
             {
-              number: nombredevis,
-              name: "Nombre devis générés par Utilisateur",
-              user: `${utilisateurConnecte.codeuser}//${utilisateurConnecte.nom}`,
-            },
-            {
-              number: totalchifre.toFixed(2),
+              number: nbTotalDevisNonGeneresParUtilisateur,
               name: "Nombre devis non générés par Utilisateur",
             },
           ].map((card, index) => {
-            // ✅ Icônes ERP dynamiques selon texte
             const getIcon = (text) => {
               const lower = text.toLowerCase();
               if (lower.includes("non générés")) return "close-circle-outline";
@@ -267,7 +284,7 @@ const Dashboard = () => {
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
-                  data={data02}
+                  data={statsDevis}
                   dataKey="value"
                   nameKey="name"
                   cx="50%"

@@ -8,7 +8,6 @@ const SocietiesList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.UtilisateurInfo.token);
-
   if (token == "") {
     navigate("/");
   }
@@ -45,13 +44,7 @@ const SocietiesList = () => {
       );
 
       if (response.status === 200) {
-        console.log(response.data);
-        // ! devisList
-        // const devisList = response.data.devis;
-        // console.log("Liste des devis récupérés :", devisList);
-
-        // const selectedNumbl = devisList.map((devis) => devis.numbl);
-        // console.log("Tous les numbl récupérés :", selectedNumbl);
+        console.log(society)
         dispatch(setDbName(society));
         localStorage.setItem("selectedDatabase", society);
         localStorage.setItem("selectedRsoc", society.rsoc);

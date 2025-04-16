@@ -42,6 +42,10 @@ function App() {
   const usera = useSelector((state) => state.UtilisateurInfo.codeuser);
   const location = useLocation();
   const toolbarTable = useSelector((state) => state.uiStates.toolbarTable);
+  const utilisateurConnecte = useSelector(
+    (state) => state.Utilisateur_SuperviseurSlices.utilisateurConnecte
+  );
+  const infosUtilisateur = useSelector((state) => state.UtilisateurInfo.infosUtilisateur);
   //?==================================================================================================================
   //?==================================================appels UseEffect================================================
   //?==================================================================================================================
