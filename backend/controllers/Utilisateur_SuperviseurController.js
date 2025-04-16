@@ -342,6 +342,14 @@ console.log(codeSuivant)
   }
 };
 
+const getNbDevisGeneresParUtilisateur = async (req, res) => {
+
+}
+
+const getNbDevisNonGeneresParUtilisateur = async (req, res) => {
+
+}
+
 module.exports = {
   AjouterUtilisateur,
   getDerniereCodeUtilisateur,

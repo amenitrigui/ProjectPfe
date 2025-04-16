@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { FaUser, FaCog, FaCreditCard, FaSignOutAlt , FaRegUserCircle } from "react-icons/fa";
+import {
+  FaUser,
+  FaCog,
+  FaCreditCard,
+  FaSignOutAlt,
+  FaRegUserCircle,
+} from "react-icons/fa";
 import {
   PieChart,
   Pie,
@@ -13,10 +19,11 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Legend
-} from 'recharts';
+  Legend,
+} from "recharts";
 
 import {
+  getNbTotalDevisGeneres,
   getNombreTotalDevis,
   getTotalChiffres,
 } from "../../app/devis_slices/devisSlice";
@@ -47,17 +54,21 @@ const data03 = [
   { name: "Avr", devis: 278 },
   { name: "Mai", devis: 189 },
   { name: "Juin", devis: 239 },
-  { name: "Juil", devis: 349 }
+  { name: "Juil", devis: 349 },
 ];
 
 const Dashboard = () => {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
 
-  const ouvrireMenuDrawer = useSelector((state) => state.uiStates.ouvrireMenuDrawer);
+  const ouvrireMenuDrawer = useSelector(
+    (state) => state.uiStates.ouvrireMenuDrawer
+  );
   const nombredevis = useSelector((state) => state.DevisCrud.nombreDeDevis);
   const totalchifre = useSelector((state) => state.DevisCrud.totalchifre);
-  const infosUtilisateur = useSelector((state) => state.UtilisateurInfo.infosUtilisateur);
+  const infosUtilisateur = useSelector(
+    (state) => state.UtilisateurInfo.infosUtilisateur
+  );
 
   useEffect(() => {
     dispatch(getNombreTotalDevis());
@@ -66,6 +77,14 @@ const Dashboard = () => {
   const toggleSidebar = () => {
     dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
   };
+
+  useEffect(() => {
+    dispatch(getNbTotalDevisGeneres());
+  }, []);
+
+  const nbTotalDevisGeneres = useSelector(
+    (state) => state.DevisCrud.nbTotalDevisGeneres
+  );
 
   return (
     <div className="container">
@@ -88,12 +107,17 @@ const Dashboard = () => {
                   <FaRegUserCircle className="mr-3 text-3xl" />
                   <div>
                     <p className="font-semibold">{infosUtilisateur.nom}</p>
-                    <p className="text-sm text-gray-500">{infosUtilisateur.type}</p>
+                    <p className="text-sm text-gray-500">
+                      {infosUtilisateur.type}
+                    </p>
                   </div>
                 </div>
                 <ul className="py-2">
                   <li className="px-4 py-2 hover:bg-gray-100">
-                    <Link to="/UtilisateurFormTout" className="flex items-center">
+                    <Link
+                      to="/UtilisateurFormTout"
+                      className="flex items-center"
+                    >
                       <FaUser className="mr-3" /> My Profile
                     </Link>
                   </li>
@@ -114,23 +138,28 @@ const Dashboard = () => {
         </div>
 
         <div className="cardBox grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[{
-            number: nombredevis,
-            name: "Nombre devis generes ",
-            icon: "cart-outline",
-          }, {
-            number: totalchifre.toFixed(2),
-            name: "Total chiffre",
-            icon: "cash-outline",
-          }, {
-            number: nombredevis,
-            name: "Nombre devis generes ",
-            icon: "cart-outline",
-          }, {
-            number: totalchifre.toFixed(2),
-            name: "Total chiffre",
-            icon: "cash-outline",
-          }].map((card, index) => (
+          {[
+            {
+              number: nombredevis,
+              name: "Nombre devis generes",
+              icon: "cart-outline",
+            },
+            {
+              number: nbTotalDevisGeneres,
+              name: "Nombre devis generes",
+              icon: "cash-outline",
+            },
+            {
+              number: nombredevis,
+              name: "Nombre devis generes par l'utilisateur courant",
+              icon: "cart-outline",
+            },
+            {
+              number: totalchifre.toFixed(2),
+              name: "Total chiffre",
+              icon: "cash-outline",
+            },
+          ].map((card, index) => (
             <div className="card" key={index}>
               <div>
                 <div className="numbers">{card.number}</div>
@@ -151,9 +180,21 @@ const Dashboard = () => {
             </div>
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
-                <Pie data={data01} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#8884d8" label>
+                <Pie
+                  data={data01}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  fill="#8884d8"
+                  label
+                >
                   {data01.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
                   ))}
                 </Pie>
                 <Tooltip />
@@ -168,9 +209,21 @@ const Dashboard = () => {
             </div>
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
-                <Pie data={data02} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#82ca9d" label>
+                <Pie
+                  data={data02}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  fill="#82ca9d"
+                  label
+                >
                   {data02.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
                   ))}
                 </Pie>
                 <Tooltip />

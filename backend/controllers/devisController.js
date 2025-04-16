@@ -3,7 +3,6 @@ const defineDfpModel = require("../models/societe/dfp");
 const defineLdfpModel = require("../models/societe/ldfp");
 const { getDatabaseConnection } = require("../common/commonMethods");
 
-
 // * récuperer la liste des dévis d'une societé donnée (dbName)
 // * example:
 // * input :
@@ -623,7 +622,7 @@ const getListeDevisParCodeClient = async (req, res) => {
 const getListeDevisParNUMBL = async (req, res) => {
   try {
     const { dbName } = req.params;
-    const { codeuser,NUMBL } = req.query;
+    const { codeuser, NUMBL } = req.query;
 
     const dbConnection = await getDatabaseConnection(dbName);
 
@@ -644,18 +643,77 @@ const getListeDevisParNUMBL = async (req, res) => {
         }
       );
 
-      if (listeDevis && listeDevis.length>0) {
-        return res
-          .status(200)
-          .json({ message: "Liste de devis récuperé avec succes", listeDevis: listeDevis });
+      if (listeDevis && listeDevis.length > 0) {
+        return res.status(200).json({
+          message: "Liste de devis récuperé avec succes",
+          listeDevis: listeDevis,
+        });
       } else {
-        return res
-          .status(404)
-          .json({ message: "aucun devis n'est trouvé" });
+        return res.status(404).json({ message: "aucun devis n'est trouvé" });
       }
     } else {
       return res.status(500).json({ message: "récupération de devis échoué" });
     }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// * récuperer le nombre total de devis générés
+// * pour une societé donnée (dbName)
+// * example:
+// * input : dbName = SOLEVO
+// * output : 400 devis générés
+// * http://localhost:5000/api/devis/SOLEVO/getNbTotalDevisGeneres
+const getNbTotalDevisGeneres = async (req, res) => {
+  const { dbName } = req.params;
+  try {
+    const dbConnection = await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    const nbDevisGeneresTotal = await Devis.count({
+      where: {
+        mlettre: { [Op.like]: `%Générer%` },
+      },
+    });
+    console.log(nbDevisGeneresTotal);
+    return res.status(200).json({
+      message: "Nombre total de devis générés récupéré",
+      nbDevisGeneresTotal: nbDevisGeneresTotal,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// * récuperer le nombre de devis générés pour un utilisateur données
+// * pour une societé donnée (dbName)
+// * example:
+// * input : dbName = SOLEVO, codeuser = 4
+// * output : 120 devis générés
+// * http://localhost:5000/api/devis/SOLEVO/getNbTotalDevisGeneresParUtilisateur
+const getNbTotalDevisGeneresParUtilisateur = async (req, res) => {
+  const { dbName } = req.params;
+  const { codeuser } = req.query;
+  if (!codeuser) {
+    return res.status(400).json({ message: "le code utilisateur est requis" });
+  }
+  try {
+    const dbConnection = await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+
+    const nbDevisGeneresTotal = await Devis.count({
+      where: {
+        [Op.and]: [
+          { mlettre: { [Op.like]: `%Générer%` } },
+          { mlettre: { [Op.like]: `%${codeuser}%` } },
+        ],
+      },
+    });
+    console.log(nbDevisGeneresTotal);
+    return res.status(200).json({
+      message: `Nombre total de devis générés par l'utilisateur ${codeuser} récupéré`,
+      nbDevisGeneresTotal: nbDevisGeneresTotal,
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -679,5 +737,7 @@ module.exports = {
   getDerniereNumbl,
   deleteDevis,
   getListeDevisParCodeClient,
-  getListeDevisParNUMBL
+  getListeDevisParNUMBL,
+  getNbTotalDevisGeneres,
+  getNbTotalDevisGeneresParUtilisateur,
 };

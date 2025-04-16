@@ -13,7 +13,7 @@ import {
   faTrashAlt,
   faCancel,
 } from "@fortawesome/free-solid-svg-icons";
-import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import {
   getClientParCode,
   getDerniereCodeClient,
@@ -238,15 +238,15 @@ function ToolBar() {
 
     if (toolbarTable == "devis") {
     }
-    if (toolbarTable == "utilisateur"){
+    if (toolbarTable == "utilisateur") {
       const codeUser = parseInt(Utilisateur_SuperviseurInfos.codeuser) - 1;
-      console.log(codeUser)
+      console.log(codeUser);
       dispatch(getListeUtilisateurParCode(codeUser.toString()));
     }
   };
 
   const handleNaviguerVersSuivant = () => {
-    console.log("ttt: ",toolbarTable);
+    console.log("ttt: ", toolbarTable);
     if (toolbarTable == "client") {
       const clientCode = parseInt(clientInfos.code) + 1;
       dispatch(getClientParCode(clientCode.toString()));
@@ -256,167 +256,169 @@ function ToolBar() {
     }
     if (toolbarTable == "utilisateur") {
       const codeUser = parseInt(Utilisateur_SuperviseurInfos.codeuser) + 1;
-      console.log(codeUser);
       dispatch(getListeUtilisateurParCode(codeUser.toString()));
       //  dispatch(getCodeUtilisateurSuivant())
     }
   };
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [afficherMenuPhone, setAfficherMenuPhone] = useState(false);
   return (
     <>
       <nav className="w-full h-[110px] sm:h-[80px] md:h-[90px] border-b border-gray-700 flex items-center px-6 sm:px-4 md:px-5 overflow-x-auto">
-      <button 
-        className="md:hidden lg:hidden p-2 text-gray-700"
-        onClick={() => setIsMenuOpen(!isMenuOpen)}
-      >
-        <FontAwesomeIcon icon={isMenuOpen ? faTimes : faBars} className="text-2xl" />
-      </button>
+        <button
+          className="md:hidden lg:hidden p-2 text-gray-700"
+          onClick={() => setAfficherMenuPhone(!afficherMenuPhone)}
+        >
+          <FontAwesomeIcon
+            icon={afficherMenuPhone ? faTimes : faBars}
+            className="text-2xl"
+          />
+        </button>
         <div className="flex space-x-4">
           <span className="sm-max:hidden">
-          {!activerBoutonsValiderAnnuler && (
-            <button
-              type="button"
-              onClick={handleAjoutBtnClick}
-              className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
-            >
-              <FontAwesomeIcon
-                icon={faFolderPlus}
-                className="text-blue-600 text-3xl"
-              />
-              <span className="text-sm font-semibold text-gray-700">
-                Nouveaux
-              </span>
-            </button>
-          )}
-          {!activerBoutonsValiderAnnuler && (
-            <>
-              <div className="border-r border-gray-300 h-8"></div>
+            {!activerBoutonsValiderAnnuler && (
               <button
                 type="button"
-                className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
-                onClick={() => handleModifierBtnClick()}
-              >
-                <FontAwesomeIcon
-                  icon={faEdit}
-                  className="text-yellow-600 text-3xl"
-                />
-                <span className="text-sm font-semibold text-gray-700">
-                  Modifier
-                </span>
-              </button>
-            </>
-          )}
-          {!activerBoutonsValiderAnnuler && (
-            <>
-              <div className="border-r border-gray-300 h-8"></div>
-
-              <button
-                type="button"
-                onClick={() => handleSupprimerBtnClick()}
+                onClick={handleAjoutBtnClick}
                 className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
               >
                 <FontAwesomeIcon
-                  icon={faTrashAlt}
-                  className="text-red-600 text-3xl"
+                  icon={faFolderPlus}
+                  className="text-blue-600 text-3xl"
                 />
                 <span className="text-sm font-semibold text-gray-700">
-                  Supprimer
+                  Nouveaux
                 </span>
               </button>
-            </>
-          )}
+            )}
+            {!activerBoutonsValiderAnnuler && (
+              <>
+                <div className="border-r border-gray-300 h-8"></div>
+                <button
+                  type="button"
+                  className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
+                  onClick={() => handleModifierBtnClick()}
+                >
+                  <FontAwesomeIcon
+                    icon={faEdit}
+                    className="text-yellow-600 text-3xl"
+                  />
+                  <span className="text-sm font-semibold text-gray-700">
+                    Modifier
+                  </span>
+                </button>
+              </>
+            )}
+            {!activerBoutonsValiderAnnuler && (
+              <>
+                <div className="border-r border-gray-300 h-8"></div>
 
-          {isDeleting && (
-            <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white p-8 rounded-md shadow-lg max-w-sm w-full">
-                <p className="text-xl font-semibold mb-4">
-                  Voulez-vous vraiment supprimer ce devis ?
-                </p>
-                <div className="flex justify-around">
-                  <button className="bg-red-600 text-white px-4 py-2 rounded-md">
-                    Oui
-                  </button>
-                  <button
-                    onClick={() => setIsDeleting(false)}
-                    className="bg-gray-500 text-white px-4 py-2 rounded-md"
-                  >
-                    Non
-                  </button>
+                <button
+                  type="button"
+                  onClick={() => handleSupprimerBtnClick()}
+                  className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
+                >
+                  <FontAwesomeIcon
+                    icon={faTrashAlt}
+                    className="text-red-600 text-3xl"
+                  />
+                  <span className="text-sm font-semibold text-gray-700">
+                    Supprimer
+                  </span>
+                </button>
+              </>
+            )}
+
+            {isDeleting && (
+              <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-white p-8 rounded-md shadow-lg max-w-sm w-full">
+                  <p className="text-xl font-semibold mb-4">
+                    Voulez-vous vraiment supprimer ce devis ?
+                  </p>
+                  <div className="flex justify-around">
+                    <button className="bg-red-600 text-white px-4 py-2 rounded-md">
+                      Oui
+                    </button>
+                    <button
+                      onClick={() => setIsDeleting(false)}
+                      className="bg-gray-500 text-white px-4 py-2 rounded-md"
+                    >
+                      Non
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-          {/* // ! btn précedent */}
-          {!activerBoutonsValiderAnnuler && toolbarTable != "article" && (
-            <button
-              className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100"
-              onClick={handleNaviguerVersPrecedent}
-            >
-              <FontAwesomeIcon icon={faArrowLeft} className="text-3xl" />
-            </button>
-          )}
-          {/* // ! btn suivant */}
-          {!activerBoutonsValiderAnnuler && toolbarTable != "article" && (
-            <button
-              //disabled={dernierCodeClient == clientInfos.code}
-              className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100"
-              onClick={handleNaviguerVersSuivant}
-            >
-              <FontAwesomeIcon icon={faArrowRight} className="text-3xl" />
-            </button>
-          )}
+            )}
+            {/* // ! btn précedent */}
+            {!activerBoutonsValiderAnnuler && toolbarTable != "article" && (
+              <button
+                className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100"
+                onClick={handleNaviguerVersPrecedent}
+              >
+                <FontAwesomeIcon icon={faArrowLeft} className="text-3xl" />
+              </button>
+            )}
+            {/* // ! btn suivant */}
+            {!activerBoutonsValiderAnnuler && toolbarTable != "article" && (
+              <button
+                //disabled={dernierCodeClient == clientInfos.code}
+                className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100"
+                onClick={handleNaviguerVersSuivant}
+              >
+                <FontAwesomeIcon icon={faArrowRight} className="text-3xl" />
+              </button>
+            )}
 
-          {!activerBoutonsValiderAnnuler && (
-            <button
-              type="button"
-              onClick={() => handleNaviguerVersListe()}
-              className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
-            >
-              <FontAwesomeIcon icon={faList} className="text-3xl" />
-              <span className="ml-2 text-sm font-semibold text-gray-700">
-                Liste
-              </span>
-            </button>
-          )}
+            {!activerBoutonsValiderAnnuler && (
+              <button
+                type="button"
+                onClick={() => handleNaviguerVersListe()}
+                className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
+              >
+                <FontAwesomeIcon icon={faList} className="text-3xl" />
+                <span className="ml-2 text-sm font-semibold text-gray-700">
+                  Liste
+                </span>
+              </button>
+            )}
 
-          {!activerBoutonsValiderAnnuler && (
-            <button
-              type="button"
-              onClick={() => navigate("/Dashboard")}
-              className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
-            >
-              <FontAwesomeIcon icon={faSignOutAlt} className="text-3xl" />
-              <span className="ml-2 text-sm font-semibold text-gray-700">
-                Quitter
-              </span>
-            </button>
-          )}
+            {!activerBoutonsValiderAnnuler && (
+              <button
+                type="button"
+                onClick={() => navigate("/Dashboard")}
+                className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
+              >
+                <FontAwesomeIcon icon={faSignOutAlt} className="text-3xl" />
+                <span className="ml-2 text-sm font-semibold text-gray-700">
+                  Quitter
+                </span>
+              </button>
+            )}
 
-          {activerBoutonsValiderAnnuler && (
-            <button
-              type="button"
-              onClick={() => handleValiderBtnClick()}
-              className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
-            >
-              <FontAwesomeIcon icon={faCheck} className="text-3xl" />
-              <span className="ml-2 text-sm font-semibold text-gray-700">
-                Valider
-              </span>
-            </button>
-          )}
+            {activerBoutonsValiderAnnuler && (
+              <button
+                type="button"
+                onClick={() => handleValiderBtnClick()}
+                className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
+              >
+                <FontAwesomeIcon icon={faCheck} className="text-3xl" />
+                <span className="ml-2 text-sm font-semibold text-gray-700">
+                  Valider
+                </span>
+              </button>
+            )}
 
-          {activerBoutonsValiderAnnuler && (
-            <button
-              type="button"
-              onClick={() => annulerOperation()}
-              className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
-            >
-              <FontAwesomeIcon icon={faCancel} className="text-3xl" />
-              <span className="ml-2 text-sm font-semibold text-gray-700">
-                Annuler
-              </span>
-            </button>
-          )}
+            {activerBoutonsValiderAnnuler && (
+              <button
+                type="button"
+                onClick={() => annulerOperation()}
+                className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
+              >
+                <FontAwesomeIcon icon={faCancel} className="text-3xl" />
+                <span className="ml-2 text-sm font-semibold text-gray-700">
+                  Annuler
+                </span>
+              </button>
+            )}
           </span>
         </div>
       </nav>
