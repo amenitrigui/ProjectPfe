@@ -32,7 +32,6 @@ import Settings from "./pages/ErpPages/Settings";
 import UtilisateurList from "./pages/Utilisateurs/UtilisateurList"
 
 import { setActiverBoutonsValiderAnnuler, setToolbarMode, setToolbarTable } from "./app/interface_slices/uiSlice";
-import Test1 from "./test/Test1";
 
 function App() {
   //?==================================================================================================================
@@ -83,7 +82,6 @@ function App() {
       ></Route>
       <Route path="/UtilisateurFormTout" element={<UtilisateurFormTout />} />
       <Route path="/UtilisateurList" element={<UtilisateurList/>}></Route>
-      <Route path="/Test" element = {<Test1 />}/>
     </Routes>
   );
 }
