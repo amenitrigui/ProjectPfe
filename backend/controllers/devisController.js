@@ -660,6 +660,60 @@ const getListeDevisParNUMBL = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+const getDevisCountByMonthAndYear = async (req, res) => {
+  const { dbName } = req.params;
+
+  if (!dbName) {
+    return res.status(400).json({
+      message: "Le nom de la base de données est requis.",
+    });
+  }
+
+  try {
+    const dbConnection = await getDatabaseConnection(dbName);
+ 
+    
+
+    const sqlQuery = `
+      SELECT 
+        YEAR(DATEBL) AS year,
+        MONTH(DATEBL) AS month,
+        COUNT(DISTINCT NUMBL) AS totalDevis
+      FROM dfp
+      GROUP BY YEAR(DATEBL), MONTH(DATEBL)
+      ORDER BY year DESC, month DESC;
+    `;
+    console.log("Exécution de la requête SQL : ", sqlQuery);
+
+    const result = await dbConnection.query(sqlQuery, {
+      type: dbConnection.QueryTypes.SELECT,
+    });
+
+    if (result.length === 0) {
+      return res.status(404).json({
+        message: "Aucun devis trouvé.",
+      });
+    }
+
+    console.log("Résultats de la requête (devis par mois et année) :", result);
+
+    return res.status(200).json({
+      message: "Nombre de devis par mois et année récupéré avec succès.",
+      devisCountByMonthAndYear: result,
+    });
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération du nombre de devis par mois et année :",
+      error.message
+    );
+    return res.status(500).json({
+      message:
+        "Erreur lors de la récupération du nombre de devis par mois et année.",
+      error: error.message,
+    });
+  }
+};
+
 
 module.exports = {
   getTousDevis,
@@ -679,5 +733,6 @@ module.exports = {
   getDerniereNumbl,
   deleteDevis,
   getListeDevisParCodeClient,
-  getListeDevisParNUMBL
+  getListeDevisParNUMBL,
+  getDevisCountByMonthAndYear
 };

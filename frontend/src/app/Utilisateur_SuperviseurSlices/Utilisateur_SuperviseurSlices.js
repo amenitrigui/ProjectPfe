@@ -164,6 +164,7 @@ export const Utilisateur_SuperviseurSlices = createSlice({
       directeur: "",
     },
     utilisateurConnecte: {
+      codeuser:"",
       nom: "",
       type: "",
     },
