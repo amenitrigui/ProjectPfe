@@ -14,7 +14,6 @@ const SocietiesList = () => {
   }
 
   useEffect(() => {
-
     const societiesFromStorage = JSON.parse(localStorage.getItem("societies"));
     if (societiesFromStorage) {
       setSocieties(societiesFromStorage);
@@ -25,7 +24,6 @@ const SocietiesList = () => {
 
   const handleSelect = async (society) => {
     try {
-
       if (!token) {
         navigate("/");
       }

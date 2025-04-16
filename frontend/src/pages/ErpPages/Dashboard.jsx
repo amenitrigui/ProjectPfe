@@ -63,7 +63,6 @@ const Dashboard = () => {
     dispatch(getNombreTotalDevis());
     dispatch(getTotalChiffres());
   }, []);
-
   const toggleSidebar = () => {
     dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
   };
