@@ -1,38 +1,68 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { FaUser, FaCog, FaCreditCard, FaSignOutAlt , FaRegUserCircle} from "react-icons/fa";
+import { FaUser, FaCog, FaCreditCard, FaSignOutAlt , FaRegUserCircle } from "react-icons/fa";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Legend
+} from 'recharts';
+
 import {
   getNombreTotalDevis,
   getTotalChiffres,
 } from "../../app/devis_slices/devisSlice";
+
 import SideBar from "../../components/Common/SideBar";
 import { setOuvrireDrawerMenu } from "../../app/interface_slices/uiSlice";
 
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+
+const data01 = [
+  { name: "Clients", value: 400 },
+  { name: "Fournisseurs", value: 300 },
+  { name: "Partenaires", value: 300 },
+  { name: "Autres", value: 200 },
+];
+
+const data02 = [
+  { name: "Validés", value: 2400 },
+  { name: "En attente", value: 4567 },
+  { name: "Refusés", value: 1398 },
+  { name: "En cours", value: 9800 },
+];
+
+const data03 = [
+  { name: "Jan", devis: 400 },
+  { name: "Fév", devis: 300 },
+  { name: "Mar", devis: 200 },
+  { name: "Avr", devis: 278 },
+  { name: "Mai", devis: 189 },
+  { name: "Juin", devis: 239 },
+  { name: "Juil", devis: 349 }
+];
+
 const Dashboard = () => {
-  //?==================================================================================================================
-  //?=====================================================variables====================================================
-  //?==================================================================================================================
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
-  
+
   const ouvrireMenuDrawer = useSelector((state) => state.uiStates.ouvrireMenuDrawer);
   const nombredevis = useSelector((state) => state.DevisCrud.nombreDeDevis);
   const totalchifre = useSelector((state) => state.DevisCrud.totalchifre);
-  
-  const infosUtilisateur = useSelector(
-    (state) => state.UtilisateurInfo.infosUtilisateur
-  );
-  //?==================================================================================================================
-  //?==================================================appels UseEffect================================================
-  //?==================================================================================================================
+  const infosUtilisateur = useSelector((state) => state.UtilisateurInfo.infosUtilisateur);
+
   useEffect(() => {
     dispatch(getNombreTotalDevis());
     dispatch(getTotalChiffres());
   }, []);
-  //?==================================================================================================================
-  //?=====================================================fonctions====================================================
-  //?==================================================================================================================
   const toggleSidebar = () => {
     dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
   };
@@ -48,40 +78,32 @@ const Dashboard = () => {
           </div>
 
           <div className="relative inline-block text-left">
-            {/* Avatar avec événement de clic */}
             <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
-            <FaRegUserCircle className="mr-3 text-3xl" />
-              {/* Indicateur de statut en ligne */}
+              <FaRegUserCircle className="mr-3 text-3xl" />
               <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
             </div>
-
-            {/* Menu déroulant */}
             {isOpen && (
               <div className="absolute right-0 mt-3 w-56 bg-white border rounded-lg shadow-lg z-50">
                 <div className="p-4 flex items-center border-b">
-                <FaRegUserCircle className="mr-3 text-3xl" />
+                  <FaRegUserCircle className="mr-3 text-3xl" />
                   <div>
                     <p className="font-semibold">{infosUtilisateur.nom}</p>
-                    <p className="text-sm text-gray-500">
-                      {infosUtilisateur.type}
-                    </p>
+                    <p className="text-sm text-gray-500">{infosUtilisateur.type}</p>
                   </div>
                 </div>
                 <ul className="py-2">
-                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
-                  <Link to="/UtilisateurFormTout" className="flex items-center w-full">
-
-                    <FaUser className="mr-3" /> My Profile
+                  <li className="px-4 py-2 hover:bg-gray-100">
+                    <Link to="/UtilisateurFormTout" className="flex items-center">
+                      <FaUser className="mr-3" /> My Profile
                     </Link>
                   </li>
-                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
-                  <Link to="/Settings" className="flex items-center w-full">
-                    <FaCog className="mr-3" /> Settings
+                  <li className="px-4 py-2 hover:bg-gray-100">
+                    <Link to="/Settings" className="flex items-center">
+                      <FaCog className="mr-3" /> Settings
                     </Link>
                   </li>
-
-                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer border-t">
-                    <Link to="/" className="flex items-center w-full">
+                  <li className="px-4 py-2 hover:bg-gray-100 border-t">
+                    <Link to="/" className="flex items-center">
                       <FaSignOutAlt className="mr-3" /> Log Out
                     </Link>
                   </li>
@@ -91,29 +113,24 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="cardBox">
-          {[
-            {
-              number: nombredevis,
-              name: "Nombre devis generes ",
-              icon: "cart-outline",
-            },
-            {
-              number: totalchifre.toFixed(2),
-              name: "total chiffre",
-              icon: "cash-outline",
-            },
-            {
-              number: nombredevis,
-              name: "Nombre devis generes ",
-              icon: "cart-outline",
-            },
-            {
-              number: totalchifre.toFixed(2),
-              name: "total chiffre",
-              icon: "cash-outline",
-            },
-          ].map((card, index) => (
+        <div className="cardBox grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[{
+            number: nombredevis,
+            name: "Nombre devis generes ",
+            icon: "cart-outline",
+          }, {
+            number: totalchifre.toFixed(2),
+            name: "Total chiffre",
+            icon: "cash-outline",
+          }, {
+            number: nombredevis,
+            name: "Nombre devis generes ",
+            icon: "cart-outline",
+          }, {
+            number: totalchifre.toFixed(2),
+            name: "Total chiffre",
+            icon: "cash-outline",
+          }].map((card, index) => (
             <div className="card" key={index}>
               <div>
                 <div className="numbers">{card.number}</div>
@@ -126,104 +143,59 @@ const Dashboard = () => {
           ))}
         </div>
 
-        <div className="details">
-          <div className="recentOrders">
-            <div className="cardHeader">
-              <h2>Recent Orders</h2>
-              <a href="#" className="btn">
-                View All
-              </a>
+        <div className="details grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+          {/* Pie Chart - Clients */}
+          <div className="p-4 bg-white shadow rounded">
+            <div className="cardHeader mb-4">
+              <h2>Statistiques Clients</h2>
             </div>
-
-            <table>
-              <thead>
-                <tr>
-                  <td>Name</td>
-                  <td>Price</td>
-                  <td>Payment</td>
-                  <td>Status</td>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  {
-                    name: "Star Refrigerator",
-                    price: "$1200",
-                    payment: "Paid",
-                    status: "delivered",
-                  },
-                  {
-                    name: "Dell Laptop",
-                    price: "$110",
-                    payment: "Due",
-                    status: "pending",
-                  },
-                  {
-                    name: "Apple Watch",
-                    price: "$1200",
-                    payment: "Paid",
-                    status: "return",
-                  },
-                  {
-                    name: "Addidas Shoes",
-                    price: "$620",
-                    payment: "Due",
-                    status: "inProgress",
-                  },
-                ].map((order, index) => (
-                  <tr key={index}>
-                    <td>{order.name}</td>
-                    <td>{order.price}</td>
-                    <td>{order.payment}</td>
-                    <td>
-                      <span className={`status ${order.status}`}>
-                        {order.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie data={data01} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#8884d8" label>
+                  {data01.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
           </div>
 
-          <div className="recentCustomers">
-            <div className="cardHeader">
-              <h2>Recent Customers</h2>
+          {/* Pie Chart - Devis */}
+          <div className="p-4 bg-white shadow rounded">
+            <div className="cardHeader mb-4">
+              <h2>Statistiques Devis</h2>
             </div>
-            <table>
-              <tbody>
-                {[
-                  {
-                    name: "David",
-                    country: "Italy",
-                    img: "assets/imgs/customer02.jpg",
-                  },
-                  {
-                    name: "Amit",
-                    country: "India",
-                    img: "assets/imgs/customer01.jpg",
-                  },
-                ].map((customer, index) => (
-                  <tr key={index}>
-                    <td width="60px">
-                      <div className="imgBx">
-                        <img src={customer.img} alt="Customer" />
-                      </div>
-                    </td>
-                    <td>
-                      <h4>
-                        {customer.name} <br /> <span>{customer.country}</span>
-                      </h4>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie data={data02} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#82ca9d" label>
+                  {data02.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Bar Chart */}
+          <div className="p-4 bg-white shadow rounded">
+            <div className="cardHeader mb-4">
+              <h2>Nombre Devis par Mois</h2>
+            </div>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={data03}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="devis" fill="#8884d8" />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>
-
-      <script src="%PUBLIC_URL%/assets/js/main.js"></script>
     </div>
   );
 };
