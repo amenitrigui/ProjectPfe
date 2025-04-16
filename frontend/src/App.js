@@ -30,6 +30,7 @@ import ArticleList from "./pages/Article/ArticleList"
 import FamilleFormTout from "./pages/Famille/FamilleFormTout"
 import Settings from "./pages/ErpPages/Settings"
 import UtilisateurList from "./pages/Utilisateurs/UtilisateurList"
+
 import { setActiverBoutonsValiderAnnuler, setToolbarMode, setToolbarTable } from "./app/interface_slices/uiSlice";
 
 
@@ -78,6 +79,9 @@ function App() {
       <Route path="/ArticleList" element={<ArticleList />}></Route>
       <Route path="/FamilleFormTout" element={<FamilleFormTout />}></Route>
       <Route path="/Settings" element={<Settings />}></Route>
+      <Route path="/Test1" element={<Test1></Test1>}></Route>
+
+
       <Route
         path="/DevisFormPlaceholder"
         element={<DevisFormPlaceholder></DevisFormPlaceholder>}

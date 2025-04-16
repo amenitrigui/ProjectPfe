@@ -41,6 +41,7 @@ function SignInPage() {
           }),
         }
       );
+      console.log("dddd")
 
       const data = await response.json(); // convertir la reponse de seurveur en objet javascript
 
@@ -69,6 +70,7 @@ function SignInPage() {
         backgroundPosition: "center",
         backgroundAttachment: "fixed",
       }}
+      
     >
       <div className="flex bg-white bg-opacity-90 rounded-xl shadow-2xl w-full max-w-4xl overflow-hidden">
         <div className="hidden md:flex items-center justify-center w-1/2 bg-gradient-to-r from-blue-600 to-purple-700 p-6">

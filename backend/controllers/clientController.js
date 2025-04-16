@@ -346,21 +346,21 @@ const getToutCodesClient = async (req, res) => {
 // * input :
 // * output : client
 // * http://localhost:5000/api/client/SOLEVO/getClientParTypecli/l
-const getClientParTypecli = async (req, res) => {
+const getClientParRaisonSociale = async (req, res) => {
   try {
     const { dbName } = req.params;
-    const { typecli } = req.params;
+    const { rsoc } = req.params;
     const dbConnection = await getDatabaseConnection(dbName);
     const client = await dbConnection.query(
-      `SELECT * FROM CLIENT where typecli = :typecli`,
+      `SELECT * FROM CLIENT where rsoc LIKE :rsoc`,
       {
-        type: dbConnection.QueryTypes.SELECT,
         replacements: {
-          typecli,
+          rsoc :"%"+rsoc+"%",
         },
+        type: dbConnection.QueryTypes.SELECT,
       }
     );
-    console.log(client);
+    console.log(rsoc);
 
     return res
       .status(200)
@@ -428,7 +428,7 @@ module.exports = {
   supprimerClient,
   getClientParCode,
   majClient,
-  getClientParTypecli,
+  getClientParRaisonSociale,
   getDerniereCodeClient,
   getClientParCin,
   getToutCodesClient

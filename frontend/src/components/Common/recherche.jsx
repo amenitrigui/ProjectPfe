@@ -14,7 +14,7 @@ import DataTable from "react-data-table-component";
 import {
   getClientParCin,
   getClientParCode,
-  getClientParTypecli,
+  getClientParRaisonSociale,
   getToutCodesClient,
   setClientInfosEntiere,
   setListeClients,
@@ -245,12 +245,14 @@ const Recherche = () => {
       }
     }
     if (toolbarTable == "client") {
+      console.log(filtrerPar,valeurRecherche)
       switch (filtrerPar) {
+
         case "code":
           dispatch(getClientParCode(valeurRecherche));
           break;
-        case "typecli":
-          dispatch(getClientParTypecli(valeurRecherche));
+        case "Raison Sociale":
+          dispatch(getClientParRaisonSociale(valeurRecherche));
           break;
         case "cin":
           dispatch(getClientParCin(valeurRecherche));
@@ -441,7 +443,7 @@ const Recherche = () => {
                 )}
 
               {toolbarTable === "client" &&
-                ["code", "typecli", "cin"].map((filtre) => (
+                ["code", "Raison Sociale", "cin"].map((filtre) => (
                   <label key={filtre} className="flex items-center">
                     <input
                       type="radio"
