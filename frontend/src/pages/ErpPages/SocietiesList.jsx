@@ -72,6 +72,21 @@ const SocietiesList = () => {
           Liste des Sociétés
         </h1>
 
+        <div className="grid grid-cols-1 gap-6">
+          <div className="bg-white p-4 rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300">
+            <div className="flex items-center justify-between text-lg font-semibold text-gray-800 mb-2">
+              <div className="flex items-center">
+                <span className="mr-2 text-2xl">📁</span>
+                <span>SOLEVO</span>
+              </div>
+              <span>SHZ</span>
+            </div>
+            <button className="w-full mt-4 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300">
+              Sélectionner
+            </button>
+          </div>
+        </div>
+
         {societies.length === 0 ? (
           <div className="text-center text-gray-600">
             Aucune société trouvée.

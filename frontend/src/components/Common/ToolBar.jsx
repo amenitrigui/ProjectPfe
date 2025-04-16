@@ -13,6 +13,7 @@ import {
   faTrashAlt,
   faCancel,
 } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import {
   getClientParCode,
   getDerniereCodeClient,
@@ -260,10 +261,18 @@ function ToolBar() {
       //  dispatch(getCodeUtilisateurSuivant())
     }
   };
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
     <>
       <nav className="w-full h-[110px] sm:h-[80px] md:h-[90px] border-b border-gray-700 flex items-center px-6 sm:px-4 md:px-5 overflow-x-auto">
+      <button 
+        className="md:hidden lg:hidden p-2 text-gray-700"
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
+      >
+        <FontAwesomeIcon icon={isMenuOpen ? faTimes : faBars} className="text-2xl" />
+      </button>
         <div className="flex space-x-4">
+          <span className="sm-max:hidden">
           {!activerBoutonsValiderAnnuler && (
             <button
               type="button"
@@ -337,25 +346,6 @@ function ToolBar() {
               </div>
             </div>
           )}
-
-          {/* {!activerBoutonsValiderAnnuler && (
-            <>
-              <div className="border-r border-gray-300 h-8"></div>
-
-              <button
-                className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
-                onClick={() => navigate("/recherche")}
-              >
-                <FontAwesomeIcon
-                  icon={faSearch}
-                  className="text-blue-600 text-3xl"
-                />
-                <span className="text-sm font-semibold text-gray-700">
-                  Rechercher
-                </span>
-              </button>
-            </>
-          )} */}
           {/* // ! btn précedent */}
           {!activerBoutonsValiderAnnuler && toolbarTable != "article" && (
             <button
@@ -427,6 +417,7 @@ function ToolBar() {
               </span>
             </button>
           )}
+          </span>
         </div>
       </nav>
     </>
