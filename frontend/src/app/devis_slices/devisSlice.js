@@ -89,22 +89,36 @@ export const getDevisParNUMBL = createAsyncThunk(
 // * thunk pur récuperer la liste de devis par NUMBL
 export const getListeDevisParNUMBL = createAsyncThunk(
   "devisSlice/getListeDevisParNUMBL",
-  async(NUMBL, thunkAPI) => {
+  async (NUMBL, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().UtilisateurInfo.dbName
-      }/getListeDevisParNUMBL`,{
+      }/getListeDevisParNUMBL`,
+      {
         params: {
           NUMBL: NUMBL,
-          codeuser: thunkAPI.getState().UtilisateurInfo.infosUtilisateur.codeuser
-        }
+          codeuser:
+            thunkAPI.getState().UtilisateurInfo.infosUtilisateur.codeuser,
+        },
       }
-    )
+    );
 
-    console.log(response)
+    console.log(response);
     return response.data.listeDevis;
   }
-)
+);
+export const getDevisCountByMonthAndYear = createAsyncThunk(
+  "devisSlice/getDevisCountByMonthAndYear",
+  async (_, thunkAPI) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/devis/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getDevisCountByMonthAndYear`
+    );
+    console.log(response);
+    return response.data.devisCountByMonthAndYear;
+  }
+);
 
 // * Action asynchrone pour récupérer la liste des devis par montant
 // ! on peut retourner des devis dont le montant est
@@ -255,6 +269,8 @@ export const devisSlice = createSlice({
   initialState: {
     // * liste de devis
     devisList: [],
+    //* devisMonthYear
+    devisMonthYear:[],
     // * liste de codes de devis
     listeNUMBL: [],
     // * liste de points de vente
@@ -318,7 +334,7 @@ export const devisSlice = createSlice({
         MHT: "",
         articles: [],
         quantite: 0,
-        DREMISE: 0
+        DREMISE: 0,
       };
     },
     setDevisClientInfos: (state, action) => {
@@ -491,7 +507,7 @@ export const devisSlice = createSlice({
         state.erreur = action.payload;
         state.status = "echoue";
       })
-      
+
       .addCase(getListeDevisParNUMBL.pending, (state) => {
         state.status = "chargeement";
       })
@@ -515,7 +531,18 @@ export const devisSlice = createSlice({
         state.erreur = action.payload;
         state.status = "echoue";
       })
-      ;
+
+      .addCase(getDevisCountByMonthAndYear.pending, (state) => {
+        state.status = "chargeement";
+      })
+      .addCase(getDevisCountByMonthAndYear.fulfilled, (state, action) => {
+        state.devisMonthYear = action.payload;
+        state.status = "reussi";
+      })
+      .addCase(getDevisCountByMonthAndYear.rejected, (state, action) => {
+        state.erreur = action.payload;
+        state.status = "echoue";
+      });
   },
 });
 export const {

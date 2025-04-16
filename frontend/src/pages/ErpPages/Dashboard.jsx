@@ -24,6 +24,7 @@ import {
 
 import {
   getNbTotalDevisGeneres,
+  getDevisCountByMonthAndYear,
   getNombreTotalDevis,
   getTotalChiffres,
 } from "../../app/devis_slices/devisSlice";
@@ -58,6 +59,40 @@ const data03 = [
 ];
 
 const Dashboard = () => {
+  const devisMonthYear = useSelector((state) => state.DevisCrud.devisMonthYear);
+
+  // Transformer les données pour le BarChart
+  const chartData = devisMonthYear.map((item) => {
+    // Créer un label comme "01/2024" ou "Janvier 2024"
+    const monthNames = [
+      "Janvier",
+      "Février",
+      "Mars",
+      "Avril",
+      "Mai",
+      "Juin",
+      "Juillet",
+      "Août",
+      "Septembre",
+      "Octobre",
+      "Novembre",
+      "Décembre",
+    ];
+    return {
+      name: `${monthNames[item.month - 1]} ${item.year}`, // ou `${item.month}/${item.year}` si tu préfères
+      devis: item.totalDevis,
+    };
+  });
+
+  const data03 = [
+    { name: "Jan", devis: 400 },
+    { name: "Fév", devis: 300 },
+    { name: "Mar", devis: 200 },
+    { name: "Avr", devis: 278 },
+    { name: "Mai", devis: 189 },
+    { name: "Juin", devis: 239 },
+    { name: "Juil", devis: 349 },
+  ];
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -70,9 +105,13 @@ const Dashboard = () => {
     (state) => state.UtilisateurInfo.infosUtilisateur
   );
 
+  const utilisateurConnecte = useSelector(
+    (state) => state.Utilisateur_SuperviseurSlices.utilisateurConnecte
+  );
   useEffect(() => {
     dispatch(getNombreTotalDevis());
     dispatch(getTotalChiffres());
+    dispatch(getDevisCountByMonthAndYear());
   }, []);
   const toggleSidebar = () => {
     dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
@@ -141,35 +180,53 @@ const Dashboard = () => {
           {[
             {
               number: nombredevis,
-              name: "Nombre devis generes",
-              icon: "cart-outline",
+              name: "Nombre devis Total",
             },
             {
               number: nbTotalDevisGeneres,
-              name: "Nombre devis generes",
-              icon: "cash-outline",
+              name: "Nombre devis générés Total",
+              user: `${utilisateurConnecte.codeuser}//${utilisateurConnecte.nom}`,
             },
             {
               number: nombredevis,
-              name: "Nombre devis generes par l'utilisateur courant",
-              icon: "cart-outline",
+              name: "Nombre devis générés par Utilisateur",
+              user: `${utilisateurConnecte.codeuser}//${utilisateurConnecte.nom}`,
             },
             {
               number: totalchifre.toFixed(2),
-              name: "Total chiffre",
-              icon: "cash-outline",
+              name: "Nombre devis non générés par Utilisateur",
             },
-          ].map((card, index) => (
-            <div className="card" key={index}>
-              <div>
-                <div className="numbers">{card.number}</div>
-                <div className="cardName">{card.name}</div>
+          ].map((card, index) => {
+            // ✅ Icônes ERP dynamiques selon texte
+            const getIcon = (text) => {
+              const lower = text.toLowerCase();
+              if (lower.includes("non générés")) return "close-circle-outline";
+              if (lower.includes("générés") && lower.includes("utilisateur"))
+                return "person-circle-outline";
+              if (lower.includes("générés")) return "document-text-outline";
+              if (lower.includes("total")) return "file-tray-full-outline";
+              return "information-circle-outline";
+            };
+
+            return (
+              <div className="card" key={index}>
+                <div>
+                  <div className="numbers">{card.number}</div>
+                  <div className="cardName">
+                    {card.name}
+                    {card.user && (
+                      <span className="text-blue-600 font-semibold ml-1">
+                        {` ${card.user}`}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="iconBx">
+                  <ion-icon name={getIcon(card.name)}></ion-icon>
+                </div>
               </div>
-              <div className="iconBx">
-                <ion-icon name={card.icon}></ion-icon>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="details grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
@@ -234,10 +291,10 @@ const Dashboard = () => {
           {/* Bar Chart */}
           <div className="p-4 bg-white shadow rounded">
             <div className="cardHeader mb-4">
-              <h2>Nombre Devis par Mois</h2>
+              <h2>Nombre Devis par Mois et Année</h2>
             </div>
             <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={data03}>
+              <BarChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
