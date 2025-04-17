@@ -23,7 +23,8 @@ const persistConfig = {
   //   "DevisCrud",
   //   "ArticlesDevis",
   // ],
-  whitelist: ["UtilisateurInfo"]
+
+  whitelist: ["UtilisateurInfo","Utilisateur_SuperviseurSlices"]
 };
 
 const rootReducer = combineReducers({

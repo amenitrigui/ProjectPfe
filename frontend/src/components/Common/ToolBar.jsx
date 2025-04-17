@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  CheckIcon,
+  PencilIcon,
+  PrinterIcon,
+  TrashIcon,
+} from "@heroicons/react/20/solid";
 import {
   faCheck,
   faArrowLeft,
@@ -12,6 +18,8 @@ import {
   faEdit,
   faTrashAlt,
   faCancel,
+  faTimes,
+  faWrench,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   getClientParCode,
@@ -28,6 +36,7 @@ import {
 } from "../../app/interface_slices/uiSlice";
 import {
   getDerniereNumbl,
+  getDevisParNUMBL,
   viderChampsDevisInfo,
 } from "../../app/devis_slices/devisSlice";
 import { getUtilisateurParCode } from "../../app/utilisateur_slices/utilisateurSlice";
@@ -48,6 +57,7 @@ function ToolBar() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
   const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
   // * state pour afficher/cacher fenetre de confirmation pour
@@ -89,7 +99,9 @@ function ToolBar() {
       navigate("/UtilisateurList");
     }
   };
-
+  const infosUtilisateur = useSelector(
+    (state) => state.UtilisateurInfo.infosUtilisateur
+  );
   // * ajout d'un client/devi
   const handleAjoutBtnClick = async () => {
     dispatch(setActiverBoutonsValiderAnnuler(true));
@@ -236,22 +248,38 @@ function ToolBar() {
     }
 
     if (toolbarTable == "devis") {
+      const Numerobl = devisInfo.NUMBL.substring(2, 9);
+
+      const NumBLCode = "DV" + (parseInt(Numerobl) - 1);
+
+      dispatch(getDevisParNUMBL(NumBLCode.toString()));
     }
-    if (toolbarTable == "utilisateur"){
+    if (toolbarTable == "utilisateur") {
       const codeUser = parseInt(Utilisateur_SuperviseurInfos.codeuser) - 1;
-      console.log(codeUser)
+      console.log(codeUser);
       dispatch(getListeUtilisateurParCode(codeUser.toString()));
     }
   };
-
+  const nav = useNavigate();
+  const handleEditionClick = () => {
+    nav("/Test1");
+  };
+  const handleQuitterClick = () => {
+    nav("/dashboard");
+  };
   const handleNaviguerVersSuivant = () => {
-    console.log("ttt: ",toolbarTable);
+    console.log("ttt: ", toolbarTable);
     if (toolbarTable == "client") {
       const clientCode = parseInt(clientInfos.code) + 1;
       dispatch(getClientParCode(clientCode.toString()));
     }
 
     if (toolbarTable == "devis") {
+      const Numerobl = devisInfo.NUMBL.substring(2, 9);
+
+      const NumBLCode = "DV" + (parseInt(Numerobl) + 1);
+
+      dispatch(getDevisParNUMBL(NumBLCode.toString()));
     }
     if (toolbarTable == "utilisateur") {
       const codeUser = parseInt(Utilisateur_SuperviseurInfos.codeuser) + 1;
@@ -260,172 +288,164 @@ function ToolBar() {
       //  dispatch(getCodeUtilisateurSuivant())
     }
   };
+  const utilisateurConnecte = useSelector(
+    (state) => state.Utilisateur_SuperviseurSlices.utilisateurConnecte
+  );
   return (
     <>
-      <nav className="w-full h-[110px] sm:h-[80px] md:h-[90px] border-b border-gray-700 flex items-center px-6 sm:px-4 md:px-5 overflow-x-auto">
-        <div className="flex space-x-4">
-          {!activerBoutonsValiderAnnuler && (
-            <button
-              type="button"
-              onClick={handleAjoutBtnClick}
-              className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
-            >
-              <FontAwesomeIcon
-                icon={faFolderPlus}
-                className="text-blue-600 text-3xl"
-              />
-              <span className="text-sm font-semibold text-gray-700">
-                Nouveaux
-              </span>
-            </button>
-          )}
+      <nav className="w-full border-b border-gray-300 px-4 py-2 bg-white shadow-sm overflow-x-auto">
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
           {!activerBoutonsValiderAnnuler && (
             <>
-              <div className="border-r border-gray-300 h-8"></div>
+              {/* Nouveau */}
+
+              {(utilisateurConnecte?.type?.toLowerCase() === "superviseur" ||
+                (utilisateurConnecte?.type?.toLowerCase() === "utilisateur" &&
+                  (toolbarTable === "client" ||
+                    toolbarTable === "devis" ||
+                    toolbarTable === "article"))) && (
+                <button
+                  type="button"
+                  onClick={handleAjoutBtnClick}
+                  className="flex flex-col items-center w-20 p-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition-all duration-200"
+                >
+                  <FontAwesomeIcon
+                    icon={faFolderPlus}
+                    className="text-xl mb-1"
+                  />
+                  <span className="text-xs font-semibold">Nouveau</span>
+                </button>
+              )}
+
+              {/* Modifier */}
               <button
                 type="button"
-                className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
-                onClick={() => handleModifierBtnClick()}
+                onClick={handleModifierBtnClick}
+                className="flex flex-col items-center w-20 p-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-lg transition-all duration-200"
               >
-                <FontAwesomeIcon
-                  icon={faEdit}
-                  className="text-yellow-600 text-3xl"
-                />
-                <span className="text-sm font-semibold text-gray-700">
-                  Modifier
-                </span>
+                <FontAwesomeIcon icon={faEdit} className="text-xl mb-1" />
+                <span className="text-xs font-semibold">Modifier</span>
               </button>
-            </>
-          )}
-          {!activerBoutonsValiderAnnuler && (
-            <>
-              <div className="border-r border-gray-300 h-8"></div>
 
-              <button
-                type="button"
-                onClick={() => handleSupprimerBtnClick()}
-                className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
-              >
-                <FontAwesomeIcon
-                  icon={faTrashAlt}
-                  className="text-red-600 text-3xl"
-                />
-                <span className="text-sm font-semibold text-gray-700">
-                  Supprimer
-                </span>
-              </button>
-            </>
-          )}
-
-          {isDeleting && (
-            <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white p-8 rounded-md shadow-lg max-w-sm w-full">
-                <p className="text-xl font-semibold mb-4">
-                  Voulez-vous vraiment supprimer ce devis ?
-                </p>
-                <div className="flex justify-around">
-                  <button className="bg-red-600 text-white px-4 py-2 rounded-md">
-                    Oui
-                  </button>
+              {/* Supprimer */}
+              {(utilisateurConnecte?.type?.toLowerCase() === "superviseur" ||
+                (utilisateurConnecte?.type?.toLowerCase() === "utilisateur" &&
+                  (toolbarTable === "client" ||
+                    toolbarTable === "devis" ||
+                    toolbarTable === "article"))) && (
                   <button
-                    onClick={() => setIsDeleting(false)}
-                    className="bg-gray-500 text-white px-4 py-2 rounded-md"
+                    type="button"
+                    onClick={handleSupprimerBtnClick}
+                    className="flex flex-col items-center w-20 p-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition-all duration-200"
                   >
-                    Non
+                    <FontAwesomeIcon
+                      icon={faTrashAlt}
+                      className="text-xl mb-1"
+                    />
+                    <span className="text-xs font-semibold">Supprimer</span>
                   </button>
-                </div>
-              </div>
-            </div>
-          )}
+                )}
 
-          {/* {!activerBoutonsValiderAnnuler && (
-            <>
-              <div className="border-r border-gray-300 h-8"></div>
+{(utilisateurConnecte?.type?.toLowerCase() === "superviseur" ||
+                (utilisateurConnecte?.type?.toLowerCase() === "utilisateur" &&
+                  (toolbarTable === "client" ||
+                    toolbarTable === "devis" ||
+                    toolbarTable === "article"))) && (
+                  <button
+                    type="button"
+                    onClick={handleNaviguerVersListe}
+                    className="flex flex-col items-center w-20 p-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all duration-200"
+                  >
+                    <FontAwesomeIcon icon={faList} className="text-xl mb-1" />
+                    <span className="text-xs font-semibold">Liste</span>
+                  </button>
+                )}
 
+              {/* Précédent */}
+
+              {(utilisateurConnecte?.type?.toLowerCase() === "superviseur" ||
+                (utilisateurConnecte?.type?.toLowerCase() === "utilisateur" &&
+                  (toolbarTable === "client" ||
+                    toolbarTable === "devis" ||
+                    toolbarTable === "article"))) && (
+                  <button
+                    type="button"
+                    onClick={handleNaviguerVersPrecedent}
+                    className="flex flex-col items-center w-20 p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-all duration-200"
+                  >
+                    <FontAwesomeIcon
+                      icon={faArrowLeft}
+                      className="text-xl mb-1"
+                    />
+                    <span className="text-xs font-semibold">Précédent</span>
+                  </button>
+                )}
+
+              {console.log(toolbarMode)}
+
+              {(utilisateurConnecte?.type?.toLowerCase() === "superviseur" ||
+                (utilisateurConnecte?.type?.toLowerCase() === "utilisateur" &&
+                  (toolbarTable === "client" ||
+                    toolbarTable === "devis" ||
+                    toolbarTable === "article"))) && (
+                  <button
+                    type="button"
+                    onClick={handleNaviguerVersSuivant}
+                    className="flex flex-col items-center w-20 p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-all duration-200"
+                  >
+                    <FontAwesomeIcon
+                      icon={faArrowRight}
+                      className="text-xl mb-1"
+                    />
+                    <span className="text-xs font-semibold">Suivant</span>
+                  </button>
+                )}
+
+              {/* Edition */}
+              {toolbarTable === "devis" && (
+                <button
+                  type="button"
+                  onClick={handleEditionClick}
+                  className="flex flex-col items-center w-20 p-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-lg transition-all duration-200"
+                >
+                  <FontAwesomeIcon icon={faWrench} className="text-xl mb-1" />
+                  <span className="text-xs font-semibold">Édition</span>
+                </button>
+              )}
+
+              {/* Quitter */}
               <button
-                className="flex flex-col items-center border p-2 rounded-md hover:bg-gray-100"
-                onClick={() => navigate("/recherche")}
+                onClick={handleQuitterClick}
+                className="flex flex-col items-center w-20 p-2 bg-orange-100 hover:bg-orange-200 text-orange-700 rounded-lg transition-all duration-200"
               >
-                <FontAwesomeIcon
-                  icon={faSearch}
-                  className="text-blue-600 text-3xl"
-                />
-                <span className="text-sm font-semibold text-gray-700">
-                  Rechercher
-                </span>
+                <FontAwesomeIcon icon={faSignOutAlt} />
+                <span>Quitter</span>
               </button>
             </>
-          )} */}
-          {/* // ! btn précedent */}
-          {!activerBoutonsValiderAnnuler && toolbarTable != "article" && (
-            <button
-              className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100"
-              onClick={handleNaviguerVersPrecedent}
-            >
-              <FontAwesomeIcon icon={faArrowLeft} className="text-3xl" />
-            </button>
-          )}
-          {/* // ! btn suivant */}
-          {!activerBoutonsValiderAnnuler && toolbarTable != "article" && (
-            <button
-              //disabled={dernierCodeClient == clientInfos.code}
-              className="flex items-center text-gray-700 border p-2 rounded-md hover:bg-gray-100"
-              onClick={handleNaviguerVersSuivant}
-            >
-              <FontAwesomeIcon icon={faArrowRight} className="text-3xl" />
-            </button>
-          )}
-
-          {!activerBoutonsValiderAnnuler && (
-            <button
-              type="button"
-              onClick={() => handleNaviguerVersListe()}
-              className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
-            >
-              <FontAwesomeIcon icon={faList} className="text-3xl" />
-              <span className="ml-2 text-sm font-semibold text-gray-700">
-                Liste
-              </span>
-            </button>
-          )}
-
-          {!activerBoutonsValiderAnnuler && (
-            <button
-              type="button"
-              onClick={() => navigate("/Dashboard")}
-              className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
-            >
-              <FontAwesomeIcon icon={faSignOutAlt} className="text-3xl" />
-              <span className="ml-2 text-sm font-semibold text-gray-700">
-                Quitter
-              </span>
-            </button>
           )}
 
           {activerBoutonsValiderAnnuler && (
-            <button
-              type="button"
-              onClick={() => handleValiderBtnClick()}
-              className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
-            >
-              <FontAwesomeIcon icon={faCheck} className="text-3xl" />
-              <span className="ml-2 text-sm font-semibold text-gray-700">
-                Valider
-              </span>
-            </button>
-          )}
+            <>
+              {/* Valider */}
+              <button
+                type="button"
+                onClick={handleValiderBtnClick}
+                className="flex flex-col items-center w-20 p-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all duration-200"
+              >
+                <FontAwesomeIcon icon={faCheck} className="text-xl mb-1" />
+                <span className="text-xs font-semibold">Valider</span>
+              </button>
 
-          {activerBoutonsValiderAnnuler && (
-            <button
-              type="button"
-              onClick={() => annulerOperation()}
-              className="flex items-center text-gray-700 ml-4 border p-2 rounded-md hover:bg-gray-100"
-            >
-              <FontAwesomeIcon icon={faCancel} className="text-3xl" />
-              <span className="ml-2 text-sm font-semibold text-gray-700">
-                Annuler
-              </span>
-            </button>
+              {/* Annuler */}
+              <button
+                type="button"
+                onClick={annulerOperation}
+                className="flex flex-col items-center w-20 p-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg transition-all duration-200"
+              >
+                <FontAwesomeIcon icon={faTimes} className="text-xl mb-1" />
+                <span className="text-xs font-semibold">Annuler</span>
+              </button>
+            </>
           )}
         </div>
       </nav>

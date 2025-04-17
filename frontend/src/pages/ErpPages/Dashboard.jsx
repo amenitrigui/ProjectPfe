@@ -24,8 +24,11 @@ import {
 
 import {
   getDevisCountByMonthAndYear,
+  getNbDevisNonGeneresParUtilisateur,
+  getNbTotalDevisGeneres,
   getNombreTotalDevis,
   getTotalChiffres,
+  getNbTotalDevisGeneresParUtilisateur
 } from "../../app/devis_slices/devisSlice";
 
 import SideBar from "../../components/Common/SideBar";
@@ -96,10 +99,26 @@ const Dashboard = () => {
   const utilisateurConnecte = useSelector(
     (state) => state.Utilisateur_SuperviseurSlices.utilisateurConnecte
   );
+ 
+  const nbTotalDevisGeneres = useSelector(
+    (state) => state.DevisCrud.nbTotalDevisGeneres
+  );
+
+  const nbTotalDevisGeneresParUtilisateur = useSelector(
+    (state) => state.DevisCrud.nbTotalDevisGeneresParUtilisateur
+  );
+
+  const nbTotalDevisNonGeneresParUtilisateur = useSelector(
+    (state) => state.DevisCrud.nbTotalDevisNonGeneresParUtilisateur
+  );
+   
   useEffect(() => {
     dispatch(getNombreTotalDevis());
     dispatch(getTotalChiffres());
     dispatch(getDevisCountByMonthAndYear());
+    dispatch(getNbDevisNonGeneresParUtilisateur())
+    dispatch(getNbTotalDevisGeneres())
+    dispatch(getNbTotalDevisGeneresParUtilisateur())
   }, []);
   const toggleSidebar = () => {
     dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
@@ -125,9 +144,9 @@ const Dashboard = () => {
                 <div className="p-4 flex items-center border-b">
                   <FaRegUserCircle className="mr-3 text-3xl" />
                   <div>
-                    <p className="font-semibold">{infosUtilisateur.nom}</p>
+                    <p className="font-semibold">{utilisateurConnecte.nom}</p>
                     <p className="text-sm text-gray-500">
-                      {infosUtilisateur.type}
+                      {utilisateurConnecte.type}
                     </p>
                   </div>
                 </div>
@@ -163,17 +182,17 @@ const Dashboard = () => {
               name: "Nombre devis Total",
             },
             {
-              number: totalchifre.toFixed(2),
-              name: "Nombre devis générés Total",
+              number: nbTotalDevisGeneres,
+              name: "Nombre Total devis générés ",
               user: `${utilisateurConnecte.codeuser}//${utilisateurConnecte.nom}`,
             },
             {
-              number: nombredevis,
+              number: nbTotalDevisGeneresParUtilisateur,
               name: "Nombre devis générés par Utilisateur",
               user: `${utilisateurConnecte.codeuser}//${utilisateurConnecte.nom}`,
             },
             {
-              number: totalchifre.toFixed(2),
+              number: nbTotalDevisNonGeneresParUtilisateur,
               name: "Nombre devis non générés par Utilisateur",
             },
           ].map((card, index) => {

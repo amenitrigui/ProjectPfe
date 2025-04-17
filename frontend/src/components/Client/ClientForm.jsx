@@ -43,7 +43,9 @@ const ClientForm = () => {
 
   // Sélection des informations du client depuis le state Redux
   const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
-
+  const utilisateurConnecte = useSelector(
+    (state) => state.Utilisateur_SuperviseurSlices.utilisateurConnecte
+  );
   const infosUtilisateur = useSelector(
     (state) => state.UtilisateurInfo.infosUtilisateur
   );
@@ -237,9 +239,9 @@ const ClientForm = () => {
                 <div className="p-4 flex items-center border-b">
                 <FaRegUserCircle className="mr-3 text-3xl" />
                   <div>
-                    <p className="font-semibold">{infosUtilisateur.nom}</p>
+                    <p className="font-semibold">{utilisateurConnecte.nom}</p>
                     <p className="text-sm text-gray-500">
-                      {infosUtilisateur.type}
+                      {utilisateurConnecte.type}
                     </p>
                   </div>
                 </div>

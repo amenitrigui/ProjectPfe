@@ -49,6 +49,7 @@ export const utilisateurSlice = createSlice({
     infosUtilisateur: {
       codeuser: "",
       nom: "",
+      type:"",
     },
   },
   reducers: {

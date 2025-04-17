@@ -77,7 +77,9 @@ function ArticleForm() {
       );
     }
   }, [articleInfos.codesousfam]);
-  
+  const utilisateurConnecte = useSelector(
+    (state) => state.Utilisateur_SuperviseurSlices.utilisateurConnecte
+  );
   useEffect(() => {
     if (articleInfos.famille && articleInfos.famille != "") {
       dispatch(getDesignationFamilleParCodeFamille(articleInfos.famille));
@@ -189,9 +191,9 @@ function ArticleForm() {
                 <div className="p-4 flex items-center border-b">
                   <FaRegUserCircle className="mr-3 text-3xl" />
                   <div>
-                    <p className="font-semibold">{infosUtilisateur.nom}</p>
+                    <p className="font-semibold">{utilisateurConnecte.nom}</p>
                     <p className="text-sm text-gray-500">
-                      {infosUtilisateur.type}
+                      {utilisateurConnecte.type}
                     </p>
                   </div>
                 </div>

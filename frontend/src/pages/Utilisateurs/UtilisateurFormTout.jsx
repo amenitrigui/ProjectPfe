@@ -3,7 +3,7 @@ import UtilisateurForm from "../../components/Utilisateur/UtilisateurForm";
 import AlertModifier from "../../components/Common/AlertModifier";
 
 import { useDispatch, useSelector } from "react-redux";
-import { setToolbarTable } from "../../app/interface_slices/uiSlice";
+import { setToolbarMode, setToolbarTable } from "../../app/interface_slices/uiSlice";
 import Recherche from "../../components/Common/recherche";
 
 function UtilisateurFormTout() {
@@ -12,6 +12,7 @@ function UtilisateurFormTout() {
 
   useEffect(()=>{
     dispatch(setToolbarTable("utilisateur"))
+    dispatch(setToolbarMode("superviseur"))
   },[])
   return (
     <div className="flex min-h-screen bg-gray-100">

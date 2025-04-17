@@ -68,20 +68,44 @@ export const getTotalChiffres = createAsyncThunk(
   }
 );
 
+export const getNbDevisNonGeneresParUtilisateur = createAsyncThunk(
+  "devisSlice/getNbDevisNonGeneresParUtilisateur",
+  async (_, thunkAPI) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/devis/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getNbDevisNonGeneresParUtilisateur`,
+      {
+        params: {
+          codeuser:
+            thunkAPI.getState().Utilisateur_SuperviseurSlices
+              .utilisateurConnecte.codeuser,
+        },
+      }
+    );
+    console.log(response);
+    return response.data.nbDevisGeneresTotal;
+  }
+);
+
 // * Action asynchrone pour récupérer un devis par son code
 export const getDevisParNUMBL = createAsyncThunk(
   "Slice/getDevisParNUMBL",
   async (NUMBL, thunkAPI) => {
+    const codeuser = thunkAPI.getState().UtilisateurInfo.codeuser;
+    console.log(NUMBL, codeuser);
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().UtilisateurInfo.dbName
       }/getDevisParNUMBL/${NUMBL}`,
       {
         params: {
-          codeuser: thunkAPI.getState().UtilisateurInfo.codeuser,
+          codeuser: codeuser,
         },
       }
     );
+
+    console.log(response);
     return response.data.devis;
   }
 );
@@ -240,7 +264,17 @@ export const getDerniereNumbl = createAsyncThunk(
     return response.data.derniereNumbl;
   }
 );
-
+export const getNbTotalDevisGeneres = createAsyncThunk(
+  "devisSlice/getNbTotalDevisGeneres",
+  async (_, thunkAPI) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/devis/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getNbTotalDevisGeneres`
+    );
+    return response.data.nbDevisGeneresTotal;
+  }
+)
 export const deleteDevis = createAsyncThunk(
   "devisSlice/deleteDevis",
   async (NUMBL, thunkAPI) => {
@@ -252,6 +286,22 @@ export const deleteDevis = createAsyncThunk(
     return response;
   }
 );
+export const getNbTotalDevisGeneresParUtilisateur = createAsyncThunk(
+  "devisSlice/getNbTotalDevisGeneresParUtilisateur",
+  async (_, thunkAPI) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/devis/${
+        thunkAPI.getState().UtilisateurInfo.dbName
+      }/getNbTotalDevisGeneresParUtilisateur`,
+      {
+        params: {
+          codeuser: (thunkAPI.getState().Utilisateur_SuperviseurSlices.utilisateurConnecte).codeuser,
+        },
+      }
+    );
+    return response.data.nbDevisNonGeneresParUtilisateur;
+  }
+);
 
 export const devisSlice = createSlice({
   name: "devisSlice",
@@ -259,7 +309,7 @@ export const devisSlice = createSlice({
     // * liste de devis
     devisList: [],
     //* devisMonthYear
-    devisMonthYear:[],
+    devisMonthYear: [],
     // * liste de codes de devis
     listeNUMBL: [],
     // * liste de points de vente
@@ -285,6 +335,11 @@ export const devisSlice = createSlice({
       MHT: "",
       articles: [],
     },
+    nbTotalDevisGeneres: 0,
+    nbTotalDevisGeneresParUtilisateur: 0,
+    nbTotalDevisNonGeneresParUtilisateur: 0,
+
+  
     totalchifre: 0,
     nombreDeDevis: 0,
     status: null,
@@ -518,7 +573,49 @@ export const devisSlice = createSlice({
       .addCase(getDevisCountByMonthAndYear.rejected, (state, action) => {
         state.erreur = action.payload;
         state.status = "echoue";
+      })
+
+      .addCase(getNbDevisNonGeneresParUtilisateur.pending, (state) => {
+        state.status = "chargeement";
+      })
+      .addCase(
+        getNbDevisNonGeneresParUtilisateur.fulfilled,
+        (state, action) => {
+          state.nbTotalDevisNonGeneresParUtilisateur = action.payload;
+          state.status = "reussi";
+        }
+      )
+      .addCase(getNbDevisNonGeneresParUtilisateur.rejected, (state, action) => {
+        state.erreur = action.payload;
+        state.status = "echoue";
+      })
+
+
+      .addCase(getNbTotalDevisGeneres.pending, (state) => {
+        state.status = "chargeement";
+      })
+      .addCase(getNbTotalDevisGeneres.fulfilled, (state, action) => {
+        state.nbTotalDevisGeneres = action.payload;
+        state.status = "reussi";
+      })
+      .addCase(getNbTotalDevisGeneres.rejected, (state, action) => {
+        state.erreur = action.payload;
+        state.status = "echoue";
+      })
+
+
+      .addCase(getNbTotalDevisGeneresParUtilisateur.pending, (state) => {
+        state.status = "chargeement";
+      })
+      .addCase(getNbTotalDevisGeneresParUtilisateur.fulfilled, (state, action) => {
+        state.nbTotalDevisGeneresParUtilisateur = action.payload;
+        state.status = "reussi";
+      })
+      .addCase(getNbTotalDevisGeneresParUtilisateur.rejected, (state, action) => {
+        state.erreur = action.payload;
+        state.status = "echoue";
       });
+
   },
 });
 export const {
