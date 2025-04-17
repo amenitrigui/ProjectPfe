@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import {
   FaUser,
   FaCog,
-  FaCreditCard,
   FaSignOutAlt,
   FaRegUserCircle,
 } from "react-icons/fa";
@@ -84,7 +83,7 @@ const Dashboard = () => {
   const nbTotalDevisGeneresParUtilisateur = useSelector(
     (state) => state.devisSlice.nbTotalDevisGeneresParUtilisateur
   );
-
+  
   const nbTotalDevisNonGeneresParUtilisateur = useSelector(
     (state) => state.devisSlice.nbTotalDevisNonGeneresParUtilisateur
   );
@@ -132,10 +131,8 @@ const Dashboard = () => {
     dispatch(getTotalChiffres());
     dispatch(getNbTotalDevisGeneres());
     dispatch(getDevisCountByMonthAndYear());
-    dispatch(getNbTotalDevisAnnulees())
-    dispatch(getNbTotalDevisEnCours())
-  }, []);
-  useEffect(() => {
+    dispatch(getNbTotalDevisAnnulees());
+    dispatch(getNbTotalDevisEnCours());
     dispatch(getNbTotalDevisGeneresParUtilisateur());
     dispatch(getNbDevisNonGeneresParUtilisateur());
   }, []);

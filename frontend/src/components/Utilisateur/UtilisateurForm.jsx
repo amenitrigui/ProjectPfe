@@ -53,8 +53,6 @@ const UtilisateurForm = () => {
   const derniereCodeUtilisateur = useSelector(
     (state) => state.utilisateurSystemSlice.derniereCodeUtilisateur
   );
-
-  console.log(Utilisateur_SuperviseurInfos);
   const listeUtilisateur = useSelector(
     (state) => state.utilisateurSlice.listeUtilisateur
   );
@@ -173,7 +171,6 @@ const UtilisateurForm = () => {
                         disabled={activerChampsForm}
                         maxLength={8}
                       />
-                      {console.log(Utilisateur_SuperviseurInfos)}
                     </div>
 
                     <div className="flex flex-col w-1/2 ">

@@ -16,7 +16,7 @@ import utilisateurSystemSlices from "./utilisateurSystemSlices/utilisateurSystem
 const persistConfig = {
   key: "root",
   storage: localStorage,
-  whitelist: ["utilisateurSlice","utilisateurSystemSlice"]
+  whitelist: ["utilisateurSystemSlice"]
 };
 
 const rootReducer = combineReducers({

@@ -8,6 +8,12 @@ import {
   FaSignOutAlt,
   FaRegUserCircle,
 } from "react-icons/fa";
+import {
+  CheckIcon,
+  PencilIcon,
+  PrinterIcon,
+  TrashIcon,
+} from "@heroicons/react/20/solid";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getClientParCode,
@@ -165,7 +171,9 @@ function DevisForm() {
 
     navi("/ClientFormTout");
   };
-
+  const utilisateurConnecte = useSelector(
+    (state) => state.utilisateurSystemSlice.utilisateurConnecte
+  );
   const handleChangeCodeClient = (valeur) => {
     console.log(valeur);
     dispatch(setDevisInfo({ collone: "CODECLI", valeur: valeur }));
@@ -206,9 +214,9 @@ function DevisForm() {
                   <div className="p-4 flex items-center border-b">
                     <FaRegUserCircle className="mr-3 text-3xl" />
                     <div>
-                      <p className="font-semibold">{infosUtilisateur.nom}</p>
+                      <p className="font-semibold">{utilisateurConnecte.nom}</p>
                       <p className="text-sm text-gray-500">
-                        {infosUtilisateur.type}
+                        {utilisateurConnecte.type}
                       </p>
                     </div>
                   </div>
@@ -407,7 +415,7 @@ function DevisForm() {
                 </div>
               </div>
             </div>
-
+            
             <div className="recentCustomers">
               {/* Informations de l'Utilisateur */}
               <div className="space-y-0 p-6 border rounded-lg shadow-md bg-white">

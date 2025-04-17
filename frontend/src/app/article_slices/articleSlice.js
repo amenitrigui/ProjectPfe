@@ -10,7 +10,7 @@ export const getArticleFamiles = createAsyncThunk(
   async (_, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().utilisateurSlice.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeFamilles`
     );
     return response.data.familles;
@@ -27,7 +27,7 @@ export const getListeCodesArticles = createAsyncThunk(
   async (_, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().utilisateurSlice.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getToutCodesArticle`
       // $paramettre de la requette
     );
@@ -48,7 +48,7 @@ export const suprimerArticle = createAsyncThunk(
     console.log(code);
     const response = await axios.delete(`
       ${process.env.REACT_APP_API_URL}/api/article/${
-      thunkAPI.getState().utilisateurSlice.dbName
+      thunkAPI.getState().utilisateurSystemSlice.dbName
     }/suprimerArticle/${code}
     `);
     console.log(response);
@@ -66,7 +66,7 @@ export const getListeFamillesArticle = createAsyncThunk(
   async (_, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().utilisateurSlice.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeFamilles`
     );
 
@@ -82,7 +82,7 @@ export const getListeArticles = createAsyncThunk(
   async (_, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().utilisateurSlice.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeArticles`
     );
     return response.data.listeArticles;
@@ -97,7 +97,7 @@ export const filtrerListeArticle = createAsyncThunk(
   async (filters, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().utilisateurSlice.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/filtrerListeArticle`,
       {
         params: {
@@ -119,7 +119,7 @@ export const getDesignationFamilleParCodeFamille = createAsyncThunk(
   async (codeFamille, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().utilisateurSlice.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getDesignationFamilleParCodeFamille`, {
         params: {
           codeFamille: codeFamille
@@ -135,7 +135,7 @@ export const getListecodesousFamille = createAsyncThunk(
   async (_, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().utilisateurSlice.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListecodesousFamille`
     );
     return response.data.getcodesousFamille;
@@ -147,7 +147,7 @@ export const getdesignationSousFamillebycodeSousFamille = createAsyncThunk(
     console.log(codeSousFamille);
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().utilisateurSlice.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getdesignationSousFamillebycodeSousFamille/${codeSousFamille}`
     );
     console.log(response.data.libelle[0].libelle);
@@ -159,7 +159,7 @@ export const getArticleParCode = createAsyncThunk(
   async (code, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().utilisateurSlice.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getArticleParCode`, {
         params: {
           code: code
@@ -175,7 +175,7 @@ export const ajouterArticle = createAsyncThunk(
   async (_, thunkAPI) => {
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().utilisateurSlice.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/ajouterArticle`,
       // * body/ req.body : c'est l'objet equivalent à req.body dans le backend
       {
@@ -194,7 +194,7 @@ export const modifierarticle = createAsyncThunk(
     console.log(code);
     const response = await axios.put(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().utilisateurSlice.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/modifierArticle/${code}`,
       {
         article: thunkAPI.getState().articleSlice.articleInfos,
@@ -210,7 +210,7 @@ export const getListeArticleparFamille = createAsyncThunk(
   async (codeFamille, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().utilisateurSlice.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeArticleparFamille`, {
         params: {
           codeFamille: codeFamille
@@ -227,7 +227,7 @@ export const getListeArticleparLibelle = createAsyncThunk(
   async (libelle, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().utilisateurSlice.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeArticleparLibelle`, {
         params: {
           libelle: libelle
@@ -244,7 +244,7 @@ export const getListeArticleParSousFamille = createAsyncThunk(
   async (SousFamille, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().utilisateurSlice.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeArticleParSousFamille/${SousFamille}`
     );
     console.log(response);
@@ -258,7 +258,7 @@ export const getListeArticleParCodeArticle = createAsyncThunk(
     console.log(codeArticle);
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().utilisateurSlice.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeArticleParCodeArticle/${codeArticle}`
     );
     console.log(response);

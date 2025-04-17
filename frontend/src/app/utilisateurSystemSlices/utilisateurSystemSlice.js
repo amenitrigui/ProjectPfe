@@ -12,7 +12,6 @@ export const AjouterUtilisateur = createAsyncThunk(
           .Utilisateur_SuperviseurInfos,
       }
     );
-    console.log(response);
     return response.data.user;
   }
 );
@@ -22,7 +21,6 @@ export const getDerniereCodeUtilisateur = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getDerniereCodeUtilisateur`
     );
-    console.log(response);
     return response.data.derniereCodeUtilisateur;
   }
 );
@@ -37,7 +35,6 @@ export const ModifierUtilisateur = createAsyncThunk(
             .Utilisateur_SuperviseurInfos,
       }
     );
-    console.log(response);
     return response.data.user;
   }
 );
@@ -147,7 +144,6 @@ export const getCodeUtilisateurSuivant = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getCodeUtilisateurSuivant`
     );
-    console.log(response)
     return response
   }
 );
@@ -177,6 +173,8 @@ export const utilisateurSystemSlices = createSlice({
     },
 
     derniereCodeUtilisateur: "",
+    dbName: "",
+    token: "",
   },
   reducers: {
     setListeUtilisateur_Superviseur: (state, action) => {
@@ -198,7 +196,6 @@ export const utilisateurSystemSlices = createSlice({
     },
     setFiltresSaisient: (state, action) => {
       const { colonne, valeur } = action.payload;
-      console.log(action.payload);
       state.filtersUtilisateur[colonne] = valeur;
     },
     setViderChampsUtilisateur: (state, action) => {
@@ -209,6 +206,12 @@ export const utilisateurSystemSlices = createSlice({
         directeur: "",
         motpasse: "",
       };
+    },
+    setDbName: (state, action) => {
+      state.dbName = action.payload;
+    },
+    setToken: (state, action) => {
+      state.token = action.payload;
     },
   },
 
@@ -301,6 +304,7 @@ export const {
   setViderChampsUtilisateur,
   setUtilisateurSupInfo,
   setFiltresSaisient,
+  setDbName, setToken
 } = utilisateurSystemSlices.actions;
 
 export default utilisateurSystemSlices.reducer;

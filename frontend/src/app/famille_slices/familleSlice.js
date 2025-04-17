@@ -8,7 +8,7 @@ import axios from "axios";
 //     console.log(codeFamille);
 //     const response = await axios.get(
 //       `${process.env.REACT_APP_API_URL}/api/famille/${
-//         thunkAPI.getState().utilisateurSlice.dbName
+//         thunkAPI.getState().utilisateurSystemSlice.dbName
 //       }/getListeFamillesParCodeFamille`,
 //       {
 //         params: {
@@ -26,7 +26,7 @@ export const getListeFamillesParCodeFamille = createAsyncThunk(
   async (codeFamille, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/famille/${
-        thunkAPI.getState().utilisateurSlice.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeFamillesParCodeFamille`,
       {
         params: {
@@ -45,7 +45,7 @@ export const getListeFamillesParLibelleFamille = createAsyncThunk(
   async (LibelleFamille, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/famille/${
-        thunkAPI.getState().utilisateurSlice.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeFamillesParLibelleFamille/${LibelleFamille}`
     );
     console.log(response);
@@ -60,7 +60,7 @@ export const ajouterFamille = createAsyncThunk(
     console.log(thunkAPI.getState().familleSlice.FamilleInfos);
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/famille/${
-        thunkAPI.getState().utilisateurSlice.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/ajouterFamille`,
       {
         FamilleAjoute: thunkAPI.getState().familleSlice.FamilleInfos,

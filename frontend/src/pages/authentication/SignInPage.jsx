@@ -4,8 +4,6 @@ import { useNavigate, Link } from "react-router-dom";
 import {
   setToken,
   setutilisateurSliceEntire, 
-} from "../../app/utilisateur_slices/utilisateurSlice";
-import {
   setutilisateurConnecteEntiere,
 } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 
@@ -23,9 +21,6 @@ function SignInPage() {
 
     const trimmedNom = nom.trim();
     const trimmedPassword = password.trim();
-    // dispatch(loginUtilisateur({nom: trimmedNom, motpasse: trimmedMotpasse}))
-    // if(status == "succès")
-    //   navigate("/SocietiesList");
     if (!trimmedNom || !trimmedPassword) {
       setError("Tous les champs doivent être remplis");
       return;
@@ -49,8 +44,7 @@ function SignInPage() {
       const data = await response.json(); // convertir la reponse de seurveur en objet javascript
 
       if (response.ok) {
-        dispatch(setutilisateurSliceEntire(data.user))  
-        dispatch(setutilisateurConnecteEntiere(data.user));
+        dispatch(setutilisateurConnecteEntiere(data.user))
         dispatch(setToken(data.token));
         localStorage.setItem("societies", JSON.stringify(data.societies));
         // localStorage.setItem("codeuser", JSON.stringify(data.codeuser));
