@@ -23,7 +23,7 @@ const bcrypt = require("bcryptjs");
 // * input : {nom: "testUser", "motpasse": "testUserMotPasse", "email": "testUser@test.test"}
 // * output : aucune, l'utilisateur sera enregistré dans la base de données
 // * verb : post
-// *    url :http://localhost:5000/api/Utilisateur_Superviseur/AjouterUtilisateur
+// *    url :http://localhost:5000/api/utilisateurSystem/AjouterUtilisateur
 const AjouterUtilisateur = async (req, res) => {
   const { User } = req.body;
   console.log(User);
@@ -73,7 +73,7 @@ const AjouterUtilisateur = async (req, res) => {
 // * example: le dernier code client dans la base est 2000
 // * input :
 // * output : 123
-// * http://localhost:5000/api/Utilisateur_Superviseur/getDerniereCodeUtilisateur
+// * http://localhost:5000/api/utilisateurSystem/getDerniereCodeUtilisateur
 const getDerniereCodeUtilisateur = async (req, res) => {
   try {
     await getUtilisateurDbConnection();
@@ -93,7 +93,7 @@ const getDerniereCodeUtilisateur = async (req, res) => {
   }
 };
 
-//*url: http://localhost:5000/api/Utilisateur_Superviseur/ModifierUtilisateur
+//*url: http://localhost:5000/api/utilisateurSystem/ModifierUtilisateur
 const ModifierUtilisateur = async (req, res) => {
   const { MajUtilisateur } = req.body;
 
@@ -170,7 +170,7 @@ const getListeUtilisateurParCode = async (req, res) => {
     return res.status(500).json({ message: error });
   }
 };
-//* url :http://localhost:5000/api/Utilisateur_Superviseur/getListeUtilisateurParNom?nom=mariam
+//* url :http://localhost:5000/api/utilisateurSystem/getListeUtilisateurParNom?nom=mariam
 const getListeUtilisateurParNom = async (req, res) => {
   const { nom } = req.query;
   console.log(nom);
@@ -196,7 +196,7 @@ const getListeUtilisateurParNom = async (req, res) => {
     return res.status(500).json({ message: error });
   }
 };
-//* url : http://localhost:5000/api/Utilisateur_Superviseur/getListeUtilisateurParDirecteur?directeur=02
+//* url : http://localhost:5000/api/utilisateurSystem/getListeUtilisateurParDirecteur?directeur=02
 const getListeUtilisateurParDirecteur = async (req, res) => {
   const { directeur } = req.query;
 
@@ -222,7 +222,7 @@ const getListeUtilisateurParDirecteur = async (req, res) => {
     return res.status(500).json({ message: error });
   }
 };
-//* url : http://localhost:5000/api/Utilisateur_Superviseur/getListeUtilisateurParType?type=Utilisateur
+//* url : http://localhost:5000/api/utilisateurSystem/getListeUtilisateurParType?type=Utilisateur
 const getListeUtilisateurParType = async (req, res) => {
   const { type } = req.query;
 
@@ -269,7 +269,7 @@ const getListeUtilisateur = async (req, res) => {
     return res.status(500).json({ message: error });
   }
 };
-//* url :http://localhost:5000/api/Utilisateur_Superviseur/filterListeUtilisateur?filters=1
+//* url :http://localhost:5000/api/utilisateurSystem/filterListeUtilisateur?filters=1
 const filterListeUtilisateur = async (req, res) => {
   const { filters } = req.query;
   console.log(filters);
@@ -318,7 +318,7 @@ const filterListeUtilisateur = async (req, res) => {
     data: result,
   });
 };
-//* url :http://localhost:5000/api/Utilisateur_Superviseur/getCodeUtilisateurSuivant
+//* url :http://localhost:5000/api/utilisateurSystem/getCodeUtilisateurSuivant
 const getCodeUtilisateurSuivant = async (req, res) => {
  
   try {

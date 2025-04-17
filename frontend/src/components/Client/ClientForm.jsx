@@ -24,12 +24,12 @@ import {
 
 import ToolBar from "../Common/ToolBar";
 import { isAlphabetique, isNumerique } from "../../utils/validations";
-import { setAfficherRecherchePopup, setOuvrireDrawerMenu } from "../../app/interface_slices/uiSlice";
+import { setAfficherRecherchePopup, setOuvrireDrawerMenu } from "../../app/interface_slices/interfaceSlice";
 import SideBar from "../Common/SideBar";
 
 const ClientForm = () => {
   // * pour afficher le sidebar
-  const ouvrireMenuDrawer = useSelector((state) => state.uiStates.ouvrireMenuDrawer);
+  const ouvrireMenuDrawer = useSelector((state) => state.interfaceSlice.ouvrireMenuDrawer);
   // * pour afficher le menu déroulante pour l'avatar
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
@@ -42,33 +42,33 @@ const ClientForm = () => {
   }, []);
 
   // Sélection des informations du client depuis le state Redux
-  const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
+  const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
 
   const infosUtilisateur = useSelector(
-    (state) => state.UtilisateurInfo.infosUtilisateur
+    (state) => state.utilisateurSlice.infosUtilisateur
   );
   const listeCodesRegion = useSelector(
-    (state) => state.ClientCrud.listeCodesRegion
+    (state) => state.clientSlice.listeCodesRegion
   );
   // state pour désactiver/activer les champs lors de changement de modes editables (ajout/modification)
   // vers le mode de consultation respectivement
   const activerChampsForm = useSelector(
-    (state) => state.uiStates.activerChampsForm
+    (state) => state.interfaceSlice.activerChampsForm
   );
 
   // Sélection du booléen pour détecter si l'insertion est faite depuis le formulaire de devis
   const insertionDepuisDevisForm = useSelector(
-    (state) => state.ClientCrud.insertionDepuisDevisForm
+    (state) => state.clientSlice.insertionDepuisDevisForm
   );
 
   const listeToutCodesPosteaux = useSelector(
-    (state) => state.ClientCrud.listeToutCodesPosteaux
+    (state) => state.clientSlice.listeToutCodesPosteaux
   );
   const listeCodesSecteur = useSelector(
-    (state) => state.ClientCrud.listeCodesSecteur
+    (state) => state.clientSlice.listeCodesSecteur
   );
   
-  const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
+  const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
   
   const handleChangeCheckbox = (e, colonne) => {
     console.log(e.target.checked," ", colonne)
@@ -201,8 +201,8 @@ const ClientForm = () => {
     dispatch(setClientInfos({ colonne: champ, valeur: e.target.value }));
   };
 
-  const nombredevis = useSelector((state) => state.DevisCrud.nombreDeDevis);
-  const totalchifre = useSelector((state) => state.DevisCrud.totalchifre);
+  const nombredevis = useSelector((state) => state.devisSlice.nombreDeDevis);
+  const totalchifre = useSelector((state) => state.devisSlice.totalchifre);
 
   const afficherRecherchePopup = () => {
     dispatch(setAfficherRecherchePopup(true))

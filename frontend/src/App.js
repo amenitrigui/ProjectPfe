@@ -31,7 +31,7 @@ import FamilleFormTout from "./pages/Famille/FamilleFormTout"
 import Settings from "./pages/ErpPages/Settings"
 import UtilisateurList from "./pages/Utilisateurs/UtilisateurList"
 
-import { setActiverBoutonsValiderAnnuler, setToolbarMode, setToolbarTable } from "./app/interface_slices/uiSlice";
+import { setActiverBoutonsValiderAnnuler, setToolbarMode, setToolbarTable } from "./app/interface_slices/interfaceSlice";
 import Test1 from "./test/Test1";
 
 function App() {
@@ -39,13 +39,13 @@ function App() {
   //?=====================================================variables====================================================
   //?==================================================================================================================
   const dispatch = useDispatch();
-  const usera = useSelector((state) => state.UtilisateurInfo.codeuser);
+  const usera = useSelector((state) => state.utilisateurSlice.codeuser);
   const location = useLocation();
-  const toolbarTable = useSelector((state) => state.uiStates.toolbarTable);
+  const toolbarTable = useSelector((state) => state.interfaceSlice.toolbarTable);
   const utilisateurConnecte = useSelector(
-    (state) => state.Utilisateur_SuperviseurSlices.utilisateurConnecte
+    (state) => state.utilisateurSystemSlice.utilisateurConnecte
   );
-  const infosUtilisateur = useSelector((state) => state.UtilisateurInfo.infosUtilisateur);
+  const infosUtilisateur = useSelector((state) => state.utilisateurSlice.infosUtilisateur);
   //?==================================================================================================================
   //?==================================================appels UseEffect================================================
   //?==================================================================================================================

@@ -10,7 +10,7 @@ function DevisList() {
   const dataBaseName = localStorage.getItem("selectedDatabase");
 
   const dispatch = useDispatch();
-  const ListeDevis = useSelector((store) => store.DevisCrud.devisList);
+  const ListeDevis = useSelector((store) => store.devisSlice.devisList);
 
   useEffect(() => {
     dispatch(getDevisList());

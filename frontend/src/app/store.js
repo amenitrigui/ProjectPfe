@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import clientSlice from "../app/client_slices/clientSlice"; //thb te5oo js
-import uiSlice from "./interface_slices/uiSlice";
+import interfaceSlice from "./interface_slices/interfaceSlice";
 import devisSlice from "./devis_slices/devisSlice";
 import utilisateurSlice from "./utilisateur_slices/utilisateurSlice";
 import articleSlice from "./article_slices/articleSlice";
@@ -11,33 +11,25 @@ import  familleSlice  from "./famille_slices/familleSlice";
 import  sousfamilleSlice  from "./sousfamille_slices/sousfamilleSlice";
 import Stock_Slice from "./Stock_valorisation_utilitaires/Stock_Slice"
 import valorisation_Slice from "./Stock_valorisation_utilitaires/valorisation_Slice"
-import Utilisateur_SuperviseurSlices from "./Utilisateur_SuperviseurSlices/Utilisateur_SuperviseurSlices"
+import utilisateurSystemSlices from "./utilisateurSystemSlices/utilisateurSystemSlice";
 
 const persistConfig = {
   key: "root",
-  storage: localStorage, // pour utiliser LocalStorage
-  // whitelist: [ // pour specifier quelles slices on persiste
-  //   "ClientCrud",
-  //   "UtilisateurInfo",
-  //   "uiStates",
-  //   "DevisCrud",
-  //   "ArticlesDevis",
-  // ],
-  whitelist: ["UtilisateurInfo","Utilisateur_SuperviseurSlices"]
+  storage: localStorage,
+  whitelist: ["utilisateurSlice","utilisateurSystemSlice"]
 };
 
 const rootReducer = combineReducers({
-  ClientCrud: clientSlice, // ? client partie min store cle: clientcrud/valeur : clientslice
-  uiStates: uiSlice,
-  DevisCrud: devisSlice,
-  UtilisateurInfo: utilisateurSlice,
-  ArticlesDevis: articleSlice,
+  clientSlice: clientSlice, // ? client partie min store cle: clientcrud/valeur : clientslice
+  interfaceSlice: interfaceSlice,
+  devisSlice: devisSlice,
+  utilisateurSlice: utilisateurSlice,
+  articleSlice: articleSlice,
   familleSlice: familleSlice,
   sousfamilleSlice: sousfamilleSlice,
   Stock_Slice: Stock_Slice,
   valorisation_Slice:valorisation_Slice,
-  Utilisateur_SuperviseurSlices:Utilisateur_SuperviseurSlices
-
+  utilisateurSystemSlice:utilisateurSystemSlices
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

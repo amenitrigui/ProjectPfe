@@ -27,14 +27,13 @@ import {
   viderChampsDevisInfo,
 } from "../../app/devis_slices/devisSlice";
 import ToolBar from "../Common/ToolBar";
-import ArticlesDevis from "./ArticlesDevis";
 import {
   setActiverChampsForm,
   setAfficherRecherchePopup,
   setOuvrireDrawerMenu,
   setToolbarMode,
   setToolbarTable,
-} from "../../app/interface_slices/uiSlice";
+} from "../../app/interface_slices/interfaceSlice";
 import SideBar from "../Common/SideBar";
 import TableArticle from "./TableArticle";
 
@@ -45,35 +44,35 @@ function DevisForm() {
   const dispatch = useDispatch();
   const navi = useNavigate();
   const listePointsVente = useSelector(
-    (state) => state.DevisCrud.listePointsVente
+    (state) => state.devisSlice.listePointsVente
   );
   const [isOpen, setIsOpen] = useState(false);
-  const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
+  const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
   const listeToutCodesClients = useSelector(
-    (state) => state.ClientCrud.listeToutCodesClients
+    (state) => state.clientSlice.listeToutCodesClients
   );
   // * informations d'un devis provenant des champs de cette formulaire
-  const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
+  const devisInfo = useSelector((state) => state.devisSlice.devisInfo);
   // * boolean pour activer/désactiver champs du formulaire
   // * initialement false (champs désactivé en mode de consultation)
   const activerChampsForm = useSelector(
-    (state) => state.uiStates.activerChampsForm
+    (state) => state.interfaceSlice.activerChampsForm
   );
-  const toobarTable = useSelector((state) => state.uiStates.toolbarTable);
+  const toobarTable = useSelector((state) => state.interfaceSlice.toolbarTable);
   const NETHTGLOBAL = devisInfo.MHT - devisInfo.MREMISE || 0;
   const taxe = devisInfo.MTTC - NETHTGLOBAL || 0;
   const apayer = devisInfo.MTTC + devisInfo.TIMBRE || 0;
   const infosUtilisateur = useSelector(
-    (state) => state.UtilisateurInfo.infosUtilisateur
+    (state) => state.utilisateurSlice.infosUtilisateur
   );
   const dernierCodeClient = useSelector(
-    (state) => state.ClientCrud.dernierCodeClient
+    (state) => state.clientSlice.dernierCodeClient
   );
   // * pour afficher le sidebar
   const ouvrireMenuDrawer = useSelector(
-    (state) => state.uiStates.ouvrireMenuDrawer
+    (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
-  const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
+  const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
   //?==================================================================================================================
   //?==============================================appels UseEffect====================================================
   //?==================================================================================================================
@@ -509,7 +508,7 @@ function DevisForm() {
             </div>
           </div>
           {/* Table des articles */}
-          {toolbarMode === "ajout" && <ArticlesDevis />}
+          {toolbarMode === "ajout" && <articleSlice />}
           <div className="mt-6">
             <div className="p-4 sticky bottom-0 w-full overflow-x-auto">
               <TableArticle />

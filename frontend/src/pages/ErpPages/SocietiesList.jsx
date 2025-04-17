@@ -7,7 +7,7 @@ const SocietiesList = () => {
   const [societies, setSocieties] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.UtilisateurInfo.token);
+  const token = useSelector((state) => state.utilisateurSlice.token);
   if (token == "") {
     navigate("/");
   }

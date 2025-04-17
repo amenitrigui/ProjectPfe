@@ -11,7 +11,7 @@ export const getListeCodeRegions = createAsyncThunk(
   async (_, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/region/${
-        thunkAPI.getState().UtilisateurInfo.dbName
+        thunkAPI.getState().utilisateurSlice.dbName
       }/getListeCodeRegions`
     );
     return response.data.listeCodesRegion;
@@ -28,7 +28,7 @@ export const getVilleParRegion = createAsyncThunk(
     console.log("ok");
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/region/${
-        thunkAPI.getState().UtilisateurInfo.dbName
+        thunkAPI.getState().utilisateurSlice.dbName
       }/getVilleParRegion/${codeRegion}`
     );
     console.log("response")

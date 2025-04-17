@@ -64,7 +64,7 @@ export const utilisateurSlice = createSlice({
     setListeUtilisateur: (state, action) => {
       state.listeUtilisateur = action.payload;
     },
-    setUtilisateurInfoEntire: (state,action)=>{
+    setutilisateurSliceEntire: (state,action)=>{
       state.infosUtilisateur=action.payload
     }
   },
@@ -98,6 +98,6 @@ export const utilisateurSlice = createSlice({
   },
 });
 
-export const { setDbName, setToken, setCodeUser, setListeUtilisateur,setUtilisateurInfoEntire } =
+export const { setDbName, setToken, setCodeUser, setListeUtilisateur,setutilisateurSliceEntire } =
   utilisateurSlice.actions;
 export default utilisateurSlice.reducer;

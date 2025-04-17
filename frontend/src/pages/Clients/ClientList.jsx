@@ -11,18 +11,18 @@ import {
 } from "../../app/client_slices/clientSlice";
 import {
   setToolbarTable,
-} from "../../app/interface_slices/uiSlice";
+} from "../../app/interface_slices/interfaceSlice";
 
 function ClientList() {
   const dispatch = useDispatch();
-  const listeClients = useSelector((store) => store.ClientCrud.listeClients);
+  const listeClients = useSelector((store) => store.clientSlice.listeClients);
 
   useEffect(() => {
     dispatch(getListeClient());
     dispatch(setToolbarTable("client"));
   }, []);
 
-  const filters = useSelector((store) => store.ClientCrud.filters);
+  const filters = useSelector((store) => store.clientSlice.filters);
 
   const handleFilterChange = (e, column) => {
     dispatch(setFiltresSaisient({ valeur: e.target.value, collonne: column }));

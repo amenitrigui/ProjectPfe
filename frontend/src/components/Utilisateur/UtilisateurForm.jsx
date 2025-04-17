@@ -23,18 +23,18 @@ import {
 import ToolBar from "../Common/ToolBar";
 import { getUtilisateurParCode } from "../../app/utilisateur_slices/utilisateurSlice";
 import SideBar from "../Common/SideBar";
-import {  setAfficherRecherchePopup, setOuvrireDrawerMenu } from "../../app/interface_slices/uiSlice";
+import {  setAfficherRecherchePopup, setOuvrireDrawerMenu } from "../../app/interface_slices/interfaceSlice";
 import {
   getDerniereCodeUtilisateur,
   setUtilisateur_SuperviseurInfos,
  
-} from "../../app/Utilisateur_SuperviseurSlices/Utilisateur_SuperviseurSlices";
+} from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 
 const UtilisateurForm = () => {
   const [isOpen, setIsOpen] = useState(false);
   // * pour afficher le sidebar
   const ouvrireMenuDrawer = useSelector(
-    (state) => state.uiStates.ouvrireMenuDrawer
+    (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
   const dispatch = useDispatch();
 
@@ -43,26 +43,26 @@ const UtilisateurForm = () => {
   };
 
   // Sélection des informations du client depuis le state Redux
-  const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
+  const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
   const utilisateurConnecte = useSelector(
-    (state) => state.Utilisateur_SuperviseurSlices.utilisateurConnecte
+    (state) => state.utilisateurSystemSlice.utilisateurConnecte
   );
   const Utilisateur_SuperviseurInfos = useSelector(
-    (state) => state.Utilisateur_SuperviseurSlices.Utilisateur_SuperviseurInfos
+    (state) => state.utilisateurSystemSlice.Utilisateur_SuperviseurInfos
   );
   const derniereCodeUtilisateur = useSelector(
-    (state) => state.Utilisateur_SuperviseurSlices.derniereCodeUtilisateur
+    (state) => state.utilisateurSystemSlice.derniereCodeUtilisateur
   );
 
   console.log(Utilisateur_SuperviseurInfos);
   const listeUtilisateur = useSelector(
-    (state) => state.UtilisateurInfo.listeUtilisateur
+    (state) => state.utilisateurSlice.listeUtilisateur
   );
   
   // state pour désactiver/activer les champs lors de changement de modes editables (ajout/modification)
   // vers le mode de consultation respectivement
   const activerChampsForm = useSelector(
-    (state) => state.uiStates.activerChampsForm
+    (state) => state.interfaceSlice.activerChampsForm
   );
 
 
@@ -71,7 +71,7 @@ const UtilisateurForm = () => {
 
   
   }, []);
-  const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
+  const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
   const handleCodeUtilisateur = (codeuser) => {
     dispatch(getUtilisateurParCode(codeuser));
   };

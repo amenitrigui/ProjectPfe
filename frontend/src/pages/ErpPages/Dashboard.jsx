@@ -34,7 +34,7 @@ import {
 } from "../../app/devis_slices/devisSlice";
 
 import SideBar from "../../components/Common/SideBar";
-import { setOuvrireDrawerMenu } from "../../app/interface_slices/uiSlice";
+import { setOuvrireDrawerMenu } from "../../app/interface_slices/interfaceSlice";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
@@ -62,31 +62,31 @@ const data03 = [
 ];
 
 const Dashboard = () => {
-  const devisMonthYear = useSelector((state) => state.DevisCrud.devisMonthYear);
+  const devisMonthYear = useSelector((state) => state.devisSlice.devisMonthYear);
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
 
   const ouvrireMenuDrawer = useSelector(
-    (state) => state.uiStates.ouvrireMenuDrawer
+    (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
-  const nombredevis = useSelector((state) => state.DevisCrud.nombreDeDevis);
-  const totalchifre = useSelector((state) => state.DevisCrud.totalchifre);
-  const nbTotalDevisAnnulees = useSelector((state) => state.DevisCrud.nbTotalDevisAnnulees);
-  const nbDevisEncours = useSelector((state) => state.DevisCrud.nbDevisEncours);
+  const nombredevis = useSelector((state) => state.devisSlice.nombreDeDevis);
+  const totalchifre = useSelector((state) => state.devisSlice.totalchifre);
+  const nbTotalDevisAnnulees = useSelector((state) => state.devisSlice.nbTotalDevisAnnulees);
+  const nbDevisEncours = useSelector((state) => state.devisSlice.nbDevisEncours);
 
   const utilisateurConnecte = useSelector(
-    (state) => state.Utilisateur_SuperviseurSlices.utilisateurConnecte
+    (state) => state.utilisateurSystemSlice.utilisateurConnecte
   );
   const nbTotalDevisGeneres = useSelector(
-    (state) => state.DevisCrud.nbTotalDevisGeneres
+    (state) => state.devisSlice.nbTotalDevisGeneres
   );
 
   const nbTotalDevisGeneresParUtilisateur = useSelector(
-    (state) => state.DevisCrud.nbTotalDevisGeneresParUtilisateur
+    (state) => state.devisSlice.nbTotalDevisGeneresParUtilisateur
   );
 
   const nbTotalDevisNonGeneresParUtilisateur = useSelector(
-    (state) => state.DevisCrud.nbTotalDevisNonGeneresParUtilisateur
+    (state) => state.devisSlice.nbTotalDevisNonGeneresParUtilisateur
   );
   
   // Transformer les données pour le BarChart

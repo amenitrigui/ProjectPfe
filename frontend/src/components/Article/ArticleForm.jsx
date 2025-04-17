@@ -19,7 +19,7 @@ import {
   setAfficherRecherchePopup,
   setOuvrireDrawerMenu,
   setToolbarTable,
-} from "../../app/interface_slices/uiSlice";
+} from "../../app/interface_slices/interfaceSlice";
 import SideBar from "../Common/SideBar";
 import { getPrixVente } from "../../app/Stock_valorisation_utilitaires/valorisation_Slice";
 import {
@@ -34,18 +34,18 @@ function ArticleForm() {
   //?==================================================================================================================
   // * pour afficher le sidebar
   const ouvrireMenuDrawer = useSelector(
-    (state) => state.uiStates.ouvrireMenuDrawer
+    (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
   const [isOpen, setIsOpen] = useState(false);
-  const articleInfos = useSelector((state) => state.ArticlesDevis.articleInfos);
-  const ListeFamille = useSelector((state) => state.ArticlesDevis.ListeFamille);
-  const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
+  const articleInfos = useSelector((state) => state.articleSlice.articleInfos);
+  const ListeFamille = useSelector((state) => state.articleSlice.ListeFamille);
+  const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
   const ListeSousFamille = useSelector(
-    (state) => state.ArticlesDevis.ListeSousFamille
+    (state) => state.articleSlice.ListeSousFamille
   );
   const dispatch = useDispatch();
   const infosUtilisateur = useSelector(
-    (state) => state.UtilisateurInfo.infosUtilisateur
+    (state) => state.utilisateurSlice.infosUtilisateur
   );
   //?==================================================================================================================
   //?==============================================appels UseEffect====================================================
@@ -77,7 +77,7 @@ function ArticleForm() {
   }, [articleInfos.famille]);
 
   const activerChampsForm = useSelector(
-    (state) => state.uiStates.activerChampsForm
+    (state) => state.interfaceSlice.activerChampsForm
   );
   useEffect(() => {
     if (articleInfos.code && articleInfos.code != "") {

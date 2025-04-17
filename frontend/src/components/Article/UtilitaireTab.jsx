@@ -9,15 +9,15 @@ import {
 
 function UtilitaireTab() {
   const dispatch = useDispatch();
-  const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
+  const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
   const activerChampsForm = useSelector(
-    (state) => state.uiStates.activerChampsForm
+    (state) => state.interfaceSlice.activerChampsForm
   );
 
-  const articleInfos = useSelector((state) => state.ArticlesDevis.articleInfos);
+  const articleInfos = useSelector((state) => state.articleSlice.articleInfos);
 
   const infosUtilisateur = useSelector(
-    (state) => state.UtilisateurInfo.infosUtilisateur
+    (state) => state.utilisateurSlice.infosUtilisateur
   );
   const handleChangeCheckbox = (checked, colonne) => {
     if (toolbarMode == "ajout" || toolbarMode == "modification") {

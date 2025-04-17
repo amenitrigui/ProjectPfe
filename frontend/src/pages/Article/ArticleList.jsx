@@ -8,7 +8,7 @@ import {
 } from "../../app/article_slices/articleSlice";
 function ArticleList() {
   const dispatch = useDispatch();
-  const listeArticle = useSelector((state) => state.ArticlesDevis.ListeArticle);
+  const listeArticle = useSelector((state) => state.articleSlice.ListeArticle);
   const filters = {
     code: "",
     libelle: "",

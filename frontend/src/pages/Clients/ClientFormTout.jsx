@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import ClientForm from "../../components/Client/ClientForm";
-import { setToolbarTable } from "../../app/interface_slices/uiSlice";
+import { setToolbarTable } from "../../app/interface_slices/interfaceSlice";
 import { useDispatch, useSelector } from "react-redux";
 import AlertModifier from "../../components/Common/AlertModifier";
 import Recherche from "../../components/Common/recherche";
@@ -8,7 +8,7 @@ import { getDerniereCodeClient } from "../../app/client_slices/clientSlice";
 
 function ClientFormTout() {
   const dispatch = useDispatch();
-  const afficherRecherchePopup = useSelector((state) => state.uiStates.afficherRecherchePopup);
+  const afficherRecherchePopup = useSelector((state) => state.interfaceSlice.afficherRecherchePopup);
   useEffect(() => {
     dispatch(setToolbarTable("client"));
     dispatch(getDerniereCodeClient());  

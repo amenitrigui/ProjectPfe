@@ -26,7 +26,7 @@ import {
   setActiverBoutonsValiderAnnuler,
   setToolbarMode,
   setAfficherAlert,
-} from "../../app/interface_slices/uiSlice";
+} from "../../app/interface_slices/interfaceSlice";
 import {
   getDerniereNumbl,
   viderChampsDevisInfo,
@@ -41,7 +41,7 @@ import {
   getListeUtilisateur,
   getListeUtilisateurParCode,
   setViderChampsUtilisateur,
-} from "../../app/Utilisateur_SuperviseurSlices/Utilisateur_SuperviseurSlices";
+} from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 function ToolBar() {
   //?==================================================================================================================
   //?=====================================================variables====================================================
@@ -49,25 +49,25 @@ function ToolBar() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
-  const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
+  const devisInfo = useSelector((state) => state.devisSlice.devisInfo);
+  const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
   // * state pour afficher/cacher fenetre de confirmation pour
   // * la suppression
   const [isDeleting, setIsDeleting] = useState(false);
   // * state pour controller quelle table on utilise
   // * puisque ce composant est partagé
-  const toolbarTable = useSelector((state) => state.uiStates.toolbarTable);
+  const toolbarTable = useSelector((state) => state.interfaceSlice.toolbarTable);
   // * boolean pour afficher / cacher les bouton valider et supprimer
   const activerBoutonsValiderAnnuler = useSelector(
-    (state) => state.uiStates.activerBoutonsValiderAnnuler
+    (state) => state.interfaceSlice.activerBoutonsValiderAnnuler
   );
-  const articleInfo = useSelector((state) => state.ArticlesDevis.articleInfos);
+  const articleInfo = useSelector((state) => state.articleSlice.articleInfos);
   const Utilisateur_SuperviseurInfos = useSelector(
-    (state) => state.Utilisateur_SuperviseurSlices.Utilisateur_SuperviseurInfos
+    (state) => state.utilisateurSystemSlice.Utilisateur_SuperviseurInfos
   );
-  const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
+  const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
   const dernierCodeClient = useSelector(
-    (state) => state.ClientCrud.dernierCodeClient
+    (state) => state.clientSlice.dernierCodeClient
   );
   //?==================================================================================================================
   //?==================================================appels UseEffect================================================
