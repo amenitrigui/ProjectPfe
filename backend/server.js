@@ -13,13 +13,14 @@ const Stock_ArticleRoutes= require("./routes/Stock_ArticleRoutes")
 const Valorisation_ArticleRoutes= require("./routes/Valorisation_ArticleRoutes")
 const utilisateurSystemRoutes=require("./routes/utilisateurSystemRoutes")
 require("dotenv").config();
+const { sequelize } = require("sequelize"); // Importation de l'instance Sequelize
 
 // * Création de l'application Express
 const app = express();
 
 // * Options CORS pour permettre l'accès au frontend
 const corsOptions = {
-  origin: [process.env.FRONTEND_URL, "http://localhost:3000"], // Autorise le frontend local et déployé
+  origin: [FRONTEND_URL_LOCAL, FRONTEND_URL_DISTANT], // Autorise le frontend local et déployé
   methods: ["GET", "POST", "PUT", "DELETE"], // Autorise ces méthodes HTTP
   credentials: true, // Permet l'envoi des cookies et en-têtes d'authentification
 };
