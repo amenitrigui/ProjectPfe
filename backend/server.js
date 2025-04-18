@@ -24,9 +24,6 @@ const corsOptions = {
   methods: ["GET", "POST", "PUT", "DELETE"], // Autorise ces méthodes HTTP
   credentials: true, // Permet l'envoi des cookies et en-têtes d'authentification
 };
-
-console.log(corsOptions.origin);
-
 // * Application des options CORS définies ci-dessus
 app.use(cors(corsOptions));
 
