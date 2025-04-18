@@ -18,13 +18,13 @@ export const getListeClient = createAsyncThunk(
 export const getClientParRaisonSociale = createAsyncThunk(
   "Slice/getClientParRaisonSociale",
   async (rsoc, thunkAPI) => {
-    console.log(rsoc)
+    console.log(rsoc);
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getClientParRaisonSociale/${rsoc}`
     );
-    console.log(response)
+    console.log(response);
     return response.data.clients;
   }
 );
@@ -69,7 +69,7 @@ export const ajouterClient = createAsyncThunk(
     );
     console.log(response);
     thunkAPI.getState().interfaceSlice.setAlertMessage(response.data.message);
-    return response.data;
+    return response.data.clientInfos;
   }
 );
 
@@ -261,9 +261,11 @@ export const clientSlice = createSlice({
     clientInfos: {
       code: "",
       rsoc: "",
+      datec: new Date().toISOString().split("T")[0],
       cp: "",
       adresse: "",
       email: "",
+      matemaj:"",
       telephone: "",
       tel1: "",
       tel2: "",
@@ -300,7 +302,9 @@ export const clientSlice = createSlice({
       ptva: "",
       codesec: "",
       desisec: "",
-
+      nom1: "",
+      nom2: "",
+      nom3: "",
       codergg: "",
       desirgg: "",
       desicp: "",

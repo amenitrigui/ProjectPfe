@@ -14,7 +14,7 @@ const autoChampsSociete = new SequelizeAuto('SOLEVO', 'root', '', {
   tables: ['dfp', 'client', 'ldfp', 'article', 'famille', 'sousfamille', 'cpostal', 'region', 'secteur','pointvente','depot', 'lignedepot'] // use all tables, if omitted
 })
 
-const autoChampsUtilisateur = new SequelizeAuto('usererpsole', 'root', '', {
+const autoChampsUtilisateur = new SequelizeAuto('process.env.DB_USERS_NAME', 'root', '', {
   host: 'localhost',
   dialect: 'mysql',
   directory: './models/utilisateur', // where to write files

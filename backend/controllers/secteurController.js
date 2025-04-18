@@ -1,5 +1,5 @@
 const { getDatabaseConnection } = require("../common/commonMethods");
-
+const defineSecteurModel = require("../models/societe/secteur")
 //* récuperer la liste de codes secteurs
 // * example:
 // * input :
@@ -59,7 +59,30 @@ const getListeCodesSecteur = async (req, res) => {
     }
   };
 
+const ajouterSecteur=async (req,res)=>{
+const { dbName } = req.params;
+  const { secteurInfo } = req.body;
+  console.log("ajouterSecteur infos :",secteurInfo)
+  
+  try {
+    const dbConnection = await getDatabaseConnection(dbName);
+    const Secteur = defineSecteurModel(dbConnection);
+    const newSecteur = await Secteur.create({
+      //add + save min base 3ibrt 3ml insert into mn base de donnes
+      codesec: secteurInfo.codesec,
+      desisec: secteurInfo.desisec, 
+      
+      
+    });
+    
+
+    return res.status(200).json({ message: "insertion avec succès" ,newSecteur});
+  } catch (error) {
+    return res.status(500).json({ message: error });
+  }
+};
 module.exports = {
   getDesignationSecteurparCodeSecteur,
   getListeCodesSecteur,
+  ajouterSecteur,
 };

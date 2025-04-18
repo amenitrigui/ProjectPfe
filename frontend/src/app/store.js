@@ -13,6 +13,8 @@ import Stock_Slice from "./Stock_valorisation_utilitaires/Stock_Slice"
 import valorisation_Slice from "./Stock_valorisation_utilitaires/valorisation_Slice"
 import utilisateurSystemSlices from "./utilisateurSystemSlices/utilisateurSystemSlice";
 
+import  secteurSlice  from "./secteur_slices/secteurSlice";
+
 const persistConfig = {
   key: "root",
   storage: localStorage,
@@ -29,6 +31,7 @@ const rootReducer = combineReducers({
   sousfamilleSlice: sousfamilleSlice,
   Stock_Slice: Stock_Slice,
   valorisation_Slice:valorisation_Slice,
+  secteurSlice:secteurSlice,
   utilisateurSystemSlice:utilisateurSystemSlices
 });
 
