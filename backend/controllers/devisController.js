@@ -724,7 +724,7 @@ const getNbTotalDevisGeneres = async (req, res) => {
     const Devis = defineDfpModel(dbConnection);
     const nbDevisGeneresTotal = await Devis.count({
       where: {
-        mlettre: { [Op.like]: `%Générer%` },
+        executer: "G",
       },
     });
     console.log(nbDevisGeneresTotal);
@@ -757,7 +757,10 @@ const getNbTotalDevisGeneresParUtilisateur = async (req, res) => {
 
     const nbDevisGeneresTotal = await Devis.count({
       where: {
-        mlettre: { [Op.like]: `%Générer%par  : ${codeuser}` },
+        [Op.and]: [
+          {executer: "G"},
+          {usera: codeuser}
+        ]
       },
     });
     console.log(nbDevisGeneresTotal);
@@ -791,9 +794,8 @@ const getNbDevisNonGeneresParUtilisateur = async (req, res) => {
     const nbDevisNonGeneresParUtilisateur = await Devis.count({
       where: {
         [Op.and]: [
-          { mlettre: { [Op.notLike]: `%Générer%` } },
-          { mlettre: { [Op.notLike]: "%Annulé%" } },
-          { usera: { [Op.like]: codeuser } },
+          { executer: ``  },
+          { usera: codeuser },
         ],
       },
     });
@@ -824,9 +826,7 @@ const getNbTotalDevisAnnulees = async (req, res) => {
     const Devis = defineDfpModel(dbConnection);
     const nbDevisANnulees = await Devis.count({
       where: {
-        mlettre: {
-          [Op.like]: "%Annulé%",
-        },
+        executer: "A",
       },
     });
 
@@ -859,10 +859,8 @@ const getNbTotalDevisEnCours = async (req, res) => {
     const Devis = defineDfpModel(dbConnection);
     const nbDevisEncours = await Devis.count({
       where: {
-        mlettre: {
-          [Op.like]: "%En cours%",
-        },
-      },
+        executer: "N",
+      }
     });
 
     if (nbDevisEncours) {
@@ -893,11 +891,12 @@ const getNbTotalDevisSansStatus = async (req, res) => {
     const Devis = defineDfpModel(dbConnection);
     const nbDevisSansStatus = await Devis.count({
       where: {
-        mlettre: {
+        executer: {
           [Op.and] : {
-            [Op.notLike]: "%Générer%",
-            [Op.notLike]: "%Annulé%",
-            [Op.notLike]: "%En cours%",
+            [Op.notLike]: "G",
+            [Op.notLike]: "A",
+            [Op.notLike]: "C",
+            [Op.notLike]: "N",
           }
         },
       },
