@@ -251,7 +251,7 @@ function ToolBar() {
   };
   const nav = useNavigate();
   const handleEditionClick = () => {
-    nav("/Test1");
+    nav("/ImprimerDevis");
   };
   const handleQuitterClick = () => {
     nav("/dashboard");
@@ -290,7 +290,7 @@ function ToolBar() {
               {(utilisateurConnecte?.type?.toLowerCase() === "superviseur" ||
                 (utilisateurConnecte?.type?.toLowerCase() === "utilisateur" &&
                   (toolbarTable === "client" ||
-                    toolbarTable === "devis" ||
+                    toolbarTable === "devis" ||toolbarTable === "famille" || toolbarTable === "sousfamille"  ||
                     toolbarTable === "article"))) && (
                 <button
                   type="button"
@@ -319,7 +319,8 @@ function ToolBar() {
               {(utilisateurConnecte?.type?.toLowerCase() === "superviseur" ||
                 (utilisateurConnecte?.type?.toLowerCase() === "utilisateur" &&
                   (toolbarTable === "client" ||
-                    toolbarTable === "devis" ||
+                    toolbarTable === "devis" ||toolbarTable === "famille" || toolbarTable === "sousfamille"  ||
+
                     toolbarTable === "article"))) && (
                 <button
                   type="button"
@@ -334,7 +335,8 @@ function ToolBar() {
               {(utilisateurConnecte?.type?.toLowerCase() === "superviseur" ||
                 (utilisateurConnecte?.type?.toLowerCase() === "utilisateur" &&
                   (toolbarTable === "client" ||
-                    toolbarTable === "devis" ||
+                    toolbarTable === "devis" ||toolbarTable === "famille" || toolbarTable === "sousfamille"  ||
+
                     toolbarTable === "article"))) && (
                 <button
                   type="button"
@@ -351,7 +353,8 @@ function ToolBar() {
               {(utilisateurConnecte?.type?.toLowerCase() === "superviseur" ||
                 (utilisateurConnecte?.type?.toLowerCase() === "utilisateur" &&
                   (toolbarTable === "client" ||
-                    toolbarTable === "devis" ||
+                    toolbarTable === "devis" ||toolbarTable === "famille" || toolbarTable === "sousfamille"  ||
+
                     toolbarTable === "article"))) && (
                 <button
                   type="button"
@@ -369,7 +372,8 @@ function ToolBar() {
               {(utilisateurConnecte?.type?.toLowerCase() === "superviseur" ||
                 (utilisateurConnecte?.type?.toLowerCase() === "utilisateur" &&
                   (toolbarTable === "client" ||
-                    toolbarTable === "devis" ||
+                    toolbarTable === "devis" ||toolbarTable === "famille" || toolbarTable === "sousfamille"  ||
+
                     toolbarTable === "article"))) && (
                 <button
                   type="button"

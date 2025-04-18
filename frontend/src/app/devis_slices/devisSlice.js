@@ -103,7 +103,7 @@ export const getListeDevisParNUMBL = createAsyncThunk(
         params: {
           NUMBL: NUMBL,
           codeuser:
-            thunkAPI.getState().utilisateurSlice.infosUtilisateur.codeuser,
+            thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte.codeuser,
         },
       }
     );
@@ -345,6 +345,10 @@ export const devisSlice = createSlice({
       libpv: "",
       ADRCLI: "",
       CODECLI: "",
+      delailivr:"",
+      modepaie:"",
+      transport:"",
+      numPage: 1,
       cp: "",
       DATEBL: new Date().toISOString().split("T")[0],
       MREMISE: "",
@@ -358,6 +362,8 @@ export const devisSlice = createSlice({
       RSCLI: "",
       codesecteur: "",
       MHT: "",
+      email:"",
+    
       articles: [],
     },
     nbTotalDevisGeneres: 0,

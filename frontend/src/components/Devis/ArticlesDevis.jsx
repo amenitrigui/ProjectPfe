@@ -15,7 +15,7 @@ import {
 import { setDevisArticles } from "../../app/devis_slices/devisSlice";
 import { setAfficherRecherchePopup, setToolbarTable } from "../../app/interface_slices/interfaceSlice";
 
-function articleSlice() {
+function ArticlesDevis() {
   //?==================================================================================================================
   //?====================================================Variables=====================================================
   //?==================================================================================================================
@@ -249,4 +249,4 @@ function articleSlice() {
   );
 }
 
-export default articleSlice;
+export default ArticlesDevis;

@@ -14,20 +14,17 @@ export const getListeClient = createAsyncThunk(
   }
 );
 
-// * recupere client la liste des client par typecli
-export const getClientParTypecli = createAsyncThunk(
-  "Slice/getClientParTypecli",
-  async (typecli, thunkAPI) => {
-    console.log(
-      `${process.env.REACT_APP_API_URL}/api/client/${
-        thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getClientParTypecli`
-    );
+// * recupere client la liste des client par raison sociale
+export const getClientParRaisonSociale = createAsyncThunk(
+  "Slice/getClientParRaisonSociale",
+  async (rsoc, thunkAPI) => {
+    console.log(rsoc)
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getClientParTypecli/${typecli}`
+      }/getClientParRaisonSociale/${rsoc}`
     );
+    console.log(response)
     return response.data.clients;
   }
 );
@@ -520,14 +517,14 @@ export const clientSlice = createSlice({
         state.erreur = action.payload;
       })
 
-      .addCase(getClientParTypecli.pending, (state) => {
+      .addCase(getClientParRaisonSociale.pending, (state) => {
         state.status = "chargement";
       })
-      .addCase(getClientParTypecli.fulfilled, (state, action) => {
+      .addCase(getClientParRaisonSociale.fulfilled, (state, action) => {
         state.listeClients = action.payload;
         state.status = "réussi";
       })
-      .addCase(getClientParTypecli.rejected, (state, action) => {
+      .addCase(getClientParRaisonSociale.rejected, (state, action) => {
         state.status = "échoué";
         state.erreur = action.payload;
       })

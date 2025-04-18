@@ -384,7 +384,7 @@ const ClientForm = () => {
             </div>
 
             <div className="mt-3 flex flex-col">
-              <div className="flex flex-wrap gap-0">
+              {/* <div className="flex flex-wrap gap-0">
                 <div className="flex flex-col w-1/2">
                   <label
                     className="font-bold mb-1"
@@ -420,7 +420,7 @@ const ClientForm = () => {
                     PV
                   </button>
                 </div>
-              </div>
+              </div> */}
 
               <div className="flex flex-col w-full">
                 <label
@@ -998,7 +998,7 @@ const ClientForm = () => {
                     className=" border border-gray-300 rounded-md p-2 "
                     value={clientInfos.matriculef || ""}
                     onChange={(e) =>
-                      handleChangeAlphaNumerique(e, "matriculef")
+                      handleChangeNumeriqueDouble(e, "matriculef")
                     }
                     disabled={!activerChampsForm}
                     maxLength={17}

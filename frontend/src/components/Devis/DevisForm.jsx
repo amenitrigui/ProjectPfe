@@ -42,6 +42,7 @@ import {
 } from "../../app/interface_slices/interfaceSlice";
 import SideBar from "../Common/SideBar";
 import TableArticle from "./TableArticle";
+import ArticlesDevis from "./ArticlesDevis";
 
 function DevisForm() {
   //?==================================================================================================================
@@ -516,7 +517,7 @@ function DevisForm() {
             </div>
           </div>
           {/* Table des articles */}
-          {toolbarMode === "ajout" && <articleSlice />}
+          {toolbarMode === "ajout" && <ArticlesDevis></ArticlesDevis>}
           <div className="mt-6">
             <div className="p-4 sticky bottom-0 w-full overflow-x-auto">
               <TableArticle />
