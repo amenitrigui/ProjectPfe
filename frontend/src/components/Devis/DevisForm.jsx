@@ -8,12 +8,6 @@ import {
   FaSignOutAlt,
   FaRegUserCircle,
 } from "react-icons/fa";
-import {
-  CheckIcon,
-  PencilIcon,
-  PrinterIcon,
-  TrashIcon,
-} from "@heroicons/react/20/solid";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getClientParCode,

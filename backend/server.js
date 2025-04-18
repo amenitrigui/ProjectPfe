@@ -11,7 +11,8 @@ const familleRoutes = require("./routes/familleRoutes")
 const sousfamilleRoutes = require("./routes/sousfamilleRoutes")
 const Stock_ArticleRoutes= require("./routes/Stock_ArticleRoutes")
 const Valorisation_ArticleRoutes= require("./routes/Valorisation_ArticleRoutes")
-const utilisateurSystemRoutes=require("./routes/utilisateurSystemRoutes")
+const utilisateurSystemRoutes=require("./routes/utilisateurSystemRoutes");
+const { getDatabaseConnection } = require("./common/commonMethods");
 require("dotenv").config();
 
 // * Création de l'application Express
@@ -19,11 +20,10 @@ const app = express();
 
 // * Options CORS pour permettre l'accès au frontend
 const corsOptions = {
-  origin: [process.env.FRONTEND_URL, "http://localhost:3000", "https://project-pfe-vercel.vercel.app"], // Autorise le frontend local et déployé
+  origin: [process.env.FRONTEND_URL_LOCAL, process.env.FRONTEND_URL_DISTANT], // Autorise le frontend local et déployé
   methods: ["GET", "POST", "PUT", "DELETE"], // Autorise ces méthodes HTTP
   credentials: true, // Permet l'envoi des cookies et en-têtes d'authentification
 };
-
 // * Application des options CORS définies ci-dessus
 app.use(cors(corsOptions));
 
@@ -44,13 +44,10 @@ app.use("/api/Stock_Article",Stock_ArticleRoutes );
 app.use("/api/Valorisation_Article",Valorisation_ArticleRoutes );
 app.use("/api/utilisateurSystem",utilisateurSystemRoutes );
 
-
-
-
 // * Test de connexion à la base de données
 app.get("/", async (req, res) => {
   try {
-    await sequelize.authenticate(); // Connexion à la base de données
+    await getDatabaseConnection(process.env.DB_USERS_NAME); // Connexion à la base de données
     console.log("> Connexion à la base de données réussie !");
     res.send("Connexion réussie !");
   } catch (error) {

@@ -25,6 +25,7 @@ function SignInPage() {
       setError("Tous les champs doivent être remplis");
       return;
     }
+    console.log(process.env.REACT_APP_API_URL);
 
     try {
       const response = await fetch(

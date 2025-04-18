@@ -30,7 +30,7 @@ import FamilleFormTout from "./pages/Famille/FamilleFormTout"
 import Settings from "./pages/ErpPages/Settings"
 import UtilisateurList from "./pages/Utilisateurs/UtilisateurList"
 import { setActiverBoutonsValiderAnnuler, setToolbarMode } from "./app/interface_slices/interfaceSlice";
-import Test1 from "./test/Test1";
+
 import ImprimerDevis from "./pages/Devis/Imprimer";
 import SecteurForm from "./pages/Clients/SecteurForm";
 
@@ -81,7 +81,7 @@ function App() {
       <Route path="/ArticleList" element={<ArticleList />}></Route>
       <Route path="/FamilleFormTout" element={<FamilleFormTout />}></Route>
       <Route path="/Settings" element={<Settings />}></Route>
-      <Route path="/Test1" element={<Test1 />}></Route>
+    
       <Route path="/ImprimerDevis" element={<ImprimerDevis />}></Route>
       <Route path="/SecteurForm" element={<SecteurForm />}></Route>
 

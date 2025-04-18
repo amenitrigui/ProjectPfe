@@ -389,7 +389,7 @@ const getDevisParNUMBL = async (req, res) => {
 const getDevisCreator = async (req, res) => {
   try {
     const { codea } = req.params;
-    const dbConnection = getDatabaseConnection("process.env.DB_USERS_NAME");
+    const dbConnection = getDatabaseConnection(process.env.DB_USERS_NAME);
     const resultat = await dbConnection.query(
       `SELECT * FROM utlisateur u, dfp d where d.codea = u.codeuser`,
       {
@@ -879,6 +879,45 @@ const getNbTotalDevisEnCours = async (req, res) => {
     dbConnection.close();
   }
 };
+// * récuperer le nombre de devis sans status
+// * pour une societé donnée (dbName)
+// * example:
+// * input : dbName = SOLEVO
+// * output : 472 devis non générés
+// * http://localhost:5000/api/devis/SOLEVO/getNbTotalDevisSansStatus
+const getNbTotalDevisSansStatus = async (req, res) => {
+  const { dbName } = req.params;
+  let dbConnection;
+  try{
+    dbConnection = await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    const nbDevisSansStatus = await Devis.count({
+      where: {
+        mlettre: {
+          [Op.and] : {
+            [Op.notLike]: "%Générer%",
+            [Op.notLike]: "%Annulé%",
+            [Op.notLike]: "%En cours%",
+          }
+        },
+      },
+    });
+
+    if (nbDevisSansStatus) {
+      return res
+        .status(200)
+        .json({
+          message: "nombre de devis sans status récupérés avec succès",
+          nbDevisSansStatus,
+        });
+    }
+
+  }catch(error){
+    return res.status(500).json({ message: error.message });
+  }finally{
+    dbConnection.close();
+  }  
+}
 
 module.exports = {
   getTousDevis,
@@ -905,4 +944,5 @@ module.exports = {
   getNbDevisNonGeneresParUtilisateur,
   getNbTotalDevisAnnulees,
   getNbTotalDevisEnCours,
+  getNbTotalDevisSansStatus
 };
