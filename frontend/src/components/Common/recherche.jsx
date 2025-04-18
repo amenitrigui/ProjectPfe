@@ -22,7 +22,7 @@ import {
 import {
   setAfficherRecherchePopup,
   setToolbarTable,
-} from "../../app/interface_slices/uiSlice";
+} from "../../app/interface_slices/interfaceSlice";
 import {
   getListeArticleParCodeArticle,
   getListeArticleparFamille,
@@ -53,19 +53,18 @@ import {
   getListeUtilisateurParNom,
   getListeUtilisateurParType,
   setUtilisateurSupInfo,
-} from "../../app/Utilisateur_SuperviseurSlices/Utilisateur_SuperviseurSlices";
-import { setUtilisateurInfoEntire } from "../../app/utilisateur_slices/utilisateurSlice";
+} from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 
 const Recherche = () => {
   //?==================================================================================================================
   //?=====================================================variables====================================================
   //?==================================================================================================================
-  const toolbarTable = useSelector((state) => state.uiStates.toolbarTable);
+  const toolbarTable = useSelector((state) => state.interfaceSlice.toolbarTable);
   const listeToutCodesClients = useSelector(
-    (state) => state.ClientCrud.listeToutCodesClients
+    (state) => state.clientSlice.listeToutCodesClients
   );
   // * tableau contenant la liste des codes des devis
-  const listeNUMBL = useSelector((state) => state.DevisCrud.listeNUMBL);
+  const listeNUMBL = useSelector((state) => state.devisSlice.listeNUMBL);
   // * récuperer la liste de codes sélon table choisit
   const dispatch = useDispatch();
   // * valeur de champs de recherche
@@ -73,20 +72,20 @@ const Recherche = () => {
   // * critère de filtre (par client, par montant ...)
   const [filtrerPar, setFiltrerPar] = useState("");
   // * liste de devis récuperer de store
-  const devisList = useSelector((state) => state.DevisCrud.devisList);
-  const listeClients = useSelector((state) => state.ClientCrud.listeClients);
-  const ListeArticle = useSelector((state) => state.ArticlesDevis.ListeArticle);
+  const devisList = useSelector((state) => state.devisSlice.devisList);
+  const listeClients = useSelector((state) => state.clientSlice.listeClients);
+  const ListeArticle = useSelector((state) => state.articleSlice.ListeArticle);
   const listeFamilles = useSelector(
     (state) => state.familleSlice.listeFamilles
   );
   const ListeCodeArticles = useSelector(
-    (state) => state.ArticlesDevis.ListeCodeArticles
+    (state) => state.articleSlice.ListeCodeArticles
   );
   const listeSousfamille = useSelector(
     (state) => state.sousfamilleSlice.listeSousfamille
   );
   const listeUtilisateur_Superviseur = useSelector(
-    (state) => state.Utilisateur_SuperviseurSlices.listeUtilisateur_Superviseur
+    (state) => state.utilisateurSystemSlice.listeUtilisateur_Superviseur
   );
   // * state qui contient l'information d'élèment selectionné
   const [datatableElementSelection, setDatatableElementSelection] = useState(
@@ -138,7 +137,7 @@ const Recherche = () => {
     { name: "Code", selector: (row) => row.code, sortable: true },
     { name: "Raison Sociale", selector: (row) => row.rsoc, sortable: true },
     { name: "cin", selector: (row) => row.cin, sortable: true },
-    { name: "typecli", selector: (row) => row.typecli, sortable: true },
+    { name: "raison sociale", selector: (row) => row.rsoc, sortable: true },
   ];
   // * article
   const colonnesArticle = [
@@ -251,7 +250,7 @@ const Recherche = () => {
         case "code":
           dispatch(getClientParCode(valeurRecherche));
           break;
-        case "Raison Sociale":
+        case "raison sociale":
           dispatch(getClientParRaisonSociale(valeurRecherche));
           break;
         case "cin":
@@ -443,7 +442,7 @@ const Recherche = () => {
                 )}
 
               {toolbarTable === "client" &&
-                ["code", "Raison Sociale", "cin"].map((filtre) => (
+                ["code", "raison sociale", "cin"].map((filtre) => (
                   <label key={filtre} className="flex items-center">
                     <input
                       type="radio"

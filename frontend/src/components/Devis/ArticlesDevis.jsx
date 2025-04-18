@@ -13,7 +13,7 @@ import {
   viderChampsArticleInfo,
 } from "../../app/article_slices/articleSlice";
 import { setDevisArticles } from "../../app/devis_slices/devisSlice";
-import { setAfficherRecherchePopup, setToolbarTable } from "../../app/interface_slices/uiSlice";
+import { setAfficherRecherchePopup, setToolbarTable } from "../../app/interface_slices/interfaceSlice";
 
 function ArticlesDevis() {
   //?==================================================================================================================
@@ -22,8 +22,8 @@ function ArticlesDevis() {
   const dispatch = useDispatch();
   const [netHt, setNetHt] = useState(0);
   const [puttc, setPuttc] = useState(0);
-  const articleInfos = useSelector((state) => state.ArticlesDevis.articleInfos)
-  const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
+  const articleInfos = useSelector((state) => state.articleSlice.articleInfos)
+  const devisInfo = useSelector((state) => state.devisSlice.devisInfo);
 
   //?==================================================================================================================
   //?=================================================appels useEffect=================================================

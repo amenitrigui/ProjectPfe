@@ -1,5 +1,5 @@
 const express = require("express");
-const { AjouterUtilisateur, getDerniereCodeUtilisateur, ModifierUtilisateur, supprimerUtilisateur,getListeUtilisateurParCode,getListeUtilisateurParDirecteur,getListeUtilisateurParType ,getListeUtilisateurParNom, getListeUtilisateur,filterListeUtilisateur,getCodeUtilisateurSuivant} = require("../controllers/Utilisateur_SuperviseurController");
+const { AjouterUtilisateur, getDerniereCodeUtilisateur, ModifierUtilisateur, supprimerUtilisateur,getListeUtilisateurParCode,getListeUtilisateurParDirecteur,getListeUtilisateurParType ,getListeUtilisateurParNom, getListeUtilisateur,filterListeUtilisateur,getCodeUtilisateurSuivant} = require("../controllers/utilisateurSystemController");
 
 const router = express.Router();
 // * inscription pour un utilisateur

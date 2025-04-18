@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { FaUser, FaCog, FaCreditCard, FaSignOutAlt , FaRegUserCircle } from "react-icons/fa";
+import {
+  FaUser,
+  FaCog,
+  FaSignOutAlt,
+  FaRegUserCircle,
+} from "react-icons/fa";
 import {
   PieChart,
   Pie,
@@ -13,16 +18,23 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Legend
-} from 'recharts';
+  Legend,
+} from "recharts";
 
 import {
+  getNbTotalDevisGeneres,
+  getDevisCountByMonthAndYear,
   getNombreTotalDevis,
   getTotalChiffres,
+  getNbTotalDevisGeneresParUtilisateur,
+  getNbDevisNonGeneresParUtilisateur,
+  getNbTotalDevisAnnulees,
+  getNbTotalDevisEnCours,
 } from "../../app/devis_slices/devisSlice";
 
 import SideBar from "../../components/Common/SideBar";
-import { setOuvrireDrawerMenu } from "../../app/interface_slices/uiSlice";
+import { setOuvrireDrawerMenu } from "../../app/interface_slices/interfaceSlice";
+
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
@@ -51,17 +63,80 @@ const data03 = [
 ];
 
 const Dashboard = () => {
+  const devisMonthYear = useSelector((state) => state.devisSlice.devisMonthYear);
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
 
-  const ouvrireMenuDrawer = useSelector((state) => state.uiStates.ouvrireMenuDrawer);
-  const nombredevis = useSelector((state) => state.DevisCrud.nombreDeDevis);
-  const totalchifre = useSelector((state) => state.DevisCrud.totalchifre);
-  const infosUtilisateur = useSelector((state) => state.UtilisateurInfo.infosUtilisateur);
+  const ouvrireMenuDrawer = useSelector(
+    (state) => state.interfaceSlice.ouvrireMenuDrawer
+  );
+  const nombredevis = useSelector((state) => state.devisSlice.nombreDeDevis);
+  const totalchifre = useSelector((state) => state.devisSlice.totalchifre);
+  const nbTotalDevisAnnulees = useSelector((state) => state.devisSlice.nbTotalDevisAnnulees);
+  const nbDevisEncours = useSelector((state) => state.devisSlice.nbDevisEncours);
 
+  const utilisateurConnecte = useSelector(
+    (state) => state.utilisateurSystemSlice.utilisateurConnecte
+  );
+  const nbTotalDevisGeneres = useSelector(
+    (state) => state.devisSlice.nbTotalDevisGeneres
+  );
+
+  const nbTotalDevisGeneresParUtilisateur = useSelector(
+    (state) => state.devisSlice.nbTotalDevisGeneresParUtilisateur
+  );
+  
+  const nbTotalDevisNonGeneresParUtilisateur = useSelector(
+    (state) => state.devisSlice.nbTotalDevisNonGeneresParUtilisateur
+  );
+  
+  // Transformer les données pour le BarChart
+  const chartData = devisMonthYear.map((item) => {
+    // Créer un label comme "01/2024" ou "Janvier 2024"
+    const monthNames = [
+      "Janvier",
+      "Février",
+      "Mars",
+      "Avril",
+      "Mai",
+      "Juin",
+      "Juillet",
+      "Août",
+      "Septembre",
+      "Octobre",
+      "Novembre",
+      "Décembre",
+    ];
+    return {
+      name: `${monthNames[item.month - 1]} ${item.year}`, // ou `${item.month}/${item.year}` si tu préfères
+      devis: item.totalDevis,
+    };
+  });
+
+  const statsDevis = [
+    { name: "Générés", value: nbTotalDevisGeneres },
+    { name: "Annulées", value: nbTotalDevisAnnulees },
+    { name: "En cours", value: nbDevisEncours },
+  ];
+
+  const data03 = [
+    { name: "Jan", devis: 400 },
+    { name: "Fév", devis: 300 },
+    { name: "Mar", devis: 200 },
+    { name: "Avr", devis: 278 },
+    { name: "Mai", devis: 189 },
+    { name: "Juin", devis: 239 },
+    { name: "Juil", devis: 349 },
+  ];
   useEffect(() => {
     dispatch(getNombreTotalDevis());
     dispatch(getTotalChiffres());
+    dispatch(getNbTotalDevisGeneres());
+    dispatch(getDevisCountByMonthAndYear());
+    dispatch(getNbTotalDevisAnnulees());
+    dispatch(getNbTotalDevisEnCours());
+    dispatch(getNbTotalDevisGeneresParUtilisateur());
+    dispatch(getNbDevisNonGeneresParUtilisateur());
   }, []);
   const toggleSidebar = () => {
     dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
@@ -87,13 +162,18 @@ const Dashboard = () => {
                 <div className="p-4 flex items-center border-b">
                   <FaRegUserCircle className="mr-3 text-3xl" />
                   <div>
-                    <p className="font-semibold">{infosUtilisateur.nom}</p>
-                    <p className="text-sm text-gray-500">{infosUtilisateur.type}</p>
+                    <p className="font-semibold">{utilisateurConnecte.nom}</p>
+                    <p className="text-sm text-gray-500">
+                      {utilisateurConnecte.type}
+                    </p>
                   </div>
                 </div>
                 <ul className="py-2">
                   <li className="px-4 py-2 hover:bg-gray-100">
-                    <Link to="/UtilisateurFormTout" className="flex items-center">
+                    <Link
+                      to="/UtilisateurFormTout"
+                      className="flex items-center"
+                    >
                       <FaUser className="mr-3" /> My Profile
                     </Link>
                   </li>
@@ -114,33 +194,54 @@ const Dashboard = () => {
         </div>
 
         <div className="cardBox grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[{
-            number: nombredevis,
-            name: "Nombre devis generes ",
-            icon: "cart-outline",
-          }, {
-            number: totalchifre.toFixed(2),
-            name: "Total chiffre",
-            icon: "cash-outline",
-          }, {
-            number: nombredevis,
-            name: "Nombre devis generes ",
-            icon: "cart-outline",
-          }, {
-            number: totalchifre.toFixed(2),
-            name: "Total chiffre",
-            icon: "cash-outline",
-          }].map((card, index) => (
-            <div className="card" key={index}>
-              <div>
-                <div className="numbers">{card.number}</div>
-                <div className="cardName">{card.name}</div>
+          {[
+            {
+              number: nombredevis,
+              name: "Nombre devis Total",
+            },
+            {
+              number: nbTotalDevisGeneres,
+              name: "Nombre Total de devis générés",
+            },
+            {
+              number: nbTotalDevisGeneresParUtilisateur,
+              name: "Nombre de devis générés par l'utilisateur",
+              user: `${utilisateurConnecte.codeuser}//${utilisateurConnecte.nom}`,
+            },
+            {
+              number: nbTotalDevisNonGeneresParUtilisateur,
+              name: "Nombre devis non générés par Utilisateur",
+            },
+          ].map((card, index) => {
+            const getIcon = (text) => {
+              const lower = text.toLowerCase();
+              if (lower.includes("non générés")) return "close-circle-outline";
+              if (lower.includes("générés") && lower.includes("utilisateur"))
+                return "person-circle-outline";
+              if (lower.includes("générés")) return "document-text-outline";
+              if (lower.includes("total")) return "file-tray-full-outline";
+              return "information-circle-outline";
+            };
+
+            return (
+              <div className="card" key={index}>
+                <div>
+                  <div className="numbers">{card.number}</div>
+                  <div className="cardName">
+                    {card.name}
+                    {card.user && (
+                      <span className="text-blue-600 font-semibold ml-1">
+                        {` ${card.user}`}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="iconBx">
+                  <ion-icon name={getIcon(card.name)}></ion-icon>
+                </div>
               </div>
-              <div className="iconBx">
-                <ion-icon name={card.icon}></ion-icon>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="details grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
@@ -151,9 +252,21 @@ const Dashboard = () => {
             </div>
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
-                <Pie data={data01} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#8884d8" label>
+                <Pie
+                  data={data01}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  fill="#8884d8"
+                  label
+                >
                   {data01.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
                   ))}
                 </Pie>
                 <Tooltip />
@@ -168,9 +281,21 @@ const Dashboard = () => {
             </div>
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
-                <Pie data={data02} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#82ca9d" label>
+                <Pie
+                  data={statsDevis}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  fill="#82ca9d"
+                  label
+                >
                   {data02.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
                   ))}
                 </Pie>
                 <Tooltip />
@@ -181,10 +306,10 @@ const Dashboard = () => {
           {/* Bar Chart */}
           <div className="p-4 bg-white shadow rounded">
             <div className="cardHeader mb-4">
-              <h2>Nombre Devis par Mois</h2>
+              <h2>Nombre Devis par Mois et Année</h2>
             </div>
             <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={data03}>
+              <BarChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />

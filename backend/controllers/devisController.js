@@ -3,7 +3,6 @@ const defineDfpModel = require("../models/societe/dfp");
 const defineLdfpModel = require("../models/societe/ldfp");
 const { getDatabaseConnection } = require("../common/commonMethods");
 
-
 // * récuperer la liste des dévis d'une societé donnée (dbName)
 // * example:
 // * input :
@@ -623,7 +622,7 @@ const getListeDevisParCodeClient = async (req, res) => {
 const getListeDevisParNUMBL = async (req, res) => {
   try {
     const { dbName } = req.params;
-    const { codeuser,NUMBL } = req.query;
+    const { codeuser, NUMBL } = req.query;
 
     const dbConnection = await getDatabaseConnection(dbName);
 
@@ -644,20 +643,240 @@ const getListeDevisParNUMBL = async (req, res) => {
         }
       );
 
-      if (listeDevis && listeDevis.length>0) {
-        return res
-          .status(200)
-          .json({ message: "Liste de devis récuperé avec succes", listeDevis: listeDevis });
+      if (listeDevis && listeDevis.length > 0) {
+        return res.status(200).json({
+          message: "Liste de devis récuperé avec succes",
+          listeDevis: listeDevis,
+        });
       } else {
-        return res
-          .status(404)
-          .json({ message: "aucun devis n'est trouvé" });
+        return res.status(404).json({ message: "aucun devis n'est trouvé" });
       }
     } else {
       return res.status(500).json({ message: "récupération de devis échoué" });
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
+  }
+};
+const getDevisCountByMonthAndYear = async (req, res) => {
+  const { dbName } = req.params;
+
+  if (!dbName) {
+    return res.status(400).json({
+      message: "Le nom de la base de données est requis.",
+    });
+  }
+
+  try {
+    const dbConnection = await getDatabaseConnection(dbName);
+
+    const sqlQuery = `
+      SELECT 
+        YEAR(DATEBL) AS year,
+        MONTH(DATEBL) AS month,
+        COUNT(DISTINCT NUMBL) AS totalDevis
+      FROM dfp
+      GROUP BY YEAR(DATEBL), MONTH(DATEBL)
+      ORDER BY year DESC, month DESC;
+    `;
+    console.log("Exécution de la requête SQL : ", sqlQuery);
+
+    const result = await dbConnection.query(sqlQuery, {
+      type: dbConnection.QueryTypes.SELECT,
+    });
+
+    if (result.length === 0) {
+      return res.status(404).json({
+        message: "Aucun devis trouvé.",
+      });
+    }
+
+    console.log("Résultats de la requête (devis par mois et année) :", result);
+
+    return res.status(200).json({
+      message: "Nombre de devis par mois et année récupéré avec succès.",
+      devisCountByMonthAndYear: result,
+    });
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération du nombre de devis par mois et année :",
+      error.message
+    );
+    return res.status(500).json({
+      message:
+        "Erreur lors de la récupération du nombre de devis par mois et année.",
+      error: error.message,
+    });
+  }
+};
+
+// * récuperer le nombre total de devis générés
+// * pour une societé donnée (dbName)
+// * example:
+// * input : dbName = SOLEVO
+// * output : 972 devis générés
+// * http://localhost:5000/api/devis/SOLEVO/getNbTotalDevisGeneres
+const getNbTotalDevisGeneres = async (req, res) => {
+  const { dbName } = req.params;
+  let dbConnection;
+  try {
+    dbConnection = await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    const nbDevisGeneresTotal = await Devis.count({
+      where: {
+        mlettre: { [Op.like]: `%Générer%` },
+      },
+    });
+    console.log(nbDevisGeneresTotal);
+    return res.status(200).json({
+      message: "Nombre total de devis générés récupéré",
+      nbDevisGeneresTotal: nbDevisGeneresTotal,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  } finally {
+    dbConnection.close();
+  }
+};
+// * récuperer le nombre de devis générés pour un utilisateur données
+// * pour une societé donnée (dbName)
+// * example:
+// * input : dbName = SOLEVO, codeuser = 02
+// * output : 472 devis générés
+// * http://localhost:5000/api/devis/SOLEVO/getNbTotalDevisGeneresParUtilisateur
+const getNbTotalDevisGeneresParUtilisateur = async (req, res) => {
+  const { dbName } = req.params;
+  const { codeuser } = req.query;
+  let dbConnection;
+  if (!codeuser) {
+    return res.status(400).json({ message: "le code utilisateur est requis" });
+  }
+  try {
+    dbConnection = await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+
+    const nbDevisGeneresTotal = await Devis.count({
+      where: {
+        mlettre: { [Op.like]: `%Générer%par  : ${codeuser}` },
+      },
+    });
+    console.log(nbDevisGeneresTotal);
+    return res.status(200).json({
+      message: `Nombre total de devis générés par l'utilisateur ${codeuser} récupéré`,
+      nbDevisGeneresTotal: nbDevisGeneresTotal,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  } finally {
+    dbConnection.close();
+  }
+};
+
+// * récuperer le nombre de devis non générés pour un utilisateur données
+// * pour une societé donnée (dbName)
+// * example:
+// * input : dbName = SOLEVO, codeuser = 02
+// * output : 472 devis non générés
+// * http://localhost:5000/api/devis/SOLEVO/getNbDevisNonGeneresParUtilisateur?codeuser=02
+const getNbDevisNonGeneresParUtilisateur = async (req, res) => {
+  const { dbName } = req.params;
+  const { codeuser } = req.query;
+  if (!codeuser) {
+    return res.status(400).json({ message: "le code utilisateur est requis" });
+  }
+  let dbConnection;
+  try {
+    dbConnection = await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    const nbDevisNonGeneresParUtilisateur = await Devis.count({
+      where: {
+        [Op.and]: [
+          { mlettre: { [Op.notLike]: `%Générer%` } },
+          { mlettre: { [Op.notLike]: "%Annulé%" } },
+          { usera: { [Op.like]: codeuser } },
+        ],
+      },
+    });
+    return res
+      .status(200)
+      .json({
+        message: `nombre de devis non générés par l'utilisateur ${codeuser} récupérés`,
+        nbDevisNonGeneresParUtilisateur,
+      });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  } finally {
+    dbConnection.close();
+  }
+};
+
+// * récuperer le nombre de devis annulées
+// * pour une societé donnée (dbName)
+// * example:
+// * input : dbName = SOLEVO
+// * output : 472 devis non générés
+// * http://localhost:5000/api/devis/SOLEVO/getNbTotalDevisAnnulees
+const getNbTotalDevisAnnulees = async (req, res) => {
+  const { dbName } = req.params;
+  let dbConnection;
+  try {
+    dbConnection = await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    const nbDevisANnulees = await Devis.count({
+      where: {
+        mlettre: {
+          [Op.like]: "%Annulé%",
+        },
+      },
+    });
+
+    if (nbDevisANnulees) {
+      return res
+        .status(200)
+        .json({
+          message: "nombre de devis annulées récupérés avec succès",
+          nbDevisANnulees,
+        });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  } finally {
+    dbConnection.close();
+  }
+};
+
+// * récuperer le nombre de devis en cours
+// * pour une societé donnée (dbName)
+// * example:
+// * input : dbName = SOLEVO
+// * output : 472 devis non générés
+// * http://localhost:5000/api/devis/SOLEVO/getNbTotalDevisEnCours
+const getNbTotalDevisEnCours = async (req, res) => {
+  const { dbName } = req.params;
+  let dbConnection;
+  try {
+    dbConnection = await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    const nbDevisEncours = await Devis.count({
+      where: {
+        mlettre: {
+          [Op.like]: "%En cours%",
+        },
+      },
+    });
+
+    if (nbDevisEncours) {
+      return res
+        .status(200)
+        .json({
+          message: "nombre de devis en cours récupérés avec succès",
+          nbDevisEncours,
+        });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  } finally {
+    dbConnection.close();
   }
 };
 
@@ -679,5 +898,11 @@ module.exports = {
   getDerniereNumbl,
   deleteDevis,
   getListeDevisParCodeClient,
-  getListeDevisParNUMBL
+  getListeDevisParNUMBL,
+  getNbTotalDevisGeneres,
+  getNbTotalDevisGeneresParUtilisateur,
+  getDevisCountByMonthAndYear,
+  getNbDevisNonGeneresParUtilisateur,
+  getNbTotalDevisAnnulees,
+  getNbTotalDevisEnCours,
 };

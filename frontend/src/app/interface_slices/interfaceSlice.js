@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export const uiSlice = createSlice({
-  name: "uiSlice",
+export const interfaceSlice = createSlice({
+  name: "interfaceSlice",
   initialState: {
     // * states pour l'affichage d'un alert
     // * message: message d'alert
@@ -89,5 +89,5 @@ export const {
   setAfficherRecherchePopup,
   setOuvrireDrawerMenu,
   setAfficherFamillePopub
-} = uiSlice.actions;
-export default uiSlice.reducer;
+} = interfaceSlice.actions;
+export default interfaceSlice.reducer;

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled, { keyframes } from "styled-components";
-import { setAfficherFamillePopub } from "../../app/interface_slices/uiSlice";
+import { setAfficherFamillePopub } from "../../app/interface_slices/interfaceSlice";
 import {
   ajouterFamille,
   setFamilleInfo,
@@ -138,7 +138,7 @@ const FamilleForm = () => {
 
     togglePopup();
   };
-  const toolbartable = useSelector((state) => state.uiStates.toolbarTable);
+  const toolbartable = useSelector((state) => state.interfaceSlice.toolbarTable);
 
   const hundleAjout = () => {
     if (toolbartable == "famille") {
@@ -152,7 +152,7 @@ const FamilleForm = () => {
   const SousFamilleInfos=useSelector((state)=>state.sousfamilleSlice.SousFamilleInfos)
 
   const afficherFamillePopub = useSelector(
-    (state) => state.uiStates.afficherFamillePopub
+    (state) => state.interfaceSlice.afficherFamillePopub
   );
   return (
     <AppContainer>

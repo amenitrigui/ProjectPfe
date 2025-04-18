@@ -2,35 +2,25 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import {
-  loginUtilisateur,
-  setCodeUser,
-  setDbName,
   setToken,
-  setUtilisateurInfoEntire,
-} from "../../app/utilisateur_slices/utilisateurSlice";
-import {
-  setutilisateurConnecte,
+  setutilisateurSliceEntire, 
   setutilisateurConnecteEntiere,
-} from "../../app/Utilisateur_SuperviseurSlices/Utilisateur_SuperviseurSlices";
+} from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 
 function SignInPage() {
   const [nom, setNom] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const erreur = useSelector((state) => state.UtilisateurInfo.erreur);
+  const erreur = useSelector((state) => state.utilisateurSlice.erreur);
   const [error, setError] = useState("");
-  const status = useSelector((state) => state.UtilisateurInfo.status);
-  console.log(status);
+  const status = useSelector((state) => state.utilisateurSlice.status);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const trimmedNom = nom.trim();
     const trimmedPassword = password.trim();
-    // dispatch(loginUtilisateur({nom: trimmedNom, motpasse: trimmedMotpasse}))
-    // if(status == "succès")
-    //   navigate("/SocietiesList");
     if (!trimmedNom || !trimmedPassword) {
       setError("Tous les champs doivent être remplis");
       return;
@@ -55,8 +45,7 @@ function SignInPage() {
       const data = await response.json(); // convertir la reponse de seurveur en objet javascript
 
       if (response.ok) {
-        // dispatch(setUtilisateurInfoEntire(data.user))
-        dispatch(setutilisateurConnecteEntiere(data.user));
+        dispatch(setutilisateurConnecteEntiere(data.user))
         dispatch(setToken(data.token));
         localStorage.setItem("societies", JSON.stringify(data.societies));
         // localStorage.setItem("codeuser", JSON.stringify(data.codeuser));

@@ -40,8 +40,6 @@ export const getUtilisateurParCode = createAsyncThunk(
 export const utilisateurSlice = createSlice({
   name: "utilisateurSlice",
   initialState: {
-    dbName: "",
-    token: "",
     codeuser: "",
     status: "",
     erreur: "",
@@ -49,22 +47,17 @@ export const utilisateurSlice = createSlice({
     infosUtilisateur: {
       codeuser: "",
       nom: "",
+      type:"",
     },
   },
   reducers: {
-    setDbName: (state, action) => {
-      state.dbName = action.payload;
-    },
-    setToken: (state, action) => {
-      state.token = action.payload;
-    },
     setCodeUser: (state, action) => {
       state.codeuser = action.payload;
     },
     setListeUtilisateur: (state, action) => {
       state.listeUtilisateur = action.payload;
     },
-    setUtilisateurInfoEntire: (state,action)=>{
+    setutilisateurSliceEntire: (state,action)=>{
       state.infosUtilisateur=action.payload
     }
   },
@@ -76,7 +69,6 @@ export const utilisateurSlice = createSlice({
       .addCase(getUtilisateurParCode.fulfilled, (state, action) => {
         state.status = "réussi";
         state.listeUtilisateur = action.payload;
-        console.log(state.listeUtilisateur);
         state.infosUtilisateur = action.payload;
       })
       .addCase(getUtilisateurParCode.rejected, (state, action) => {
@@ -98,6 +90,6 @@ export const utilisateurSlice = createSlice({
   },
 });
 
-export const { setDbName, setToken, setCodeUser, setListeUtilisateur,setUtilisateurInfoEntire } =
+export const { setCodeUser, setListeUtilisateur,setutilisateurSliceEntire } =
   utilisateurSlice.actions;
 export default utilisateurSlice.reducer;

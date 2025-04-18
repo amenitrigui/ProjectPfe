@@ -5,8 +5,8 @@ function TableArticle() {
   //?==================================================================================================================
   //?=====================================================Variables====================================================
   //?==================================================================================================================
-  const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
-  const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
+  const devisInfo = useSelector((state) => state.devisSlice.devisInfo);
+  const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
 
   //?==================================================================================================================
   //?===================================================appels UseEffect===============================================

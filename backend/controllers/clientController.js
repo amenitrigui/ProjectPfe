@@ -364,7 +364,7 @@ const getClientParRaisonSociale = async (req, res) => {
 
     return res
       .status(200)
-      .json({ message: "type client  récuperé avec succès", clients: client });
+      .json({ message: "taison sociale  récuperé avec succès", clients: client });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

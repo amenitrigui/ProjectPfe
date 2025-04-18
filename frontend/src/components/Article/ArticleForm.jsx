@@ -19,7 +19,7 @@ import {
   setAfficherRecherchePopup,
   setOuvrireDrawerMenu,
   setToolbarTable,
-} from "../../app/interface_slices/uiSlice";
+} from "../../app/interface_slices/interfaceSlice";
 import SideBar from "../Common/SideBar";
 import { getPrixVente } from "../../app/Stock_valorisation_utilitaires/valorisation_Slice";
 import {
@@ -34,18 +34,18 @@ function ArticleForm() {
   //?==================================================================================================================
   // * pour afficher le sidebar
   const ouvrireMenuDrawer = useSelector(
-    (state) => state.uiStates.ouvrireMenuDrawer
+    (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
   const [isOpen, setIsOpen] = useState(false);
-  const articleInfos = useSelector((state) => state.ArticlesDevis.articleInfos);
-  const ListeFamille = useSelector((state) => state.ArticlesDevis.ListeFamille);
-  const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
+  const articleInfos = useSelector((state) => state.articleSlice.articleInfos);
+  const ListeFamille = useSelector((state) => state.articleSlice.ListeFamille);
+  const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
   const ListeSousFamille = useSelector(
-    (state) => state.ArticlesDevis.ListeSousFamille
+    (state) => state.articleSlice.ListeSousFamille
   );
   const dispatch = useDispatch();
   const infosUtilisateur = useSelector(
-    (state) => state.UtilisateurInfo.infosUtilisateur
+    (state) => state.utilisateurSlice.infosUtilisateur
   );
   //?==================================================================================================================
   //?==============================================appels UseEffect====================================================
@@ -69,7 +69,9 @@ function ArticleForm() {
       );
     }
   }, [articleInfos.codesousfam]);
-
+  const utilisateurConnecte = useSelector(
+    (state) => state.utilisateurSystemSlice.utilisateurConnecte
+  );
   useEffect(() => {
     if (articleInfos.famille && articleInfos.famille != "") {
       dispatch(getDesignationFamilleParCodeFamille(articleInfos.famille));
@@ -77,7 +79,7 @@ function ArticleForm() {
   }, [articleInfos.famille]);
 
   const activerChampsForm = useSelector(
-    (state) => state.uiStates.activerChampsForm
+    (state) => state.interfaceSlice.activerChampsForm
   );
   useEffect(() => {
     if (articleInfos.code && articleInfos.code != "") {
@@ -181,9 +183,9 @@ function ArticleForm() {
                 <div className="p-4 flex items-center border-b">
                   <FaRegUserCircle className="mr-3 text-3xl" />
                   <div>
-                    <p className="font-semibold">{infosUtilisateur.nom}</p>
+                    <p className="font-semibold">{utilisateurConnecte.nom}</p>
                     <p className="text-sm text-gray-500">
-                      {infosUtilisateur.type}
+                      {utilisateurConnecte.type}
                     </p>
                   </div>
                 </div>

@@ -7,7 +7,7 @@ import {
   setActiverChampsForm,
   setAfficherAlert,
   setToolbarMode,
-} from "../../app/interface_slices/uiSlice";
+} from "../../app/interface_slices/interfaceSlice";
 import {
   ajouterClient,
   majClient,
@@ -22,44 +22,47 @@ import {
   viderChampsArticleInfo,
 } from "../../app/article_slices/articleSlice";
 
-import { validerChampsForm } from "../../utils/validations"
-import { AjouterDevis, viderChampsDevisInfo } from "../../app/devis_slices/devisSlice";
-  
+import { validerChampsForm } from "../../utils/validations";
+import {
+  AjouterDevis,
+  viderChampsDevisInfo,
+} from "../../app/devis_slices/devisSlice";
+
 import {
   AjouterUtilisateur,
   ModifierUtilisateur,
   setViderChampsUtilisateur,
   supprimerUtilisateur,
-} from "../../app/Utilisateur_SuperviseurSlices/Utilisateur_SuperviseurSlices";
+} from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 function AlertModifier() {
   //?==================================================================================================================
   //?=====================================================variables====================================================
   //?==================================================================================================================
   const dispatch = useDispatch();
-  const afficherAlert = useSelector((state) => state.uiStates.afficherAlert);
-const Utilisateur_SuperviseurInfos=useSelector((state)=>state.Utilisateur_SuperviseurSlices.Utilisateur_SuperviseurInfos)
-  const message = useSelector((state) => state.uiStates.message);
-  const toolbarTable = useSelector((state) => state.uiStates.toolbarTable);
-  const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
+  const afficherAlert = useSelector((state) => state.interfaceSlice.afficherAlert);
+  const Utilisateur_SuperviseurInfos = useSelector(
+    (state) => state.utilisateurSystemSlice.Utilisateur_SuperviseurInfos
+  );
+  const message = useSelector((state) => state.interfaceSlice.message);
+  const toolbarTable = useSelector((state) => state.interfaceSlice.toolbarTable);
+  const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
   const clientSelectionne = useSelector(
-    (state) => state.ClientCrud.clientInfos
+    (state) => state.clientSlice.clientInfos
   ).code;
   const articleCode = useSelector(
-    (state) => state.ArticlesDevis.articleInfos
+    (state) => state.articleSlice.articleInfos
   ).code;
-  const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
+  const devisInfo = useSelector((state) => state.devisSlice.devisInfo);
   //?==================================================================================================================
   //?=================================================appels UseEffect=================================================
   //?==================================================================================================================
   // useEffect(() => {
   //   console.log(validerChampsForm("devis", {"nice": "val"}))
   // }, [])
-  
 
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
-
 
   const handleConfirmerClick = async (closeToast) => {
     //*pour le client
@@ -83,12 +86,11 @@ const Utilisateur_SuperviseurInfos=useSelector((state)=>state.Utilisateur_Superv
     // * pour devis
     if (toolbarTable == "devis") {
       if (toolbarMode == "ajout") {
-        if(validerChampsForm("devis", devisInfo)){
+        if (validerChampsForm("devis", devisInfo)) {
           dispatch(AjouterDevis());
-          dispatch(viderChampsDevisInfo())
-        }
-        else {
-          alert("veuillez vérifier les données de formulaire")
+          dispatch(viderChampsDevisInfo());
+        } else {
+          alert("veuillez vérifier les données de formulaire");
         }
       }
       if (toolbarMode == "modification") {
@@ -114,29 +116,24 @@ const Utilisateur_SuperviseurInfos=useSelector((state)=>state.Utilisateur_Superv
     }
     //* pour l'utilisateur
     if (toolbarTable == "utilisateur") {
-
       if (toolbarMode == "ajout") {
         dispatch(AjouterUtilisateur());
-       
       }
-      if (toolbarMode == "modification")
-      {
-        dispatch(ModifierUtilisateur())
+      if (toolbarMode == "modification") {
+        dispatch(ModifierUtilisateur());
       }
-      if (toolbarMode=="suppression")
-      {
-        dispatch(supprimerUtilisateur(Utilisateur_SuperviseurInfos.codeuser))
-        dispatch(setViderChampsUtilisateur())
+      if (toolbarMode == "suppression") {
+        dispatch(supprimerUtilisateur(Utilisateur_SuperviseurInfos.codeuser));
+        dispatch(setViderChampsUtilisateur());
       }
     }
     // * pour la famille
-    if(toolbarTable == "famille") {
-      if(toolbarMode == "ajout") {
-        
+    if (toolbarTable == "famille") {
+      if (toolbarMode == "ajout") {
       }
     }
     dispatch(setAfficherAlert(false));
-    dispatch(setViderChampsUtilisateur())
+    dispatch(setViderChampsUtilisateur());
 
     dispatch(setActiverBoutonsValiderAnnuler(false));
     closeToast();
@@ -150,10 +147,10 @@ const Utilisateur_SuperviseurInfos=useSelector((state)=>state.Utilisateur_Superv
       toast(
         ({ closeToast }) => (
           <div
-            // style={{
-            //   borderRadius: "20px",
-            //   boxShadow: "0px 4px 10px rgb(42, 33, 133)",
-            // }}
+          // style={{
+          //   borderRadius: "20px",
+          //   boxShadow: "0px 4px 10px rgb(42, 33, 133)",
+          // }}
           >
             <p
               style={{

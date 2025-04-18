@@ -2810,7 +2810,7 @@ const DevisFormPlaceholder = () => {
             <div className="bg-gray-300 p-4 sticky bottom-0 w-full">
               <div className="flex flex-wrap gap-4">
                 <div className="flex-1 min-w-[150px]">
-                  <label className="block font-medium font-bold">
+                  <label className="block font-medium">
                     Montant HT :
                   </label>
 

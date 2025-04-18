@@ -11,7 +11,7 @@ const familleRoutes = require("./routes/familleRoutes")
 const sousfamilleRoutes = require("./routes/sousfamilleRoutes")
 const Stock_ArticleRoutes= require("./routes/Stock_ArticleRoutes")
 const Valorisation_ArticleRoutes= require("./routes/Valorisation_ArticleRoutes")
-const Utilisateur_SuperviseurRoutes=require("./routes/Utilisateur_SuperviseurRoutes")
+const utilisateurSystemRoutes=require("./routes/utilisateurSystemRoutes")
 require("dotenv").config();
 
 // * Création de l'application Express
@@ -42,7 +42,7 @@ app.use("/api/famille", familleRoutes)
 app.use("/api/sousfamille", sousfamilleRoutes);
 app.use("/api/Stock_Article",Stock_ArticleRoutes );
 app.use("/api/Valorisation_Article",Valorisation_ArticleRoutes );
-app.use("/api/Utilisateur_Superviseur",Utilisateur_SuperviseurRoutes );
+app.use("/api/utilisateurSystem",utilisateurSystemRoutes );
 
 
 

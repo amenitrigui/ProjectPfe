@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setDbName } from "../../app/utilisateur_slices/utilisateurSlice";
+import { setDbName } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 
 const SocietiesList = () => {
   const [societies, setSocieties] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.UtilisateurInfo.token);
-
+  const token = useSelector((state) => state.utilisateurSystemSlice.token);
   if (token == "") {
     navigate("/");
   }
@@ -43,17 +42,9 @@ const SocietiesList = () => {
       );
 
       if (response.status === 200) {
-        console.log(response.data);
-        // ! devisList
-        // const devisList = response.data.devis;
-        // console.log("Liste des devis récupérés :", devisList);
-
-        // const selectedNumbl = devisList.map((devis) => devis.numbl);
-        // console.log("Tous les numbl récupérés :", selectedNumbl);
         dispatch(setDbName(society));
         localStorage.setItem("selectedDatabase", society);
         localStorage.setItem("selectedRsoc", society.rsoc);
-        dispatch(setDbName(society));
         navigate("/Dashboard");
       }
     } catch (error) {

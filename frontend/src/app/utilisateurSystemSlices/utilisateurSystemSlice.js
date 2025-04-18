@@ -3,50 +3,47 @@ import axios from "axios";
 
 //* thunk pour ajouter un sous famille
 export const AjouterUtilisateur = createAsyncThunk(
-  "Utilisateur_SuperviseurSlice/AjouterUtilisateur",
+  "utilisateurSystemSlices/AjouterUtilisateur",
   async (_, thunkAPI) => {
     const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/Utilisateur_Superviseur/AjouterUtilisateur`,
+      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/AjouterUtilisateur`,
       {
-        User: thunkAPI.getState().Utilisateur_SuperviseurSlices
+        User: thunkAPI.getState().utilisateurSystemSlices
           .Utilisateur_SuperviseurInfos,
       }
     );
-    console.log(response);
     return response.data.user;
   }
 );
 export const getDerniereCodeUtilisateur = createAsyncThunk(
-  "Utilisateur_SuperviseurSlice/getDerniereCodeUtilisateur",
+  "utilisateurSystemSlices/getDerniereCodeUtilisateur",
   async () => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/Utilisateur_Superviseur/getDerniereCodeUtilisateur`
+      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getDerniereCodeUtilisateur`
     );
-    console.log(response);
     return response.data.derniereCodeUtilisateur;
   }
 );
 export const ModifierUtilisateur = createAsyncThunk(
-  "Utilisateur_SuperviseurSlice/ModifierUtilisateur",
+  "utilisateurSystemSlices/ModifierUtilisateur",
   async (_, thunkAPI) => {
     const response = await axios.put(
-      `${process.env.REACT_APP_API_URL}/api/Utilisateur_Superviseur/ModifierUtilisateur`,
+      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/ModifierUtilisateur`,
       {
         MajUtilisateur:
-          thunkAPI.getState().Utilisateur_SuperviseurSlices
+          thunkAPI.getState().utilisateurSystemSlices
             .Utilisateur_SuperviseurInfos,
       }
     );
-    console.log(response);
     return response.data.user;
   }
 );
 export const supprimerUtilisateur = createAsyncThunk(
-  "Utilisateur_SuperviseurSlice/supprimerUtilisateur",
+  "utilisateurSystemSlices/supprimerUtilisateur",
   async (codeuser) => {
     console.log(codeuser);
     const response = await axios.delete(
-      `${process.env.REACT_APP_API_URL}/api/Utilisateur_Superviseur/supprimerUtilisateur`,
+      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/supprimerUtilisateur`,
       {
         params: { codeuser: codeuser },
       }
@@ -55,10 +52,10 @@ export const supprimerUtilisateur = createAsyncThunk(
   }
 );
 export const getListeUtilisateurParCode = createAsyncThunk(
-  "Utilisateur_SuperviseurSlice/getListeUtilisateurParCode",
+  "utilisateurSystemSlices/getListeUtilisateurParCode",
   async (codeuser) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/Utilisateur_Superviseur/getListeUtilisateurParCode`,
+      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeUtilisateurParCode`,
       {
         params: {
           codeuser: codeuser,
@@ -70,10 +67,10 @@ export const getListeUtilisateurParCode = createAsyncThunk(
   }
 );
 export const getListeUtilisateurParNom = createAsyncThunk(
-  "Utilisateur_SuperviseurSlice/getListeUtilisateurParNom",
+  "utilisateurSystemSlices/getListeUtilisateurParNom",
   async (nom) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/Utilisateur_Superviseur/getListeUtilisateurParNom`,
+      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeUtilisateurParNom`,
       {
         params: {
           nom: nom,
@@ -85,10 +82,10 @@ export const getListeUtilisateurParNom = createAsyncThunk(
   }
 );
 export const getListeUtilisateurParDirecteur = createAsyncThunk(
-  "Utilisateur_SuperviseurSlice/getListeUtilisateurParDirecteur",
+  "utilisateurSystemSlices/getListeUtilisateurParDirecteur",
   async (directeur) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/Utilisateur_Superviseur/getListeUtilisateurParDirecteur`,
+      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeUtilisateurParDirecteur`,
       {
         params: {
           directeur: directeur,
@@ -100,10 +97,10 @@ export const getListeUtilisateurParDirecteur = createAsyncThunk(
   }
 );
 export const getListeUtilisateurParType = createAsyncThunk(
-  "Utilisateur_SuperviseurSlice/getListeUtilisateurParType",
+  "utilisateurSystemSlices/getListeUtilisateurParType",
   async (type) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/Utilisateur_Superviseur/getListeUtilisateurParType`,
+      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeUtilisateurParType`,
       {
         params: {
           type: type,
@@ -115,25 +112,25 @@ export const getListeUtilisateurParType = createAsyncThunk(
   }
 );
 export const getListeUtilisateur = createAsyncThunk(
-  "Utilisateur_SuperviseurSlice/getListeUtilisateur",
+  "utilisateurSystemSlices/getListeUtilisateur",
   async () => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/Utilisateur_Superviseur/getListeUtilisateur`
+      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeUtilisateur`
     );
     console.log(response);
     return response.data.result;
   }
 );
 export const filterListeUtilisateur = createAsyncThunk(
-  "Utilisateur_SuperviseurSlice/filterListeUtilisateur",
+  "utilisateurSystemSlices/filterListeUtilisateur",
   async (_, thunkAPI) => {
     // Passer `filters` en paramètre
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/Utilisateur_Superviseur/filterListeUtilisateur`,
+      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/filterListeUtilisateur`,
       {
         params: {
           filters:
-            thunkAPI.getState().Utilisateur_Superviseur.filtersUtilisateur, // Utiliser filters ici
+            thunkAPI.getState().utilisateurSystemSlices.filtersUtilisateur, // Utiliser filters ici
         },
       }
     );
@@ -142,17 +139,16 @@ export const filterListeUtilisateur = createAsyncThunk(
   }
 );
 export const getCodeUtilisateurSuivant = createAsyncThunk(
-  "Utilisateur_SuperviseurSlice/getCodeUtilisateurSuivant",
+  "utilisateurSystemSlices/getCodeUtilisateurSuivant",
   async () => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/Utilisateur_Superviseur/getCodeUtilisateurSuivant`
+      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getCodeUtilisateurSuivant`
     );
-    console.log(response)
     return response
   }
 );
-export const Utilisateur_SuperviseurSlices = createSlice({
-  name: "Utilisateur_SuperviseurSlices",
+export const utilisateurSystemSlices = createSlice({
+  name: "utilisateurSystemSlices",
   initialState: {
     listeUtilisateur_Superviseur: [],
     Utilisateur_SuperviseurInfos: {
@@ -164,6 +160,7 @@ export const Utilisateur_SuperviseurSlices = createSlice({
       directeur: "",
     },
     utilisateurConnecte: {
+      codeuser:"",
       nom: "",
       type: "",
     },
@@ -176,6 +173,8 @@ export const Utilisateur_SuperviseurSlices = createSlice({
     },
 
     derniereCodeUtilisateur: "",
+    dbName: "",
+    token: "",
   },
   reducers: {
     setListeUtilisateur_Superviseur: (state, action) => {
@@ -197,7 +196,6 @@ export const Utilisateur_SuperviseurSlices = createSlice({
     },
     setFiltresSaisient: (state, action) => {
       const { colonne, valeur } = action.payload;
-      console.log(action.payload);
       state.filtersUtilisateur[colonne] = valeur;
     },
     setViderChampsUtilisateur: (state, action) => {
@@ -208,6 +206,12 @@ export const Utilisateur_SuperviseurSlices = createSlice({
         directeur: "",
         motpasse: "",
       };
+    },
+    setDbName: (state, action) => {
+      state.dbName = action.payload;
+    },
+    setToken: (state, action) => {
+      state.token = action.payload;
     },
   },
 
@@ -300,6 +304,7 @@ export const {
   setViderChampsUtilisateur,
   setUtilisateurSupInfo,
   setFiltresSaisient,
-} = Utilisateur_SuperviseurSlices.actions;
+  setDbName, setToken
+} = utilisateurSystemSlices.actions;
 
-export default Utilisateur_SuperviseurSlices.reducer;
+export default utilisateurSystemSlices.reducer;

@@ -3,16 +3,10 @@ import DataTable from "react-data-table-component";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getListeClient,
-  
-  filtrerClients,
   setClientsASupprimer,
   setClientInfosEntiere,
 } from "../../app/client_slices/clientSlice";
-import {
-  setToolbarTable,
-} from "../../app/interface_slices/uiSlice";
-import { filterListeUtilisateur, getListeUtilisateur, setFiltresSaisient } from "../../app/Utilisateur_SuperviseurSlices/Utilisateur_SuperviseurSlices";
+import { filterListeUtilisateur, getListeUtilisateur, setFiltresSaisient } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 
 function UtilisateurList() {
   const dispatch = useDispatch();

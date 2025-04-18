@@ -23,24 +23,28 @@ import DevisFormPlaceholder from "./components/Devis/DevisFormPlaceholder";
 import Deconnexion from "./pages/authentication/Deconnexion";
 import ClientFormTout from "./pages/Clients/ClientFormTout";
 import { useDispatch, useSelector } from "react-redux";
-import { setDevisInfo } from "./app/devis_slices/devisSlice";
 import UtilisateurFormTout from "./pages/Utilisateurs/UtilisateurFormTout";
-import ArticleFormTout from "./pages/Article/ArticleFormTout";
-import ArticleList from "./pages/Article/ArticleList";
-import FamilleFormTout from "./pages/Famille/FamilleFormTout";
-import Settings from "./pages/ErpPages/Settings";
+import ArticleFormTout from "./pages/Article/ArticleFormTout"
+import ArticleList from "./pages/Article/ArticleList"
+import FamilleFormTout from "./pages/Famille/FamilleFormTout"
+import Settings from "./pages/ErpPages/Settings"
 import UtilisateurList from "./pages/Utilisateurs/UtilisateurList"
-
-import { setActiverBoutonsValiderAnnuler, setToolbarMode, setToolbarTable } from "./app/interface_slices/uiSlice";
+import { setActiverBoutonsValiderAnnuler, setToolbarMode } from "./app/interface_slices/interfaceSlice";
+import Test1 from "./test/Test1";
+import ImprimerDevis from "./pages/Devis/Imprimer";
 
 function App() {
   //?==================================================================================================================
   //?=====================================================variables====================================================
   //?==================================================================================================================
   const dispatch = useDispatch();
-  const usera = useSelector((state) => state.UtilisateurInfo.codeuser);
+  const usera = useSelector((state) => state.utilisateurSlice.codeuser);
   const location = useLocation();
-  const toolbarTable = useSelector((state) => state.uiStates.toolbarTable);
+  const toolbarTable = useSelector((state) => state.interfaceSlice.toolbarTable);
+  const utilisateurConnecte = useSelector(
+    (state) => state.utilisateurSystemSlice.utilisateurConnecte
+  );
+  const infosUtilisateur = useSelector((state) => state.utilisateurSlice.infosUtilisateur);
   //?==================================================================================================================
   //?==================================================appels UseEffect================================================
   //?==================================================================================================================
@@ -76,9 +80,8 @@ function App() {
       <Route path="/ArticleList" element={<ArticleList />}></Route>
       <Route path="/FamilleFormTout" element={<FamilleFormTout />}></Route>
       <Route path="/Settings" element={<Settings />}></Route>
-      <Route path="/Test1" element={<Test1></Test1>}></Route>
-
-
+      <Route path="/Test1" element={<Test1 />}></Route>
+      <Route path="/ImprimerDevis" element={<ImprimerDevis />}></Route>
       <Route
         path="/DevisFormPlaceholder"
         element={<DevisFormPlaceholder></DevisFormPlaceholder>}
