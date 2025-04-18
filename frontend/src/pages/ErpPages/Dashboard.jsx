@@ -36,6 +36,7 @@ import {
 import SideBar from "../../components/Common/SideBar";
 import { setOuvrireDrawerMenu } from "../../app/interface_slices/interfaceSlice";
 
+
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 const data01 = [
@@ -47,6 +48,7 @@ const data01 = [
 
 const data02 = [
   { name: "Validés", value: 2400 },
+  { name: "En attente", value: 4567 },
   { name: "Refusés", value: 1398 },
   { name: "En cours", value: 9800 },
 ];
@@ -58,7 +60,7 @@ const data03 = [
   { name: "Avr", devis: 278 },
   { name: "Mai", devis: 189 },
   { name: "Juin", devis: 239 },
-  { name: "Juil", devis: 349 },
+  { name: "Juil", devis: 349 }
 ];
 
 const Dashboard = () => {
@@ -140,7 +142,6 @@ const Dashboard = () => {
     dispatch(getNbDevisNonGeneresParUtilisateur());
     dispatch(getNbTotalDevisSansStatus());
   }, []);
-
   const toggleSidebar = () => {
     dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
   };

@@ -46,6 +46,8 @@ import {
 } from "../../app/sousfamille_slices/sousfamilleSlice";
 import { useLocation } from "react-router-dom";
 import {
+  getCodeUtilisateurParCode,
+  getListeCodeUtilisateurParCode,
   getListeUtilisateurParCode,
   getListeUtilisateurParDirecteur,
   getListeUtilisateurParNom,
@@ -242,7 +244,9 @@ const Recherche = () => {
       }
     }
     if (toolbarTable == "client") {
+      console.log(filtrerPar,valeurRecherche)
       switch (filtrerPar) {
+
         case "code":
           dispatch(getClientParCode(valeurRecherche));
           break;

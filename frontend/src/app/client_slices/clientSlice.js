@@ -526,6 +526,7 @@ export const clientSlice = createSlice({
       })
       .addCase(getClientParRaisonSociale.fulfilled, (state, action) => {
         state.listeClients = action.payload;
+        
         state.status = "réussi";
       })
       .addCase(getClientParRaisonSociale.rejected, (state, action) => {

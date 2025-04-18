@@ -512,10 +512,14 @@ function DevisForm() {
           </div>
           {/* Table des articles */}
 <<<<<<< HEAD
+<<<<<<< HEAD
           {toolbarMode === "ajout" && <ArticlesDevis />}
 =======
           {toolbarMode === "ajout" && <ArticlesDevis></ArticlesDevis>}
 >>>>>>> 1307da3fe3c5f57591d77ebfc348658673e8917e
+=======
+          {toolbarMode === "ajout" && <ArticlesDevis></ArticlesDevis>}
+>>>>>>> 87f64f62752c54025ff0561a8c5b984732eec8b1
           <div className="mt-6">
             <div className="p-4 sticky bottom-0 w-full overflow-x-auto">
               <TableArticle />
