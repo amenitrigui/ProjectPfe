@@ -19,7 +19,7 @@ const app = express();
 
 // * Options CORS pour permettre l'accès au frontend
 const corsOptions = {
-  origin: [process.env.FRONTEND_URL, "http://localhost:3000", "https://project-pfe-vercel.vercel.app"], // Autorise le frontend local et déployé
+  origin: [process.env.FRONTEND_URL, "http://localhost:3000"], // Autorise le frontend local et déployé
   methods: ["GET", "POST", "PUT", "DELETE"], // Autorise ces méthodes HTTP
   credentials: true, // Permet l'envoi des cookies et en-têtes d'authentification
 };
