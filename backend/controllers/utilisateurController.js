@@ -17,7 +17,7 @@ let connexionDbUserErp;
 
 const getDbConnection = async () => {
   if (!connexionDbUserErp) {
-    connexionDbUserErp = await getDatabaseConnection("usererpsole");
+    connexionDbUserErp = await getDatabaseConnection(process.env.DB_USERS_NAME);
   }
   return connexionDbUserErp;
 };
