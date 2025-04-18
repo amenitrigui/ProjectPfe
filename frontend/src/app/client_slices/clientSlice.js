@@ -14,20 +14,17 @@ export const getListeClient = createAsyncThunk(
   }
 );
 
-// * recupere client la liste des client par typecli
-export const getClientParTypecli = createAsyncThunk(
-  "Slice/getClientParTypecli",
-  async (typecli, thunkAPI) => {
-    console.log(
-      `${process.env.REACT_APP_API_URL}/api/client/${
-        thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getClientParTypecli`
-    );
+// * recupere client la liste des client par raison sociale
+export const getClientParRaisonSociale = createAsyncThunk(
+  "Slice/getClientParRaisonSociale",
+  async (rsoc, thunkAPI) => {
+    console.log(rsoc);
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getClientParTypecli/${typecli}`
+      }/getClientParRaisonSociale/${rsoc}`
     );
+    console.log(response);
     return response.data.clients;
   }
 );
@@ -72,7 +69,7 @@ export const ajouterClient = createAsyncThunk(
     );
     console.log(response);
     thunkAPI.getState().interfaceSlice.setAlertMessage(response.data.message);
-    return response.data;
+    return response.data.clientInfos;
   }
 );
 
@@ -264,9 +261,11 @@ export const clientSlice = createSlice({
     clientInfos: {
       code: "",
       rsoc: "",
+      datec: new Date().toISOString().split("T")[0],
       cp: "",
       adresse: "",
       email: "",
+      matemaj:"",
       telephone: "",
       tel1: "",
       tel2: "",
@@ -303,7 +302,9 @@ export const clientSlice = createSlice({
       ptva: "",
       codesec: "",
       desisec: "",
-
+      nom1: "",
+      nom2: "",
+      nom3: "",
       codergg: "",
       desirgg: "",
       desicp: "",
@@ -520,14 +521,14 @@ export const clientSlice = createSlice({
         state.erreur = action.payload;
       })
 
-      .addCase(getClientParTypecli.pending, (state) => {
+      .addCase(getClientParRaisonSociale.pending, (state) => {
         state.status = "chargement";
       })
-      .addCase(getClientParTypecli.fulfilled, (state, action) => {
+      .addCase(getClientParRaisonSociale.fulfilled, (state, action) => {
         state.listeClients = action.payload;
         state.status = "réussi";
       })
-      .addCase(getClientParTypecli.rejected, (state, action) => {
+      .addCase(getClientParRaisonSociale.rejected, (state, action) => {
         state.status = "échoué";
         state.erreur = action.payload;
       })

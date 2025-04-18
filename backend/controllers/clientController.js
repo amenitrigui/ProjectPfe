@@ -132,6 +132,7 @@ const AjouterClient = async (req, res) => {
       gsm1: clientInfos.gsm1,
       gsm2: clientInfos.gsm2,
       gsm3: clientInfos.gsm3,
+      datec:clientInfos.datec,
       nposte1: clientInfos.nposte1,
       nposte2: clientInfos.nposte2,
       nposte3: clientInfos.nposte3,
@@ -162,8 +163,9 @@ const AjouterClient = async (req, res) => {
       desireg:clientInfos.desireg
       
     });
+    
 
-    return res.status(200).json({ message: "insertion avec succès" });
+    return res.status(200).json({ message: "insertion avec succès" ,clientInfos});
   } catch (error) {
     return res.status(500).json({ message: error });
   }
@@ -268,6 +270,7 @@ const majClient = async (req, res) => {
           titre2: clientMaj.titre2,
           titre3: clientMaj.titre3,
           gsm1: clientMaj.gsm1,
+          datemaj:clientMaj.datemaj,
           gsm2: clientMaj.gsm2,
           gsm3: clientMaj.gsm3,
           nposte1: clientMaj.nposte1,
@@ -346,17 +349,18 @@ const getToutCodesClient = async (req, res) => {
 // * input :
 // * output : client
 // * http://localhost:5000/api/client/SOLEVO/getClientParTypecli/l
-const getClientParTypecli = async (req, res) => {
+const getClientParRaisonSociale = async (req, res) => {
   try {
     const { dbName } = req.params;
-    const { typecli } = req.params;
+    const { rsoc } = req.params;
     const dbConnection = await getDatabaseConnection(dbName);
     const client = await dbConnection.query(
-      `SELECT * FROM CLIENT where typecli = :typecli`,
+      `SELECT * FROM CLIENT where rsoc LIKE :rsoc`,
       {
         type: dbConnection.QueryTypes.SELECT,
         replacements: {
-          typecli,
+          rsoc:`%${rsoc}%`,
+
         },
       }
     );
@@ -364,7 +368,7 @@ const getClientParTypecli = async (req, res) => {
 
     return res
       .status(200)
-      .json({ message: "type client  récuperé avec succès", clients: client });
+      .json({ message: "taison sociale  récuperé avec succès", clients: client });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -428,7 +432,7 @@ module.exports = {
   supprimerClient,
   getClientParCode,
   majClient,
-  getClientParTypecli,
+  getClientParRaisonSociale,
   getDerniereCodeClient,
   getClientParCin,
   getToutCodesClient

@@ -41,7 +41,8 @@ export const ajouterSousFamille = createAsyncThunk(
       }
     );
     console.log(response);
-    return response.data.SousFamilleCree;
+    return response.data.SousFamilleCree
+    ;
   }
 );
 

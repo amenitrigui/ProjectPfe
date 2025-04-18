@@ -27,7 +27,8 @@ export const interfaceSlice = createSlice({
     setAlertModifier:"",
     afficherRecherchePopup: false,
     ouvrireMenuDrawer: true,
-    afficherFamillePopub: false
+    afficherFamillePopub: false,
+    afficherSecteurPopup: false
   },
 
   reducers: {
@@ -40,6 +41,9 @@ export const interfaceSlice = createSlice({
     setAlertMessage: (state, action) => {
       state.message = action.payload;
       state.afficherAlert = true;
+    },
+    setAfficherSecteurPopup:(state,action)=>{
+      state.afficherSecteurPopup=action.payload
     },
     toggleAlert: (state) => {
       state.afficherAlert = !state.afficherAlert;
@@ -88,6 +92,7 @@ export const {
   setToolbarMode,
   setAfficherRecherchePopup,
   setOuvrireDrawerMenu,
-  setAfficherFamillePopub
+  setAfficherFamillePopub,
+  setAfficherSecteurPopup
 } = interfaceSlice.actions;
 export default interfaceSlice.reducer;
