@@ -8,12 +8,6 @@ import {
   FaSignOutAlt,
   FaRegUserCircle,
 } from "react-icons/fa";
-import {
-  CheckIcon,
-  PencilIcon,
-  PrinterIcon,
-  TrashIcon,
-} from "@heroicons/react/20/solid";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getClientParCode,
@@ -42,6 +36,7 @@ import {
 } from "../../app/interface_slices/interfaceSlice";
 import SideBar from "../Common/SideBar";
 import TableArticle from "./TableArticle";
+import ArticlesDevis from "./ArticlesDevis";
 
 function DevisForm() {
   //?==================================================================================================================
@@ -516,7 +511,7 @@ function DevisForm() {
             </div>
           </div>
           {/* Table des articles */}
-          {toolbarMode === "ajout" && <articleSlice />}
+          {toolbarMode === "ajout" && <ArticlesDevis />}
           <div className="mt-6">
             <div className="p-4 sticky bottom-0 w-full overflow-x-auto">
               <TableArticle />

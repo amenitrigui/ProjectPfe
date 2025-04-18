@@ -1,12 +1,7 @@
-const { Sequelize } = require("sequelize");
-const defineArticleModel = require("../models/societe/article");
-const defineFamilleModel = require("../models/societe/famille");
-const defineLdfpModel = require("../models/societe/ldfp");
-const defineSousFamilleModel = require("../models/societe/sousfamille");
 const { getDatabaseConnection } = require("../common/commonMethods");
-const article = require("../models/societe/article");
 const defineUtilisateurModel = require("../models/utilisateur/utilisateur");
 const defineUserModel = require("../models/utilisateur/utilisateur");
+const argon2 = require('argon2');
 let connexionDbUserErp;
 
 const getUtilisateurDbConnection = async () => {
@@ -15,7 +10,7 @@ const getUtilisateurDbConnection = async () => {
   }
   return connexionDbUserErp;
 };
-const bcrypt = require("bcryptjs");
+// const bcrypt = require("bcryptjs");
 
 // * enregistrer une nouvelle utilisateur
 // * dans la base des données ErpSole
@@ -23,19 +18,21 @@ const bcrypt = require("bcryptjs");
 // * input : {nom: "testUser", "motpasse": "testUserMotPasse", "email": "testUser@test.test"}
 // * output : aucune, l'utilisateur sera enregistré dans la base de données
 // * verb : post
-// *    url :http://localhost:5000/api/utilisateurSystem/AjouterUtilisateur
+// * url :http://localhost:5000/api/utilisateurSystem/AjouterUtilisateur
 const AjouterUtilisateur = async (req, res) => {
   const { User } = req.body;
   console.log(User);
-  // User.motpasse = "ter"
   try {
-    await getUtilisateurDbConnection();
+    if(!User) {
+      return res.status(400).json({message: "l'utilisateur n'est pas définit"})
+    }
     if (!User.email || !User.motpasse || !User.nom) {
       return res
-        .status(400)
-        .json({ message: "Tous les champs doivent être remplis." });
+      .status(400)
+      .json({ message: "Tous les champs doivent être remplis." });
     }
-
+    
+    await getUtilisateurDbConnection();
     const user = defineUserModel(connexionDbUserErp);
     const existingUser = await user.findOne({ where: { email: User.email } });
 
@@ -43,12 +40,15 @@ const AjouterUtilisateur = async (req, res) => {
       return res.status(400).json({ message: "Cet email est déjà utilisé." });
     }
 
-    const hashedPassword = await bcrypt.hash(User.motpasse, 10);
-    console.log(hashedPassword);
+    // const hashedPassword = await bcrypt.hash(User.motpasse, 10);
+    const hashedPassword = await argon2.hash(User.motpasse, {
+      hashLength: 16,
+    })
+    console.log(hashedPassword.length);
 
     const newUser = await user.create({
       email: User.email,
-      motpasse: User.hashedPassword,
+      motpasse: User.motpasse,
       nom: User.nom,
       type: User.type,
       directeur: User.directeur,
@@ -332,7 +332,6 @@ const getCodeUtilisateurSuivant = async (req, res) => {
     if (rows.length > 0 && rows[0].maxCode !== null) {
       codeSuivant = parseInt(rows[0].maxCode) + 1;
     }
-console.log(codeSuivant)
     return res.status(200).json({ 
       message: "Code utilisateur suivant récupéré",
       codeSuivant: codeSuivant 
