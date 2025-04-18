@@ -20,7 +20,7 @@ const app = express();
 
 // * Options CORS pour permettre l'accès au frontend
 const corsOptions = {
-  origin: [FRONTEND_URL_LOCAL, FRONTEND_URL_DISTANT], // Autorise le frontend local et déployé
+  origin: [process.env.FRONTEND_URL_LOCAL, process.env.FRONTEND_URL_DISTANT], // Autorise le frontend local et déployé
   methods: ["GET", "POST", "PUT", "DELETE"], // Autorise ces méthodes HTTP
   credentials: true, // Permet l'envoi des cookies et en-têtes d'authentification
 };
@@ -44,9 +44,6 @@ app.use("/api/sousfamille", sousfamilleRoutes);
 app.use("/api/Stock_Article",Stock_ArticleRoutes );
 app.use("/api/Valorisation_Article",Valorisation_ArticleRoutes );
 app.use("/api/utilisateurSystem",utilisateurSystemRoutes );
-
-
-
 
 // * Test de connexion à la base de données
 app.get("/", async (req, res) => {
