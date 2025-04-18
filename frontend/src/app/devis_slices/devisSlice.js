@@ -328,6 +328,18 @@ export const getNbTotalDevisEnCours = createAsyncThunk(
     return response.data.nbDevisEncours;
   }
 );
+
+export const getNbTotalDevisSansStatus = createAsyncThunk(
+  "devisSlice/getNbTotalDevisSansStatus",
+  async (_, thunkAPI) => {
+    const response = await axios.get(`
+      ${process.env.REACT_APP_API_URL}/api/devis/${
+      thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getNbTotalDevisSansStatus
+    `);
+    return response.data.nbDevisSansStatus;
+  }
+);
 export const devisSlice = createSlice({
   name: "devisSlice",
   initialState: {
@@ -374,6 +386,7 @@ export const devisSlice = createSlice({
     nbTotalDevisNonGeneresParUtilisateur: 0,
     nbTotalDevisAnnulees: 0,
     nbDevisEncours: 0,
+    nbTotDevisSansStatus: 0,
   },
   reducers: {
     setDevisInfo: (state, action) => {
@@ -670,6 +683,18 @@ export const devisSlice = createSlice({
         state.status = "reussi";
       })
       .addCase(getNbTotalDevisEnCours.rejected, (state, action) => {
+        state.erreur = action.payload;
+        state.status = "echoue";
+      })
+      
+      .addCase(getNbTotalDevisSansStatus.pending, (state) => {
+        state.status = "chargeement";
+      })
+      .addCase(getNbTotalDevisSansStatus.fulfilled, (state, action) => {
+        state.nbTotDevisSansStatus = action.payload;
+        state.status = "reussi";
+      })
+      .addCase(getNbTotalDevisSansStatus.rejected, (state, action) => {
         state.erreur = action.payload;
         state.status = "echoue";
       });

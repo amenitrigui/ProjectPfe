@@ -66,11 +66,13 @@ const loginUtilisateur = async (req, res) => {
       return res.status(400).json({ message: "Utilisateur non trouvé." });
     }
 
+    console.log(user);
+
     // Vérification du mot de passe
     // comparaison de mot de passe donnée
     // avec le hash dans la bd
     // const isPasswordMatched = bcrypt.compareSync(motpasse, user.motpasse);
-    const isPasswordMatched = await argon2.verify(user.motpasse, motpasse);
+    // const isPasswordMatched = await argon2.verify(user.motpasse, motpasse);
 
     if (motpasse !== user.motpasse){
       return res.status(401).json({ message: "Mot de passe incorrect." });

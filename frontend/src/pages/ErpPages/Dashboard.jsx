@@ -30,6 +30,7 @@ import {
   getNbDevisNonGeneresParUtilisateur,
   getNbTotalDevisAnnulees,
   getNbTotalDevisEnCours,
+  getNbTotalDevisSansStatus,
 } from "../../app/devis_slices/devisSlice";
 
 import SideBar from "../../components/Common/SideBar";
@@ -72,6 +73,7 @@ const Dashboard = () => {
   const totalchifre = useSelector((state) => state.devisSlice.totalchifre);
   const nbTotalDevisAnnulees = useSelector((state) => state.devisSlice.nbTotalDevisAnnulees);
   const nbDevisEncours = useSelector((state) => state.devisSlice.nbDevisEncours);
+  const nbTotDevisSansStatus = useSelector((state) => state.devisSlice.nbTotDevisSansStatus);
 
   const utilisateurConnecte = useSelector(
     (state) => state.utilisateurSystemSlice.utilisateurConnecte
@@ -115,6 +117,7 @@ const Dashboard = () => {
     { name: "Générés", value: nbTotalDevisGeneres },
     { name: "Annulées", value: nbTotalDevisAnnulees },
     { name: "En cours", value: nbDevisEncours },
+    { name: "Sans Status", value: nbTotDevisSansStatus },
   ];
 
   const data03 = [
@@ -135,6 +138,7 @@ const Dashboard = () => {
     dispatch(getNbTotalDevisEnCours());
     dispatch(getNbTotalDevisGeneresParUtilisateur());
     dispatch(getNbDevisNonGeneresParUtilisateur());
+    dispatch(getNbTotalDevisSansStatus());
   }, []);
 
   const toggleSidebar = () => {
