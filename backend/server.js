@@ -11,9 +11,9 @@ const familleRoutes = require("./routes/familleRoutes")
 const sousfamilleRoutes = require("./routes/sousfamilleRoutes")
 const Stock_ArticleRoutes= require("./routes/Stock_ArticleRoutes")
 const Valorisation_ArticleRoutes= require("./routes/Valorisation_ArticleRoutes")
-const utilisateurSystemRoutes=require("./routes/utilisateurSystemRoutes")
+const utilisateurSystemRoutes=require("./routes/utilisateurSystemRoutes");
+const { getDatabaseConnection } = require("./common/commonMethods");
 require("dotenv").config();
-const { sequelize } = require("sequelize"); // Importation de l'instance Sequelize
 
 // * Création de l'application Express
 const app = express();
@@ -48,7 +48,7 @@ app.use("/api/utilisateurSystem",utilisateurSystemRoutes );
 // * Test de connexion à la base de données
 app.get("/", async (req, res) => {
   try {
-    await sequelize.authenticate(); // Connexion à la base de données
+    await getDatabaseConnection(process.env.DB_USERS_NAME); // Connexion à la base de données
     console.log("> Connexion à la base de données réussie !");
     res.send("Connexion réussie !");
   } catch (error) {
