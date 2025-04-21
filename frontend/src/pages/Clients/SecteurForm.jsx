@@ -149,7 +149,6 @@ const SecteurForm = () => {
     //   dispatch(ajouterSousFamille());
     // }
   };
-  console.log("ddd")
   const FamilleInfos = useSelector((state) => state.familleSlice.FamilleInfos);
   const secteurInfo=useSelector((state)=>state.secteurSlice.secteurInfo)
 

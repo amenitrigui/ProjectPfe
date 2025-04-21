@@ -25,7 +25,6 @@ function SignInPage() {
       setError("Tous les champs doivent être remplis");
       return;
     }
-    console.log(process.env.REACT_APP_API_URL);
 
     try {
       const response = await fetch(
@@ -41,7 +40,6 @@ function SignInPage() {
           }),
         }
       );
-      console.log("dddd")
 
       const data = await response.json(); // convertir la reponse de seurveur en objet javascript
 

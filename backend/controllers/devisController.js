@@ -506,21 +506,48 @@ const getListePointVente = async (req, res) => {
 const getDerniereNumbl = async (req, res) => {
   try {
     const { dbName } = req.params;
+    const { codeuser } = req.query;
     const dbConnection = await getDatabaseConnection(dbName);
     const derniereNumbl = await dbConnection.query(
-      `SELECT NUMBL from dfp where DateBl = (SELECT MAX(DATEBL) from dfp) ORDER BY (NUMBL) DESC LIMIT 1`,
+      `SELECT NUMBL from dfp where DateBl = (SELECT MAX(DATEBL) from dfp) and usera = :codeuser ORDER BY (NUMBL) DESC LIMIT 1`,
       {
         type: dbConnection.QueryTypes.SELECT,
+        replacements: {
+          codeuser,
+        },
       }
     );
-    console.log(derniereNumbl[0]);
+
+    const premiereNumbl = await dbConnection.query(
+      `SELECT NUMBL from dfp where DateBl = (SELECT MIN(DATEBL) from dfp) and usera = :codeuser ORDER BY (NUMBL) ASC LIMIT 1`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+        replacements: {
+          codeuser,
+        },
+      }
+    );
     // ? derniereNumbl: derniereNumbl[0] || {}
     // ? pour que le backend ne plantera pas si derniereNumbl retourne aucune résultat
     // ? c'est à dire un tableau vide: []
-    return res.status(200).json({
-      message: "dernièr numbl récuperé avec succès",
-      derniereNumbl: derniereNumbl[0] || {},
-    });
+    if (derniereNumbl.length != 0) {
+      return res.status(200).json({
+        message: "dernièr numbl récuperé avec succès",
+        derniereNumbl: derniereNumbl[0],
+      });
+    }
+    if (premiereNumbl.length != 0) {
+      return res.status(200).json({
+        message: "premier numbl récuperé avec succès",
+        derniereNumbl: premiereNumbl[0],
+      });
+    }
+
+    if (derniereNumbl.length == 0 && premiereNumbl.length == 0) {
+      return res.status(400).json({
+        message: "aucun numbl trouvé pour cet utilisateur",
+      });
+    }
   } catch (error) {
     return res.status(500).json({ messasge: error.message });
   }
@@ -757,10 +784,7 @@ const getNbTotalDevisGeneresParUtilisateur = async (req, res) => {
 
     const nbDevisGeneresTotal = await Devis.count({
       where: {
-        [Op.and]: [
-          {executer: "G"},
-          {usera: codeuser}
-        ]
+        [Op.and]: [{ executer: "G" }, { usera: codeuser }],
       },
     });
     console.log(nbDevisGeneresTotal);
@@ -793,18 +817,13 @@ const getNbDevisNonGeneresParUtilisateur = async (req, res) => {
     const Devis = defineDfpModel(dbConnection);
     const nbDevisNonGeneresParUtilisateur = await Devis.count({
       where: {
-        [Op.and]: [
-          { executer: ``  },
-          { usera: codeuser },
-        ],
+        [Op.and]: [{ executer: `` }, { usera: codeuser }],
       },
     });
-    return res
-      .status(200)
-      .json({
-        message: `nombre de devis non générés par l'utilisateur ${codeuser} récupérés`,
-        nbDevisNonGeneresParUtilisateur,
-      });
+    return res.status(200).json({
+      message: `nombre de devis non générés par l'utilisateur ${codeuser} récupérés`,
+      nbDevisNonGeneresParUtilisateur,
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   } finally {
@@ -831,12 +850,10 @@ const getNbTotalDevisAnnulees = async (req, res) => {
     });
 
     if (nbDevisANnulees) {
-      return res
-        .status(200)
-        .json({
-          message: "nombre de devis annulées récupérés avec succès",
-          nbDevisANnulees,
-        });
+      return res.status(200).json({
+        message: "nombre de devis annulées récupérés avec succès",
+        nbDevisANnulees,
+      });
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -860,16 +877,14 @@ const getNbTotalDevisEnCours = async (req, res) => {
     const nbDevisEncours = await Devis.count({
       where: {
         executer: "N",
-      }
+      },
     });
 
     if (nbDevisEncours) {
-      return res
-        .status(200)
-        .json({
-          message: "nombre de devis en cours récupérés avec succès",
-          nbDevisEncours,
-        });
+      return res.status(200).json({
+        message: "nombre de devis en cours récupérés avec succès",
+        nbDevisEncours,
+      });
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -886,37 +901,34 @@ const getNbTotalDevisEnCours = async (req, res) => {
 const getNbTotalDevisSansStatus = async (req, res) => {
   const { dbName } = req.params;
   let dbConnection;
-  try{
+  try {
     dbConnection = await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     const nbDevisSansStatus = await Devis.count({
       where: {
         executer: {
-          [Op.and] : {
+          [Op.and]: {
             [Op.notLike]: "G",
             [Op.notLike]: "A",
             [Op.notLike]: "C",
             [Op.notLike]: "N",
-          }
+          },
         },
       },
     });
 
     if (nbDevisSansStatus) {
-      return res
-        .status(200)
-        .json({
-          message: "nombre de devis sans status récupérés avec succès",
-          nbDevisSansStatus,
-        });
+      return res.status(200).json({
+        message: "nombre de devis sans status récupérés avec succès",
+        nbDevisSansStatus,
+      });
     }
-
-  }catch(error){
+  } catch (error) {
     return res.status(500).json({ message: error.message });
-  }finally{
+  } finally {
     dbConnection.close();
-  }  
-}
+  }
+};
 
 module.exports = {
   getTousDevis,
@@ -943,5 +955,5 @@ module.exports = {
   getNbDevisNonGeneresParUtilisateur,
   getNbTotalDevisAnnulees,
   getNbTotalDevisEnCours,
-  getNbTotalDevisSansStatus
+  getNbTotalDevisSansStatus,
 };

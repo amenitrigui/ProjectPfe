@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useRef, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -13,6 +13,7 @@ import {
   faTrashAlt,
   faTimes,
   faWrench,
+  faBars,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   getClientParCode,
@@ -26,6 +27,8 @@ import {
   setActiverBoutonsValiderAnnuler,
   setToolbarMode,
   setAfficherAlert,
+  setOuvrireDrawerMenu,
+  setOuvrireAvatarMenu,
 } from "../../app/interface_slices/interfaceSlice";
 import {
   getDerniereNumbl,
@@ -38,10 +41,12 @@ import {
   getListeUtilisateurParCode,
   setViderChampsUtilisateur,
 } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
+import { FaCog, FaRegUserCircle, FaSignOutAlt, FaUser } from "react-icons/fa";
 function ToolBar() {
   //?==================================================================================================================
   //?=====================================================variables====================================================
   //?==================================================================================================================
+  const [isOpen, setIsOpen] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -67,6 +72,32 @@ function ToolBar() {
   const dernierCodeClient = useSelector(
     (state) => state.clientSlice.dernierCodeClient
   );
+  const ouvrireMenuDrawer = useSelector(
+    (state) => state.interfaceSlice.ouvrireMenuDrawer
+  );
+  const ouvrireAvatarMenu = useSelector(
+    (state) => state.interfaceSlice.ouvrireAvatarMenu
+  );
+  const isDashBoardRoute = useSelector(
+    (state) => state.interfaceSlice.isDashBoardRoute
+  );
+  const menuRef = useRef();
+  const buttonRef = useRef();
+  const useClickOutside = (refs, callback) => {
+    useEffect(() => {
+      const handleClick = (e) => {
+        // Vérifie si le clic est en dehors de tous les éléments référencés
+        if (
+          refs.every((ref) => ref.current && !ref.current.contains(e.target))
+        ) {
+          callback();
+        }
+      };
+
+      document.addEventListener("mousedown", handleClick);
+      return () => document.removeEventListener("mousedown", handleClick);
+    }, [refs, callback]);
+  };
   //?==================================================================================================================
   //?==================================================appels UseEffect================================================
   //?==================================================================================================================
@@ -219,19 +250,8 @@ function ToolBar() {
     dispatch(setToolbarMode("consultation"));
   };
 
-  const handleNaviguerListe = () => {
-    if (toolbarTable == "devis") {
-      navigate("/DevisList");
-    }
-
-    if (toolbarTable == "client") {
-      navigate("/clientList");
-    }
-  };
-
   const handleNaviguerVersPrecedent = () => {
     if (toolbarTable == "client") {
-      console.log(dernierCodeClient);
       const clientCode = parseInt(clientInfos.code) - 1;
       dispatch(getClientParCode(clientCode.toString()));
     }
@@ -245,7 +265,6 @@ function ToolBar() {
     }
     if (toolbarTable == "utilisateur") {
       const codeUser = parseInt(Utilisateur_SuperviseurInfos.codeuser) - 1;
-      console.log(codeUser);
       dispatch(getListeUtilisateurParCode(codeUser.toString()));
     }
   };
@@ -257,7 +276,6 @@ function ToolBar() {
     nav("/dashboard");
   };
   const handleNaviguerVersSuivant = () => {
-    console.log("ttt: ", toolbarTable);
     if (toolbarTable == "client") {
       const clientCode = parseInt(clientInfos.code) + 1;
       dispatch(getClientParCode(clientCode.toString()));
@@ -279,161 +297,254 @@ function ToolBar() {
   const utilisateurConnecte = useSelector(
     (state) => state.utilisateurSystemSlice.utilisateurConnecte
   );
+  const toggleSidebar = () => {
+    dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
+  };
+
+  useClickOutside([menuRef, buttonRef], () => {
+    dispatch(setOuvrireAvatarMenu(false));
+  }); 
   return (
     <>
-      <nav className="w-full border-b border-gray-300 px-4 py-2 bg-white shadow-sm overflow-x-auto">
+      <nav className="w-full border-b border-gray-300 px-4 py-2 bg-white shadow-sm sticky top-0 z-50 ">
         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-          {!activerBoutonsValiderAnnuler && (
+          <button
+            type="button"
+            className="flex flex-col items-start w-20 p-2 mr-5  rounded-lg transition-all duration-200"
+            onClick={toggleSidebar}
+          >
+            <FontAwesomeIcon icon={faBars} className="text-xl mb-1" />
+          </button>
+          {!isDashBoardRoute && (
             <>
-              {/* Nouveau */}
+              {!activerBoutonsValiderAnnuler && (
+                <>
+                  {/* Nouveau */}
 
-              {(utilisateurConnecte?.type?.toLowerCase() === "superviseur" ||
-                (utilisateurConnecte?.type?.toLowerCase() === "utilisateur" &&
-                  (toolbarTable === "client" ||
-                    toolbarTable === "devis" ||toolbarTable === "famille" || toolbarTable === "sousfamille"  ||
-                    toolbarTable === "article"))) && (
-                <button
-                  type="button"
-                  onClick={handleAjoutBtnClick}
-                  className="flex flex-col items-center w-20 p-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition-all duration-200"
-                >
-                  <FontAwesomeIcon
-                    icon={faFolderPlus}
-                    className="text-xl mb-1"
-                  />
-                  <span className="text-xs font-semibold">Nouveau</span>
-                </button>
+                  {(utilisateurConnecte?.type?.toLowerCase() ===
+                    "superviseur" ||
+                    (utilisateurConnecte?.type?.toLowerCase() ===
+                      "utilisateur" &&
+                      (toolbarTable === "client" ||
+                        toolbarTable === "devis" ||
+                        toolbarTable === "famille" ||
+                        toolbarTable === "sousfamille" ||
+                        toolbarTable === "article"))) && (
+                    <button
+                      type="button"
+                      onClick={handleAjoutBtnClick}
+                      className="flex flex-col items-center w-20 p-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition-all duration-200"
+                    >
+                      <FontAwesomeIcon
+                        icon={faFolderPlus}
+                        className="text-xl mb-1"
+                      />
+                      <span className="text-xs font-semibold">Nouveau</span>
+                    </button>
+                  )}
+
+                  {/* Modifier */}
+                  <button
+                    type="button"
+                    onClick={handleModifierBtnClick}
+                    className="flex flex-col items-center w-20 p-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-lg transition-all duration-200"
+                  >
+                    <FontAwesomeIcon icon={faEdit} className="text-xl mb-1" />
+                    <span className="text-xs font-semibold">Modifier</span>
+                  </button>
+
+                  {/* Supprimer */}
+                  {(utilisateurConnecte?.type?.toLowerCase() ===
+                    "superviseur" ||
+                    (utilisateurConnecte?.type?.toLowerCase() ===
+                      "utilisateur" &&
+                      (toolbarTable === "client" ||
+                        toolbarTable === "devis" ||
+                        toolbarTable === "famille" ||
+                        toolbarTable === "sousfamille" ||
+                        toolbarTable === "article"))) && (
+                    <button
+                      type="button"
+                      onClick={handleSupprimerBtnClick}
+                      className="flex flex-col items-center w-20 p-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition-all duration-200"
+                    >
+                      <FontAwesomeIcon
+                        icon={faTrashAlt}
+                        className="text-xl mb-1"
+                      />
+                      <span className="text-xs font-semibold">Supprimer</span>
+                    </button>
+                  )}
+
+                  {(utilisateurConnecte?.type?.toLowerCase() ===
+                    "superviseur" ||
+                    (utilisateurConnecte?.type?.toLowerCase() ===
+                      "utilisateur" &&
+                      (toolbarTable === "client" ||
+                        toolbarTable === "devis" ||
+                        toolbarTable === "famille" ||
+                        toolbarTable === "sousfamille" ||
+                        toolbarTable === "article"))) && (
+                    <button
+                      type="button"
+                      onClick={handleNaviguerVersListe}
+                      className="flex flex-col items-center w-20 p-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all duration-200"
+                    >
+                      <FontAwesomeIcon icon={faList} className="text-xl mb-1" />
+                      <span className="text-xs font-semibold">Liste</span>
+                    </button>
+                  )}
+
+                  {/* Précédent */}
+
+                  {(utilisateurConnecte?.type?.toLowerCase() ===
+                    "superviseur" ||
+                    (utilisateurConnecte?.type?.toLowerCase() ===
+                      "utilisateur" &&
+                      (toolbarTable === "client" ||
+                        toolbarTable === "devis" ||
+                        toolbarTable === "famille" ||
+                        toolbarTable === "sousfamille" ||
+                        toolbarTable === "article"))) && (
+                    <button
+                      type="button"
+                      onClick={handleNaviguerVersPrecedent}
+                      className="flex flex-col items-center w-20 p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-all duration-200"
+                    >
+                      <FontAwesomeIcon
+                        icon={faArrowLeft}
+                        className="text-xl mb-1"
+                      />
+                      <span className="text-xs font-semibold">Précédent</span>
+                    </button>
+                  )}
+
+                  {(utilisateurConnecte?.type?.toLowerCase() ===
+                    "superviseur" ||
+                    (utilisateurConnecte?.type?.toLowerCase() ===
+                      "utilisateur" &&
+                      (toolbarTable === "client" ||
+                        toolbarTable === "devis" ||
+                        toolbarTable === "famille" ||
+                        toolbarTable === "sousfamille" ||
+                        toolbarTable === "article"))) && (
+                    <button
+                      type="button"
+                      onClick={handleNaviguerVersSuivant}
+                      className="flex flex-col items-center w-20 p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-all duration-200"
+                    >
+                      <FontAwesomeIcon
+                        icon={faArrowRight}
+                        className="text-xl mb-1"
+                      />
+                      <span className="text-xs font-semibold">Suivant</span>
+                    </button>
+                  )}
+
+                  {/* Edition */}
+                  {toolbarTable === "devis" && (
+                    <button
+                      type="button"
+                      onClick={handleEditionClick}
+                      className="flex flex-col items-center w-20 p-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-lg transition-all duration-200"
+                    >
+                      <FontAwesomeIcon
+                        icon={faWrench}
+                        className="text-xl mb-1"
+                      />
+                      <span className="text-xs font-semibold">Édition</span>
+                    </button>
+                  )}
+
+                  {/* Quitter */}
+                  <button
+                    onClick={handleQuitterClick}
+                    className="flex flex-col items-center w-20 p-2 bg-orange-100 hover:bg-orange-200 text-orange-700 rounded-lg transition-all duration-200"
+                  >
+                    <FontAwesomeIcon icon={faSignOutAlt} />
+                    <span>Quitter</span>
+                  </button>
+                </>
               )}
 
-              {/* Modifier */}
-              <button
-                type="button"
-                onClick={handleModifierBtnClick}
-                className="flex flex-col items-center w-20 p-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-lg transition-all duration-200"
-              >
-                <FontAwesomeIcon icon={faEdit} className="text-xl mb-1" />
-                <span className="text-xs font-semibold">Modifier</span>
-              </button>
+              {activerBoutonsValiderAnnuler && (
+                <>
+                  {/* Valider */}
+                  <button
+                    type="button"
+                    onClick={handleValiderBtnClick}
+                    className="flex flex-col items-center w-20 p-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all duration-200"
+                  >
+                    <FontAwesomeIcon icon={faCheck} className="text-xl mb-1" />
+                    <span className="text-xs font-semibold">Valider</span>
+                  </button>
 
-              {/* Supprimer */}
-              {(utilisateurConnecte?.type?.toLowerCase() === "superviseur" ||
-                (utilisateurConnecte?.type?.toLowerCase() === "utilisateur" &&
-                  (toolbarTable === "client" ||
-                    toolbarTable === "devis" ||toolbarTable === "famille" || toolbarTable === "sousfamille"  ||
-
-                    toolbarTable === "article"))) && (
-                <button
-                  type="button"
-                  onClick={handleSupprimerBtnClick}
-                  className="flex flex-col items-center w-20 p-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition-all duration-200"
-                >
-                  <FontAwesomeIcon icon={faTrashAlt} className="text-xl mb-1" />
-                  <span className="text-xs font-semibold">Supprimer</span>
-                </button>
+                  {/* Annuler */}
+                  <button
+                    type="button"
+                    onClick={annulerOperation}
+                    className="flex flex-col items-center w-20 p-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg transition-all duration-200"
+                  >
+                    <FontAwesomeIcon icon={faTimes} className="text-xl mb-1" />
+                    <span className="text-xs font-semibold">Annuler</span>
+                  </button>
+                </>
               )}
-
-              {(utilisateurConnecte?.type?.toLowerCase() === "superviseur" ||
-                (utilisateurConnecte?.type?.toLowerCase() === "utilisateur" &&
-                  (toolbarTable === "client" ||
-                    toolbarTable === "devis" ||toolbarTable === "famille" || toolbarTable === "sousfamille"  ||
-
-                    toolbarTable === "article"))) && (
-                <button
-                  type="button"
-                  onClick={handleNaviguerVersListe}
-                  className="flex flex-col items-center w-20 p-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all duration-200"
-                >
-                  <FontAwesomeIcon icon={faList} className="text-xl mb-1" />
-                  <span className="text-xs font-semibold">Liste</span>
-                </button>
-              )}
-
-              {/* Précédent */}
-
-              {(utilisateurConnecte?.type?.toLowerCase() === "superviseur" ||
-                (utilisateurConnecte?.type?.toLowerCase() === "utilisateur" &&
-                  (toolbarTable === "client" ||
-                    toolbarTable === "devis" ||toolbarTable === "famille" || toolbarTable === "sousfamille"  ||
-
-                    toolbarTable === "article"))) && (
-                <button
-                  type="button"
-                  onClick={handleNaviguerVersPrecedent}
-                  className="flex flex-col items-center w-20 p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-all duration-200"
-                >
-                  <FontAwesomeIcon
-                    icon={faArrowLeft}
-                    className="text-xl mb-1"
-                  />
-                  <span className="text-xs font-semibold">Précédent</span>
-                </button>
-              )}
-
-              {(utilisateurConnecte?.type?.toLowerCase() === "superviseur" ||
-                (utilisateurConnecte?.type?.toLowerCase() === "utilisateur" &&
-                  (toolbarTable === "client" ||
-                    toolbarTable === "devis" ||toolbarTable === "famille" || toolbarTable === "sousfamille"  ||
-
-                    toolbarTable === "article"))) && (
-                <button
-                  type="button"
-                  onClick={handleNaviguerVersSuivant}
-                  className="flex flex-col items-center w-20 p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-all duration-200"
-                >
-                  <FontAwesomeIcon
-                    icon={faArrowRight}
-                    className="text-xl mb-1"
-                  />
-                  <span className="text-xs font-semibold">Suivant</span>
-                </button>
-              )}
-
-              {/* Edition */}
-              {toolbarTable === "devis" && (
-                <button
-                  type="button"
-                  onClick={handleEditionClick}
-                  className="flex flex-col items-center w-20 p-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-lg transition-all duration-200"
-                >
-                  <FontAwesomeIcon icon={faWrench} className="text-xl mb-1" />
-                  <span className="text-xs font-semibold">Édition</span>
-                </button>
-              )}
-
-              {/* Quitter */}
-              <button
-                onClick={handleQuitterClick}
-                className="flex flex-col items-center w-20 p-2 bg-orange-100 hover:bg-orange-200 text-orange-700 rounded-lg transition-all duration-200"
-              >
-                <FontAwesomeIcon icon={faSignOutAlt} />
-                <span>Quitter</span>
-              </button>
             </>
           )}
+          <div className="flex-grow"></div>
+          {/* User Icon */}
+          <div className="relative ml-auto">
+            {/* Avatar avec événement  de clic */}
+            <div
+              onClick={() => dispatch(setOuvrireAvatarMenu(!ouvrireAvatarMenu))}
+              className="cursor-pointer"
+              ref={buttonRef}
+            >
+              <FaRegUserCircle className="mr-3 text-3xl" />
+              {/* Indicateur de statut en ligne */}
+              <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+            </div>
 
-          {activerBoutonsValiderAnnuler && (
-            <>
-              {/* Valider */}
-              <button
-                type="button"
-                onClick={handleValiderBtnClick}
-                className="flex flex-col items-center w-20 p-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all duration-200"
+            {/* Menu déroulant */}
+            {ouvrireAvatarMenu && (
+              <div
+                className="absolute right-0 mt-3 w-56 bg-white border rounded-lg shadow-lg z-50"
+                ref={menuRef}
               >
-                <FontAwesomeIcon icon={faCheck} className="text-xl mb-1" />
-                <span className="text-xs font-semibold">Valider</span>
-              </button>
+                <div className="p-4 flex items-center border-b">
+                  <FaRegUserCircle className="mr-3 text-3xl" />
+                  <div>
+                    <p className="font-semibold">{utilisateurConnecte.nom}</p>
+                    <p className="text-sm text-gray-500">
+                      {utilisateurConnecte.type}
+                    </p>
+                  </div>
+                </div>
+                <ul className="py-2">
+                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
+                    <Link
+                      to="/UtilisateurFormTout"
+                      className="flex items-center w-full"
+                    >
+                      <FaUser className="mr-3" /> My Profile
+                    </Link>
+                  </li>
+                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
+                    <Link to="/Settings" className="flex items-center w-full">
+                      <FaCog className="mr-3" /> Settings
+                    </Link>
+                  </li>
 
-              {/* Annuler */}
-              <button
-                type="button"
-                onClick={annulerOperation}
-                className="flex flex-col items-center w-20 p-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg transition-all duration-200"
-              >
-                <FontAwesomeIcon icon={faTimes} className="text-xl mb-1" />
-                <span className="text-xs font-semibold">Annuler</span>
-              </button>
-            </>
-          )}
+                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer border-t">
+                    <Link to="/" className="flex items-center w-full">
+                      <FaSignOutAlt className="mr-3" /> Log Out
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
         </div>
       </nav>
     </>

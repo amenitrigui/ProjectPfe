@@ -35,6 +35,7 @@ import {
 
 import SideBar from "../../components/Common/SideBar";
 import { setOuvrireDrawerMenu } from "../../app/interface_slices/interfaceSlice";
+import ToolBar from "../../components/Common/ToolBar";
 
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
@@ -64,6 +65,9 @@ const data03 = [
 ];
 
 const Dashboard = () => {
+  //?==================================================================================================================
+  //?=====================================================variables====================================================
+  //?==================================================================================================================
   const devisMonthYear = useSelector((state) => state.devisSlice.devisMonthYear);
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
@@ -131,6 +135,9 @@ const Dashboard = () => {
     { name: "Juin", devis: 239 },
     { name: "Juil", devis: 349 },
   ];
+  //?==================================================================================================================
+  //?=================================================appels UseEffect=================================================
+  //?==================================================================================================================
   useEffect(() => {
     dispatch(getNombreTotalDevis());
     dispatch(getTotalChiffres());
@@ -142,6 +149,9 @@ const Dashboard = () => {
     dispatch(getNbDevisNonGeneresParUtilisateur());
     dispatch(getNbTotalDevisSansStatus());
   }, []);
+  //?==================================================================================================================
+  //?=====================================================fonctions====================================================
+  //?==================================================================================================================
   const toggleSidebar = () => {
     dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
   };
@@ -151,51 +161,7 @@ const Dashboard = () => {
       <SideBar />
 
       <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
-        <div className="topbar">
-          <div className="toggle" onClick={toggleSidebar}>
-            <ion-icon name="menu-outline"></ion-icon>
-          </div>
-
-          <div className="relative inline-block text-left">
-            <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
-              <FaRegUserCircle className="mr-3 text-3xl" />
-              <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
-            </div>
-            {isOpen && (
-              <div className="absolute right-0 mt-3 w-56 bg-white border rounded-lg shadow-lg z-50">
-                <div className="p-4 flex items-center border-b">
-                  <FaRegUserCircle className="mr-3 text-3xl" />
-                  <div>
-                    <p className="font-semibold">{utilisateurConnecte.nom}</p>
-                    <p className="text-sm text-gray-500">
-                      {utilisateurConnecte.type}
-                    </p>
-                  </div>
-                </div>
-                <ul className="py-2">
-                  <li className="px-4 py-2 hover:bg-gray-100">
-                    <Link
-                      to="/UtilisateurFormTout"
-                      className="flex items-center"
-                    >
-                      <FaUser className="mr-3" /> My Profile
-                    </Link>
-                  </li>
-                  <li className="px-4 py-2 hover:bg-gray-100">
-                    <Link to="/Settings" className="flex items-center">
-                      <FaCog className="mr-3" /> Settings
-                    </Link>
-                  </li>
-                  <li className="px-4 py-2 hover:bg-gray-100 border-t">
-                    <Link to="/" className="flex items-center">
-                      <FaSignOutAlt className="mr-3" /> Log Out
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            )}
-          </div>
-        </div>
+        <ToolBar />
 
         <div className="cardBox grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {[

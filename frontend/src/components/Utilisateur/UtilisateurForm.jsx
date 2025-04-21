@@ -38,10 +38,6 @@ const UtilisateurForm = () => {
   );
   const dispatch = useDispatch();
 
-  const toggleSidebar = () => {
-    dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
-  };
-
   // Sélection des informations du client depuis le state Redux
   const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
   const utilisateurConnecte = useSelector(
@@ -86,59 +82,14 @@ const UtilisateurForm = () => {
     <div className="container">
       <SideBar />
       <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
-        <div className="topbar">
+        {/* <div className="topbar">
           <div className="toggle" onClick={toggleSidebar}>
             <ion-icon name="menu-outline"></ion-icon>
           </div>
 
-          <ToolBar></ToolBar>
+        </div> */}
 
-          <div className="relative inline-block text-left">
-            {/* Avatar avec événement de clic */}
-            <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
-              <FaRegUserCircle className="mr-3 text-3xl" />
-              {/* Indicateur de statut en ligne */}
-              <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
-            </div>
-
-            {/* Menu déroulant */}
-            {isOpen && (
-              <div className="absolute right-0 mt-3 w-56 bg-white border rounded-lg shadow-lg z-50">
-                <div className="p-4 flex items-center border-b">
-                  <FaRegUserCircle className="mr-3 text-3xl" />
-                  <div>
-                    <p className="font-semibold">{utilisateurConnecte.nom}</p>
-                    <p className="text-sm text-gray-500">
-                      {utilisateurConnecte.type}
-                    </p>
-                  </div>
-                </div>
-                <ul className="py-2">
-                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
-                    <Link
-                      to="/UtilisateurFormTout"
-                      className="flex items-center w-full"
-                    >
-                      <FaUser className="mr-3" /> My Profile
-                    </Link>
-                  </li>
-                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
-                    <Link to="/Settings" className="flex items-center w-full">
-                      <FaCog className="mr-3" /> Settings
-                    </Link>
-                  </li>
-
-                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer border-t">
-                    <Link to="/" className="flex items-center w-full">
-                      <FaSignOutAlt className="mr-3" /> Log Out
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            )}
-          </div>
-        </div>
-
+        <ToolBar />
         <div className="details">
           <div className="recentCustomers" style={{ width: "90vw" }}>
             <fieldset className="border border-gray-300 p-4 rounded-lg">

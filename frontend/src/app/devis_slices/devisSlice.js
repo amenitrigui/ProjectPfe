@@ -239,7 +239,11 @@ export const getDerniereNumbl = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getDerniereNumbl`
+      }/getDerniereNumbl`, {
+        params: {
+          codeuser: thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte.codeuser,
+        }
+      }
     );
     return response.data.derniereNumbl;
   }
@@ -393,6 +397,7 @@ export const devisSlice = createSlice({
     nbTotalDevisAnnulees: 0,
     nbDevisEncours: 0,
     nbTotDevisSansStatus: 0,
+    derniereNumbl: "",
   },
   reducers: {
     setDevisInfo: (state, action) => {
@@ -590,10 +595,13 @@ export const devisSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getDerniereNumbl.fulfilled, (state, action) => {
-        state.devisInfo.NUMBL =
-          "DV" +
-          (parseInt(action.payload.NUMBL.substring(2, 9)) + 1).toString();
-        state.status = "reussi";
+        // state.derniereNumbl =
+        //   "DV" +
+        //   (parseInt(action.payload.NUMBL.substring(2, 9)) + 1).toString();
+        if(action.payload.NUMBL && action.payload.NUMBL.length > 0){
+          state.derniereNumbl = parseInt(action.payload.NUMBL.substring(2, 9))
+          state.status = "reussi";
+        }
       })
       .addCase(getDerniereNumbl.rejected, (state, action) => {
         state.erreur = action.payload;

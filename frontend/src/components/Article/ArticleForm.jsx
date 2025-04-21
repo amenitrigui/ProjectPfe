@@ -1,8 +1,6 @@
 import React from "react";
 import { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { FaUser, FaCog, FaSignOutAlt, FaRegUserCircle } from "react-icons/fa";
 import ToolBar from "../Common/ToolBar";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -17,7 +15,6 @@ import {
 import {
   setAfficherFamillePopub,
   setAfficherRecherchePopup,
-  setOuvrireDrawerMenu,
   setToolbarTable,
 } from "../../app/interface_slices/interfaceSlice";
 import SideBar from "../Common/SideBar";
@@ -36,7 +33,6 @@ function ArticleForm() {
   const ouvrireMenuDrawer = useSelector(
     (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
-  const [isOpen, setIsOpen] = useState(false);
   const articleInfos = useSelector((state) => state.articleSlice.articleInfos);
   const ListeFamille = useSelector((state) => state.articleSlice.ListeFamille);
   const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
@@ -44,9 +40,6 @@ function ArticleForm() {
     (state) => state.articleSlice.ListeSousFamille
   );
   const dispatch = useDispatch();
-  const infosUtilisateur = useSelector(
-    (state) => state.utilisateurSlice.infosUtilisateur
-  );
   //?==================================================================================================================
   //?==============================================appels UseEffect====================================================
   //?==================================================================================================================
@@ -69,9 +62,6 @@ function ArticleForm() {
       );
     }
   }, [articleInfos.codesousfam]);
-  const utilisateurConnecte = useSelector(
-    (state) => state.utilisateurSystemSlice.utilisateurConnecte
-  );
   useEffect(() => {
     if (articleInfos.famille && articleInfos.famille != "") {
       dispatch(getDesignationFamilleParCodeFamille(articleInfos.famille));
@@ -98,7 +88,6 @@ function ArticleForm() {
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
   const hundlesubmitTousLesChamp = (valeur, colonne) => {
-    // console.log(colonne, " ", valeur);
     dispatch(setArticleInfos({ valeur, colonne }));
 
     if (colonne == "code") {
@@ -147,10 +136,6 @@ function ArticleForm() {
   const afficherRecherchePopup = () => {
     dispatch(setAfficherRecherchePopup(true));
   };
-  // Fonction pour basculer la visibilité de la sidebar
-  const toggleSidebar = () => {
-    dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
-  };
 
   const togglePopup = (NomTable) => {
     dispatch(setToolbarTable(NomTable));
@@ -162,58 +147,7 @@ function ArticleForm() {
     <div className="container">
       <SideBar />
       <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
-        <div className="topbar">
-          <div className="toggle" onClick={toggleSidebar}>
-            <ion-icon name="menu-outline"></ion-icon>
-          </div>
-
-          <ToolBar></ToolBar>
-
-          <div className="relative inline-block text-left">
-            {/* Avatar avec événement de clic */}
-            <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
-              <FaRegUserCircle className="mr-3 text-3xl" />
-              {/* Indicateur de statut en ligne */}
-              <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
-            </div>
-
-            {/* Menu déroulant */}
-            {isOpen && (
-              <div className="absolute right-0 mt-3 w-56 bg-white border rounded-lg shadow-lg z-50">
-                <div className="p-4 flex items-center border-b">
-                  <FaRegUserCircle className="mr-3 text-3xl" />
-                  <div>
-                    <p className="font-semibold">{utilisateurConnecte.nom}</p>
-                    <p className="text-sm text-gray-500">
-                      {utilisateurConnecte.type}
-                    </p>
-                  </div>
-                </div>
-                <ul className="py-2">
-                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
-                    <Link
-                      to="/UtilisateurFormTout"
-                      className="flex items-center w-full"
-                    >
-                      <FaUser className="mr-3" /> My Profile
-                    </Link>
-                  </li>
-                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
-                    <Link to="/Settings" className="flex items-center w-full">
-                      <FaCog className="mr-3" /> Settings
-                    </Link>
-                  </li>
-
-                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer border-t">
-                    <Link to="/" className="flex items-center w-full">
-                      <FaSignOutAlt className="mr-3" /> Log Out
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            )}
-          </div>
-        </div>
+        <ToolBar />
         <div className="details p-6">
           <div className="ameni">
             {/* Titre */}
@@ -583,8 +517,16 @@ function ArticleForm() {
             </div>
           </div>
         </div>
-        <div className="details ">
-          <Tab />
+        <div className="details p-6">
+          <div className="collapse bg-base-100 border-base-300 border w-[100vw]">
+            <input type="checkbox" />
+            <div className="collapse-title font-semibold mb-1" style={{ color: "rgb(48, 60, 123)" }}>
+              Options supplementaires d'article
+            </div>
+            <div className="collapse-content text-sm">
+              <Tab />
+            </div>
+          </div>
         </div>
       </div>
 

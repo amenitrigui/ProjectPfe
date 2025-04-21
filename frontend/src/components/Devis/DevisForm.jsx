@@ -25,9 +25,11 @@ import {
   getListePointsVente,
   getLignesDevis,
   viderChampsDevisInfo,
+  getDerniereNumbl,
 } from "../../app/devis_slices/devisSlice";
 import ToolBar from "../Common/ToolBar";
 import {
+  setActiverBoutonsValiderAnnuler,
   setActiverChampsForm,
   setAfficherRecherchePopup,
   setOuvrireDrawerMenu,
@@ -74,6 +76,7 @@ function DevisForm() {
     (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
   const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
+  const derniereNumbl = useSelector((state) => state.devisSlice.derniereNumbl);
   //?==================================================================================================================
   //?==============================================appels UseEffect====================================================
   //?==================================================================================================================
@@ -109,13 +112,16 @@ function DevisForm() {
     dispatch(setToolbarTable("devis"));
     dispatch(setToolbarMode("consultation"));
     dispatch(setActiverChampsForm(false));
+    dispatch(getDerniereNumbl())
   }, []);
 
   useEffect(() => {
-    if (devisInfo.NUMBL && devisInfo.NUMBL !== "") {
-      dispatch(getLignesDevis(devisInfo.NUMBL));
+    if (derniereNumbl) {
+      dispatch(getDevisParNUMBL("DV"+derniereNumbl));
+      dispatch(getLignesDevis("DV"+derniereNumbl));
     }
-  }, [devisInfo.NUMBL]);
+    console.log(devisInfo.articles);
+  }, [derniereNumbl]);
 
   useEffect(() => {
     if (clientInfos) {
@@ -163,7 +169,6 @@ function DevisForm() {
     dispatch(getDerniereCodeClient());
     dispatch(setClientInfos({ colonne: "code", valeur: dernierCodeClient }));
     dispatch(setInsertionDepuisDevisForm(true));
-
     navi("/ClientFormTout");
   };
   const utilisateurConnecte = useSelector(
@@ -177,70 +182,17 @@ function DevisForm() {
   const afficherRecherchePopup = () => {
     dispatch(setAfficherRecherchePopup(true));
   };
-  const toggleSidebar = () => {
-    dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
-  };
   return (
     <>
       <div className="container">
         <SideBar />
         <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
-          <div className="topbar">
+          {/* <div className="topbar">
             <div className="toggle" onClick={toggleSidebar}>
               <ion-icon name="menu-outline"></ion-icon>
             </div>
-
+            </div> */}
             <ToolBar />
-
-            <div className="relative inline-block text-left">
-              {/* Avatar avec événement de clic */}
-              <div
-                onClick={() => setIsOpen(!isOpen)}
-                className="cursor-pointer"
-              >
-                <FaRegUserCircle className="mr-3 text-3xl" />
-                {/* Indicateur de statut en ligne */}
-                <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
-              </div>
-
-              {/* Menu déroulant */}
-              {isOpen && (
-                <div className="absolute right-0 mt-3 w-56 bg-white border rounded-lg shadow-lg z-50">
-                  <div className="p-4 flex items-center border-b">
-                    <FaRegUserCircle className="mr-3 text-3xl" />
-                    <div>
-                      <p className="font-semibold">{utilisateurConnecte.nom}</p>
-                      <p className="text-sm text-gray-500">
-                        {utilisateurConnecte.type}
-                      </p>
-                    </div>
-                  </div>
-                  <ul className="py-2">
-                    <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
-                      <Link
-                        to="/UtilisateurFormTout"
-                        className="flex items-center w-full"
-                      >
-                        <FaUser className="mr-3" /> My Profile
-                      </Link>
-                    </li>
-                    <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
-                      <Link to="/Settings" className="flex items-center w-full">
-                        <FaCog className="mr-3" /> Settings
-                      </Link>
-                    </li>
-
-                    <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer border-t">
-                      <Link to="/" className="flex items-center w-full">
-                        <FaSignOutAlt className="mr-3" /> Log Out
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </div>
-          </div>
-
           <div className="details">
             <div className="recentOrders flex flex-row flex-nowrap gap-4">
               <div className="flex-1">
