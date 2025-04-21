@@ -5,24 +5,24 @@ import { useDispatch, useSelector } from "react-redux";
 import AlertModifier from "../../components/Common/AlertModifier";
 import Recherche from "../../components/Common/recherche";
 import { getDerniereCodeClient } from "../../app/client_slices/clientSlice";
-import SecteurForm from "./SecteurForm";
-
+import Secteur_Region_CpostalForm from "./Secteur_Region_CpostalForm";
 
 function ClientFormTout() {
   const dispatch = useDispatch();
-  const afficherRecherchePopup = useSelector((state) => state.interfaceSlice.afficherRecherchePopup);
+  const afficherRecherchePopup = useSelector(
+    (state) => state.interfaceSlice.afficherRecherchePopup
+  );
   useEffect(() => {
     dispatch(setToolbarTable("client"));
-    dispatch(setToolbarTable("secteur"));
 
-    dispatch(getDerniereCodeClient());  
+    dispatch(getDerniereCodeClient());
   }, []);
 
   return (
     <div className="flex min-h-screen bg-gray-100">
       <div className="flex-1 ">
-        { afficherRecherchePopup == true && <Recherche/> }
-   <SecteurForm></SecteurForm>
+        {afficherRecherchePopup == true && <Recherche />}
+        <Secteur_Region_CpostalForm></Secteur_Region_CpostalForm>
         <AlertModifier />
         <ClientForm />
         <br />

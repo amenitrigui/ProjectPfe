@@ -33,6 +33,7 @@ import { setActiverBoutonsValiderAnnuler, setIsDashBoardRoute, setToolbarMode } 
 import ImprimerDevis from "./pages/Devis/Imprimer";
 import SecteurForm from "./pages/Clients/SecteurForm";
 import Test1 from "./test/Test1";
+import Secteur_Region_CpostalForm  from "./pages/Clients/Secteur_Region_CpostalForm";
 
 function App() {
   //?==================================================================================================================
@@ -88,6 +89,7 @@ function App() {
       <Route path="/ImprimerDevis" element={<ImprimerDevis />}></Route>
       <Route path="/SecteurForm" element={<SecteurForm />}></Route>
       <Route path="/test" element={<Test1 />}></Route>
+      <Route path="/Secteur_Region_CpostalForm" element={<Secteur_Region_CpostalForm />}></Route>
 
       <Route
         path="/DevisFormPlaceholder"

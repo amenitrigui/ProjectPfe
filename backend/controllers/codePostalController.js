@@ -1,4 +1,5 @@
 const { getDatabaseConnection } = require("../common/commonMethods");
+const defineCodePostalemodels= require("../models/societe/cpostal")
 //* récuperer la ville associé à un code postal
 // * example:
 // * input : 1000
@@ -87,9 +88,31 @@ const getCodePostalParVille = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+const ajouterCodePostal = async (req, res) => {
+  const { dbName } = req.params;
+  const { CodePostalInfo } = req.body;
+  console.log("ajouter Code postal :", CodePostalInfo);
 
+  try {
+    const dbConnection = await getDatabaseConnection(dbName);
+    const CodePostale = defineCodePostalemodels(dbConnection);
+    const newCodePostal = await CodePostale.create({
+      //add + save min base 3ibrt 3ml insert into mn base de donnes
+      CODEp: CodePostalInfo.CODEp,
+      desicp: CodePostalInfo.desicp,
+    });
+    console.log("sssss",newCodePostal)
+
+    return res
+      .status(200)
+      .json({ message: "insertion avec succès", newCodePostal });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 module.exports = {
   getListeCodesPosteaux,
   getVilleParCodePostale,
   getCodePostalParVille,
+  ajouterCodePostal
 };

@@ -178,6 +178,22 @@ const ClientForm = () => {
       dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
     }
   };
+  const hundleClickButtonSecRegCp = (colonne) => {
+    if (colonne == "secteur") {
+      dispatch(setToolbarTable("secteur"));
+    }
+    if (colonne == "region") {
+      dispatch(setToolbarTable("region"));
+    }
+    if (colonne == "codepostale") {
+      dispatch(setToolbarTable("codepostale"));
+    }
+    dispatch(setAfficherSecteurPopup(true))
+  };
+  const handleChangeNumDecision = (e, colonne) => {
+    if (isNumerique(e.target.value))
+      dispatch(setClientInfos({ colonne: "decision", valeur: e.target.value }));
+  };
   const hundleSelectTous = (e, champ) => {
     dispatch(setClientInfos({ colonne: champ, valeur: e.target.value }));
   };
@@ -562,6 +578,180 @@ const ClientForm = () => {
                         </button>
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-0">
+                {/* Champ Code Postal */}
+                <div className="flex flex-col w-1/3">
+                  <label
+                    className="font-bold mb-1"
+                    style={{ color: "rgb(48, 60, 123)" }}
+                  >
+                    C. Postal
+                  </label>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="text"
+                      className="border border-gray-300 rounded-md p-2 w-full"
+                      value={clientInfos.cp || ""}
+                      list="listeCodesPosteaux"
+                      onChange={(e) => handleChangeCodePostal(e)}
+                      disabled={!activerChampsForm}
+                    />
+                  </div>
+
+                  <datalist id="listeCodesPosteaux">
+                    {listeToutCodesPosteaux.length > 0 ? (
+                      listeToutCodesPosteaux.map((cp, indice) => (
+                        <option key={indice} value={cp.CODEp}>
+                          {cp.CODE}
+                        </option>
+                      ))
+                    ) : (
+                      <option disabled>Aucun client trouvé</option>
+                    )}
+                  </datalist>
+                </div>
+
+                {/* Champ Ville + bouton */}
+                <div className="flex flex-col w-2/3">
+                  <label
+                    className="font-bold mb-1"
+                    style={{ color: "rgb(48, 60, 123)" }}
+                  >
+                    Ville
+                  </label>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="text"
+                      className="border border-gray-300 rounded-md p-2 w-full"
+                      value={clientInfos.desicp || ""}
+                      onChange={(e) => handleChange(e, "ville")}
+                      disabled={!activerChampsForm}
+                    />
+                    <button
+                      type="button"
+                      className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition"
+                      // disabled={!activerChampsForm}
+                      onClick={() => hundleClickButtonSecRegCp("codepostale")}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-0">
+                {/* Champ Secteur */}
+                <div className="flex flex-col w-1/3">
+                  <label
+                    className="font-bold mb-1"
+                    style={{ color: "rgb(48, 60, 123)" }}
+                  >
+                    Secteur
+                  </label>
+                  <input
+                    type="text"
+                    className="border border-gray-300 rounded-md p-2"
+                    disabled={!activerChampsForm}
+                    list="listeCodesSecteur"
+                    onChange={(e) => handleSecteurChange(e)}
+                  />
+                  <datalist id="listeCodesSecteur">
+                    {listeCodesSecteur.length > 0 ? (
+                      listeCodesSecteur.map((secteur, indice) => (
+                        <option key={indice} value={secteur.codesec}>
+                          {secteur.codesec}
+                        </option>
+                      ))
+                    ) : (
+                      <option disabled>Aucun secteur trouvé</option>
+                    )}
+                  </datalist>
+                </div>
+
+                {/* Champ Type Secteur + bouton */}
+                <div className="flex flex-col w-2/3">
+                  <label
+                    className="font-bold mb-1"
+                    style={{ color: "rgb(48, 60, 123)" }}
+                  >
+                    Type Secteur
+                  </label>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="text"
+                      className="border border-gray-300 rounded-md p-2 w-full"
+                      disabled={!activerChampsForm}
+                      value={clientInfos.desisec}
+                    />
+
+                    <button
+                      type="button"
+                      className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition"
+                      // disabled={!activerChampsForm}
+                      onClick={() => hundleClickButtonSecRegCp("secteur")}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-0">
+                {/* Champ Région */}
+                <div className="flex flex-col w-1/3">
+                  <label
+                    className="font-bold mb-1"
+                    style={{ color: "rgb(48, 60, 123)" }}
+                  >
+                    Région
+                  </label>
+                  <input
+                    type="text"
+                    className="border border-gray-300 rounded-md p-2"
+                    disabled={!activerChampsForm}
+                    list="listeCodesRegion"
+                    onChange={(e) => hundleRegionChange(e)}
+                  />
+                  <datalist id="listeCodesRegion">
+                    {listeCodesRegion.length > 0 ? (
+                      listeCodesRegion.map((region, indice) => (
+                        <option key={indice} value={region.codergg}>
+                          {region.codergg}
+                        </option>
+                      ))
+                    ) : (
+                      <option disabled>Aucune région trouvée</option>
+                    )}
+                  </datalist>
+                </div>
+
+                {/* Champ Type Région + bouton */}
+                <div className="flex flex-col w-2/3">
+                  <label
+                    className="font-bold mb-1"
+                    style={{ color: "rgb(48, 60, 123)" }}
+                  >
+                    Type Région
+                  </label>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="text"
+                      className="border border-gray-300 rounded-md p-2 w-full"
+                      disabled={!activerChampsForm}
+                      value={clientInfos.desirgg}
+                    />
+                    <button
+                      type="button"
+                      className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition"
+                      // disabled={!activerChampsForm}
+                      onClick={() => hundleClickButtonSecRegCp("region")}
+                    >
+                      +
+                    </button>
                   </div>
                 </div>
               </div>

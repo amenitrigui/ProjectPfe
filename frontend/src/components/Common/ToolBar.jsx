@@ -42,6 +42,8 @@ import {
   setViderChampsUtilisateur,
 } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 import { FaCog, FaRegUserCircle, FaSignOutAlt, FaUser } from "react-icons/fa";
+import { useReactToPrint } from "react-to-print";
+
 function ToolBar() {
   //?==================================================================================================================
   //?=====================================================variables====================================================
@@ -490,6 +492,83 @@ function ToolBar() {
                   </button>
                 </>
               )}
+
+              {(utilisateurConnecte?.type?.toLowerCase() === "superviseur" ||
+                (utilisateurConnecte?.type?.toLowerCase() === "utilisateur" &&
+                  (toolbarTable === "client" ||
+                    toolbarTable === "devis" ||toolbarTable === "famille" || toolbarTable === "sousfamille"  ||
+
+                    toolbarTable === "article"))) && (
+                <button
+                  type="button"
+                  onClick={handleNaviguerVersListe}
+                  className="flex flex-col items-center w-20 p-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all duration-200"
+                >
+                  <FontAwesomeIcon icon={faList} className="text-xl mb-1" />
+                  <span className="text-xs font-semibold">Liste</span>
+                </button>
+              )}
+
+              {/* Précédent */}
+
+              {(utilisateurConnecte?.type?.toLowerCase() === "superviseur" ||
+                (utilisateurConnecte?.type?.toLowerCase() === "utilisateur" &&
+                  (toolbarTable === "client" ||
+                    toolbarTable === "devis" ||toolbarTable === "famille" || toolbarTable === "sousfamille"  ||
+
+                    toolbarTable === "article"))) && (
+                <button
+                  type="button"
+                  onClick={handleNaviguerVersPrecedent}
+                  className="flex flex-col items-center w-20 p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-all duration-200"
+                >
+                  <FontAwesomeIcon
+                    icon={faArrowLeft}
+                    className="text-xl mb-1"
+                  />
+                  <span className="text-xs font-semibold">Précédent</span>
+                </button>
+              )}
+
+              {(utilisateurConnecte?.type?.toLowerCase() === "superviseur" ||
+                (utilisateurConnecte?.type?.toLowerCase() === "utilisateur" &&
+                  (toolbarTable === "client" ||
+                    toolbarTable === "devis" ||toolbarTable === "famille" || toolbarTable === "sousfamille"  ||
+
+                    toolbarTable === "article"))) && (
+                <button
+                  type="button"
+                  onClick={handleNaviguerVersSuivant}
+                  className="flex flex-col items-center w-20 p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-all duration-200"
+                >
+                  <FontAwesomeIcon
+                    icon={faArrowRight}
+                    className="text-xl mb-1"
+                  />
+                  <span className="text-xs font-semibold">Suivant</span>
+                </button>
+              )}
+
+              {/* Edition */}
+              {toolbarTable === "devis" && (
+                <button
+                  type="button"
+                  onClick={()=>handleEditionClick()}
+                  className="flex flex-col items-center w-20 p-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-lg transition-all duration-200"
+                >
+                  <FontAwesomeIcon icon={faWrench} className="text-xl mb-1" />
+                  <span className="text-xs font-semibold">Édition</span>
+                </button>
+              )}
+
+              {/* Quitter */}
+              <button
+                onClick={handleQuitterClick}
+                className="flex flex-col items-center w-20 p-2 bg-orange-100 hover:bg-orange-200 text-orange-700 rounded-lg transition-all duration-200"
+              >
+                <FontAwesomeIcon icon={faSignOutAlt} />
+                <span>Quitter</span>
+              </button>
             </>
           )}
           <div className="flex-grow"></div>

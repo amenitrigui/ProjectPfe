@@ -58,6 +58,8 @@ const getListeCodesSecteur = async (req, res) => {
       return res.status(500).json({ message: error.message });
     }
   };
+//* http://localhost:5000/api/secteur/SOLEVO/ajouterSecteur
+//* {"secteurInfo": { "codesec": "323",   "desisec": "ddd" }}
 
 const ajouterSecteur=async (req,res)=>{
 const { dbName } = req.params;

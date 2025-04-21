@@ -1,4 +1,5 @@
 const { getDatabaseConnection } = require("../common/commonMethods");
+const defineregionmodels = require("../models/societe/region");
 
 //* récuperer la liste de régions
 // * example:
@@ -51,7 +52,30 @@ const getVilleParRegion = async (req, res) => {
   }
 };
 
+const ajouterRegion = async (req, res) => {
+  const { dbName } = req.params;
+  const { RegionInfo } = req.body;
+  console.log("ajouter Region infos :", RegionInfo);
+
+  try {
+    const dbConnection = await getDatabaseConnection(dbName);
+    const Region = defineregionmodels(dbConnection);
+    const newRegion = await Region.create({
+      //add + save min base 3ibrt 3ml insert into mn base de donnes
+      codergg: RegionInfo.codergg,
+      desirgg: RegionInfo.desirgg,
+    });
+    console.log(newRegion)
+
+    return res
+      .status(200)
+      .json({ message: "insertion avec succès", newRegion });
+  } catch (error) {
+    return res.status(500).json({ message: error });
+  }
+};
 module.exports = {
   getListeCodeRegions,
   getVilleParRegion,
+  ajouterRegion,
 };

@@ -1,14 +1,56 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { useReactToPrint } from "react-to-print";
 
 function Imprimer() {
   const devisInfo = useSelector((state) => state.devisSlice.devisInfo);
   console.log(devisInfo);
   const totalPages = Math.ceil(devisInfo.articles.length / 10);
   console.log(totalPages);
+  const contentRef = useRef(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
   return (
     <div>
+      <style>
+        {`
+          @media print {
+            .no-page-break {
+              page-break-inside: avoid !important;
+              break-inside: avoid !important;
+            }
+
+            #devis {
+              page-break-after: avoid !important;
+            }
+
+            body {
+              font-size: 12px !important;
+            }
+
+            table {
+              width: 100% !important;
+              page-break-before: auto;
+            }
+
+            .table-auto {
+              page-break-inside: auto !important;
+            }
+
+            .p-6 {
+              padding: 1rem !important;
+            }
+
+            .text-sm {
+              font-size: 10px !important;
+            }
+
+            .mt-4 {
+              margin-top: 10px !important;
+            }
+          }
+        `}
+      </style>
       <Link
         to="/DevisFormTout"
         className="text-[#2a2185] hover:text-[#1f1a66] px-6 py-2 rounded-lg focus:outline-none flex items-center"
@@ -19,32 +61,57 @@ function Imprimer() {
         id="devis"
         className="p-6 bg-white rounded-lg shadow-lg max-w-screen-lg mx-auto"
       >
+        <span ref={contentRef}>
         {/* Header */}
-        <div className="grid grid-cols-2 border-b border-[#2a2185] pb-4 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-2 border-b border-[#2a2185] pb-4 mb-6 gap-4">
           <div>
             <h1 className="text-[#2a2185] font-bold italic text-3xl">
               Ste Logicom - Progiciel de Gestion Intégrée ERP
             </h1>
-            <p className="text-sm text-gray-600">
-              S.A.R.L au capital de 11.000 DT
-              <br />
-              BIAT HARZALLAH 08 700 00040 10 52971444
-              <br />
-              Tél/Fax: 74 400110 - 74 461010
-              <br />
-              RC: B141691998
-            </p>
-          </div>
-          <div className="text-right">
-            <h2 className="text-lg font-bold text-[#2a2185]">
+
+            <h2 className="text-2xl italic font-bold #ccc underline mt-4">
               Devis/Facture Proforma
             </h2>
-            <p>
-              <strong>Numéro:</strong>
-              {devisInfo.NUMBL}
-              <br />
-              <strong>Date:</strong> {devisInfo.DATEBL}
-            </p>
+
+            <div className="text-sm text-gray-600 mt-2">
+              <div>
+                <strong>Numéro:</strong> {devisInfo.NUMBL}
+              </div>
+              <div>
+                <strong>Date:</strong> {devisInfo.DATEBL}
+              </div>
+            </div>
+          </div>
+
+          <div className="text-right">
+            <img
+              src="logo.png"
+              className="w-32 h-auto ml-auto mb-2"
+              alt="Logo"
+            />
+            <div className="text-sm text-gray-600 space-y-1">
+              <div>S.A.R.L au capital de 11.000 DT</div>
+              <div>
+                <a
+                  href="http://www.logicom-dev.com.tn"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 underline"
+                >
+                  <strong>Site Web :</strong> www.logicom-dev.com.tn
+                </a>
+              </div>
+              <div>
+                <strong>BIAT HARZALLAH:</strong> 08 700 00040 10 52971444
+              </div>
+              <div>R.Teniour Av .H.Ayadi K605-3041chihia</div>
+              <div>
+                <strong>Tél/Fax:</strong> 74 400110 - 74461010 - 70033548
+              </div>
+              <div>
+                <strong>Code TVA :</strong> 620495N/A/M/000 RC: B141691998
+              </div>
+            </div>
           </div>
         </div>
 
@@ -57,12 +124,15 @@ function Imprimer() {
             <p className="border border-[#2a2185] p-2 text-sm">
               <strong>CLIENT:</strong> {devisInfo.CODECLI}
             </p>
-            <p className="border border-[#2a2185] p-2 text-sm">
-              <strong>PAGE:</strong> {devisInfo.numPage / totalPages}
+            <p className="flex-1 border border-[#2a2185] p-2 text-sm">
+              <strong>Mat Fiscale:</strong> {devisInfo.matriculef}
             </p>
-            <p className="mt-4 text-sm text-gray-700">
-              Monsieur / Madame, suite à votre demande, nous avons le plaisir de
-              vous communiquer notre meilleure offre de prix pour :
+
+            <p className="mt-4 text-sm text-gray-700 whitespace-nowrap">
+              <strong>
+                Monsieur / Madame, suite à votre demande, nous avons le plaisir
+                de vous communiquer notre meilleure offre de prix pour :
+              </strong>
             </p>
           </div>
 
@@ -73,15 +143,19 @@ function Imprimer() {
             <p className="border border-[#2a2185] p-2 text-sm">
               <strong>Adresse:</strong> {devisInfo.ADRCLI}
             </p>
-            <p className="border border-[#2a2185] p-2 text-sm">
-              <strong>Code Postal:</strong> {devisInfo.cp}
-            </p>
-            <p className="border border-[#2a2185] p-2 text-sm">
-              <strong>Email:</strong> {devisInfo.email}
-            </p>
+
+            <div className="flex flex-col sm:flex-row gap-2">
+              <p className="border border-[#2a2185] p-2 text-sm">
+                <strong>PAGE:</strong> {devisInfo.numPage / totalPages}
+              </p>
+              <p className="flex-1 border border-[#2a2185] p-2 text-sm">
+                <strong>À l'attention de :</strong> {devisInfo.attention}
+              </p>
+            </div>
           </div>
         </div>
 
+        {/* Tableau des articles */}
         {/* Tableau des articles */}
         <div className="overflow-x-auto mb-6">
           <table className="table-auto w-full border border-gray-300">
@@ -111,7 +185,10 @@ function Imprimer() {
             </thead>
             <tbody>
               {devisInfo.articles.map((ligne, index) => (
-                <tr key={index} className="border-b hover:bg-gray-50">
+                <tr
+                  key={index}
+                  className="border-b hover:bg-gray-50 no-page-break"
+                >
                   <td className="border border-gray-300 px-2 py-1 text-sm">
                     {ligne.famille}
                   </td>
@@ -154,13 +231,13 @@ function Imprimer() {
         {/* Totaux et conditions */}
         <div className="flex justify-between gap-6">
           {/* Bloc TVA */}
-          <div className="w-1/3 p-4 rounded-lg border border-[#2a2185]">
+          <div className="w-1/3 p-4 rounded-lg border-[#2a2185]">
             <table className="table-auto w-full border-collapse">
               <tbody>
                 <tr>
                   <td className="border px-2 py-1">Taux TVA</td>
                   <td className="border px-2 py-1">
-                    {devisInfo.articles.TauxTVA}
+                    {devisInfo.articles.tauxtva}
                   </td>
                 </tr>
                 <tr>
@@ -203,24 +280,24 @@ function Imprimer() {
             <table className="table-auto w-full mt-4 border-collapse border border-[#2a2185]">
               <tbody>
                 <tr>
-                  <td className="border px-4 py-2 font-semibold">
+                  <td className="border font-semibold">
                     Délai de Livraison:
                   </td>
-                  <td className="border px-4 py-2">{devisInfo.delailivr}</td>
+                  <td className="border">{devisInfo.delailivr}</td>
                 </tr>
                 <tr>
-                  <td className="border px-4 py-2 font-semibold">Transport:</td>
-                  <td className="border px-4 py-2">{devisInfo.transport}</td>
+                  <td className="borderfont-semibold">Transport:</td>
+                  <td className="border">{devisInfo.transport}</td>
                 </tr>
                 <tr>
-                  <td className="border px-4 py-2 font-semibold">
+                  <td className="border font-semibold">
                     Mode de Paiement:
                   </td>
-                  <td className="border px-4 py-2">{devisInfo.modepaie}</td>
+                  <td className="border">{devisInfo.modepaie}</td>
                 </tr>
               </tbody>
             </table>
-            <div className="mt-4 p-4 border border-[#2a2185] rounded-lg">
+            <div className="border px-4 py-5 border-[#2a2185] rounded-lg">
               <h3 className="text-lg font-semibold text-[#2a2185]">
                 Cachet & Signature
               </h3>
@@ -229,30 +306,30 @@ function Imprimer() {
           </div>
 
           {/* Bloc Totaux */}
-          <div className="w-1/3 p-4 rounded-lg border border-[#2a2185]">
-            <table className="table-auto w-full text-sm border-collapse">
+          <div className="w-1/3 p-4 rounded-lg border-[#2a2185]">
+            <table className="table-auto w-full text border-collapse">
               <tbody>
                 <tr>
-                  <td className="border px-2 py-1 font-medium">Total HT:</td>
-                  <td className="border px-2 py-1">{devisInfo.MHT}</td>
+                  <td className="border font-medium">Total HT:</td>
+                  <td className="border">{devisInfo.MHT}</td>
                 </tr>
                 <tr>
-                  <td className="border px-2 py-1 font-medium">
+                  <td className="border font-medium">
                     Net HT Global:
                   </td>
-                  <td className="border px-2 py-1">{devisInfo.MHT}</td>
+                  <td className="border">{devisInfo.MHT}</td>
                 </tr>
                 <tr>
-                  <td className="border px-2 py-1 font-medium">Total TAXES:</td>
-                  <td className="border px-2 py-1">{devisInfo.MTVA}</td>
+                  <td className="border font-medium">Total TAXES:</td>
+                  <td className="border">{devisInfo.MTVA}</td>
                 </tr>
                 <tr>
-                  <td className="border px-2 py-1 font-medium">MT T.T.C:</td>
-                  <td className="border px-2 py-1">{devisInfo.MTTC}</td>
+                  <td className="border font-medium">MT T.T.C:</td>
+                  <td className="border">{devisInfo.MTTC}</td>
                 </tr>
                 <tr>
-                  <td className="border px-2 py-1 font-medium">Timbre:</td>
-                  <td className="border px-2 py-1">{devisInfo.TIMBRE}</td>
+                  <td className="border font-medium">Timbre:</td>
+                  <td className="border">{devisInfo.TIMBRE}</td>
                 </tr>
                 <tr>
                   <td className="border px-2 py-1 font-medium">
@@ -264,22 +341,21 @@ function Imprimer() {
                 </tr>
               </tbody>
             </table>
-            <div>
-              <p className="mt-4 text-xs text-center text-gray-600">
-                Espérons que notre offre trouve votre entière satisfaction,
-                veuillez agréer, Monsieur/Madame, nos sentiments les plus
-                distingués.
-              </p>
-            </div>
           </div>
         </div>
-
+        <div>
+          <p className="mt-4 text-xs text-center text-gray-600">
+            Espérons que notre offre trouve votre entière satisfaction, veuillez
+            agréer, Monsieur/Madame, nos sentiments les plus distingués.
+          </p>
+        </div>
+        </span>
         {/* Bouton d'impression */}
         <div className="flex justify-center mt-6">
           <button
             type="button"
             className="text-white bg-[#2a2185] hover:bg-[#1f1a66] px-6 py-2 rounded-lg focus:outline-none"
-            onClick={() => window.print()}
+            onClick={() => reactToPrintFn()}
           >
             <span className="h-6 w-6 inline-block mr-2">🖨️</span>
             Imprimer
