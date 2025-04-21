@@ -38,6 +38,8 @@ import {
   getListeUtilisateurParCode,
   setViderChampsUtilisateur,
 } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
+import { useReactToPrint } from "react-to-print";
+
 function ToolBar() {
   //?==================================================================================================================
   //?=====================================================variables====================================================
@@ -392,7 +394,7 @@ function ToolBar() {
               {toolbarTable === "devis" && (
                 <button
                   type="button"
-                  onClick={handleEditionClick}
+                  onClick={()=>handleEditionClick()}
                   className="flex flex-col items-center w-20 p-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-lg transition-all duration-200"
                 >
                   <FontAwesomeIcon icon={faWrench} className="text-xl mb-1" />

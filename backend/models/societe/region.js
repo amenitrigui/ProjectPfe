@@ -1,9 +1,11 @@
 const { DataTypes } = require('sequelize');
+
 module.exports = function(sequelize) {
   return sequelize.define('region', {
     codergg: {
       type: DataTypes.STRING(3),
-      allowNull: true
+      allowNull: true,
+      primaryKey: true, // Ajoute ceci si codergg est ta clé primaire
     },
     desirgg: {
       type: DataTypes.STRING(30),
@@ -12,6 +14,7 @@ module.exports = function(sequelize) {
   }, {
     sequelize,
     tableName: 'region',
-    timestamps: false
+    timestamps: false,
+    id: false // Désactive la création automatique de la colonne `id`
   });
 };

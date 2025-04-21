@@ -28,7 +28,7 @@ export const interfaceSlice = createSlice({
     afficherRecherchePopup: false,
     ouvrireMenuDrawer: true,
     afficherFamillePopub: false,
-    afficherSecteurPopup: false
+    afficherSecteurPopup: false,
   },
 
   reducers: {
@@ -93,6 +93,6 @@ export const {
   setAfficherRecherchePopup,
   setOuvrireDrawerMenu,
   setAfficherFamillePopub,
-  setAfficherSecteurPopup
+  setAfficherSecteurPopup,
 } = interfaceSlice.actions;
 export default interfaceSlice.reducer;

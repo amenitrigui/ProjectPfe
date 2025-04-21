@@ -12,6 +12,8 @@ import  sousfamilleSlice  from "./sousfamille_slices/sousfamilleSlice";
 import Stock_Slice from "./Stock_valorisation_utilitaires/Stock_Slice"
 import valorisation_Slice from "./Stock_valorisation_utilitaires/valorisation_Slice"
 import utilisateurSystemSlices from "./utilisateurSystemSlices/utilisateurSystemSlice";
+import codePostaleSlice from "./cpostal_slices/cpostalSlice"
+import regionSlice from "./region_slices/regionSlice"
 
 import  secteurSlice  from "./secteur_slices/secteurSlice";
 
@@ -32,7 +34,9 @@ const rootReducer = combineReducers({
   Stock_Slice: Stock_Slice,
   valorisation_Slice:valorisation_Slice,
   secteurSlice:secteurSlice,
-  utilisateurSystemSlice:utilisateurSystemSlices
+  regionSlice:regionSlice,
+  codePostaleSlice:codePostaleSlice,
+  utilisateurSystemSlice:utilisateurSystemSlices,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

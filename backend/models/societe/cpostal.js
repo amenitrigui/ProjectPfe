@@ -1,9 +1,11 @@
 const { DataTypes } = require('sequelize');
+
 module.exports = function(sequelize) {
   return sequelize.define('cpostal', {
     CODEp: {
       type: DataTypes.STRING(8),
-      allowNull: true
+      allowNull: true,
+      primaryKey:true
     },
     desicp: {
       type: DataTypes.STRING(30),
@@ -12,6 +14,7 @@ module.exports = function(sequelize) {
   }, {
     sequelize,
     tableName: 'cpostal',
-    timestamps: false
+    timestamps: false,
+
   });
 };

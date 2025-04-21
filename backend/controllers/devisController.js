@@ -389,7 +389,7 @@ const getDevisParNUMBL = async (req, res) => {
 const getDevisCreator = async (req, res) => {
   try {
     const { codea } = req.params;
-    const dbConnection = getDatabaseConnection("process.env.DB_USERS_NAME");
+    const dbConnection = getDatabaseConnection(process.env.DB_USERS_NAME);
     const resultat = await dbConnection.query(
       `SELECT * FROM utlisateur u, dfp d where d.codea = u.codeuser`,
       {

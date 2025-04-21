@@ -11,7 +11,7 @@ let connexionDbUserErp;
 
 const getUtilisateurDbConnection = async () => {
   if (!connexionDbUserErp) {
-    connexionDbUserErp = await getDatabaseConnection("process.env.DB_USERS_NAME");
+    connexionDbUserErp = await getDatabaseConnection(process.env.DB_USERS_NAME);
   }
   return connexionDbUserErp;
 };
@@ -176,7 +176,7 @@ const getListeUtilisateurParNom = async (req, res) => {
   console.log(nom);
   try {
     //const decoded = verifyTokenValidity(req, res);
-    const dbConnection = await getDatabaseConnection("process.env.DB_USERS_NAME", res);
+    const dbConnection = await getDatabaseConnection(process.env.DB_USERS_NAME, res);
 
     const result = await dbConnection.query(
       `select codeuser,nom,directeur,type from utilisateur where nom LIKE :nom `,
@@ -202,7 +202,7 @@ const getListeUtilisateurParDirecteur = async (req, res) => {
 
   try {
     //const decoded = verifyTokenValidity(req, res);
-    const dbConnection = await getDatabaseConnection("process.env.DB_USERS_NAME", res);
+    const dbConnection = await getDatabaseConnection(process.env.DB_USERS_NAME, res);
 
     const result = await dbConnection.query(
       `select codeuser,nom,directeur,type from utilisateur where directeur LIKE :directeur `,
@@ -228,7 +228,7 @@ const getListeUtilisateurParType = async (req, res) => {
 
   try {
     //const decoded = verifyTokenValidity(req, res);
-    const dbConnection = await getDatabaseConnection("process.env.DB_USERS_NAME", res);
+    const dbConnection = await getDatabaseConnection(process.env.DB_USERS_NAME, res);
 
     const result = await dbConnection.query(
       `select codeuser,nom,directeur,type from utilisateur where type LIKE :type `,
@@ -252,7 +252,7 @@ const getListeUtilisateurParType = async (req, res) => {
 const getListeUtilisateur = async (req, res) => {
   try {
     //const decoded = verifyTokenValidity(req, res);
-    const dbConnection = await getDatabaseConnection("process.env.DB_USERS_NAME", res);
+    const dbConnection = await getDatabaseConnection(process.env.DB_USERS_NAME, res);
 
     const result = await dbConnection.query(
       `select codeuser,nom,directeur, email ,type from utilisateur `,
@@ -273,7 +273,7 @@ const getListeUtilisateur = async (req, res) => {
 const filterListeUtilisateur = async (req, res) => {
   const { filters } = req.query;
   console.log(filters);
-  const dbConnection = await getDatabaseConnection("process.env.DB_USERS_NAME", res);
+  const dbConnection = await getDatabaseConnection(process.env.DB_USERS_NAME, res);
 
   let whereClauses = [];
 
@@ -322,7 +322,7 @@ const filterListeUtilisateur = async (req, res) => {
 const getCodeUtilisateurSuivant = async (req, res) => {
  
   try {
-    const dbConnection = await getDatabaseConnection("process.env.DB_USERS_NAME", res);
+    const dbConnection = await getDatabaseConnection(process.env.DB_USERS_NAME, res);
 
     // On récupère le code max existant
     const [rows] = await dbConnection.query(`SELECT MAX(codeuser) AS maxCode FROM utilisateur`);
