@@ -116,12 +116,19 @@ function DevisForm() {
   }, []);
 
   useEffect(() => {
-    if (derniereNumbl) {
+    if (derniereNumbl && derniereNumbl != "") {
+      dispatch(setDevisInfo({collone: "NUMBL", valeur: "DV"+derniereNumbl}))
       dispatch(getDevisParNUMBL("DV"+derniereNumbl));
       dispatch(getLignesDevis("DV"+derniereNumbl));
+
     }
-    console.log(devisInfo.articles);
   }, [derniereNumbl]);
+  useEffect(() => {
+    if(devisInfo.NUMBL && devisInfo.NUMBL != "") {
+      dispatch(getDevisParNUMBL(devisInfo.NUMBL));
+      dispatch(getLignesDevis(devisInfo.NUMBL));
+    }
+  }, [devisInfo.NUMBL])
 
   useEffect(() => {
     if (clientInfos) {
@@ -209,7 +216,7 @@ function DevisForm() {
                         type="text"
                         className="w-full border border-gray-300 rounded-md p-2"
                         onChange={(e) => handleSelectDevis(e)}
-                        value={derniereNumbl!= ""? derniereNumbl:devisInfo.NUMBL}
+                        value={derniereNumbl!= "" && devisInfo.NUMBL == ""? derniereNumbl:devisInfo.NUMBL}
                         disabled={activerChampsForm}
                         onClick={() => {
                           dispatch(setToolbarTable("devis"));
