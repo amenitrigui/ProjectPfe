@@ -72,20 +72,17 @@ export const getTotalChiffres = createAsyncThunk(
 export const getDevisParNUMBL = createAsyncThunk(
   "Slice/getDevisParNUMBL",
   async (NUMBL, thunkAPI) => {
-    const codeuser = thunkAPI.getState().UtilisateurInfo.codeuser;
-    console.log(NUMBL, codeuser);
+    const codeuser = thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte.codeuser;
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getDevisParNUMBL/${NUMBL}`,
       {
         params: {
-          codeuser: thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte.codeuser,
+          codeuser: codeuser,
         },
       }
     );
-
-    console.log(response);
     return response.data.devis;
   }
 );
