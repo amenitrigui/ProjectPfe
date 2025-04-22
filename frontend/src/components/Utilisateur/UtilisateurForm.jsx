@@ -8,7 +8,6 @@ import {  setAfficherRecherchePopup } from "../../app/interface_slices/interface
 import {
   getDerniereCodeUtilisateur,
   setUtilisateur_SuperviseurInfos,
- 
 } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 
 const UtilisateurForm = () => {
@@ -18,6 +17,7 @@ const UtilisateurForm = () => {
     (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
   const dispatch = useDispatch();
+  const toolbarTable = useSelector((state) => state.interfaceSlice.toolbarMode);
   const utilisateurConnecte = useSelector(
     (state) => state.utilisateurSystemSlice.utilisateurConnecte
   );
@@ -30,27 +30,24 @@ const UtilisateurForm = () => {
   const listeUtilisateur = useSelector(
     (state) => state.utilisateurSlice.listeUtilisateur
   );
-  
+
   // state pour désactiver/activer les champs lors de changement de modes editables (ajout/modification)
   // vers le mode de consultation respectivement
   const activerChampsForm = useSelector(
     (state) => state.interfaceSlice.activerChampsForm
   );
 
-
   useEffect(() => {
     dispatch(getDerniereCodeUtilisateur());
-
-  
   }, []);
   const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
   const handleCodeUtilisateur = (codeuser) => {
     dispatch(getUtilisateurParCode(codeuser));
   };
- 
+
   const afficherRecherchePopup = () => {
-    dispatch(setAfficherRecherchePopup(true))
-  }
+    dispatch(setAfficherRecherchePopup(true));
+  };
   const hundlechange = (colonne, valeur) => {
     dispatch(
       setUtilisateur_SuperviseurInfos({ colonne: colonne, valeur: valeur })
@@ -81,7 +78,9 @@ const UtilisateurForm = () => {
                         type="text"
                         className="border border-gray-300 rounded-md p-2"
                         value={
-                          toolbarMode == "ajout"
+                          toolbarTable === "consultation"
+                            ? `${utilisateurConnecte.codeuser || ""}`
+                            : toolbarMode === "ajout"
                             ? derniereCodeUtilisateur.codeuser
                             : Utilisateur_SuperviseurInfos.codeuser
                         }
@@ -102,7 +101,13 @@ const UtilisateurForm = () => {
                       <input
                         type="text"
                         className="border border-gray-300 rounded-md p-2"
-                        value={Utilisateur_SuperviseurInfos.nom || ""}
+                        value={
+                          toolbarTable === "consultation"
+                            ? utilisateurConnecte.nom || ""
+                            : toolbarMode === "ajout"
+                            ? ""
+                            : Utilisateur_SuperviseurInfos.nom || ""
+                        }
                         onChange={(e) => hundlechange("nom", e.target.value)}
                         disabled={!activerChampsForm}
                         maxLength={8}
@@ -130,7 +135,13 @@ const UtilisateurForm = () => {
                     <input
                       type="text"
                       className="border border-gray-300 rounded-md p-2"
-                      value={Utilisateur_SuperviseurInfos.directeur || ""}
+                      value={
+                        toolbarTable === "consultation"
+                          ? utilisateurConnecte.directeur || ""
+                          : toolbarMode === "ajout"
+                          ? ""
+                          : Utilisateur_SuperviseurInfos.directeur || ""
+                      }
                       onChange={(e) =>
                         hundlechange("directeur", e.target.value)
                       }
@@ -145,7 +156,14 @@ const UtilisateurForm = () => {
                     <input
                       type="text"
                       className="border border-gray-300 rounded-md p-2"
-                      value={Utilisateur_SuperviseurInfos.type || ""}
+                     
+                      value={
+                        toolbarTable === "consultation"
+                          ? utilisateurConnecte.type || ""
+                          : toolbarMode === "ajout"
+                          ? ""
+                          : Utilisateur_SuperviseurInfos.type || ""
+                      }
                       onChange={(e) => hundlechange("type", e.target.value)}
                       disabled={!activerChampsForm}
                     />

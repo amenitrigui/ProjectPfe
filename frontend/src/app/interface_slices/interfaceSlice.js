@@ -1,6 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { set } from "mongoose";
-
 export const interfaceSlice = createSlice({
   name: "interfaceSlice",
   initialState: {
