@@ -76,7 +76,7 @@ function DevisForm() {
     (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
   const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
-  const derniereNumbl = useSelector((state) => state.devisSlice.derniereNumbl);
+  const derniereNumbl = useSelector((state) => state.devisSlice.derniereNumbl); 
   //?==================================================================================================================
   //?==============================================appels UseEffect====================================================
   //?==================================================================================================================
@@ -209,7 +209,7 @@ function DevisForm() {
                         type="text"
                         className="w-full border border-gray-300 rounded-md p-2"
                         onChange={(e) => handleSelectDevis(e)}
-                        value={devisInfo.NUMBL}
+                        value={derniereNumbl!= ""? derniereNumbl:devisInfo.NUMBL}
                         disabled={activerChampsForm}
                         onClick={() => {
                           dispatch(setToolbarTable("devis"));

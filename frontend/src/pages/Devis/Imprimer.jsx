@@ -5,11 +5,12 @@ import { useReactToPrint } from "react-to-print";
 
 function Imprimer() {
   const devisInfo = useSelector((state) => state.devisSlice.devisInfo);
-  console.log(devisInfo);
+  const derniereNumbl = useSelector((state) => state.devisSlice.derniereNumbl);
+  console.log(derniereNumbl);
   const totalPages = Math.ceil(devisInfo.articles.length / 10);
   console.log(totalPages);
   const dbName = useSelector((state) => state.utilisateurSystemSlice.dbName);
-  console.log(devisInfo.articles)
+  console.log(devisInfo.articles);
 
   const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
   const contentRef = useRef(null);
@@ -79,8 +80,11 @@ function Imprimer() {
 
               <div className="text-sm text-gray-600 mt-2">
                 <div>
-                  <strong>Numéro:</strong> {devisInfo.NUMBL}
+                  <strong>Numéro:</strong> {derniereNumbl?.NUMBL ?? ""}
+                  {derniereNumbl?.NUMBL && devisInfo?.NUMBL ? " || " : ""}
+                  {devisInfo?.NUMBL ?? ""}
                 </div>
+
                 <div>
                   <strong>Date:</strong> {devisInfo.DATEBL}
                 </div>
@@ -174,11 +178,11 @@ function Imprimer() {
                     "Libellé",
                     "Unite",
                     "QteART",
-                   
+
                     "PU HT",
                     "Remise",
                     "TVA %",
-                   
+
                     "Net HT",
                   ].map((header) => (
                     <th
@@ -211,7 +215,7 @@ function Imprimer() {
                     <td className="border border-gray-300 px-2 py-1 text-sm">
                       {ligne.QteART}
                     </td>
-                   
+
                     <td className="border border-gray-300 px-2 py-1 text-sm">
                       {ligne.PUART}
                     </td>
@@ -221,7 +225,7 @@ function Imprimer() {
                     <td className="border border-gray-300 px-2 py-1 text-sm">
                       {ligne.TauxTVA}
                     </td>
-                   
+
                     <td className="border border-gray-300 px-2 py-1 text-sm">
                       {ligne.netHt}
                     </td>

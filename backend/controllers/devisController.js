@@ -355,9 +355,9 @@ const getDevisParNUMBL = async (req, res) => {
       const devis = await dbConnection.query(
         `SELECT 
           NUMBL, libpv, ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, 
-          comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT ,transport
+          comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT ,transport,modepaie
          FROM dfp 
-         WHERE NUMBL = :numbl 
+         WHERE NUMBL LIKE :numbl 
            AND usera = :codeuser`,
         {
           replacements: {
@@ -503,7 +503,7 @@ const getListePointVente = async (req, res) => {
 // * example:
 // * input
 // * output : NUMBL du dernier devis généré
-// * http://localhost:5000/api/devis/SOLEVO/getDerniereNumbl
+// * http://localhost:5000/api/devis/SOLEVO/getDerniereNumbl?codeuser=04
 const getDerniereNumbl = async (req, res) => {
   try {
     const { dbName } = req.params;
@@ -1043,7 +1043,7 @@ module.exports = {
   GetDevisParPeriode,
   getListePointVente,
   getInfoUtilisateur,
-  getListePointVente,
+
   getLignesDevis,
   getDevisCreator,
   getDerniereNumbl,

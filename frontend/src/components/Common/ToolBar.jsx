@@ -14,6 +14,7 @@ import {
   faTimes,
   faWrench,
   faBars,
+  faMobileScreenButton,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   getClientParCode,
@@ -43,6 +44,7 @@ import {
 } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 import { FaCog, FaRegUserCircle, FaSignOutAlt, FaUser } from "react-icons/fa";
 import { useReactToPrint } from "react-to-print";
+import { InboxStackIcon } from "@heroicons/react/20/solid";
 
 function ToolBar() {
   //?==================================================================================================================
@@ -303,8 +305,8 @@ function ToolBar() {
   });
   return (
     <>
-      <nav className="w-full border-b border-gray-300 px-4 py-2 bg-white shadow-sm sticky top-0 z-50 ">
-        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+      <nav className="w-full border-b border-gray-300 px-4 py-2 bg-white shadow-sm sticky top-0 z-50">
+      <div className="flex flex-wrap items-center gap-3 sm:gap-4">
           {/* Bouton Sidebar (always visible) */}
           <button
             type="button"
