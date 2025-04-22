@@ -1,7 +1,7 @@
 const { getDatabaseConnection } = require("../common/commonMethods");
 const defineUtilisateurModel = require("../models/utilisateur/utilisateur");
 const defineUserModel = require("../models/utilisateur/utilisateur");
-const argon2 = require('argon2');
+
 let connexionDbUserErp;
 
 const getUtilisateurDbConnection = async () => {
@@ -41,9 +41,7 @@ const AjouterUtilisateur = async (req, res) => {
     }
 
     // const hashedPassword = await bcrypt.hash(User.motpasse, 10);
-    const hashedPassword = await argon2.hash(User.motpasse, {
-      hashLength: 16,
-    })
+   
     console.log(hashedPassword.length);
 
     const newUser = await user.create({

@@ -7,7 +7,7 @@ const nodeMailer = require("nodemailer");
 const { google } = require("googleapis");
 const handlebars = require("handlebars");
 const fs = require("fs");
-const argon2 = require("argon2");
+
 
 const {
   getDatabaseConnection,
@@ -253,9 +253,7 @@ const reinitialiserMotPasse = async (req, res) => {
     }
 
     // const hashedPassword = await bcrypt.hash(password, 10);
-    const hashedPassword = await argon2.hash(password, {
-      hashLength: 16,
-    });
+   
     console.log(hashedPassword);
 
     user.motpasse = hashedPassword;

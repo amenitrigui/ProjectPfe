@@ -20,7 +20,7 @@ const app = express();
 
 // * Options CORS pour permettre l'accès au frontend
 const corsOptions = {
-  origin: [process.env.FRONTEND_URL_LOCAL, process.env.FRONTEND_URL_DISTANT], // Autorise le frontend local et déployé
+  origin: [process.env.FRONTEND_URL_LOCAL, process.env.FRONTEND_URL_DISTANT,"http://localhost:3000"], // Autorise le frontend local et déployé
   methods: ["GET", "POST", "PUT", "DELETE"], // Autorise ces méthodes HTTP
   credentials: true, // Permet l'envoi des cookies et en-têtes d'authentification
 };
