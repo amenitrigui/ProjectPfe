@@ -136,6 +136,7 @@ const ajouterDevis = async (req, res) => {
     CODEREP,
     usera,
     RSCLI,
+    transport,
     codesecteur,
     MHT,
     articles,
@@ -354,7 +355,7 @@ const getDevisParNUMBL = async (req, res) => {
       const devis = await dbConnection.query(
         `SELECT 
           NUMBL, libpv, ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, 
-          comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT 
+          comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT ,transport
          FROM dfp 
          WHERE NUMBL = :numbl 
            AND usera = :codeuser`,
@@ -630,7 +631,7 @@ const getListeDevisParNUMBL = async (req, res) => {
       const listeDevis = await dbConnection.query(
         `SELECT 
           NUMBL, libpv, ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, 
-          comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT 
+          comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT , transport,delailivr,modepaie
          FROM dfp 
          WHERE NUMBL LIKE :numbl 
            AND usera = :codeuser`,
