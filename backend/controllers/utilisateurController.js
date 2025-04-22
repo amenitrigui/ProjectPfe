@@ -8,7 +8,6 @@ const { google } = require("googleapis");
 const handlebars = require("handlebars");
 const fs = require("fs");
 
-
 const {
   getDatabaseConnection,
   verifyTokenValidity,
@@ -72,7 +71,6 @@ const loginUtilisateur = async (req, res) => {
     // comparaison de mot de passe donnée
     // avec le hash dans la bd
     // const isPasswordMatched = bcrypt.compareSync(motpasse, user.motpasse);
-    // const isPasswordMatched = await argon2.verify(user.motpasse, motpasse);
 
     if (motpasse !== user.motpasse){
       return res.status(401).json({ message: "Mot de passe incorrect." });
@@ -253,11 +251,9 @@ const reinitialiserMotPasse = async (req, res) => {
     }
 
     // const hashedPassword = await bcrypt.hash(password, 10);
-   
-    console.log(hashedPassword);
 
-    user.motpasse = hashedPassword;
-    await user.save();
+    user.motpasse = password;
+    // await user.save();
 
     return res
       .status(200)

@@ -22,13 +22,6 @@ const UtilisateurForm = () => {
     (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
   const dispatch = useDispatch();
-
-  const toggleSidebar = () => {
-    dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
-  };
-
-  // Sélection des informations du client depuis le state Redux
-  const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
   const toolbarTable = useSelector((state) => state.interfaceSlice.toolbarMode);
   const utilisateurConnecte = useSelector(
     (state) => state.utilisateurSystemSlice.utilisateurConnecte

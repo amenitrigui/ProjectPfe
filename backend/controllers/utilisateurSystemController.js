@@ -1,7 +1,6 @@
 const { getDatabaseConnection } = require("../common/commonMethods");
 const defineUtilisateurModel = require("../models/utilisateur/utilisateur");
 const defineUserModel = require("../models/utilisateur/utilisateur");
-
 let connexionDbUserErp;
 
 const getUtilisateurDbConnection = async () => {
@@ -41,8 +40,7 @@ const AjouterUtilisateur = async (req, res) => {
     }
 
     // const hashedPassword = await bcrypt.hash(User.motpasse, 10);
-   
-    console.log(hashedPassword.length);
+   // console.log(hashedPassword.length);
 
     const newUser = await user.create({
       email: User.email,

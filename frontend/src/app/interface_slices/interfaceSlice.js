@@ -1,6 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-
 export const interfaceSlice = createSlice({
   name: "interfaceSlice",
   initialState: {
