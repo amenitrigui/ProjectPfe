@@ -1,8 +1,11 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+
 function SideBar() {
-  const ouvrireMenuDrawer = useSelector((state) => state.interfaceSlice.ouvrireMenuDrawer);
+  const ouvrireMenuDrawer = useSelector(
+    (state) => state.interfaceSlice.ouvrireMenuDrawer
+  );
   return (
     <>
       <div className={`navigation ${ouvrireMenuDrawer ? "active" : ""}`}>
@@ -31,24 +34,27 @@ function SideBar() {
             },
             {
               name: "Gestion Articles",
-              icon: "chatbubble-outline",
+              icon: "cube-outline", // Représente un objet/article (📦)
               path: "/ArticleFormTout",
             },
+            
             {
               name: "Gestion Devis",
-              icon: "lock-closed-outline",
+              icon: "document-text-outline", // Idéal pour un devis/document 📄
               path: "/DevisFormTout",
-            },
+            }
+,            
             {
               name: "Gestion Utilisateurs",
-              icon: "help-outline",
+              icon: "person-circle-outline", // même style qu'"lock-closed-outline"
               path: "/UtilisateurFormTout",
             },
             {
               name: "Liste de société",
-              icon: "help-outline",
+              icon: "business-outline", // Représente bien une entreprise
               path: "/SocietiesList",
             },
+            
             { name: "Settings", icon: "settings-outline", path: "/Parametres" },
             {
               name: "Déconnexion",

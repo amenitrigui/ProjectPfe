@@ -81,7 +81,7 @@ export const getDevisParNUMBL = createAsyncThunk(
       }/getDevisParNUMBL/${NUMBL}`,
       {
         params: {
-          codeuser: thunkAPI.getState().utilisateurSlice.codeuser,
+          codeuser: thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte.codeuser,
         },
       }
     );
