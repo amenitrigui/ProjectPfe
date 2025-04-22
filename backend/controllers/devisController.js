@@ -357,7 +357,7 @@ const getDevisParNUMBL = async (req, res) => {
           NUMBL, libpv, ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, 
           comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT ,transport
          FROM dfp 
-         WHERE NUMBL = :numbl 
+         WHERE NUMBL LIKE :numbl 
            AND usera = :codeuser`,
         {
           replacements: {
