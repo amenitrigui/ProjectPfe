@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+
 export const interfaceSlice = createSlice({
   name: "interfaceSlice",
   initialState: {
@@ -29,9 +30,17 @@ export const interfaceSlice = createSlice({
     ouvrireMenuDrawer: true,
     afficherFamillePopub: false,
     afficherSecteurPopup: false,
+    ouvrireAvatarMenu: false,
+    isDashBoardRoute: true,
   },
 
   reducers: {
+    setIsDashBoardRoute: (state, action) => {
+      state.isDashBoardRoute = action.payload;
+    },
+    setOuvrireAvatarMenu: (state, action) => {
+      state.ouvrireAvatarMenu = action.payload;
+    },
     setAfficherRecherchePopup: (state, action) => {
       state.afficherRecherchePopup = action.payload;
     },
@@ -94,5 +103,7 @@ export const {
   setOuvrireDrawerMenu,
   setAfficherFamillePopub,
   setAfficherSecteurPopup,
+  setOuvrireAvatarMenu,
+  setIsDashBoardRoute
 } = interfaceSlice.actions;
 export default interfaceSlice.reducer;

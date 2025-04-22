@@ -507,21 +507,48 @@ const getListePointVente = async (req, res) => {
 const getDerniereNumbl = async (req, res) => {
   try {
     const { dbName } = req.params;
+    const { codeuser } = req.query;
     const dbConnection = await getDatabaseConnection(dbName);
     const derniereNumbl = await dbConnection.query(
-      `SELECT NUMBL from dfp where DateBl = (SELECT MAX(DATEBL) from dfp) ORDER BY (NUMBL) DESC LIMIT 1`,
+      `SELECT NUMBL from dfp where DateBl = (SELECT MAX(DATEBL) from dfp) and usera = :codeuser ORDER BY (NUMBL) DESC LIMIT 1`,
       {
         type: dbConnection.QueryTypes.SELECT,
+        replacements: {
+          codeuser,
+        },
       }
     );
-    console.log(derniereNumbl[0]);
+
+    const premiereNumbl = await dbConnection.query(
+      `SELECT NUMBL from dfp where DateBl = (SELECT MIN(DATEBL) from dfp) and usera = :codeuser ORDER BY (NUMBL) ASC LIMIT 1`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+        replacements: {
+          codeuser,
+        },
+      }
+    );
     // ? derniereNumbl: derniereNumbl[0] || {}
     // ? pour que le backend ne plantera pas si derniereNumbl retourne aucune résultat
     // ? c'est à dire un tableau vide: []
-    return res.status(200).json({
-      message: "dernièr numbl récuperé avec succès",
-      derniereNumbl: derniereNumbl[0] || {},
-    });
+    if (derniereNumbl.length != 0) {
+      return res.status(200).json({
+        message: "dernièr numbl récuperé avec succès",
+        derniereNumbl: derniereNumbl[0],
+      });
+    }
+    if (premiereNumbl.length != 0) {
+      return res.status(200).json({
+        message: "premier numbl récuperé avec succès",
+        derniereNumbl: premiereNumbl[0],
+      });
+    }
+
+    if (derniereNumbl.length == 0 && premiereNumbl.length == 0) {
+      return res.status(400).json({
+        message: "aucun numbl trouvé pour cet utilisateur",
+      });
+    }
   } catch (error) {
     return res.status(500).json({ messasge: error.message });
   }
@@ -680,7 +707,6 @@ const getDevisCountByMonthAndYear = async (req, res) => {
       GROUP BY YEAR(DATEBL), MONTH(DATEBL)
       ORDER BY year DESC, month DESC;
     `;
-    console.log("Exécution de la requête SQL : ", sqlQuery);
 
     const result = await dbConnection.query(sqlQuery, {
       type: dbConnection.QueryTypes.SELECT,
@@ -691,8 +717,6 @@ const getDevisCountByMonthAndYear = async (req, res) => {
         message: "Aucun devis trouvé.",
       });
     }
-
-    console.log("Résultats de la requête (devis par mois et année) :", result);
 
     return res.status(200).json({
       message: "Nombre de devis par mois et année récupéré avec succès.",
@@ -725,7 +749,7 @@ const getNbTotalDevisGeneres = async (req, res) => {
     const Devis = defineDfpModel(dbConnection);
     const nbDevisGeneresTotal = await Devis.count({
       where: {
-        mlettre: { [Op.like]: `%Générer%` },
+        executer: "G",
       },
     });
     console.log(nbDevisGeneresTotal);
@@ -758,7 +782,7 @@ const getNbTotalDevisGeneresParUtilisateur = async (req, res) => {
 
     const nbDevisGeneresTotal = await Devis.count({
       where: {
-        mlettre: { [Op.like]: `%Générer%par  : ${codeuser}` },
+        [Op.and]: [{ executer: "G" }, { usera: codeuser }],
       },
     });
     console.log(nbDevisGeneresTotal);
@@ -791,19 +815,13 @@ const getNbDevisNonGeneresParUtilisateur = async (req, res) => {
     const Devis = defineDfpModel(dbConnection);
     const nbDevisNonGeneresParUtilisateur = await Devis.count({
       where: {
-        [Op.and]: [
-          { mlettre: { [Op.notLike]: `%Générer%` } },
-          { mlettre: { [Op.notLike]: "%Annulé%" } },
-          { usera: { [Op.like]: codeuser } },
-        ],
+        [Op.and]: [{ executer: `` }, { usera: codeuser }],
       },
     });
-    return res
-      .status(200)
-      .json({
-        message: `nombre de devis non générés par l'utilisateur ${codeuser} récupérés`,
-        nbDevisNonGeneresParUtilisateur,
-      });
+    return res.status(200).json({
+      message: `nombre de devis non générés par l'utilisateur ${codeuser} récupérés`,
+      nbDevisNonGeneresParUtilisateur,
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   } finally {
@@ -825,19 +843,15 @@ const getNbTotalDevisAnnulees = async (req, res) => {
     const Devis = defineDfpModel(dbConnection);
     const nbDevisANnulees = await Devis.count({
       where: {
-        mlettre: {
-          [Op.like]: "%Annulé%",
-        },
+        executer: "A",
       },
     });
 
     if (nbDevisANnulees) {
-      return res
-        .status(200)
-        .json({
-          message: "nombre de devis annulées récupérés avec succès",
-          nbDevisANnulees,
-        });
+      return res.status(200).json({
+        message: "nombre de devis annulées récupérés avec succès",
+        nbDevisANnulees,
+      });
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -860,20 +874,156 @@ const getNbTotalDevisEnCours = async (req, res) => {
     const Devis = defineDfpModel(dbConnection);
     const nbDevisEncours = await Devis.count({
       where: {
-        mlettre: {
-          [Op.like]: "%En cours%",
-        },
+        executer: "N",
       },
     });
 
     if (nbDevisEncours) {
-      return res
-        .status(200)
-        .json({
-          message: "nombre de devis en cours récupérés avec succès",
-          nbDevisEncours,
-        });
+      return res.status(200).json({
+        message: "nombre de devis en cours récupérés avec succès",
+        nbDevisEncours,
+      });
     }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  } finally {
+    dbConnection.close();
+  }
+};
+// * récuperer le nombre de devis sans status
+// * pour une societé donnée (dbName)
+// * example:
+// * input : dbName = SOLEVO
+// * output : 472 devis non générés
+// * http://localhost:5000/api/devis/SOLEVO/getNbTotalDevisSansStatus
+const getNbTotalDevisSansStatus = async (req, res) => {
+  const { dbName } = req.params;
+  let dbConnection;
+  try {
+    dbConnection = await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    const nbDevisSansStatus = await Devis.count({
+      where: {
+        executer: {
+          [Op.and]: {
+            [Op.notLike]: "G",
+            [Op.notLike]: "A",
+            [Op.notLike]: "C",
+            [Op.notLike]: "N",
+          },
+        },
+      },
+    });
+
+    if (nbDevisSansStatus) {
+      return res.status(200).json({
+        message: "nombre de devis sans status récupérés avec succès",
+        nbDevisSansStatus,
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  } finally {
+    dbConnection.close();
+  }
+};
+// ! still testing !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// !!!!!!
+// ! thou art warned !!!!!!!!!!!!
+// ! !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// * url : http://localhost:5000/api/devis/SOLEVO/getListeDevisAvecPagination?page=1&limit=10
+const getListeDevisAvecPagination = async (req, res) => {
+  const { dbName } = req.params;
+  const { page, limit } = req.query;
+  if (!dbName) {
+    return res
+      .status(400)
+      .json({ message: "le nom de la base de données est requis" });
+  }
+
+  try {
+    const dbConnection = await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    const devis = await Devis.findAll({
+      attributes: ["numbl"],
+      limit: parseInt(limit),
+      offset: (parseInt(page) - 1) * parseInt(limit),
+    });
+
+    return res.status(200).json({
+      message: "Liste de devis récupérée avec succès",
+      devis: devis,
+      totalDevis: devis.count,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+// * récupere les années distinctes de devis générés
+// * pour une societé donnée (dbName)
+// * url : http://localhost:5000/api/devis/SOLEVO/getAnneesDistinctGenerationDevis
+const getAnneesDistinctGenerationDevis = async (req, res) => {
+  const { dbName } = req.params;
+  let dbConnection;
+  try {
+    dbConnection = await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    // ? ?????????????
+    const annees = await Devis.findAll({
+      attributes: [
+        [dbConnection.fn("YEAR", dbConnection.col("DateBL")), "year"],
+      ],
+      group: ["year"],
+      raw: true,
+    });
+
+    return res
+      .status(200)
+      .json({
+        message:
+          "annees distinctes de generation de devis recuperées avec succès",
+        annees,
+      });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  } finally {
+    dbConnection.close();
+  }
+};
+
+// * récupere le nombre de devis générés par mois selon l'année
+// * pour une societé donnée (dbName)
+// * url : http://localhost:5000/api/devis/SOLEVO/getNbDevisGeneresParAnnee?annee=2023
+const getNbDevisGeneresParAnnee = async (req, res) => {
+  const { dbName } = req.params;
+  const { annee } = req.query;
+  let dbConnection;
+  try {
+    dbConnection = await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    let nbDevisParAnne = [];
+    for (let i = 1; i <= 12; i++) {
+      const nbDevis = await Devis.count({
+        where: {
+          [Op.and]: [
+            dbConnection.where(
+              dbConnection.fn("YEAR", dbConnection.col("DATEBL")),
+              annee
+            ),
+            dbConnection.where(
+              dbConnection.fn("MONTH", dbConnection.col("DATEBL")),
+              i
+            ),
+            { executer: "G" },
+          ],
+        },
+      });
+      nbDevisParAnne.push({ mois: i, nombreDevis: nbDevis });
+    }
+    return res.status(200).json({
+      message: `nombre de devis générés en ${annee} récupéré avec succès`,
+      nbDevisParAnne: nbDevisParAnne,
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   } finally {
@@ -906,4 +1056,8 @@ module.exports = {
   getNbDevisNonGeneresParUtilisateur,
   getNbTotalDevisAnnulees,
   getNbTotalDevisEnCours,
+  getNbTotalDevisSansStatus,
+  getListeDevisAvecPagination,
+  getAnneesDistinctGenerationDevis,
+  getNbDevisGeneresParAnnee
 };

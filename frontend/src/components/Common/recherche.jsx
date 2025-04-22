@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getDevisParNUMBL,
   getDevisParCodeClient,
   getDevisParMontant,
   getDevisParPeriode,
@@ -36,7 +35,6 @@ import {
 import {
   getListeFamillesParCodeFamille,
   getListeFamillesParLibelleFamille,
-  setFamilleInfosEntiere,
   setListeFamilles,
 } from "../../app/famille_slices/familleSlice";
 import {
@@ -195,11 +193,7 @@ const Recherche = () => {
     }
   };
   // * pour filtrer la liste des devis
-  const handleBtnRechercheClick = () => {
-    if (!valeurRecherche) {
-      alert("Veuillez entrer une valeur pour la recherche.");
-      return;
-    }
+  const handleChampRechercheChange = (valeur) => {
     if (!filtrerPar) {
       alert("Veuillez sélectionner un filtre de recherche.");
       return;
@@ -208,16 +202,16 @@ const Recherche = () => {
     if (toolbarTable == "devis") {
       switch (filtrerPar) {
         case "client":
-          dispatch(getDevisParCodeClient(valeurRecherche));
+          dispatch(getDevisParCodeClient(valeur));
           break;
         case "numbl":
-          dispatch(getListeDevisParNUMBL(valeurRecherche));
+          dispatch(getListeDevisParNUMBL(valeur));
           break;
         case "montant":
-          dispatch(getDevisParMontant(valeurRecherche));
+          dispatch(getDevisParMontant(valeur));
           break;
         case "periode":
-          dispatch(getDevisParPeriode(valeurRecherche));
+          dispatch(getDevisParPeriode(valeur));
           break;
 
         default:
@@ -227,30 +221,32 @@ const Recherche = () => {
     if (toolbarTable == "utilisateur") {
       switch (filtrerPar) {
         case "code":
-          dispatch(getListeUtilisateurParCode(valeurRecherche));
+          dispatch(getListeUtilisateurParCode(valeur));
           break;
         case "nom":
-          dispatch(getListeUtilisateurParNom(valeurRecherche));
+          dispatch(getListeUtilisateurParNom(valeur));
           break;
         case "directeur":
-          dispatch(getListeUtilisateurParDirecteur(valeurRecherche));
+          dispatch(getListeUtilisateurParDirecteur(valeur));
           case "type":
-            dispatch(getListeUtilisateurParType(valeurRecherche))
+            dispatch(getListeUtilisateurParType(valeur))
 
         default:
           console.log("Valeur de filtre non définie");
       }
     }
     if (toolbarTable == "client") {
+      console.log(filtrerPar,valeur)
       switch (filtrerPar) {
+
         case "code":
-          dispatch(getClientParCode(valeurRecherche));
+          dispatch(getClientParCode(valeur));
           break;
         case "raison sociale":
-          dispatch(getClientParRaisonSociale(valeurRecherche));
+          dispatch(getClientParRaisonSociale(valeur));
           break;
         case "cin":
-          dispatch(getClientParCin(valeurRecherche));
+          dispatch(getClientParCin(valeur));
           break;
         default:
           console.log("Valeur de filtre non définie");
@@ -260,16 +256,16 @@ const Recherche = () => {
     if (toolbarTable == "article") {
       switch (filtrerPar) {
         case "code":
-          dispatch(getListeArticleParCodeArticle(valeurRecherche));
+          dispatch(getListeArticleParCodeArticle(valeur));
           break;
         case "libelle":
-          dispatch(getListeArticleparLibelle(valeurRecherche));
+          dispatch(getListeArticleparLibelle(valeur));
           break;
         case "famille":
-          dispatch(getListeArticleparFamille(valeurRecherche));
+          dispatch(getListeArticleparFamille(valeur));
           break;
         case "SousFamille":
-          dispatch(getListeArticleParSousFamille(valeurRecherche));
+          dispatch(getListeArticleParSousFamille(valeur));
           break;
         default:
           console.log("Valeur de filtre non définie");
@@ -279,10 +275,10 @@ const Recherche = () => {
     if (toolbarTable == "famille") {
       switch (filtrerPar) {
         case "code":
-          dispatch(getListeFamillesParCodeFamille(valeurRecherche));
+          dispatch(getListeFamillesParCodeFamille(valeur));
           break;
         case "libelle":
-          dispatch(getListeFamillesParLibelleFamille(valeurRecherche));
+          dispatch(getListeFamillesParLibelleFamille(valeur));
           console.log("filtere table famille par libelle");
           break;
         default:
@@ -293,11 +289,11 @@ const Recherche = () => {
     if (toolbarTable == "sousfamille") {
       switch (filtrerPar) {
         case "code":
-          dispatch(getListeSousFamillesParCodeSousFamille(valeurRecherche));
+          dispatch(getListeSousFamillesParCodeSousFamille(valeur));
           console.log("filtere table sous famille par code");
           break;
         case "libelle":
-          dispatch(getListeSousFamillesParLibelleSousFamille(valeurRecherche));
+          dispatch(getListeSousFamillesParLibelleSousFamille(valeur));
           console.log("filtere table sous famille par libelle");
           break;
         default:
@@ -386,7 +382,7 @@ const Recherche = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center ">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl p-6 relative">
         {/* Bouton fermer (X) */}
         <button
@@ -409,7 +405,7 @@ const Recherche = () => {
           {toolbarTable === "utilisateur" && "  par utilisateur"}{" "}
         </h2>
 
-        <div className="flex space-x-6">
+        <div className="flex space-x-6 h-[50vh] overfolw-y-auto">
           {/* Filtres */}
           <div className="w-1/3 bg-gray-50 p-4 rounded-xl shadow">
             <h3 className="text-lg font-medium text-gray-700 mb-4">
@@ -515,7 +511,7 @@ const Recherche = () => {
               <input
                 id="searchInput"
                 type="text"
-                onChange={(e) => setValeurRecherche(e.target.value)}
+                onChange={(e) => handleChampRechercheChange(e.target.value)}
                 className="p-2 border border-gray-300 rounded-lg w-full"
                 placeholder="Entrez votre recherche..."
                 list={
@@ -569,18 +565,11 @@ const Recherche = () => {
                   <option disabled>Aucun article trouvé</option>
                 )}
               </datalist>
-              <button
-                onClick={handleBtnRechercheClick}
-                style={{ backgroundColor: "#2a2185" }}
-                className="text-white px-4 py-2 rounded-lg hover:opacity-90 transition"
-              >
-                Rechercher
-              </button>
             </div>
 
             {/* Table des résultats */}
             {toolbarTable === "client" && (
-              <div className="max-h-[400px] overflow-y-auto">
+              <div className="h-[200px] overflow-y-auto">
                 <DataTable
                   data={listeClients}
                   columns={collonesClient}

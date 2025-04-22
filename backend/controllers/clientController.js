@@ -357,14 +357,14 @@ const getClientParRaisonSociale = async (req, res) => {
     const client = await dbConnection.query(
       `SELECT * FROM CLIENT where rsoc LIKE :rsoc`,
       {
-        type: dbConnection.QueryTypes.SELECT,
         replacements: {
           rsoc:`%${rsoc}%`,
 
         },
+        type: dbConnection.QueryTypes.SELECT,
       }
     );
-    console.log(client);
+    console.log(rsoc);
 
     return res
       .status(200)

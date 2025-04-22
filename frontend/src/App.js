@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import { Route, Routes, useLocation } from "react-router-dom";
@@ -29,9 +29,10 @@ import ArticleList from "./pages/Article/ArticleList"
 import FamilleFormTout from "./pages/Famille/FamilleFormTout"
 import Settings from "./pages/ErpPages/Settings"
 import UtilisateurList from "./pages/Utilisateurs/UtilisateurList"
-import { setActiverBoutonsValiderAnnuler, setToolbarMode } from "./app/interface_slices/interfaceSlice";
-import Test1 from "./test/Test1";
+import { setActiverBoutonsValiderAnnuler, setAfficherRecherchePopup, setIsDashBoardRoute, setToolbarMode } from "./app/interface_slices/interfaceSlice";
 import ImprimerDevis from "./pages/Devis/Imprimer";
+import SecteurForm from "./pages/Clients/SecteurForm";
+import Test1 from "./test/Test1";
 import Secteur_Region_CpostalForm  from "./pages/Clients/Secteur_Region_CpostalForm";
 
 function App() {
@@ -46,14 +47,22 @@ function App() {
     (state) => state.utilisateurSystemSlice.utilisateurConnecte
   );
   const infosUtilisateur = useSelector((state) => state.utilisateurSlice.infosUtilisateur);
+  const afficherRecherchePopup = useSelector((state) => state.interfaceSlice.afficherRecherchePopup);
   //?==================================================================================================================
   //?==================================================appels UseEffect================================================
   //?==================================================================================================================
   useEffect(() => {
     dispatch(setToolbarMode("consultation"))
     dispatch(setActiverBoutonsValiderAnnuler(false))
+    if(location.pathname.toLowerCase() == "/dashboard") {
+      dispatch(setIsDashBoardRoute(true));
+    }if(location.pathname.toLowerCase() != "/dashboard") {
+      dispatch(setIsDashBoardRoute(false));
+    }
+    if(afficherRecherchePopup == true) {
+      dispatch(setAfficherRecherchePopup(false));
+    }
   }, [location.pathname])
-
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
@@ -81,8 +90,9 @@ function App() {
       <Route path="/ArticleList" element={<ArticleList />}></Route>
       <Route path="/FamilleFormTout" element={<FamilleFormTout />}></Route>
       <Route path="/Settings" element={<Settings />}></Route>
-      <Route path="/Test1" element={<Test1 />}></Route>
       <Route path="/ImprimerDevis" element={<ImprimerDevis />}></Route>
+      <Route path="/SecteurForm" element={<SecteurForm />}></Route>
+      <Route path="/test" element={<Test1 />}></Route>
       <Route path="/Secteur_Region_CpostalForm" element={<Secteur_Region_CpostalForm />}></Route>
 
       <Route

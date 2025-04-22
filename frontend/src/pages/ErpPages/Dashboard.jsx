@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import {
-  FaUser,
-  FaCog,
-  FaSignOutAlt,
-  FaRegUserCircle,
-} from "react-icons/fa";
 import {
   PieChart,
   Pie,
@@ -30,10 +23,14 @@ import {
   getNbDevisNonGeneresParUtilisateur,
   getNbTotalDevisAnnulees,
   getNbTotalDevisEnCours,
+  getNbTotalDevisSansStatus,
+  getAnneesDistinctGenerationDevis,
+  getNbDevisGeneresParAnnee,
 } from "../../app/devis_slices/devisSlice";
 
 import SideBar from "../../components/Common/SideBar";
 import { setOuvrireDrawerMenu } from "../../app/interface_slices/interfaceSlice";
+import ToolBar from "../../components/Common/ToolBar";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
@@ -46,6 +43,7 @@ const data01 = [
 
 const data02 = [
   { name: "Validés", value: 2400 },
+  { name: "En attente", value: 4567 },
   { name: "Refusés", value: 1398 },
   { name: "En cours", value: 9800 },
 ];
@@ -61,17 +59,29 @@ const data03 = [
 ];
 
 const Dashboard = () => {
-  const devisMonthYear = useSelector((state) => state.devisSlice.devisMonthYear);
+  //?==================================================================================================================
+  //?=====================================================variables====================================================
+  //?==================================================================================================================
+  const devisMonthYear = useSelector(
+    (state) => state.devisSlice.devisMonthYear
+  );
   const dispatch = useDispatch();
-  const [isOpen, setIsOpen] = useState(false);
+  const [anneeSelectionne, setAnneeSelectionne] = useState(new Date().getFullYear());
 
   const ouvrireMenuDrawer = useSelector(
     (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
   const nombredevis = useSelector((state) => state.devisSlice.nombreDeDevis);
   const totalchifre = useSelector((state) => state.devisSlice.totalchifre);
-  const nbTotalDevisAnnulees = useSelector((state) => state.devisSlice.nbTotalDevisAnnulees);
-  const nbDevisEncours = useSelector((state) => state.devisSlice.nbDevisEncours);
+  const nbTotalDevisAnnulees = useSelector(
+    (state) => state.devisSlice.nbTotalDevisAnnulees
+  );
+  const nbDevisEncours = useSelector(
+    (state) => state.devisSlice.nbDevisEncours
+  );
+  const nbTotDevisSansStatus = useSelector(
+    (state) => state.devisSlice.nbTotDevisSansStatus
+  );
 
   const utilisateurConnecte = useSelector(
     (state) => state.utilisateurSystemSlice.utilisateurConnecte
@@ -83,31 +93,17 @@ const Dashboard = () => {
   const nbTotalDevisGeneresParUtilisateur = useSelector(
     (state) => state.devisSlice.nbTotalDevisGeneresParUtilisateur
   );
-  
+
   const nbTotalDevisNonGeneresParUtilisateur = useSelector(
     (state) => state.devisSlice.nbTotalDevisNonGeneresParUtilisateur
   );
-  
+
+  const nbDevisGeneresParAnnee = useSelector((state) => state.devisSlice.nbDevisGeneresParAnnee);
   // Transformer les données pour le BarChart
-  const chartData = devisMonthYear.map((item) => {
-    // Créer un label comme "01/2024" ou "Janvier 2024"
-    const monthNames = [
-      "Janvier",
-      "Février",
-      "Mars",
-      "Avril",
-      "Mai",
-      "Juin",
-      "Juillet",
-      "Août",
-      "Septembre",
-      "Octobre",
-      "Novembre",
-      "Décembre",
-    ];
+  const chartData = nbDevisGeneresParAnnee.map((item) => {
     return {
-      name: `${monthNames[item.month - 1]} ${item.year}`, // ou `${item.month}/${item.year}` si tu préfères
-      devis: item.totalDevis,
+      name: item.mois, // ou `${item.month}/${item.year}` si tu préfères
+      devis: item.nombreDevis,
     };
   });
 
@@ -115,17 +111,12 @@ const Dashboard = () => {
     { name: "Générés", value: nbTotalDevisGeneres },
     { name: "Annulées", value: nbTotalDevisAnnulees },
     { name: "En cours", value: nbDevisEncours },
+    { name: "Sans Status", value: nbTotDevisSansStatus },
   ];
-
-  const data03 = [
-    { name: "Jan", devis: 400 },
-    { name: "Fév", devis: 300 },
-    { name: "Mar", devis: 200 },
-    { name: "Avr", devis: 278 },
-    { name: "Mai", devis: 189 },
-    { name: "Juin", devis: 239 },
-    { name: "Juil", devis: 349 },
-  ];
+  const anneesDistinctGenerationDevis = useSelector((state) => state.devisSlice.anneesDistinctGenerationDevis);
+  //?==================================================================================================================
+  //?=================================================appels UseEffect=================================================
+  //?==================================================================================================================
   useEffect(() => {
     dispatch(getNombreTotalDevis());
     dispatch(getTotalChiffres());
@@ -135,8 +126,17 @@ const Dashboard = () => {
     dispatch(getNbTotalDevisEnCours());
     dispatch(getNbTotalDevisGeneresParUtilisateur());
     dispatch(getNbDevisNonGeneresParUtilisateur());
+    dispatch(getNbTotalDevisSansStatus());
+    dispatch(getAnneesDistinctGenerationDevis());
+    dispatch(getNbDevisGeneresParAnnee(new Date().getFullYear()))
   }, []);
 
+  useEffect(() => {
+    dispatch(getNbDevisGeneresParAnnee(anneeSelectionne))
+  },[anneeSelectionne])
+  //?==================================================================================================================
+  //?=====================================================fonctions====================================================
+  //?==================================================================================================================
   const toggleSidebar = () => {
     dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
   };
@@ -146,51 +146,7 @@ const Dashboard = () => {
       <SideBar />
 
       <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
-        <div className="topbar">
-          <div className="toggle" onClick={toggleSidebar}>
-            <ion-icon name="menu-outline"></ion-icon>
-          </div>
-
-          <div className="relative inline-block text-left">
-            <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
-              <FaRegUserCircle className="mr-3 text-3xl" />
-              <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
-            </div>
-            {isOpen && (
-              <div className="absolute right-0 mt-3 w-56 bg-white border rounded-lg shadow-lg z-50">
-                <div className="p-4 flex items-center border-b">
-                  <FaRegUserCircle className="mr-3 text-3xl" />
-                  <div>
-                    <p className="font-semibold">{utilisateurConnecte.nom}</p>
-                    <p className="text-sm text-gray-500">
-                      {utilisateurConnecte.type}
-                    </p>
-                  </div>
-                </div>
-                <ul className="py-2">
-                  <li className="px-4 py-2 hover:bg-gray-100">
-                    <Link
-                      to="/UtilisateurFormTout"
-                      className="flex items-center"
-                    >
-                      <FaUser className="mr-3" /> My Profile
-                    </Link>
-                  </li>
-                  <li className="px-4 py-2 hover:bg-gray-100">
-                    <Link to="/Settings" className="flex items-center">
-                      <FaCog className="mr-3" /> Settings
-                    </Link>
-                  </li>
-                  <li className="px-4 py-2 hover:bg-gray-100 border-t">
-                    <Link to="/" className="flex items-center">
-                      <FaSignOutAlt className="mr-3" /> Log Out
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            )}
-          </div>
-        </div>
+        <ToolBar />
 
         <div className="cardBox grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
@@ -268,11 +224,11 @@ const Dashboard = () => {
                     />
                   ))}
                 </Pie>
+                <Legend />
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
           </div>
-
           {/* Pie Chart - Devis */}
           <div className="p-4 bg-white shadow rounded">
             <div className="cardHeader mb-4">
@@ -297,6 +253,7 @@ const Dashboard = () => {
                     />
                   ))}
                 </Pie>
+                <Legend />
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
@@ -307,6 +264,14 @@ const Dashboard = () => {
             <div className="cardHeader mb-4">
               <h2>Nombre Devis par Mois et Année</h2>
             </div>
+            <select className="w-full select border-none focus:outline-none focus:ring-0 appearance-none" value={anneeSelectionne} onChange={(e) => {setAnneeSelectionne(e.target.value)}}>
+              {anneesDistinctGenerationDevis.map((annee) => {
+                return (
+                  <option key={annee.year} value={annee.year}>{annee.year}</option>
+                )
+              })}
+            </select>
+            <hr></hr>
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" />

@@ -1,174 +1,185 @@
-import React from "react";
-
+import React, { useState } from "react";
+import SideBar from "../components/Common/SideBar";
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowLeft,
+  faArrowRight,
+  faBars,
+  faBoxesStacked,
+  faCheck,
+  faEdit,
+  faFolderPlus,
+  faHamburger,
+  faList,
+  faSignOut,
+  faStepBackward,
+  faTimes,
+  faTrashAlt,
+  faWrench,
+} from "@fortawesome/free-solid-svg-icons";
 function Test1() {
+  const elementsDrawer = [
+    { name: "Dashboard", icon: "home-outline", path: "/dashboard" },
+    {
+      name: "Gestion Clients",
+      icon: "people-outline",
+      path: "/ClientFormTout",
+    },
+    {
+      name: "Gestion Articles",
+      icon: "chatbubble-outline",
+      path: "/ArticleFormTout",
+    },
+    {
+      name: "Gestion Devis",
+      icon: "lock-closed-outline",
+      path: "/DevisFormTout",
+    },
+    {
+      name: "Gestion Utilisateurs",
+      icon: "help-outline",
+      path: "/UtilisateurFormTout",
+    },
+    {
+      name: "Liste de société",
+      icon: "help-outline",
+      path: "/SocietiesList",
+    },
+    { name: "Settings", icon: "settings-outline", path: "/Parametres" },
+    {
+      name: "Déconnexion",
+      icon: "log-out-outline",
+      path: "/deconnexion",
+    },
+    {
+      name: "Déconnexion",
+      icon: "log-out-outline",
+      path: "/deconnexion",
+    },
+    {
+      name: "Déconnexion",
+      icon: "log-out-outline",
+      path: "/deconnexion",
+    },
+    {
+      name: "Déconnexion",
+      icon: "log-out-outline",
+      path: "/deconnexion",
+    },
+    {
+      name: "Déconnexion",
+      icon: "log-out-outline",
+      path: "/deconnexion",
+    },
+    {
+      name: "Déconnexion",
+      icon: "log-out-outline",
+      path: "/deconnexion",
+    },
+  ];
+
+  const [afficher, setAfficher] = useState(false);
+
+  const toggleDrawer = () => {
+    setAfficher(!afficher);
+  };
   return (
-    <div>
-      <div
-        id="devis"
-        className="p-6 bg-white rounded-lg shadow-lg max-w-screen-lg mx-auto"
-      >
-        {/* Header */}
-        <div className="grid grid-cols-2 border-b border-[#2a2185] pb-4 mb-6">
-          <div>
-            <h1 className="text-[#2a2185] font-bold italic text-3xl">
-              Ste Logicom - Progiciel de Gestion Intégrée ERP
-            </h1>
-            <p className="text-sm text-gray-600">
-              S.A.R.L au capital de 11.000 DT<br />
-              BIAT HARZALLAH 08 700 00040 10 52971444<br />
-              Tél/Fax: 74 400110 - 74 461010<br />
-              RC: B141691998
-            </p>
-          </div>
-          <div className="text-right">
-            <h2 className="text-lg font-bold text-[#2a2185]">
-              Devis/Facture Proforma
-            </h2>
-            <p>
-              <strong>Numéro:</strong> NUMERO_DEVIS<br />
-              <strong>Date:</strong> DATE_DEVIS
-            </p>
-          </div>
-        </div>
-
-        {/* Infos client */}
-        <div className="grid grid-cols-2 gap-4 border-t border-[#2a2185] pt-4 mt-6">
-          <div className="flex flex-col gap-2">
-            <p className="border border-[#2a2185] p-2 text-sm"><strong>DATE:</strong> DATE_DEVIS</p>
-            <p className="border border-[#2a2185] p-2 text-sm"><strong>CLIENT:</strong> CODE_CLIENT</p>
-            <p className="border border-[#2a2185] p-2 text-sm"><strong>PAGE:</strong> 1/1</p>
-            <p className="mt-4 text-sm text-gray-700">
-              Monsieur / Madame, suite à votre demande, nous avons le
-              plaisir de vous communiquer notre meilleure offre de prix pour :
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <p className="border border-[#2a2185] p-2 text-sm"><strong>Raison Sociale:</strong> NOM_CLIENT</p>
-            <p className="border border-[#2a2185] p-2 text-sm"><strong>Adresse:</strong> ADRESSE_CLIENT</p>
-            <p className="border border-[#2a2185] p-2 text-sm"><strong>Code Postal:</strong> CODE_POSTAL</p>
-            <p className="border border-[#2a2185] p-2 text-sm"><strong>Email:</strong> EMAIL_CLIENT</p>
-          </div>
-        </div>
-
-        {/* Tableau des articles */}
-        <div className="overflow-x-auto mb-6 mt-6">
-          <table className="table-auto w-full border border-[#2a2185]">
-            <thead className="bg-[#2a2185] text-white">
-              <tr>
-                {[
-                  "Famille",
-                  "Code Article",
-                  "Libellé",
-                  "Unite",
-                  "QteART",
-                  "Nbr Unité",
-                  "PU HT",
-                  "Remise",
-                  "TVA %",
-                  "PU TTC",
-                  "Net HT",
-                ].map((header) => (
-                  <th
-                    key={header}
-                    className="border border-white px-2 py-1 text-left text-sm"
-                  >
-                    {header}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-b hover:bg-gray-50">
-                <td className="border px-2 py-1 text-sm">FAMILLE_ARTICLE</td>
-                <td className="border px-2 py-1 text-sm">CODE_ARTICLE</td>
-                <td className="border px-2 py-1 text-sm">LIBELLE_ARTICLE</td>
-                <td className="border px-2 py-1 text-sm">UNITE</td>
-                <td className="border px-2 py-1 text-sm">QUANTITE</td>
-                <td className="border px-2 py-1 text-sm">NOMBRE_UNITE</td>
-                <td className="border px-2 py-1 text-sm">PRIX_UNITAIRE</td>
-                <td className="border px-2 py-1 text-sm">REMISE</td>
-                <td className="border px-2 py-1 text-sm">TAUX_TVA</td>
-                <td className="border px-2 py-1 text-sm">PRIX_TTC</td>
-                <td className="border px-2 py-1 text-sm">NET_HT</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        {/* Totaux et conditions */}
-        <div className="flex justify-between gap-6">
-          {/* Bloc TVA */}
-          <div className="w-1/3 p-4 rounded-lg border border-[#2a2185]">
-            <table className="table-auto w-full border-collapse">
-              <tbody>
-                <tr><td className="border px-2 py-1">Taux TVA</td><td className="border px-2 py-1">19%</td></tr>
-                <tr><td className="border px-2 py-1">Base</td><td className="border px-2 py-1">0.000</td></tr>
-                <tr><td className="border px-2 py-1">Montants</td><td className="border px-2 py-1">0.000</td></tr>
-                <tr><td className="border px-2 py-1 font-bold text-right">Total Taxe</td><td className="border px-2 py-1 font-bold">0.000</td></tr>
-              </tbody>
-            </table>
-            <div className="mt-4 p-2 border border-[#2a2185] rounded-lg inline-block">
-              <p className="text-right text-sm font-medium">
-                Arrêter la présentation de devise à la somme :{" "}
-                <span className="text-[#2a2185] font-semibold">Zéro dinar</span>
-              </p>
-            </div>
-          </div>
-
-          {/* Bloc Conditions */}
-          <div className="w-1/3">
-            <table className="table-auto w-full mt-4 border-collapse border border-[#2a2185]">
-              <tbody>
-                <tr><td className="border px-4 py-2 font-semibold">Délai de Livraison:</td><td className="border px-4 py-2">15 jours</td></tr>
-                <tr><td className="border px-4 py-2 font-semibold">Transport:</td><td className="border px-4 py-2">Client</td></tr>
-                <tr><td className="border px-4 py-2 font-semibold">Mode de Paiement:</td><td className="border px-4 py-2">Chèque</td></tr>
-              </tbody>
-            </table>
-            <div className="mt-4 p-4 border border-[#2a2185] rounded-lg">
-              <h3 className="text-lg font-semibold text-[#2a2185]">
-                Cachet & Signature
-              </h3>
-              <div className="h-16 border-dashed border-[#2a2185] flex justify-center items-center"></div>
-            </div>
-          </div>
-
-          {/* Bloc Totaux */}
-          <div className="w-1/3 p-4 rounded-lg border border-[#2a2185]">
-            <table className="table-auto w-full text-sm border-collapse">
-              <tbody>
-                <tr><td className="border px-2 py-1 font-medium">Total HT:</td><td className="border px-2 py-1">0.000</td></tr>
-                <tr><td className="border px-2 py-1 font-medium">Net HT Global:</td><td className="border px-2 py-1">0.000</td></tr>
-                <tr><td className="border px-2 py-1 font-medium">Total TAXES:</td><td className="border px-2 py-1">0.000</td></tr>
-                <tr><td className="border px-2 py-1 font-medium">MT T.T.C:</td><td className="border px-2 py-1">0.000</td></tr>
-                <tr><td className="border px-2 py-1 font-medium">Timbre:</td><td className="border px-2 py-1">0.000</td></tr>
-                <tr><td className="border px-2 py-1 font-medium">Montant à Payer:</td><td className="border px-2 py-1 font-bold">0.000</td></tr>
-              </tbody>
-            </table>
-            <div>
-              <p className="mt-4 text-xs text-center text-gray-600">
-                Espérons que notre offre trouve votre entière satisfaction,
-                veuillez agréer, Monsieur/Madame, nos sentiments les plus
-                distingués.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Bouton d'impression */}
-        <div className="flex justify-center mt-6">
+    <>
+      <nav className="w-full border-b border-gray-300 px-4 py-2 bg-white shadow-sm overflow-x-auto">
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+          
+          <>
+          {/* Nouveau */}
           <button
-            type="button"
-            className="text-white bg-[#2a2185] hover:bg-[#1f1a66] px-6 py-2 rounded-lg focus:outline-none"
-            onClick={() => window.print()}
-          >
-            <span className="h-6 w-6 inline-block mr-2">🖨️</span>
-            Imprimer
-          </button>
+              type="button"
+              className="flex flex-col items-center w-20 p-2 mr-20 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition-all duration-200"
+            >
+              <FontAwesomeIcon icon={faBars} className="text-xl mb-1" />
+              <span className="text-xs font-semibold">Menu</span>
+            </button>
+            {/* Nouveau */}
+            <button
+              type="button"
+              className="flex flex-col items-center w-20 p-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition-all duration-200"
+            >
+              <FontAwesomeIcon icon={faFolderPlus} className="text-xl mb-1" />
+              <span className="text-xs font-semibold">Nouveau</span>
+            </button>
+            {/* Modifier */}
+            <button
+              type="button"
+              className="flex flex-col items-center w-20 p-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-lg transition-all duration-200"
+            >
+              <FontAwesomeIcon icon={faEdit} className="text-xl mb-1" />
+              <span className="text-xs font-semibold">Modifier</span>
+            </button>
+            {/* Supprimer */}
+            <button
+              type="button"
+              className="flex flex-col items-center w-20 p-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition-all duration-200"
+            >
+              <FontAwesomeIcon icon={faTrashAlt} className="text-xl mb-1" />
+              <span className="text-xs font-semibold">Supprimer</span>
+            </button>
+            <button
+              type="button"
+              className="flex flex-col items-center w-20 p-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all duration-200"
+            >
+              <FontAwesomeIcon icon={faList} className="text-xl mb-1" />
+              <span className="text-xs font-semibold">Liste</span>
+            </button>
+            {/* Précédent */}
+            <button
+              type="button"
+              className="flex flex-col items-center w-20 p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-all duration-200"
+            >
+              <FontAwesomeIcon icon={faArrowLeft} className="text-xl mb-1" />
+              <span className="text-xs font-semibold">Précédent</span>
+            </button>
+            <button
+              type="button"
+              className="flex flex-col items-center w-20 p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-all duration-200"
+            >
+              <FontAwesomeIcon icon={faArrowRight} className="text-xl mb-1" />
+              <span className="text-xs font-semibold">Suivant</span>
+            </button>
+            {/* Edition */}
+            <button
+              type="button"
+              className="flex flex-col items-center w-20 p-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-lg transition-all duration-200"
+            >
+              <FontAwesomeIcon icon={faWrench} className="text-xl mb-1" />
+              <span className="text-xs font-semibold">Édition</span>
+            </button>
+            {/* Quitter */}
+            <button className="flex flex-col items-center w-20 p-2 bg-orange-100 hover:bg-orange-200 text-orange-700 rounded-lg transition-all duration-200">
+              <FontAwesomeIcon icon={faSignOut} />
+              <span>Quitter</span>
+            </button>
+          </>
+          <>
+            {/* Valider */}
+            <button
+              type="button"
+              className="flex flex-col items-center w-20 p-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all duration-200"
+            >
+              <FontAwesomeIcon icon={faCheck} className="text-xl mb-1" />
+              <span className="text-xs font-semibold">Valider</span>
+            </button>
+
+            {/* Annuler */}
+            <button
+              type="button"
+              className="flex flex-col items-center w-20 p-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg transition-all duration-200"
+            >
+              <FontAwesomeIcon icon={faTimes} className="text-xl mb-1" />
+              <span className="text-xs font-semibold">Annuler</span>
+            </button>
+          </>
         </div>
-      </div>
-    </div>
+      </nav>
+    </>
   );
 }
-
 export default Test1;

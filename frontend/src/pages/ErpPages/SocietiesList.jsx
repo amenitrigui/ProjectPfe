@@ -23,7 +23,6 @@ const SocietiesList = () => {
 
   const handleSelect = async (society) => {
     try {
-
       if (!token) {
         navigate("/");
       }

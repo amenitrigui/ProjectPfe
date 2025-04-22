@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
+// const bcrypt = require("bcryptjs");
 
 // const Representant = require("../models/representant");
 const defineUserModel = require("../models/utilisateur/utilisateur");
@@ -7,6 +7,7 @@ const nodeMailer = require("nodemailer");
 const { google } = require("googleapis");
 const handlebars = require("handlebars");
 const fs = require("fs");
+const argon2 = require("argon2");
 
 const {
   getDatabaseConnection,
@@ -40,7 +41,6 @@ oAuth2Client.setCredentials({
   refresh_token: process.env.NODEMAILER_REFRESH_TOKEN,
 });
 
-
 // * Generer un jwt d'accès pour un utilisateur déjà inscrit
 // * exemple
 // * input : {nom: "test", motpasse: "test"}
@@ -51,8 +51,7 @@ const loginUtilisateur = async (req, res) => {
   const { nom, motpasse } = req.body;
 
   try {
-    //* 
-  await getDbConnection();
+    await getDbConnection();
     const User = defineUserModel(connexionDbUserErp);
     // Vérification que tous les champs sont remplis
     if (!nom || !motpasse) {
@@ -67,12 +66,15 @@ const loginUtilisateur = async (req, res) => {
       return res.status(400).json({ message: "Utilisateur non trouvé." });
     }
 
+    console.log(user);
+
     // Vérification du mot de passe
     // comparaison de mot de passe donnée
     // avec le hash dans la bd
-    const isPasswordMatched = bcrypt.compareSync(motpasse, user.motpasse);
+    // const isPasswordMatched = bcrypt.compareSync(motpasse, user.motpasse);
+    // const isPasswordMatched = await argon2.verify(user.motpasse, motpasse);
 
-    if (!isPasswordMatched) {
+    if (motpasse !== user.motpasse){
       return res.status(401).json({ message: "Mot de passe incorrect." });
     }
 
@@ -238,11 +240,11 @@ const reinitialiserMotPasse = async (req, res) => {
         "Le mot de passe à utiliser lors de réinitialisation ne peut pas etre vide",
     });
   }
-  
+
   try {
     const decodedJWT = verifyTokenValidity(req, res);
-    const User = defineUserModel(connexionDbUserErp)
-    
+    const User = defineUserModel(connexionDbUserErp);
+
     const user = await User.findOne({ where: { email } });
     if (!user) {
       return res.status(404).json({
@@ -250,7 +252,10 @@ const reinitialiserMotPasse = async (req, res) => {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await argon2.hash(password, {
+      hashLength: 16,
+    });
     console.log(hashedPassword);
 
     user.motpasse = hashedPassword;
@@ -274,7 +279,6 @@ const getUtilisateurParCode = async (req, res) => {
   const { codeuser } = req.params;
 
   try {
-
     const utilisateur = await connexionDbUserErp.query(
       "SELECT * FROM utilisateur WHERE codeuser = :codeuser",
       {

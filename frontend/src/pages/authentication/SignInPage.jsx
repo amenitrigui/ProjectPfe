@@ -67,14 +67,15 @@ function SignInPage() {
         backgroundPosition: "center",
         backgroundAttachment: "fixed",
       }}
+      
     >
-      <div className="flex bg-white h-[600px] bg-opacity-90 rounded-xl shadow-2xl w-full max-w-4xl overflow-hidden">
+      <div className="flex bg-white md:h-[600px] h-[55vh] bg-opacity-90 rounded-xl shadow-2xl w-full max-w-4xl overflow-hidden">
         {" "}
         <div className="flex items-center justify-center w-1/2 bg-gradient-to-r from-blue-600 to-purple-700 p-6">
           <img
             src="/logo.png"
             alt="Logo"
-            className="max-w-full h-auto object-contain transform hover:scale-105 transition-transform duration-300"
+            className="max-w-full h-[100vh] object-contain transform hover:scale-105 transition-transform duration-300"
           />
         </div>
         <div className="w-full md:w-1/2 p-8">

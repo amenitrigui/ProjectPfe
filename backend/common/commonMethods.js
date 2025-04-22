@@ -31,8 +31,9 @@ function verifyTokenValidity(req, res) {
 // * avec une base des données databaseName donnée en paramètres
 
 const getDatabaseConnection = async (databaseName) => {
+  const encodedPassword = encodeURIComponent(process.env.DB_PASSWORD);
   const dbConnection = new Sequelize(
-    `mysql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${databaseName}`,
+    `mysql://${process.env.DB_USER}:${encodedPassword}@${process.env.DB_HOST}:${process.env.DB_PORT}/${databaseName}`,
     {
       dialect: "mysql",
       dialectModule: require("mysql2"),
