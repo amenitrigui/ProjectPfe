@@ -139,13 +139,14 @@ function Imprimer() {
                 <strong>Mat Fiscale:</strong> {clientInfos.matriculef}
               </p>
 
-              <p className="mt-4 text-sm text-gray-700 whitespace-nowrap">
-                <strong>
-                  Monsieur / Madame, suite à votre demande, nous avons le
-                  plaisir de vous communiquer notre meilleure offre de prix pour
-                  :
-                </strong>
-              </p>
+              <p className="mt-4 text-sm text-gray-700 sm:text-base md:text-lg lg:text-xl whitespace-normal">
+  <strong>
+    Monsieur / Madame, suite à votre demande, nous avons le
+    plaisir de vous communiquer notre meilleure offre de prix pour
+    :
+  </strong>
+</p>
+
             </div>
             <div className="flex flex-col gap-2">
               <p className="border border-[#2a2185] p-2 text-sm">
@@ -169,185 +170,165 @@ function Imprimer() {
           {/* Tableau des articles */}
           {/* Tableau des articles */}
           <div className="overflow-x-auto mb-6">
-            <table className="table-auto w-full border border-gray-300">
-              <thead className="bg-gray-200">
-                <tr>
-                  {[
-                    "Referance",
-                    "Code Article",
-                    "Libellé",
-                    "Unite",
-                    "QteART",
+  <table className="table-auto w-full border border-gray-300">
+    <thead className="bg-gray-200">
+      <tr>
+        {[
+          "Referance",
+          "Code Article",
+          "Libellé",
+          "Unite",
+          "QteART",
+          "PU HT",
+          "Remise",
+          "TVA %",
+          "Net HT",
+        ].map((header) => (
+          <th
+            key={header}
+            className="border border-gray-300 px-2 py-1 text-left text-sm"
+          >
+            {header}
+          </th>
+        ))}
+      </tr>
+    </thead>
+    <tbody>
+      {devisInfo.articles.map((ligne, index) => (
+        <tr
+          key={index}
+          className="border-b hover:bg-gray-50 no-page-break"
+        >
+          <td className="border border-gray-300 px-2 py-1 text-sm">{ligne.famille}</td>
+          <td className="border border-gray-300 px-2 py-1 text-sm">{ligne.CodeART}</td>
+          <td className="border border-gray-300 px-2 py-1 text-sm">{ligne.DesART}</td>
+          <td className="border border-gray-300 px-2 py-1 text-sm">{ligne.Unite}</td>
+          <td className="border border-gray-300 px-2 py-1 text-sm">{ligne.QteART}</td>
+          <td className="border border-gray-300 px-2 py-1 text-sm">{ligne.PUART}</td>
+          <td className="border border-gray-300 px-2 py-1 text-sm">{ligne.Remise}</td>
+          <td className="border border-gray-300 px-2 py-1 text-sm">{ligne.TauxTVA}</td>
+          <td className="border border-gray-300 px-2 py-1 text-sm">{ligne.netHt}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
 
-                    "PU HT",
-                    "Remise",
-                    "TVA %",
-
-                    "Net HT",
-                  ].map((header) => (
-                    <th
-                      key={header}
-                      className="border border-gray-300 px-2 py-1 text-left text-sm"
-                    >
-                      {header}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {devisInfo.articles.map((ligne, index) => (
-                  <tr
-                    key={index}
-                    className="border-b hover:bg-gray-50 no-page-break"
-                  >
-                    <td className="border border-gray-300 px-2 py-1 text-sm">
-                      {ligne.famille}
-                    </td>
-                    <td className="border border-gray-300 px-2 py-1 text-sm">
-                      {ligne.CodeART}
-                    </td>
-                    <td className="border border-gray-300 px-2 py-1 text-sm">
-                      {ligne.DesART}
-                    </td>
-                    <td className="border border-gray-300 px-2 py-1 text-sm">
-                      {ligne.Unite}
-                    </td>
-                    <td className="border border-gray-300 px-2 py-1 text-sm">
-                      {ligne.QteART}
-                    </td>
-
-                    <td className="border border-gray-300 px-2 py-1 text-sm">
-                      {ligne.PUART}
-                    </td>
-                    <td className="border border-gray-300 px-2 py-1 text-sm">
-                      {ligne.Remise}
-                    </td>
-                    <td className="border border-gray-300 px-2 py-1 text-sm">
-                      {ligne.TauxTVA}
-                    </td>
-
-                    <td className="border border-gray-300 px-2 py-1 text-sm">
-                      {ligne.netHt}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
 
           {/* Totaux et conditions */}
-          <div className="flex justify-between gap-6">
-            {/* Bloc TVA */}
-            <div className="w-1/3 p-4 rounded-lg border-[#2a2185]">
-              <table className="table-auto w-full border-collapse">
-                <tbody>
-                  <tr>
-                    <td className="border px-2 py-1">Taux TVA</td>
-                    <td className="border px-2 py-1">
-                      {devisInfo.articles.tauxtva}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="border px-2 py-1">Base</td>
-                    <td className="border px-2 py-1">
-                      {" "}
-                      {devisInfo.articles
-                        .reduce(
-                          (acc, ligne) => acc + parseFloat(ligne.netHt || 0),
-                          0
-                        )
-                        .toFixed(3)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="border px-2 py-1">Montants</td>
-                    <td className="border px-2 py-1"> {devisInfo.taxe || 0}</td>
-                  </tr>
-                  <tr>
-                    <td className="border px-2 py-1 font-bold text-right">
-                      Total Taxe
-                    </td>
-                    <td className="border px-2 py-1 font-bold">
-                      {" "}
-                      {devisInfo.taxe || 0}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <div className="mt-4 p-2 border border-[#2a2185] rounded-lg inline-block">
-                <p className="text-right text-sm font-medium">
-                  Arrêter la présentation de devise à la somme :{" "}
-                  <span className="text-[#2a2185] font-semibold">
-                    Zéro dinar
-                  </span>
-                </p>
-              </div>
-            </div>
+          <div className="flex flex-col lg:flex-row justify-between gap-6">
+  {/* Bloc TVA */}
+  <div className="w-full lg:w-1/3 p-4 rounded-lg border-[#2a2185]">
+    <table className="table-auto w-full border-collapse">
+      <tbody>
+        <tr>
+          <td className="border px-2 py-1">Taux TVA</td>
+          <td className="border px-2 py-1">
+            {devisInfo.articles.tauxtva}
+          </td>
+        </tr>
+        <tr>
+          <td className="border px-2 py-1">Base</td>
+          <td className="border px-2 py-1">
+            {" "}
+            {devisInfo.articles
+              .reduce(
+                (acc, ligne) => acc + parseFloat(ligne.netHt || 0),
+                0
+              )
+              .toFixed(3)}
+          </td>
+        </tr>
+        <tr>
+          <td className="border px-2 py-1">Montants</td>
+          <td className="border px-2 py-1"> {devisInfo.taxe || 0}</td>
+        </tr>
+        <tr>
+          <td className="border px-2 py-1 font-bold text-right">
+            Total Taxe
+          </td>
+          <td className="border px-2 py-1 font-bold">
+            {" "}
+            {devisInfo.taxe || 0}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div className="mt-4 p-2 border border-[#2a2185] rounded-lg inline-block">
+      <p className="text-right text-sm font-medium">
+        Arrêter la présentation de devise à la somme :{" "}
+        <span className="text-[#2a2185] font-semibold">
+          Zéro dinar
+        </span>
+      </p>
+    </div>
+  </div>
 
-            {/* Bloc Conditions */}
-            <div className="w-1/3">
-              <table className="table-auto w-full mt-4 border-collapse border border-[#2a2185]">
-                <tbody>
-                  <tr>
-                    <td className="border font-semibold">
-                      Délai de Livraison:
-                    </td>
-                    <td className="border">{devisInfo.delailivr}</td>
-                  </tr>
-                  <tr>
-                    <td className="borderfont-semibold">Transport:</td>
-                    <td className="border">{devisInfo.transport}</td>
-                  </tr>
-                  <tr>
-                    <td className="border font-semibold">Mode de Paiement:</td>
-                    <td className="border">{devisInfo.modepaie}</td>
-                  </tr>
-                </tbody>
-              </table>
-              <div className="border px-4 py-5 border-[#2a2185] rounded-lg">
-                <h3 className="text-lg font-semibold text-[#2a2185]">
-                  Cachet & Signature
-                </h3>
-                <div className="h-16 border-dashed border-[#2a2185] flex justify-center items-center"></div>
-              </div>
-            </div>
+  {/* Bloc Conditions */}
+  <div className="w-full lg:w-1/3 p-4">
+    <table className="table-auto w-full mt-4 border-collapse border border-[#2a2185]">
+      <tbody>
+        <tr>
+          <td className="border font-semibold">
+            Délai de Livraison:
+          </td>
+          <td className="border">{devisInfo.delailivr}</td>
+        </tr>
+        <tr>
+          <td className="border font-semibold">Transport:</td>
+          <td className="border">{devisInfo.transport}</td>
+        </tr>
+        <tr>
+          <td className="border font-semibold">Mode de Paiement:</td>
+          <td className="border">{devisInfo.modepaie}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div className="border px-4 py-5 border-[#2a2185] rounded-lg">
+      <h3 className="text-lg font-semibold text-[#2a2185]">
+        Cachet & Signature
+      </h3>
+      <div className="h-16 border-dashed border-[#2a2185] flex justify-center items-center"></div>
+    </div>
+  </div>
 
-            {/* Bloc Totaux */}
-            <div className="w-1/3 p-4 rounded-lg border-[#2a2185]">
-              <table className="table-auto w-full text border-collapse">
-                <tbody>
-                  <tr>
-                    <td className="border font-medium">Total HT:</td>
-                    <td className="border">{devisInfo.MHT}</td>
-                  </tr>
-                  <tr>
-                    <td className="border font-medium">Net HT Global:</td>
-                    <td className="border">{devisInfo.MHT}</td>
-                  </tr>
-                  <tr>
-                    <td className="border font-medium">Total TAXES:</td>
-                    <td className="border">{devisInfo.MTVA}</td>
-                  </tr>
-                  <tr>
-                    <td className="border font-medium">MT T.T.C:</td>
-                    <td className="border">{devisInfo.MTTC}</td>
-                  </tr>
-                  <tr>
-                    <td className="border font-medium">Timbre:</td>
-                    <td className="border">{devisInfo.TIMBRE}</td>
-                  </tr>
-                  <tr>
-                    <td className="border px-2 py-1 font-medium">
-                      Montant à Payer:
-                    </td>
-                    <td className="border px-2 py-1 font-bold">
-                      {devisInfo.MTTC}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+  {/* Bloc Totaux */}
+  <div className="w-full lg:w-1/3 p-4 rounded-lg border-[#2a2185]">
+    <table className="table-auto w-full text border-collapse">
+      <tbody>
+        <tr>
+          <td className="border font-medium">Total HT:</td>
+          <td className="border">{devisInfo.MHT}</td>
+        </tr>
+        <tr>
+          <td className="border font-medium">Net HT Global:</td>
+          <td className="border">{devisInfo.MHT}</td>
+        </tr>
+        <tr>
+          <td className="border font-medium">Total TAXES:</td>
+          <td className="border">{devisInfo.MTVA}</td>
+        </tr>
+        <tr>
+          <td className="border font-medium">MT T.T.C:</td>
+          <td className="border">{devisInfo.MTTC}</td>
+        </tr>
+        <tr>
+          <td className="border font-medium">Timbre:</td>
+          <td className="border">{devisInfo.TIMBRE}</td>
+        </tr>
+        <tr>
+          <td className="border px-2 py-1 font-medium">
+            Montant à Payer:
+          </td>
+          <td className="border px-2 py-1 font-bold">
+            {devisInfo.MTTC}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
           <div>
             <p className="mt-4 text-xs text-center text-gray-600">
               Espérons que notre offre trouve votre entière satisfaction,
