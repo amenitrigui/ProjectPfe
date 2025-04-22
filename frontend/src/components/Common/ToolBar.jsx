@@ -14,6 +14,7 @@ import {
   faTimes,
   faWrench,
   faBars,
+  faMobileScreenButton,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   getClientParCode,
@@ -43,6 +44,7 @@ import {
 } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 import { FaCog, FaRegUserCircle, FaSignOutAlt, FaUser } from "react-icons/fa";
 import { useReactToPrint } from "react-to-print";
+import { InboxStackIcon } from "@heroicons/react/20/solid";
 
 function ToolBar() {
   //?==================================================================================================================
@@ -300,210 +302,240 @@ function ToolBar() {
 
   useClickOutside([menuRef, buttonRef], () => {
     dispatch(setOuvrireAvatarMenu(false));
-  }); 
+  });
   return (
     <>
-      <nav className="w-full border-b border-gray-300 px-4 py-2 bg-white shadow-sm sticky top-0 z-50 ">
-        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+      <nav className="w-full border-b border-gray-300 px-4 py-2 bg-white shadow-sm sticky top-0 z-50">
+      <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+          {/* Bouton Sidebar (always visible) */}
           <button
             type="button"
-            className="flex flex-col items-start w-20 p-2 mr-5  rounded-lg transition-all duration-200"
+            className="flex flex-col items-center w-16 sm:w-20 p-2 mr-3 rounded-lg transition-all duration-200"
             onClick={toggleSidebar}
           >
             <FontAwesomeIcon icon={faBars} className="text-xl mb-1" />
+            <span className="text-[10px] sm:text-xs">Menu</span>
           </button>
+
           {!isDashBoardRoute && (
             <>
               {!activerBoutonsValiderAnnuler && (
                 <>
-                  {/* Nouveau */}
-
+                  {/* Bouton Nouveau */}
                   {(utilisateurConnecte?.type?.toLowerCase() ===
                     "superviseur" ||
                     (utilisateurConnecte?.type?.toLowerCase() ===
                       "utilisateur" &&
-                      (toolbarTable === "client" ||
-                        toolbarTable === "devis" ||
-                        toolbarTable === "famille" ||
-                        toolbarTable === "sousfamille" ||
-                        toolbarTable === "article"))) && (
+                      [
+                        "client",
+                        "devis",
+                        "famille",
+                        "sousfamille",
+                        "article",
+                      ].includes(toolbarTable))) && (
                     <button
                       type="button"
                       onClick={handleAjoutBtnClick}
-                      className="flex flex-col items-center w-20 p-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition-all duration-200"
+                      className="flex flex-col items-center w-16 sm:w-20 p-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition-all duration-200"
                     >
                       <FontAwesomeIcon
                         icon={faFolderPlus}
                         className="text-xl mb-1"
                       />
-                      <span className="text-xs font-semibold">Nouveau</span>
+                      <span className="text-[10px] sm:text-xs font-semibold">
+                        Nouveau
+                      </span>
                     </button>
                   )}
 
-                  {/* Modifier */}
+                  {/* Bouton Modifier */}
                   <button
                     type="button"
                     onClick={handleModifierBtnClick}
-                    className="flex flex-col items-center w-20 p-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-lg transition-all duration-200"
+                    className="flex flex-col items-center w-16 sm:w-20 p-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-lg transition-all duration-200"
                   >
                     <FontAwesomeIcon icon={faEdit} className="text-xl mb-1" />
-                    <span className="text-xs font-semibold">Modifier</span>
+                    <span className="text-[10px] sm:text-xs font-semibold">
+                      Modifier
+                    </span>
                   </button>
 
-                  {/* Supprimer */}
+                  {/* Bouton Supprimer */}
                   {(utilisateurConnecte?.type?.toLowerCase() ===
                     "superviseur" ||
                     (utilisateurConnecte?.type?.toLowerCase() ===
                       "utilisateur" &&
-                      (toolbarTable === "client" ||
-                        toolbarTable === "devis" ||
-                        toolbarTable === "famille" ||
-                        toolbarTable === "sousfamille" ||
-                        toolbarTable === "article"))) && (
+                      [
+                        "client",
+                        "devis",
+                        "famille",
+                        "sousfamille",
+                        "article",
+                      ].includes(toolbarTable))) && (
                     <button
                       type="button"
                       onClick={handleSupprimerBtnClick}
-                      className="flex flex-col items-center w-20 p-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition-all duration-200"
+                      className="flex flex-col items-center w-16 sm:w-20 p-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition-all duration-200"
                     >
                       <FontAwesomeIcon
                         icon={faTrashAlt}
                         className="text-xl mb-1"
                       />
-                      <span className="text-xs font-semibold">Supprimer</span>
+                      <span className="text-[10px] sm:text-xs font-semibold">
+                        Supprimer
+                      </span>
                     </button>
                   )}
 
+                  {/* Liste */}
                   {(utilisateurConnecte?.type?.toLowerCase() ===
                     "superviseur" ||
                     (utilisateurConnecte?.type?.toLowerCase() ===
                       "utilisateur" &&
-                      (toolbarTable === "client" ||
-                        toolbarTable === "devis" ||
-                        toolbarTable === "famille" ||
-                        toolbarTable === "sousfamille" ||
-                        toolbarTable === "article"))) && (
+                      [
+                        "client",
+                        "devis",
+                        "famille",
+                        "sousfamille",
+                        "article",
+                      ].includes(toolbarTable))) && (
                     <button
                       type="button"
                       onClick={handleNaviguerVersListe}
-                      className="flex flex-col items-center w-20 p-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all duration-200"
+                      className="flex flex-col items-center w-16 sm:w-20 p-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all duration-200"
                     >
                       <FontAwesomeIcon icon={faList} className="text-xl mb-1" />
-                      <span className="text-xs font-semibold">Liste</span>
+                      <span className="text-[10px] sm:text-xs font-semibold">
+                        Liste
+                      </span>
                     </button>
                   )}
 
                   {/* Précédent */}
-
                   {(utilisateurConnecte?.type?.toLowerCase() ===
                     "superviseur" ||
                     (utilisateurConnecte?.type?.toLowerCase() ===
                       "utilisateur" &&
-                      (toolbarTable === "client" ||
-                        toolbarTable === "devis" ||
-                        toolbarTable === "famille" ||
-                        toolbarTable === "sousfamille" ||
-                        toolbarTable === "article"))) && (
+                      [
+                        "client",
+                        "devis",
+                        "famille",
+                        "sousfamille",
+                        "article",
+                      ].includes(toolbarTable))) && (
                     <button
                       type="button"
                       onClick={handleNaviguerVersPrecedent}
-                      className="flex flex-col items-center w-20 p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-all duration-200"
+                      className="flex flex-col items-center w-16 sm:w-20 p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-all duration-200"
                     >
                       <FontAwesomeIcon
                         icon={faArrowLeft}
                         className="text-xl mb-1"
                       />
-                      <span className="text-xs font-semibold">Précédent</span>
+                      <span className="text-[10px] sm:text-xs font-semibold">
+                        Précédent
+                      </span>
                     </button>
                   )}
 
+                  {/* Suivant */}
                   {(utilisateurConnecte?.type?.toLowerCase() ===
                     "superviseur" ||
                     (utilisateurConnecte?.type?.toLowerCase() ===
                       "utilisateur" &&
-                      (toolbarTable === "client" ||
-                        toolbarTable === "devis" ||
-                        toolbarTable === "famille" ||
-                        toolbarTable === "sousfamille" ||
-                        toolbarTable === "article"))) && (
+                      [
+                        "client",
+                        "devis",
+                        "famille",
+                        "sousfamille",
+                        "article",
+                      ].includes(toolbarTable))) && (
                     <button
                       type="button"
                       onClick={handleNaviguerVersSuivant}
-                      className="flex flex-col items-center w-20 p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-all duration-200"
+                      className="flex flex-col items-center w-16 sm:w-20 p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-all duration-200"
                     >
                       <FontAwesomeIcon
                         icon={faArrowRight}
                         className="text-xl mb-1"
                       />
-                      <span className="text-xs font-semibold">Suivant</span>
+                      <span className="text-[10px] sm:text-xs font-semibold">
+                        Suivant
+                      </span>
                     </button>
                   )}
 
-                  {/* Edition */}
+                  {/* Édition */}
                   {toolbarTable === "devis" && (
                     <button
                       type="button"
                       onClick={handleEditionClick}
-                      className="flex flex-col items-center w-20 p-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-lg transition-all duration-200"
+                      className="flex flex-col items-center w-16 sm:w-20 p-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-lg transition-all duration-200"
                     >
                       <FontAwesomeIcon
                         icon={faWrench}
                         className="text-xl mb-1"
                       />
-                      <span className="text-xs font-semibold">Édition</span>
+                      <span className="text-[10px] sm:text-xs font-semibold">
+                        Édition
+                      </span>
                     </button>
                   )}
 
                   {/* Quitter */}
                   <button
                     onClick={handleQuitterClick}
-                    className="flex flex-col items-center w-20 p-2 bg-orange-100 hover:bg-orange-200 text-orange-700 rounded-lg transition-all duration-200"
+                    className="flex flex-col items-center w-16 sm:w-20 p-2 bg-orange-100 hover:bg-orange-200 text-orange-700 rounded-lg transition-all duration-200"
                   >
                     <FontAwesomeIcon icon={faSignOutAlt} />
-                    <span>Quitter</span>
+                    <span className="text-[10px] sm:text-xs">Quitter</span>
                   </button>
                 </>
               )}
 
+              {/* Valider / Annuler */}
               {activerBoutonsValiderAnnuler && (
                 <>
-                  {/* Valider */}
                   <button
                     type="button"
                     onClick={handleValiderBtnClick}
-                    className="flex flex-col items-center w-20 p-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all duration-200"
+                    className="flex flex-col items-center w-16 sm:w-20 p-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all duration-200"
                   >
                     <FontAwesomeIcon icon={faCheck} className="text-xl mb-1" />
-                    <span className="text-xs font-semibold">Valider</span>
+                    <span className="text-[10px] sm:text-xs font-semibold">
+                      Valider
+                    </span>
                   </button>
 
-                  {/* Annuler */}
                   <button
                     type="button"
                     onClick={annulerOperation}
-                    className="flex flex-col items-center w-20 p-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg transition-all duration-200"
+                    className="flex flex-col items-center w-16 sm:w-20 p-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg transition-all duration-200"
                   >
                     <FontAwesomeIcon icon={faTimes} className="text-xl mb-1" />
-                    <span className="text-xs font-semibold">Annuler</span>
+                    <span className="text-[10px] sm:text-xs font-semibold">
+                      Annuler
+                    </span>
                   </button>
                 </>
               )}
             </>
           )}
+
+          {/* Zone d'espace flexible */}
           <div className="flex-grow"></div>
-          {/* User Icon */}
+
+          {/* Avatar utilisateur */}
           <div className="relative ml-auto">
-            {/* Avatar avec événement  de clic */}
             <div
               onClick={() => dispatch(setOuvrireAvatarMenu(!ouvrireAvatarMenu))}
               className="cursor-pointer"
               ref={buttonRef}
             >
               <FaRegUserCircle className="mr-3 text-3xl" />
-              {/* Indicateur de statut en ligne */}
               <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
             </div>
 
-            {/* Menu déroulant */}
             {ouvrireAvatarMenu && (
               <div
                 className="absolute right-0 mt-3 w-56 bg-white border rounded-lg shadow-lg z-50"
@@ -519,23 +551,30 @@ function ToolBar() {
                   </div>
                 </div>
                 <ul className="py-2">
-                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
+                  <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                     <Link
                       onClick={() => dispatch(setOuvrireAvatarMenu(false))}
                       to="/UtilisateurFormTout"
-                      className="flex items-center w-full"
+                      className="flex items-center"
                     >
                       <FaUser className="mr-3" /> Mon Profile
                     </Link>
                   </li>
-                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
-                    <Link to="/Settings" className="flex items-center w-full" onClick={() => dispatch(setOuvrireAvatarMenu(false))}>
+                  <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                    <Link
+                      to="/Settings"
+                      onClick={() => dispatch(setOuvrireAvatarMenu(false))}
+                      className="flex items-center"
+                    >
                       <FaCog className="mr-3" /> Paramètres
                     </Link>
                   </li>
-
-                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer border-t">
-                    <Link to="/" className="flex items-center w-full" onClick={() => dispatch(setOuvrireAvatarMenu(false))}>
+                  <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-t">
+                    <Link
+                      to="/"
+                      onClick={() => dispatch(setOuvrireAvatarMenu(false))}
+                      className="flex items-center"
+                    >
                       <FaSignOutAlt className="mr-3" /> Déconnexion
                     </Link>
                   </li>

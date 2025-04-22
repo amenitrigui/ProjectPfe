@@ -503,7 +503,7 @@ const getListePointVente = async (req, res) => {
 // * example:
 // * input
 // * output : NUMBL du dernier devis généré
-// * http://localhost:5000/api/devis/SOLEVO/getDerniereNumbl
+// * http://localhost:5000/api/devis/SOLEVO/getDerniereNumbl?codeuser=04
 const getDerniereNumbl = async (req, res) => {
   try {
     const { dbName } = req.params;
