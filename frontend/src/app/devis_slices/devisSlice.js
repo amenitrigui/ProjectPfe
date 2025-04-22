@@ -68,7 +68,6 @@ export const getTotalChiffres = createAsyncThunk(
   }
 );
 
-
 // * Action asynchrone pour récupérer un devis par son code
 export const getDevisParNUMBL = createAsyncThunk(
   "Slice/getDevisParNUMBL",
@@ -103,7 +102,8 @@ export const getListeDevisParNUMBL = createAsyncThunk(
         params: {
           NUMBL: NUMBL,
           codeuser:
-            thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte.codeuser,
+            thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte
+              .codeuser,
         },
       }
     );
@@ -213,7 +213,9 @@ export const getListeNumbl = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getCodesDevis/${thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte.codeuser}`
+      }/getCodesDevis/${
+        thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte.codeuser
+      }`
     );
     return response.data.listeNUMBL;
   }
@@ -239,10 +241,13 @@ export const getDerniereNumbl = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getDerniereNumbl`, {
+      }/getDerniereNumbl`,
+      {
         params: {
-          codeuser: thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte.codeuser,
-        }
+          codeuser:
+            thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte
+              .codeuser,
+        },
       }
     );
     return response.data.derniereNumbl;
@@ -282,8 +287,8 @@ export const getNbTotalDevisGeneresParUtilisateur = createAsyncThunk(
       {
         params: {
           codeuser:
-            thunkAPI.getState().utilisateurSystemSlice
-              .utilisateurConnecte.codeuser,
+            thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte
+              .codeuser,
         },
       }
     );
@@ -301,7 +306,8 @@ export const getNbDevisNonGeneresParUtilisateur = createAsyncThunk(
       {
         params: {
           codeuser:
-            thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte.codeuser,
+            thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte
+              .codeuser,
         },
       }
     );
@@ -339,9 +345,36 @@ export const getNbTotalDevisSansStatus = createAsyncThunk(
     const response = await axios.get(`
       ${process.env.REACT_APP_API_URL}/api/devis/${
       thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getNbTotalDevisSansStatus
+    }/getNbTotalDevisSansStatus
     `);
     return response.data.nbDevisSansStatus;
+  }
+);
+
+export const getAnneesDistinctGenerationDevis = createAsyncThunk(
+  "devisSlice/getAnneesDistinctGenerationDevis",
+  async (_, thunkAPI) => {
+    const response = await axios.get(`
+    ${process.env.REACT_APP_API_URL}/api/devis/${
+      thunkAPI.getState().utilisateurSystemSlice.dbName
+    }/getAnneesDistinctGenerationDevis`);
+    return response.data.annees;
+  }
+);
+
+export const getNbDevisGeneresParAnnee = createAsyncThunk(
+  `devisSlice/getNbDevisGeneresParAnnee`,
+  async (annee, thunkAPI) => {
+    const response = await axios.get(`
+      ${process.env.REACT_APP_API_URL}/api/devis/${
+      thunkAPI.getState().utilisateurSystemSlice.dbName
+    }/getNbDevisGeneresParAnnee`,{
+      params: {
+        annee: annee
+      }
+    });
+
+    return response.data.nbDevisParAnne
   }
 );
 export const devisSlice = createSlice({
@@ -361,9 +394,9 @@ export const devisSlice = createSlice({
       libpv: "",
       ADRCLI: "",
       CODECLI: "",
-      delailivr:"",
-      modepaie:"",
-      transport:"",
+      delailivr: "",
+      modepaie: "",
+      transport: "",
       numPage: 1,
       cp: "",
       DATEBL: new Date().toISOString().split("T")[0],
@@ -378,15 +411,14 @@ export const devisSlice = createSlice({
       RSCLI: "",
       codesecteur: "",
       MHT: "",
-      email:"",
-    
+      email: "",
+
       articles: [],
     },
     nbTotalDevisGeneres: 0,
     nbTotalDevisGeneresParUtilisateur: 0,
     nbTotalDevisNonGeneresParUtilisateur: 0,
 
-  
     totalchifre: 0,
     nombreDeDevis: 0,
     status: null,
@@ -398,6 +430,8 @@ export const devisSlice = createSlice({
     nbDevisEncours: 0,
     nbTotDevisSansStatus: 0,
     derniereNumbl: "",
+    anneesDistinctGenerationDevis: [],
+    nbDevisGeneresParAnnee: []
   },
   reducers: {
     setDevisInfo: (state, action) => {
@@ -598,8 +632,8 @@ export const devisSlice = createSlice({
         // state.derniereNumbl =
         //   "DV" +
         //   (parseInt(action.payload.NUMBL.substring(2, 9)) + 1).toString();
-        if(action.payload.NUMBL && action.payload.NUMBL.length > 0){
-          state.derniereNumbl = parseInt(action.payload.NUMBL.substring(2, 9))
+        if (action.payload.NUMBL && action.payload.NUMBL.length > 0) {
+          state.derniereNumbl = parseInt(action.payload.NUMBL.substring(2, 9));
           state.status = "reussi";
         }
       })
@@ -700,7 +734,7 @@ export const devisSlice = createSlice({
         state.erreur = action.payload;
         state.status = "echoue";
       })
-      
+
       .addCase(getNbTotalDevisSansStatus.pending, (state) => {
         state.status = "chargeement";
       })
@@ -711,8 +745,29 @@ export const devisSlice = createSlice({
       .addCase(getNbTotalDevisSansStatus.rejected, (state, action) => {
         state.erreur = action.payload;
         state.status = "echoue";
-      });
+      })
 
+      .addCase(getAnneesDistinctGenerationDevis.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getAnneesDistinctGenerationDevis.fulfilled, (state, action) => {
+        state.anneesDistinctGenerationDevis = action.payload;
+        state.status = "reussi";
+      })
+      .addCase(getAnneesDistinctGenerationDevis.rejected, (state, action) => {
+        state.status = "echoue";
+      })
+      
+      .addCase(getNbDevisGeneresParAnnee.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getNbDevisGeneresParAnnee.fulfilled, (state, action) => {
+        state.nbDevisGeneresParAnnee = action.payload;
+        state.status = "reussi";
+      })
+      .addCase(getNbDevisGeneresParAnnee.rejected, (state, action) => {
+        state.status = "echoue";
+      });
   },
 });
 export const {

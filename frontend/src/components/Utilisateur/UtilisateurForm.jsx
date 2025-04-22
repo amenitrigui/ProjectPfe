@@ -1,29 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import {
-  FaUser,
-  FaCog,
-  FaCreditCard,
-  FaSignOutAlt,
-  FaRegUserCircle,
-} from "react-icons/fa";
-
-import {
-  getNombreTotalDevis,
-  getTotalChiffres,
-} from "../../app/devis_slices/devisSlice";
-
-import {
-  getListeCodesPosteaux,
-  getListeCodesSecteur,
-  getListeCodeRegions,
-} from "../../app/client_slices/clientSlice";
-
+import { useLocation } from "react-router-dom";
 import ToolBar from "../Common/ToolBar";
 import { getUtilisateurParCode } from "../../app/utilisateur_slices/utilisateurSlice";
 import SideBar from "../Common/SideBar";
-import {  setAfficherRecherchePopup, setOuvrireDrawerMenu } from "../../app/interface_slices/interfaceSlice";
+import {  setAfficherRecherchePopup } from "../../app/interface_slices/interfaceSlice";
 import {
   getDerniereCodeUtilisateur,
   setUtilisateur_SuperviseurInfos,
@@ -31,15 +12,12 @@ import {
 } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 
 const UtilisateurForm = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
   // * pour afficher le sidebar
   const ouvrireMenuDrawer = useSelector(
     (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
   const dispatch = useDispatch();
-
-  // Sélection des informations du client depuis le state Redux
-  const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
   const utilisateurConnecte = useSelector(
     (state) => state.utilisateurSystemSlice.utilisateurConnecte
   );
@@ -82,12 +60,6 @@ const UtilisateurForm = () => {
     <div className="container">
       <SideBar />
       <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
-        {/* <div className="topbar">
-          <div className="toggle" onClick={toggleSidebar}>
-            <ion-icon name="menu-outline"></ion-icon>
-          </div>
-
-        </div> */}
 
         <ToolBar />
         <div className="details">
@@ -113,13 +85,12 @@ const UtilisateurForm = () => {
                             ? derniereCodeUtilisateur.codeuser
                             : Utilisateur_SuperviseurInfos.codeuser
                         }
-                        
                         onChange={(e) =>
                           hundlechange("codeuser", e.target.value)
                         }
                         onClick = {() => afficherRecherchePopup()}
 
-                        disabled={activerChampsForm}
+                        disabled={utilisateurConnecte.type.toLowerCase() !== "superviseur"}
                         maxLength={8}
                       />
                     </div>
@@ -192,51 +163,6 @@ const UtilisateurForm = () => {
                     />
                   </div>
                 </div>
-
-                {/* Colonne droite - Informations de création/modification */}
-                {/* <div className="flex-1 max-w-[700px]">
-                  <div className="card rounded-box p-4 space-y-6 bg-gray-50">
-                    <div className="flex items-center space-x-4">
-                      <label className="font-medium w-1/3 text-left block text-[rgb(48,60,123)]">
-                        Creation
-                      </label>
-                      <input
-                        type="text"
-                        className="border border-gray-300 rounded-md p-2 flex-1"
-                        value={
-                          Utilisateur_SuperviseurInfos.codeuser +
-                          " // " +
-                          Utilisateur_SuperviseurInfos.nom
-                        }
-                        disabled
-                      />
-                    </div>
-
-                    <div className="flex items-center space-x-4">
-                      <label className="font-medium w-1/3 text-left block text-[rgb(48,60,123)]">
-                        Modification
-                      </label>
-                      <input
-                        type="text"
-                        className="border border-gray-300 rounded-md p-2 flex-1"
-                        value={clientInfos.userm || ""}
-                        disabled
-                      />
-                    </div>
-
-                    <div className="flex items-center space-x-4">
-                      <label className="font-medium w-1/3 text-left block text-[rgb(48,60,123)]">
-                        Date Maj
-                      </label>
-                      <input
-                        type="date"
-                        className="border border-gray-300 rounded-md p-2 flex-1"
-                        value={clientInfos.datemaj || ""}
-                        disabled
-                      />
-                    </div>
-                  </div>
-                </div> */}
               </div>
             </fieldset>
           </div>

@@ -25,7 +25,10 @@ const {
   getNbDevisNonGeneresParUtilisateur,
   getNbTotalDevisAnnulees,
   getNbTotalDevisEnCours,
-  getNbTotalDevisSansStatus
+  getNbTotalDevisSansStatus,
+  getListeDevisAvecPagination,
+  getAnneesDistinctGenerationDevis,
+  getNbDevisGeneresParAnnee
 } = require("../controllers/devisController");
 //devis controller mt3na
 router.post("/:dbName/ajouterDevis", ajouterDevis);
@@ -55,4 +58,7 @@ router.get("/:dbName/getDevisCountByMonthAndYear", getDevisCountByMonthAndYear);
 router.get("/:dbName/getNbTotalDevisAnnulees", getNbTotalDevisAnnulees)
 router.get("/:dbName/getNbTotalDevisEnCours", getNbTotalDevisEnCours)
 router.get("/:dbName/getNbTotalDevisSansStatus", getNbTotalDevisSansStatus);
+router.get("/:dbName/getListeDevisAvecPagination", getListeDevisAvecPagination);
+router.get("/:dbName/getAnneesDistinctGenerationDevis", getAnneesDistinctGenerationDevis);
+router.get("/:dbName/getNbDevisGeneresParAnnee", getNbDevisGeneresParAnnee);
 module.exports = router;

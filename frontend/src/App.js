@@ -29,7 +29,7 @@ import ArticleList from "./pages/Article/ArticleList"
 import FamilleFormTout from "./pages/Famille/FamilleFormTout"
 import Settings from "./pages/ErpPages/Settings"
 import UtilisateurList from "./pages/Utilisateurs/UtilisateurList"
-import { setActiverBoutonsValiderAnnuler, setIsDashBoardRoute, setToolbarMode } from "./app/interface_slices/interfaceSlice";
+import { setActiverBoutonsValiderAnnuler, setAfficherRecherchePopup, setIsDashBoardRoute, setToolbarMode } from "./app/interface_slices/interfaceSlice";
 import ImprimerDevis from "./pages/Devis/Imprimer";
 import SecteurForm from "./pages/Clients/SecteurForm";
 import Test1 from "./test/Test1";
@@ -47,6 +47,7 @@ function App() {
     (state) => state.utilisateurSystemSlice.utilisateurConnecte
   );
   const infosUtilisateur = useSelector((state) => state.utilisateurSlice.infosUtilisateur);
+  const afficherRecherchePopup = useSelector((state) => state.interfaceSlice.afficherRecherchePopup);
   //?==================================================================================================================
   //?==================================================appels UseEffect================================================
   //?==================================================================================================================
@@ -55,8 +56,11 @@ function App() {
     dispatch(setActiverBoutonsValiderAnnuler(false))
     if(location.pathname.toLowerCase() == "/dashboard") {
       dispatch(setIsDashBoardRoute(true));
-    }else {
+    }if(location.pathname.toLowerCase() != "/dashboard") {
       dispatch(setIsDashBoardRoute(false));
+    }
+    if(afficherRecherchePopup == true) {
+      dispatch(setAfficherRecherchePopup(false));
     }
   }, [location.pathname])
   //?==================================================================================================================

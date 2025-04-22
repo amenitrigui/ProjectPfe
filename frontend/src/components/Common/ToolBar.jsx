@@ -48,15 +48,10 @@ function ToolBar() {
   //?==================================================================================================================
   //?=====================================================variables====================================================
   //?==================================================================================================================
-  const [isOpen, setIsOpen] = useState(false);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const devisInfo = useSelector((state) => state.devisSlice.devisInfo);
   const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
-  // * state pour afficher/cacher fenetre de confirmation pour
-  // * la suppression
-  const [isDeleting, setIsDeleting] = useState(false);
   // * state pour controller quelle table on utilise
   // * puisque ce composant est partagé
   const toolbarTable = useSelector(
@@ -492,83 +487,6 @@ function ToolBar() {
                   </button>
                 </>
               )}
-
-              {(utilisateurConnecte?.type?.toLowerCase() === "superviseur" ||
-                (utilisateurConnecte?.type?.toLowerCase() === "utilisateur" &&
-                  (toolbarTable === "client" ||
-                    toolbarTable === "devis" ||toolbarTable === "famille" || toolbarTable === "sousfamille"  ||
-
-                    toolbarTable === "article"))) && (
-                <button
-                  type="button"
-                  onClick={handleNaviguerVersListe}
-                  className="flex flex-col items-center w-20 p-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all duration-200"
-                >
-                  <FontAwesomeIcon icon={faList} className="text-xl mb-1" />
-                  <span className="text-xs font-semibold">Liste</span>
-                </button>
-              )}
-
-              {/* Précédent */}
-
-              {(utilisateurConnecte?.type?.toLowerCase() === "superviseur" ||
-                (utilisateurConnecte?.type?.toLowerCase() === "utilisateur" &&
-                  (toolbarTable === "client" ||
-                    toolbarTable === "devis" ||toolbarTable === "famille" || toolbarTable === "sousfamille"  ||
-
-                    toolbarTable === "article"))) && (
-                <button
-                  type="button"
-                  onClick={handleNaviguerVersPrecedent}
-                  className="flex flex-col items-center w-20 p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-all duration-200"
-                >
-                  <FontAwesomeIcon
-                    icon={faArrowLeft}
-                    className="text-xl mb-1"
-                  />
-                  <span className="text-xs font-semibold">Précédent</span>
-                </button>
-              )}
-
-              {(utilisateurConnecte?.type?.toLowerCase() === "superviseur" ||
-                (utilisateurConnecte?.type?.toLowerCase() === "utilisateur" &&
-                  (toolbarTable === "client" ||
-                    toolbarTable === "devis" ||toolbarTable === "famille" || toolbarTable === "sousfamille"  ||
-
-                    toolbarTable === "article"))) && (
-                <button
-                  type="button"
-                  onClick={handleNaviguerVersSuivant}
-                  className="flex flex-col items-center w-20 p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-all duration-200"
-                >
-                  <FontAwesomeIcon
-                    icon={faArrowRight}
-                    className="text-xl mb-1"
-                  />
-                  <span className="text-xs font-semibold">Suivant</span>
-                </button>
-              )}
-
-              {/* Edition */}
-              {toolbarTable === "devis" && (
-                <button
-                  type="button"
-                  onClick={()=>handleEditionClick()}
-                  className="flex flex-col items-center w-20 p-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-lg transition-all duration-200"
-                >
-                  <FontAwesomeIcon icon={faWrench} className="text-xl mb-1" />
-                  <span className="text-xs font-semibold">Édition</span>
-                </button>
-              )}
-
-              {/* Quitter */}
-              <button
-                onClick={handleQuitterClick}
-                className="flex flex-col items-center w-20 p-2 bg-orange-100 hover:bg-orange-200 text-orange-700 rounded-lg transition-all duration-200"
-              >
-                <FontAwesomeIcon icon={faSignOutAlt} />
-                <span>Quitter</span>
-              </button>
             </>
           )}
           <div className="flex-grow"></div>
@@ -603,21 +521,22 @@ function ToolBar() {
                 <ul className="py-2">
                   <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
                     <Link
+                      onClick={() => dispatch(setOuvrireAvatarMenu(false))}
                       to="/UtilisateurFormTout"
                       className="flex items-center w-full"
                     >
-                      <FaUser className="mr-3" /> My Profile
+                      <FaUser className="mr-3" /> Mon Profile
                     </Link>
                   </li>
                   <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
-                    <Link to="/Settings" className="flex items-center w-full">
-                      <FaCog className="mr-3" /> Settings
+                    <Link to="/Settings" className="flex items-center w-full" onClick={() => dispatch(setOuvrireAvatarMenu(false))}>
+                      <FaCog className="mr-3" /> Paramètres
                     </Link>
                   </li>
 
                   <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer border-t">
-                    <Link to="/" className="flex items-center w-full">
-                      <FaSignOutAlt className="mr-3" /> Log Out
+                    <Link to="/" className="flex items-center w-full" onClick={() => dispatch(setOuvrireAvatarMenu(false))}>
+                      <FaSignOutAlt className="mr-3" /> Déconnexion
                     </Link>
                   </li>
                 </ul>

@@ -706,7 +706,6 @@ const getDevisCountByMonthAndYear = async (req, res) => {
       GROUP BY YEAR(DATEBL), MONTH(DATEBL)
       ORDER BY year DESC, month DESC;
     `;
-    console.log("Exécution de la requête SQL : ", sqlQuery);
 
     const result = await dbConnection.query(sqlQuery, {
       type: dbConnection.QueryTypes.SELECT,
@@ -717,8 +716,6 @@ const getDevisCountByMonthAndYear = async (req, res) => {
         message: "Aucun devis trouvé.",
       });
     }
-
-    console.log("Résultats de la requête (devis par mois et année) :", result);
 
     return res.status(200).json({
       message: "Nombre de devis par mois et année récupéré avec succès.",
@@ -929,6 +926,109 @@ const getNbTotalDevisSansStatus = async (req, res) => {
     dbConnection.close();
   }
 };
+// ! still testing !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// !!!!!!
+// ! thou art warned !!!!!!!!!!!!
+// ! !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// * url : http://localhost:5000/api/devis/SOLEVO/getListeDevisAvecPagination?page=1&limit=10
+const getListeDevisAvecPagination = async (req, res) => {
+  const { dbName } = req.params;
+  const { page, limit } = req.query;
+  if (!dbName) {
+    return res
+      .status(400)
+      .json({ message: "le nom de la base de données est requis" });
+  }
+
+  try {
+    const dbConnection = await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    const devis = await Devis.findAll({
+      attributes: ["numbl"],
+      limit: parseInt(limit),
+      offset: (parseInt(page) - 1) * parseInt(limit),
+    });
+
+    return res.status(200).json({
+      message: "Liste de devis récupérée avec succès",
+      devis: devis,
+      totalDevis: devis.count,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+// * récupere les années distinctes de devis générés
+// * pour une societé donnée (dbName)
+// * url : http://localhost:5000/api/devis/SOLEVO/getAnneesDistinctGenerationDevis
+const getAnneesDistinctGenerationDevis = async (req, res) => {
+  const { dbName } = req.params;
+  let dbConnection;
+  try {
+    dbConnection = await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    // ? ?????????????
+    const annees = await Devis.findAll({
+      attributes: [
+        [dbConnection.fn("YEAR", dbConnection.col("DateBL")), "year"],
+      ],
+      group: ["year"],
+      raw: true,
+    });
+
+    return res
+      .status(200)
+      .json({
+        message:
+          "annees distinctes de generation de devis recuperées avec succès",
+        annees,
+      });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  } finally {
+    dbConnection.close();
+  }
+};
+
+// * récupere le nombre de devis générés par mois selon l'année
+// * pour une societé donnée (dbName)
+// * url : http://localhost:5000/api/devis/SOLEVO/getNbDevisGeneresParAnnee?annee=2023
+const getNbDevisGeneresParAnnee = async (req, res) => {
+  const { dbName } = req.params;
+  const { annee } = req.query;
+  let dbConnection;
+  try {
+    dbConnection = await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    let nbDevisParAnne = [];
+    for (let i = 1; i <= 12; i++) {
+      const nbDevis = await Devis.count({
+        where: {
+          [Op.and]: [
+            dbConnection.where(
+              dbConnection.fn("YEAR", dbConnection.col("DATEBL")),
+              annee
+            ),
+            dbConnection.where(
+              dbConnection.fn("MONTH", dbConnection.col("DATEBL")),
+              i
+            ),
+            { executer: "G" },
+          ],
+        },
+      });
+      nbDevisParAnne.push({ mois: i, nombreDevis: nbDevis });
+    }
+    return res.status(200).json({
+      message: `nombre de devis générés en ${annee} récupéré avec succès`,
+      nbDevisParAnne: nbDevisParAnne,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  } finally {
+    dbConnection.close();
+  }
+};
 
 module.exports = {
   getTousDevis,
@@ -956,4 +1056,7 @@ module.exports = {
   getNbTotalDevisAnnulees,
   getNbTotalDevisEnCours,
   getNbTotalDevisSansStatus,
+  getListeDevisAvecPagination,
+  getAnneesDistinctGenerationDevis,
+  getNbDevisGeneresParAnnee
 };

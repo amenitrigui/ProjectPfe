@@ -25,6 +25,8 @@ import {
   getQteTotalArticle,
 } from "../../app/Stock_valorisation_utilitaires/Stock_Slice";
 import Tab from "./Tab";
+import OptionsArticle from "./OptionsArticle";
+import { ResponsiveContainer } from "recharts";
 function ArticleForm() {
   //?==================================================================================================================
   //?=====================================================variables====================================================
@@ -111,7 +113,7 @@ function ArticleForm() {
         dispatch(getdesignationSousFamillebycodeSousFamille(valeur));
       } else {
         dispatch(
-          setArticleInfos({ colonne: "Libellesousfamille", valeur: "" })
+            setArticleInfos({ colonne: "Libellesousfamille", valeur: "" })
         );
       }
     }
@@ -128,11 +130,6 @@ function ArticleForm() {
     }
   };
 
-  const handleChangeRadio = (valeur, colonne) => {
-    if (toolbarMode == "ajout" || toolbarMode == "modification") {
-      dispatch(setArticleInfos({ colonne: colonne, valeur: valeur }));
-    }
-  };
   const afficherRecherchePopup = () => {
     dispatch(setAfficherRecherchePopup(true));
   };
@@ -156,15 +153,14 @@ function ArticleForm() {
                 Fiche Article
               </h2>
             </div>
-
             {/* Conteneur principal avec disposition horizontale */}
-            <div className="flex flex-col lg:flex-row gap-6">
+            <div className="flex flex-col-2 gap-2">
               {/* Section Article (gauche) */}
               <div className="flex-1 space-y-4">
                 {/* Famille/Sous-Famille */}
 
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-                  <div className="col-span-12 md:col-span-3 space-y-1">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+                  <div className="col-span-12 md:col-span-1 space-y-1">
                     <label className="block font-semibold text-blue-900">
                       Code Famille
                     </label>
@@ -191,7 +187,7 @@ function ArticleForm() {
                     </datalist>
                   </div>
 
-                  <div className="col-span-12 md:col-span-7 space-y-1">
+                  <div className="col-span-12 md:col-span-1 space-y-1">
                     <label className="block font-semibold text-blue-900">
                       Désignation Famille
                     </label>
@@ -209,7 +205,7 @@ function ArticleForm() {
                     />
                   </div>
 
-                  <div className="col-span-12 md:col-span-2 flex items-end">
+                  <div className="col-span-12 md:col-span-1 flex items-end">
                     <button
                       className="btn btn-outline btn-accent w-full"
                       onClick={() => togglePopup("famille")}
@@ -374,145 +370,20 @@ function ArticleForm() {
 
               {/* Section Options (droite) */}
               <div className="flex-1 space-y-4">
-                <fieldset className="border border-gray-300 p-4 rounded-lg h-full">
-                  <legend className="px-2 text-lg font-semibold text-blue-900">
-                    Options
-                  </legend>
-
-                  {/* Unité, Brut, Net */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div className="space-y-1">
-                      <label className="block font-semibold text-blue-900">
-                        Unité
-                      </label>
-                      <input
-                        type="text"
-                        className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                        value={articleInfos.unite}
-                        onChange={(e) =>
-                          hundlesubmitTousLesChamp(e.target.value, "unite")
-                        }
-                        disabled={!activerChampsForm}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="block font-semibold text-blue-900">
-                        Brut
-                      </label>
-                      <input
-                        type="text"
-                        className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                        value={articleInfos.prixbrut}
-                        onChange={(e) =>
-                          hundlesubmitTousLesChamp(e.target.value, "prixbrut")
-                        }
-                        disabled={!activerChampsForm}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="block font-semibold text-blue-900">
-                        Net
-                      </label>
-                      <input
-                        type="text"
-                        className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                        value={articleInfos.prixnet}
-                        onChange={(e) =>
-                          hundlesubmitTousLesChamp(e.target.value, "prixnet")
-                        }
-                        disabled={!activerChampsForm}
-                      />
-                    </div>
+                <div className="collapse bg-base-100 border-base-300 border">
+                  <input type="checkbox" />
+                  <div
+                    className="collapse-title font-semibold mb-1"
+                    style={{ color: "rgb(48, 60, 123)" }}
+                  >
+                    Options supplementaires d'article
                   </div>
-
-                  {/* Nb/Unité et Compte Comptable */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div className="space-y-1">
-                      <label className="block font-semibold text-blue-900">
-                        Nb/Unité
-                      </label>
-                      <input
-                        type="text"
-                        className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                        value={articleInfos.nbrunite}
-                        onChange={(e) =>
-                          hundlesubmitTousLesChamp(e.target.value, "nbrunite")
-                        }
-                        disabled={!activerChampsForm}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="block font-semibold text-blue-900">
-                        Compte Comptable
-                      </label>
-                      <input
-                        type="text"
-                        className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                        value={articleInfos.comptec}
-                        onChange={(e) =>
-                          hundlesubmitTousLesChamp(e.target.value, "comptec")
-                        }
-                        disabled={!activerChampsForm}
-                      />
-                    </div>
+                  <div className="collapse-content text-sm">
+                    <ResponsiveContainer>
+                      <OptionsArticle />
+                    </ResponsiveContainer>
                   </div>
-
-                  {/* Type Article */}
-                  <div className="space-y-1 mb-4">
-                    <label className="block font-semibold text-blue-900">
-                      Type
-                    </label>
-                    <select
-                      className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                      value={articleInfos.type}
-                      onChange={(e) =>
-                        hundlesubmitTousLesChamp(e.target.value, "type")
-                      }
-                      disabled={!activerChampsForm}
-                    >
-                      <option value="">-- Sélectionner --</option>
-                      <option value="stock">sur Stock</option>
-                      <option value="service">de service</option>
-                    </select>
-                  </div>
-
-                  {/* Radio Buttons */}
-                  <div className="flex flex-wrap items-center gap-4">
-                    <div className="flex items-center">
-                      <input
-                        type="radio"
-                        className="h-5 w-5 text-blue-600 focus:ring-blue-500"
-                        checked={articleInfos.typeart == "PF"}
-                        name="typeart"
-                        onChange={() => handleChangeRadio("PF", "typeart")}
-                        disabled={!activerChampsForm}
-                      />
-                      <label className="ml-2 text-blue-900">PF</label>
-                    </div>
-                    <div className="flex items-center">
-                      <input
-                        type="radio"
-                        className="h-5 w-5 text-blue-600 focus:ring-blue-500"
-                        checked={articleInfos.typeart == "X"}
-                        name="typeart"
-                        onChange={() => handleChangeRadio("X", "typeart")}
-                        disabled={!activerChampsForm}
-                      />
-                      <label className="ml-2 text-blue-900">X</label>
-                    </div>
-                    <div className="flex items-center">
-                      <input
-                        type="radio"
-                        className="h-5 w-5 text-blue-600 focus:ring-blue-500"
-                        checked={articleInfos.typeart == "MP"}
-                        name="typeart"
-                        onChange={() => handleChangeRadio("MP", "typeart")}
-                        disabled={!activerChampsForm}
-                      />
-                      <label className="ml-2 text-blue-900">MP</label>
-                    </div>
-                  </div>
-                </fieldset>
+                </div>
               </div>
             </div>
           </div>
@@ -520,8 +391,11 @@ function ArticleForm() {
         <div className="details p-6">
           <div className="collapse bg-base-100 border-base-300 border w-[100vw]">
             <input type="checkbox" />
-            <div className="collapse-title font-semibold mb-1" style={{ color: "rgb(48, 60, 123)" }}>
-              Options supplementaires d'article
+            <div
+              className="collapse-title font-semibold mb-1"
+              style={{ color: "rgb(48, 60, 123)" }}
+            >
+              Informations supplementaires d'article
             </div>
             <div className="collapse-content text-sm">
               <Tab />

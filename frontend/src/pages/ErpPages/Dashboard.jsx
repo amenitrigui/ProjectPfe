@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import {
-  FaUser,
-  FaCog,
-  FaSignOutAlt,
-  FaRegUserCircle,
-} from "react-icons/fa";
 import {
   PieChart,
   Pie,
@@ -31,12 +24,13 @@ import {
   getNbTotalDevisAnnulees,
   getNbTotalDevisEnCours,
   getNbTotalDevisSansStatus,
+  getAnneesDistinctGenerationDevis,
+  getNbDevisGeneresParAnnee,
 } from "../../app/devis_slices/devisSlice";
 
 import SideBar from "../../components/Common/SideBar";
 import { setOuvrireDrawerMenu } from "../../app/interface_slices/interfaceSlice";
 import ToolBar from "../../components/Common/ToolBar";
-
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
@@ -61,25 +55,33 @@ const data03 = [
   { name: "Avr", devis: 278 },
   { name: "Mai", devis: 189 },
   { name: "Juin", devis: 239 },
-  { name: "Juil", devis: 349 }
+  { name: "Juil", devis: 349 },
 ];
 
 const Dashboard = () => {
   //?==================================================================================================================
   //?=====================================================variables====================================================
   //?==================================================================================================================
-  const devisMonthYear = useSelector((state) => state.devisSlice.devisMonthYear);
+  const devisMonthYear = useSelector(
+    (state) => state.devisSlice.devisMonthYear
+  );
   const dispatch = useDispatch();
-  const [isOpen, setIsOpen] = useState(false);
+  const [anneeSelectionne, setAnneeSelectionne] = useState(new Date().getFullYear());
 
   const ouvrireMenuDrawer = useSelector(
     (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
   const nombredevis = useSelector((state) => state.devisSlice.nombreDeDevis);
   const totalchifre = useSelector((state) => state.devisSlice.totalchifre);
-  const nbTotalDevisAnnulees = useSelector((state) => state.devisSlice.nbTotalDevisAnnulees);
-  const nbDevisEncours = useSelector((state) => state.devisSlice.nbDevisEncours);
-  const nbTotDevisSansStatus = useSelector((state) => state.devisSlice.nbTotDevisSansStatus);
+  const nbTotalDevisAnnulees = useSelector(
+    (state) => state.devisSlice.nbTotalDevisAnnulees
+  );
+  const nbDevisEncours = useSelector(
+    (state) => state.devisSlice.nbDevisEncours
+  );
+  const nbTotDevisSansStatus = useSelector(
+    (state) => state.devisSlice.nbTotDevisSansStatus
+  );
 
   const utilisateurConnecte = useSelector(
     (state) => state.utilisateurSystemSlice.utilisateurConnecte
@@ -91,31 +93,17 @@ const Dashboard = () => {
   const nbTotalDevisGeneresParUtilisateur = useSelector(
     (state) => state.devisSlice.nbTotalDevisGeneresParUtilisateur
   );
-  
+
   const nbTotalDevisNonGeneresParUtilisateur = useSelector(
     (state) => state.devisSlice.nbTotalDevisNonGeneresParUtilisateur
   );
-  
+
+  const nbDevisGeneresParAnnee = useSelector((state) => state.devisSlice.nbDevisGeneresParAnnee);
   // Transformer les données pour le BarChart
-  const chartData = devisMonthYear.map((item) => {
-    // Créer un label comme "01/2024" ou "Janvier 2024"
-    const monthNames = [
-      "Janvier",
-      "Février",
-      "Mars",
-      "Avril",
-      "Mai",
-      "Juin",
-      "Juillet",
-      "Août",
-      "Septembre",
-      "Octobre",
-      "Novembre",
-      "Décembre",
-    ];
+  const chartData = nbDevisGeneresParAnnee.map((item) => {
     return {
-      name: `${monthNames[item.month - 1]} ${item.year}`, // ou `${item.month}/${item.year}` si tu préfères
-      devis: item.totalDevis,
+      name: item.mois, // ou `${item.month}/${item.year}` si tu préfères
+      devis: item.nombreDevis,
     };
   });
 
@@ -125,16 +113,7 @@ const Dashboard = () => {
     { name: "En cours", value: nbDevisEncours },
     { name: "Sans Status", value: nbTotDevisSansStatus },
   ];
-
-  const data03 = [
-    { name: "Jan", devis: 400 },
-    { name: "Fév", devis: 300 },
-    { name: "Mar", devis: 200 },
-    { name: "Avr", devis: 278 },
-    { name: "Mai", devis: 189 },
-    { name: "Juin", devis: 239 },
-    { name: "Juil", devis: 349 },
-  ];
+  const anneesDistinctGenerationDevis = useSelector((state) => state.devisSlice.anneesDistinctGenerationDevis);
   //?==================================================================================================================
   //?=================================================appels UseEffect=================================================
   //?==================================================================================================================
@@ -148,7 +127,13 @@ const Dashboard = () => {
     dispatch(getNbTotalDevisGeneresParUtilisateur());
     dispatch(getNbDevisNonGeneresParUtilisateur());
     dispatch(getNbTotalDevisSansStatus());
+    dispatch(getAnneesDistinctGenerationDevis());
+    dispatch(getNbDevisGeneresParAnnee(new Date().getFullYear()))
   }, []);
+
+  useEffect(() => {
+    dispatch(getNbDevisGeneresParAnnee(anneeSelectionne))
+  },[anneeSelectionne])
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
@@ -239,11 +224,11 @@ const Dashboard = () => {
                     />
                   ))}
                 </Pie>
+                <Legend />
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
           </div>
-
           {/* Pie Chart - Devis */}
           <div className="p-4 bg-white shadow rounded">
             <div className="cardHeader mb-4">
@@ -268,6 +253,7 @@ const Dashboard = () => {
                     />
                   ))}
                 </Pie>
+                <Legend />
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
@@ -278,6 +264,14 @@ const Dashboard = () => {
             <div className="cardHeader mb-4">
               <h2>Nombre Devis par Mois et Année</h2>
             </div>
+            <select className="w-full select border-none focus:outline-none focus:ring-0 appearance-none" value={anneeSelectionne} onChange={(e) => {setAnneeSelectionne(e.target.value)}}>
+              {anneesDistinctGenerationDevis.map((annee) => {
+                return (
+                  <option key={annee.year} value={annee.year}>{annee.year}</option>
+                )
+              })}
+            </select>
+            <hr></hr>
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" />
