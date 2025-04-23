@@ -424,7 +424,6 @@ function ToolBar() {
                         "devis",
                         "famille",
                         "sousfamille",
-                        "article",
                       ].includes(toolbarTable))) && (
                     <button
                       type="button"
@@ -451,7 +450,6 @@ function ToolBar() {
                         "devis",
                         "famille",
                         "sousfamille",
-                        "article",
                       ].includes(toolbarTable))) && (
                     <button
                       type="button"
@@ -490,7 +488,7 @@ function ToolBar() {
                     onClick={handleQuitterClick}
                     className="flex flex-col items-center w-16 sm:w-20 p-2 bg-orange-100 hover:bg-orange-200 text-orange-700 rounded-lg transition-all duration-200"
                   >
-                    <FontAwesomeIcon icon={faSignOutAlt} />
+                    <FontAwesomeIcon icon={faSignOutAlt} className="text-xl mb-1"/>
                     <span className="text-[10px] sm:text-xs">Quitter</span>
                   </button>
                 </>
