@@ -161,7 +161,7 @@ function Imprimer() {
                   <strong>PAGE:</strong> 1/1
                 </p>
                 <p className="flex-1 border border-[#2a2185] p-2 text-sm">
-                  <strong>À l'attention de :</strong> {devisInfo.attention}
+                  <strong>À l'attention de :</strong> {devisInfo.REFCOMM}
                 </p>
               </div>
             </div>
