@@ -329,14 +329,7 @@ function ToolBar() {
                   {(utilisateurConnecte?.type?.toLowerCase() ===
                     "superviseur" ||
                     (utilisateurConnecte?.type?.toLowerCase() ===
-                      "utilisateur" &&
-                      [
-                        "client",
-                        "devis",
-                        "famille",
-                        "sousfamille",
-                        "article",
-                      ].includes(toolbarTable))) && (
+                      "utilisateur")) && (
                     <button
                       type="button"
                       onClick={handleAjoutBtnClick}
@@ -368,14 +361,7 @@ function ToolBar() {
                   {(utilisateurConnecte?.type?.toLowerCase() ===
                     "superviseur" ||
                     (utilisateurConnecte?.type?.toLowerCase() ===
-                      "utilisateur" &&
-                      [
-                        "client",
-                        "devis",
-                        "famille",
-                        "sousfamille",
-                        "article",
-                      ].includes(toolbarTable))) && (
+                      "utilisateur")) && (
                     <button
                       type="button"
                       onClick={handleSupprimerBtnClick}
@@ -395,14 +381,7 @@ function ToolBar() {
                   {(utilisateurConnecte?.type?.toLowerCase() ===
                     "superviseur" ||
                     (utilisateurConnecte?.type?.toLowerCase() ===
-                      "utilisateur" &&
-                      [
-                        "client",
-                        "devis",
-                        "famille",
-                        "sousfamille",
-                        "article",
-                      ].includes(toolbarTable))) && (
+                      "utilisateur" ))&&(
                     <button
                       type="button"
                       onClick={handleNaviguerVersListe}
@@ -419,14 +398,7 @@ function ToolBar() {
                   {(utilisateurConnecte?.type?.toLowerCase() ===
                     "superviseur" ||
                     (utilisateurConnecte?.type?.toLowerCase() ===
-                      "utilisateur" &&
-                      [
-                        "client",
-                        "devis",
-                        "famille",
-                        "sousfamille",
-                        "article",
-                      ].includes(toolbarTable))) && (
+                      "utilisateur" ))&& (
                     <button
                       type="button"
                       onClick={handleNaviguerVersPrecedent}
@@ -446,14 +418,7 @@ function ToolBar() {
                   {(utilisateurConnecte?.type?.toLowerCase() ===
                     "superviseur" ||
                     (utilisateurConnecte?.type?.toLowerCase() ===
-                      "utilisateur" &&
-                      [
-                        "client",
-                        "devis",
-                        "famille",
-                        "sousfamille",
-                        "article",
-                      ].includes(toolbarTable))) && (
+                      "utilisateur" )) && (
                     <button
                       type="button"
                       onClick={handleNaviguerVersSuivant}

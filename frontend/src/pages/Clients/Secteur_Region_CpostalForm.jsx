@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled, { keyframes } from "styled-components";
 import { setAfficherSecteurPopup } from "../../app/interface_slices/interfaceSlice";
@@ -13,6 +13,7 @@ import {
 import {
   ajouterCodePostal,
   setCodePostaleInfos,
+  viderChampsCPostalInfo,
 } from "../../app/cpostal_slices/cpostalSlice";
 
 // Animation
@@ -148,9 +149,8 @@ const Secteur_Region_CpostalForm = () => {
     if (toolbartable == "codepostale") {
       dispatch(setCodePostaleInfos({ colonne, valeur }));
     }
-    console.log(secteurInfo)
-    console.log(regionInfo)
-
+    console.log(secteurInfo);
+    console.log(regionInfo);
   };
 
   const handleSubmit = (e) => {
@@ -161,11 +161,14 @@ const Secteur_Region_CpostalForm = () => {
   const hundleAjout = () => {
     if (toolbartable === "secteur") dispatch(ajouterSecteur());
     if (toolbartable === "region") dispatch(ajouterRegion());
-    if (toolbartable === "codepostale") dispatch(ajouterCodePostal());
+    if (toolbartable === "codepostale") {
+      dispatch(ajouterCodePostal());
+    }
+
+    
   };
 
   const getCodeValue = () => {
-  
     if (toolbartable === "secteur") return secteurInfo.codesec;
     if (toolbartable === "region") return regionInfo.codergg;
     if (toolbartable === "codepostale") return cpostaleInfo.CODEp;

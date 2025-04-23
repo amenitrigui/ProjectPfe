@@ -71,83 +71,11 @@ function ParametresFacturationClient() {
 
   return (
     <>
-      <div className="card rounded-box p-6 space-y-2">
+      <div className="card rounded-box p-0 space-y-2">
         {/* Conteneur pour Code Client, Type Client et CIN */}
-        <div className="flex flex-wrap">
-          <div className="flex flex-col w-1/3">
-            <label
-              className="font-bold mb-1"
-              style={{ color: "rgb(48, 60, 123)" }}
-            >
-              Tel 1
-            </label>
+        
 
-            <input
-              type="text"
-              className="border border-gray-300 rounded-md p-2"
-              value={clientInfos.tel1 || ""}
-              onChange={(e) => handleChangeTel(e, "tel1")}
-              disabled={!activerChampsForm}
-              maxLength={8}
-            />
-          </div>
-          <div className="flex flex-col w-2/3">
-            <label
-              className="font-bold mb-1"
-              style={{ color: "rgb(48, 60, 123)" }}
-            >
-              Tel 2
-            </label>
-            <input
-              type="text"
-              className="border border-gray-300 rounded-md p-2"
-              value={clientInfos.tel2 || ""}
-              onChange={(e) => handleChangeTel(e, "tel2")}
-              disabled={!activerChampsForm}
-              maxLength={8}
-            />
-          </div>
-        </div>
-        <div className="flex flex-wrap">
-          <div className="flex flex-col w-1/3">
-            <label
-              className="font-bold mb-1"
-              style={{ color: "rgb(48, 60, 123)" }}
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              className="border border-gray-300 rounded-md p-2"
-              value={clientInfos.email || ""}
-              onChange={(e) => handleChange(e, "email")}
-              disabled={!activerChampsForm}
-            />
-          </div>
-          <div className="flex flex-col w-2/3">
-            <label
-              className="font-bold mb-1"
-              style={{ color: "rgb(48, 60, 123)" }}
-            >
-              Fax
-            </label>
-            <input
-              type="text"
-              className="border border-gray-300 rounded-md p-2"
-              value={clientInfos.fax || ""}
-              onChange={(e) => handleChangeFax(e, "fax")}
-              disabled={!activerChampsForm}
-              minLength={6}
-              maxLength={9}
-            />
-          </div>
-        </div>
-
-        <div className="flex flex-cols">
-          <button className="btn" disabled={activerChampsForm}>
-            Liste clients bloquer
-          </button>
-        </div>
+       
 
         <table className="table table-xl w-full">
           {/* head */}

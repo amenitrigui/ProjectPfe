@@ -14,7 +14,7 @@ import valorisation_Slice from "./Stock_valorisation_utilitaires/valorisation_Sl
 import utilisateurSystemSlices from "./utilisateurSystemSlices/utilisateurSystemSlice";
 import codePostaleSlice from "./cpostal_slices/cpostalSlice"
 import regionSlice from "./region_slices/regionSlice"
-
+import pointVenteSlice from "./pointVente_slice/pointVenteSlice"
 import  secteurSlice  from "./secteur_slices/secteurSlice";
 
 const persistConfig = {
@@ -37,6 +37,8 @@ const rootReducer = combineReducers({
   regionSlice:regionSlice,
   codePostaleSlice:codePostaleSlice,
   utilisateurSystemSlice:utilisateurSystemSlices,
+  pointVenteSlice :pointVenteSlice,
+
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
