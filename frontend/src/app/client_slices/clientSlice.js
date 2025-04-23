@@ -513,7 +513,8 @@ export const clientSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getDerniereCodeClient.fulfilled, (state, action) => {
-        state.dernierCodeClient = (parseInt(action.payload) + 1).toString();
+        // state.dernierCodeClient = (parseInt(action.payload) + 1).toString();
+        state.dernierCodeClient = action.payload;
         state.status = "réussi";
       })
       .addCase(getDerniereCodeClient.rejected, (state, action) => {

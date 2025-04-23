@@ -4,6 +4,8 @@ import { useState } from "react";
 import ToolBar from "../Common/ToolBar";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  getArticleParCode,
+  getDerniereCodeArticle,
   getDesignationFamilleParCodeFamille,
   getdesignationSousFamillebycodeSousFamille,
   getListeCodesArticles,
@@ -31,6 +33,7 @@ function ArticleForm() {
   //?==================================================================================================================
   //?=====================================================variables====================================================
   //?==================================================================================================================
+  const dispatch = useDispatch();
   // * pour afficher le sidebar
   const ouvrireMenuDrawer = useSelector(
     (state) => state.interfaceSlice.ouvrireMenuDrawer
@@ -41,7 +44,9 @@ function ArticleForm() {
   const ListeSousFamille = useSelector(
     (state) => state.articleSlice.ListeSousFamille
   );
-  const dispatch = useDispatch();
+  const derniereCodeArticle = useSelector(
+    (state) => state.articleSlice.derniereCodeArticle
+  );
   //?==================================================================================================================
   //?==============================================appels UseEffect====================================================
   //?==================================================================================================================
@@ -86,6 +91,16 @@ function ArticleForm() {
     }
   }, [articleInfos.code]);
 
+  useEffect(() => {
+    dispatch(getDerniereCodeArticle());
+  }, []);
+
+  useEffect(() => {
+    if (derniereCodeArticle && derniereCodeArticle != "") {
+      dispatch(getArticleParCode(derniereCodeArticle));
+    }
+  }, [derniereCodeArticle]);
+
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
@@ -113,7 +128,7 @@ function ArticleForm() {
         dispatch(getdesignationSousFamillebycodeSousFamille(valeur));
       } else {
         dispatch(
-            setArticleInfos({ colonne: "Libellesousfamille", valeur: "" })
+          setArticleInfos({ colonne: "Libellesousfamille", valeur: "" })
         );
       }
     }

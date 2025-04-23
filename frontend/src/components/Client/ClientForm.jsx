@@ -17,6 +17,7 @@ import {
   getDesignationSecteurparCodeSecteur,
   getListeCodeRegions,
   getVilleParRegion,
+  getDerniereCodeClient,
 } from "../../app/client_slices/clientSlice";
 
 import ToolBar from "../Common/ToolBar";
@@ -35,32 +36,52 @@ import DateCreateMAJ from "../Common/DateCreateMAJ";
 import ParametresFacturationClient from "./ParametresFacturationClient";
 
 const ClientForm = () => {
-  // * pour afficher le sidebar
-  const ouvrireMenuDrawer = useSelector(
-    (state) => state.interfaceSlice.ouvrireMenuDrawer
-  );
-  // * pour afficher le menu déroulante pour l'avatar
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(getListeCodesPosteaux());
-    dispatch(getNombreTotalDevis());
-    dispatch(getTotalChiffres());
-    dispatch(getListeCodesSecteur());
-    dispatch(getListeCodeRegions());
-  }, []);
-
-  // Sélection des informations du client depuis le state Redux
   const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
   const utilisateurConnecte = useSelector(
     (state) => state.utilisateurSystemSlice.utilisateurConnecte
   );
-
+  
   const infosUtilisateur = useSelector(
     (state) => state.utilisateurSlice.infosUtilisateur
   );
   const listeCodesRegion = useSelector(
     (state) => state.clientSlice.listeCodesRegion
   );
+  const dernierCodeClient = useSelector((state) => state.clientSlice.dernierCodeClient);
+  // * pour afficher le sidebar
+  const ouvrireMenuDrawer = useSelector(
+    (state) => state.interfaceSlice.ouvrireMenuDrawer
+  );
+  // * pour afficher le menu déroulante pour l'avatar
+  const dispatch = useDispatch();
+  const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
+  useEffect(() => {
+    dispatch(getListeCodesPosteaux());
+    dispatch(getNombreTotalDevis());
+    dispatch(getTotalChiffres());
+    dispatch(getListeCodesSecteur());
+    dispatch(getListeCodeRegions());
+    dispatch(getDerniereCodeClient());
+  }, []);
+
+  useEffect(() => {
+    if(dernierCodeClient && dernierCodeClient !== "") {
+      dispatch(setClientInfos({colonne: "code", valeur: dernierCodeClient}))
+    }
+  },[dernierCodeClient])
+
+  useEffect(() => {
+    console.log(clientInfos.code)
+  }, [clientInfos.code])
+
+  useEffect(() => {
+    console.log(toolbarMode)
+    if(toolbarMode === "ajout") {
+      dispatch(getClientParCode(parseInt(dernierCodeClient)+1))
+    }
+  }, [toolbarMode])
+
+  // Sélection des informations du client depuis le state Redux
   // state pour désactiver/activer les champs lors de changement de modes editables (ajout/modification)
   // vers le mode de consultation respectivement
   const activerChampsForm = useSelector(
@@ -79,7 +100,6 @@ const ClientForm = () => {
     (state) => state.clientSlice.listeCodesSecteur
   );
 
-  const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
 
   // Fonction pour gérer les changements dans les champs du formulaire
   const handleChange = (e, colonne) => {
@@ -194,11 +214,6 @@ const ClientForm = () => {
     <div className="container">
       <SideBar />
       <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
-        {/* <div className="topbar">
-          <div className="toggle" onClick={toggleSidebar}>
-            <ion-icon name="menu-outline"></ion-icon>
-          </div>
-        </div> */}
 
         <ToolBar />
         <div className="details">
@@ -227,7 +242,7 @@ const ClientForm = () => {
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
                   list="listeCodesClients"
-                  value={clientInfos.code || ""}
+                  value={clientInfos.code !== "" ? clientInfos.code : ""}
                   onChange={(e) => handleChangeCodeClient(e, "code")}
                   disabled={activerChampsForm}
                   maxLength={8}
