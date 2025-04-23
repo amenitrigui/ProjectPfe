@@ -138,8 +138,7 @@ function ToolBar() {
 
     if (toolbarTable == "client") {
       dispatch(viderChampsClientInfo());
-      dispatch(getDerniereCodeClient());
-      dispatch(setClientInfos({ colonne: "code", valeur: dernierCodeClient }));
+      dispatch(setClientInfos({ colonne: "usera", valeur: utilisateurConnecte.codeuser }));
       // * dispatch une action pour récuperer le code + nom d'utilisateur courant
       // dispatch(getUtilisateurParCode());
     }

@@ -41,6 +41,7 @@ function ParametresFacturationClient() {
       dispatch(setClientInfos({ colonne: "decision", valeur: e.target.value }));
   };
   const hundleSelectTous = (e, champ) => {
+    console.log("champ: ",champ," valeur: ",e.target.value)
     dispatch(setClientInfos({ colonne: champ, valeur: e.target.value }));
   };
   const handleChangeAlphaphetique = (e, colonne) => {
@@ -56,7 +57,7 @@ function ParametresFacturationClient() {
   const handleChange = (e, colonne) => {
     // * si aucun code client est selectionné
     // * vider les champs
-    if (e.target.value == "") {
+    if (colonne === "code" && e.target.value == "") {
       dispatch(viderChampsClientInfo());
     }
     if (e)
@@ -313,13 +314,14 @@ function ParametresFacturationClient() {
 
             <select
               className="border border-gray-300 rounded-md p-2"
+              value={clientInfos.tarif || ""}
               disabled={!activerChampsForm}
               onChange={(e) => hundleSelectTous(e, "tarif")}
             >
-              <option value="prix1">prix1</option>
-              <option value="prix2">prix2</option>
-              <option value="prix3">prix3</option>
-              <option value="prix4">prix4</option>
+              <option value="Prix 1">Prix 1</option>
+              <option value="Prix 2">Prix 2</option>
+              <option value="Prix 3">Prix 3</option>
+              <option value="Prix 4">Prix 4</option>
             </select>
           </div>
         </div>
@@ -387,13 +389,14 @@ function ParametresFacturationClient() {
             </label>
             <select
               className="border border-gray-300 rounded-md p-2 w-11/12"
+              value={clientInfos.blockage === "1" || clientInfos.blockage?.toUpperCase() === "O"? "1" : "0"}
               disabled={!activerChampsForm}
               onChange={(e) => {
                 hundleSelectTous(e, "blockage");
               }}
             >
-              <option value="O">O</option>
-              <option value="N">N</option>
+              <option value="1">O</option>
+              <option value="0">N</option>
             </select>
           </div>
           <div className="flex flex-col">
@@ -402,13 +405,14 @@ function ParametresFacturationClient() {
             </label>
             <select
               className="border border-gray-300 rounded-md p-2 w-11/12"
+              value={clientInfos.contrat === "1" || clientInfos.contrat?.toUpperCase() === "O"? "1" : "0"}
               disabled={!activerChampsForm}
               onChange={(e) => {
-                hundleSelectTous(e, "Contrat");
+                hundleSelectTous(e, "contrat");
               }}
             >
-              <option value="O">O</option>
-              <option value="N">N</option>
+              <option value="1">O</option>
+              <option value="0">N</option>
             </select>
           </div>
         </div>

@@ -40,14 +40,16 @@ const ClientForm = () => {
   const utilisateurConnecte = useSelector(
     (state) => state.utilisateurSystemSlice.utilisateurConnecte
   );
-  
+
   const infosUtilisateur = useSelector(
     (state) => state.utilisateurSlice.infosUtilisateur
   );
   const listeCodesRegion = useSelector(
     (state) => state.clientSlice.listeCodesRegion
   );
-  const dernierCodeClient = useSelector((state) => state.clientSlice.dernierCodeClient);
+  const dernierCodeClient = useSelector(
+    (state) => state.clientSlice.dernierCodeClient
+  );
   // * pour afficher le sidebar
   const ouvrireMenuDrawer = useSelector(
     (state) => state.interfaceSlice.ouvrireMenuDrawer
@@ -65,21 +67,35 @@ const ClientForm = () => {
   }, []);
 
   useEffect(() => {
-    if(dernierCodeClient && dernierCodeClient !== "") {
-      dispatch(setClientInfos({colonne: "code", valeur: dernierCodeClient}))
+    if (dernierCodeClient && dernierCodeClient !== "") {
+      dispatch(setClientInfos({ colonne: "code", valeur: dernierCodeClient }));
     }
-  },[dernierCodeClient])
+  }, [dernierCodeClient]);
 
   useEffect(() => {
-    console.log(clientInfos.code)
-  }, [clientInfos.code])
+    if (
+      clientInfos &&
+      clientInfos.code &&
+      clientInfos.code != "" &&
+      clientInfos.code != (parseInt(dernierCodeClient) + 1).toString()
+    ) {
+      dispatch(getClientParCode(clientInfos.code));
+    }
+  }, [clientInfos.code]);
 
   useEffect(() => {
-    console.log(toolbarMode)
-    if(toolbarMode === "ajout") {
-      dispatch(getClientParCode(parseInt(dernierCodeClient)+1))
+    if (toolbarMode === "consultation") {
+      dispatch(getClientParCode(parseInt(dernierCodeClient) + 1));
     }
-  }, [toolbarMode])
+    if (toolbarMode === "ajout") {
+      dispatch(
+        setClientInfos({
+          colonne: "code",
+          valeur: (parseInt(dernierCodeClient) + 1).toString(),
+        })
+      );
+    }
+  }, [toolbarMode]);
 
   // Sélection des informations du client depuis le state Redux
   // state pour désactiver/activer les champs lors de changement de modes editables (ajout/modification)
@@ -100,12 +116,11 @@ const ClientForm = () => {
     (state) => state.clientSlice.listeCodesSecteur
   );
 
-
   // Fonction pour gérer les changements dans les champs du formulaire
   const handleChange = (e, colonne) => {
     // * si aucun code client est selectionné
     // * vider les champs
-    if (e.target.value == "") {
+    if (colonne == "code" && e.target.value == "") {
       dispatch(viderChampsClientInfo());
     }
     if (e)
@@ -129,6 +144,7 @@ const ClientForm = () => {
   };
 
   const handleSecteurChange = (e) => {
+    dispatch(setClientInfos({ colonne: "codes", valeur: e.target.value }));
     if (e.target.value.length == 3) {
       dispatch(getDesignationSecteurparCodeSecteur(e.target.value));
     }
@@ -137,6 +153,7 @@ const ClientForm = () => {
     }
   };
   const hundleRegionChange = (e) => {
+    dispatch(setClientInfos({ colonne: "coder", valeur: e.target.value }));
     if (e.target.value.length == 3) {
       dispatch(getVilleParRegion(e.target.value));
     }
@@ -210,11 +227,11 @@ const ClientForm = () => {
       dispatch(setActiverBoutonsValiderAnnuler(true));
     }
   }, [insertionDepuisDevisForm]);
+  console.log(clientInfos);
   return (
     <div className="container">
       <SideBar />
       <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
-
         <ToolBar />
         <div className="details">
           <div className="recentOrders">
@@ -320,7 +337,7 @@ const ClientForm = () => {
                   />
                 </div>
                 <div className="flex flex-wrap gap-0">
-                  <div className="flex flex-col w-1/2">
+                  <div className="flex flex-col w-1/3">
                     <label
                       className="font-bold mb-1"
                       style={{ color: "rgb(48, 60, 123)" }}
@@ -335,26 +352,35 @@ const ClientForm = () => {
                       onChange={(e) => handleChange(e, "codepv")} //codpv
                     />
                   </div>
-                  <div className="flex flex-col w-1/3">
+                  <div className="flex flex-col w-2/3">
                     <label
                       className="font-bold mb-1"
                       style={{ color: "rgb(48, 60, 123)" }}
                     >
                       Libelle P. Vente
                     </label>
-                    <input
-                      type="text"
-                      className="border border-gray-300 rounded-md p-2"
-                      disabled={!activerChampsForm}
-                      value={clientInfos.Libelle || ""}
-                      onChange={(e) => handleChange(e, "Libelle")}
-                    />
-                  </div>
-                  <div className="flex flex-col w-1/7">
-                    <label className="font-medium mb-5"></label>
-                    <button className="btn" disabled={!activerChampsForm}>
-                      PV
-                    </button>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="text"
+                        className="border border-gray-300 rounded-md p-2 w-full"
+                        disabled={!activerChampsForm}
+                        value={clientInfos.Libelle || ""}
+                        onChange={(e) => handleChange(e, "Libelle")}
+                      />
+                      {(toolbarMode == "ajout" ||
+                        toolbarMode == "modification") && (
+                        <button
+                          type="button"
+                          className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition"
+                          // disabled={!activerChampsForm}
+                          onClick={() =>
+                            hundleClickButtonSecRegCp("codepostale")
+                          }
+                        >
+                          +
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
                 <div className="flex flex-col w-full gap-0">
@@ -403,7 +429,7 @@ const ClientForm = () => {
                         <input
                           type="text"
                           className="border border-gray-300 rounded-md p-2 w-full"
-                          value={clientInfos.cp || ""}
+                          value={clientInfos.cp? clientInfos.cp : ""}
                           list="listeCodesPosteaux"
                           onChange={(e) => handleChangeCodePostal(e)}
                           disabled={!activerChampsForm}
@@ -429,7 +455,7 @@ const ClientForm = () => {
                         className="font-bold mb-1"
                         style={{ color: "rgb(48, 60, 123)" }}
                       >
-                        Ville
+                        Désignation code postal
                       </label>
                       <div className="flex items-center space-x-2">
                         <input
@@ -439,16 +465,19 @@ const ClientForm = () => {
                           onChange={(e) => handleChange(e, "ville")}
                           disabled={!activerChampsForm}
                         />
-                        <button
-                          type="button"
-                          className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition"
-                          // disabled={!activerChampsForm}
-                          onClick={() =>
-                            hundleClickButtonSecRegCp("codepostale")
-                          }
-                        >
-                          +
-                        </button>
+                        {(toolbarMode == "ajout" ||
+                          toolbarMode == "modification") && (
+                          <button
+                            type="button"
+                            className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition"
+                            // disabled={!activerChampsForm}
+                            onClick={() =>
+                              hundleClickButtonSecRegCp("codepostale")
+                            }
+                          >
+                            +
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -465,6 +494,7 @@ const ClientForm = () => {
                       <input
                         type="text"
                         className="border border-gray-300 rounded-md p-2"
+                        valeur={clientInfos.codes !== "" ?clientInfos.codes : ""}
                         disabled={!activerChampsForm}
                         list="listeCodesSecteur"
                         onChange={(e) => handleSecteurChange(e)}
@@ -488,7 +518,7 @@ const ClientForm = () => {
                         className="font-bold mb-1"
                         style={{ color: "rgb(48, 60, 123)" }}
                       >
-                        Type Secteur
+                        Désignation secteur
                       </label>
                       <div className="flex items-center space-x-2">
                         <input
@@ -498,14 +528,17 @@ const ClientForm = () => {
                           value={clientInfos.desisec}
                         />
 
-                        <button
-                          type="button"
-                          className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition"
-                          // disabled={!activerChampsForm}
-                          onClick={() => hundleClickButtonSecRegCp("secteur")}
-                        >
-                          +
-                        </button>
+                        {(toolbarMode == "ajout" ||
+                          toolbarMode == "modification") && (
+                          <button
+                            type="button"
+                            className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition"
+                            // disabled={!activerChampsForm}
+                            onClick={() => hundleClickButtonSecRegCp("secteur")}
+                          >
+                            +
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -521,6 +554,7 @@ const ClientForm = () => {
                       </label>
                       <input
                         type="text"
+                        valeur={clientInfos.coder !== "" ? clientInfos.coder : ""}
                         className="border border-gray-300 rounded-md p-2"
                         disabled={!activerChampsForm}
                         list="listeCodesRegion"
@@ -545,7 +579,7 @@ const ClientForm = () => {
                         className="font-bold mb-1"
                         style={{ color: "rgb(48, 60, 123)" }}
                       >
-                        Type Région
+                        Désignation région
                       </label>
                       <div className="flex items-center space-x-2">
                         <input
@@ -554,14 +588,17 @@ const ClientForm = () => {
                           disabled={!activerChampsForm}
                           value={clientInfos.desirgg}
                         />
-                        <button
-                          type="button"
-                          className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition"
-                          // disabled={!activerChampsForm}
-                          onClick={() => hundleClickButtonSecRegCp("region")}
-                        >
-                          +
-                        </button>
+                        {(toolbarMode == "ajout" ||
+                          toolbarMode == "modification") && (
+                          <button
+                            type="button"
+                            className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition"
+                            // disabled={!activerChampsForm}
+                            onClick={() => hundleClickButtonSecRegCp("region")}
+                          >
+                            +
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -571,18 +608,18 @@ const ClientForm = () => {
           </div>
 
           <div className="recentCustomers">
-          <div className="collapse bg-base-100 border-base-300 border">
-            <input type="checkbox" />
-            <div
-              className="collapse-title font-semibold mb-1"
-              style={{ color: "rgb(48, 60, 123)" }}
-            >
-              Paramètres de facturation
+            <div className="collapse bg-base-100 border-base-300 border">
+              <input type="checkbox" />
+              <div
+                className="collapse-title font-semibold mb-1"
+                style={{ color: "rgb(48, 60, 123)" }}
+              >
+                Paramètres de facturation
+              </div>
+              <div className="collapse-content text-sm">
+                <ParametresFacturationClient />
+              </div>
             </div>
-            <div className="collapse-content text-sm">
-            <ParametresFacturationClient />
-            </div>
-          </div>
           </div>
         </div>
         {/* 2eme whada */}
