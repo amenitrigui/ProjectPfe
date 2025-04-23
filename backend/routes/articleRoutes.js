@@ -18,7 +18,8 @@ const {
   getListeArticleparFamille,
   getListeArticleparLibelle,
   getListeArticleParSousFamille,
-  getListeArticleParCodeArticle
+  getListeArticleParCodeArticle,
+  getDerniereCodeArticle
 } = require("../controllers/articleController");
 //const {  getArticleDetailsByCode } = require("../controllers/articleControllerPlaceholder");
 const router = express.Router();
@@ -50,16 +51,6 @@ router.get("/:dbName/getListeArticleparFamille", getListeArticleparFamille);
 router.get("/:dbName/getListeArticleparLibelle", getListeArticleparLibelle);
 router.get("/:dbName/getListeArticleParSousFamille/:SousFamille", getListeArticleParSousFamille);
 router.get("/:dbName/getListeArticleParCodeArticle/:codeArticle", getListeArticleParCodeArticle);
-
-
-
-// router.post("/:dbName/articles/:code/updateConfig", updateConfig);
-// router.get(
-//   "/search/:searchType/:dbName/:searchTerm",
-//   getSearchResultsByClientOrNumbl
-// );
-
-// router.get("/code/:dbName", getAllCodeCli);
-// router.get("/:dbName/last-numbl", getLastNumbl);
+router.get("/:dbName/getDerniereCodeArticle", getDerniereCodeArticle);
 
 module.exports = router;

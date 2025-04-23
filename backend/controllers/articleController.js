@@ -4,7 +4,6 @@ const defineFamilleModel = require("../models/societe/famille");
 const defineLdfpModel = require("../models/societe/ldfp");
 const defineSousFamilleModel = require("../models/societe/sousfamille");
 const { getDatabaseConnection } = require("../common/commonMethods");
-const article = require("../models/societe/article");
 
 // * méthode pour récuperer la liste de familles (code+libelle)
 // * exemple :
@@ -699,6 +698,35 @@ const getListeArticleParCodeArticle=async(req,res)=>{
   }
 
 }
+// * récuperer le code article de derniere article inseré dans la base de données
+// * url : http://localhost:5000/api/article/SOLEVO/getDerniereCodeArticle
+const getDerniereCodeArticle = async(req, res) => {
+  const { dbName } = req.params;
+  let dbConnection
+  try{
+    dbConnection = await getDatabaseConnection(dbName);
+    const derniereCodeArticle = await dbConnection.query(
+      `SELECT code FROM article WHERE datecreate = (SELECT MAX(datecreate) FROM article)`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    )
+    if(!derniereCodeArticle){
+      return res.status(400).json({message: "erreur"})
+    }
+    if(derniereCodeArticle.length == 0) {
+      return res.status(404).json({message: "aucun article est trouvé"})
+    }
+    if(derniereCodeArticle && derniereCodeArticle.length > 0){
+      // ?? ?????? ? ?? ? ??? ??? ?? ?? ? ?? ???
+      return res.status(200).json({message: "succès", derniereCodeArticle: derniereCodeArticle[0]})
+    }
+  }catch(error) {
+    return res.status(500).json({message: error.message})
+  } finally {
+    dbConnection.close();
+  }
+}
 
 module.exports = {
   //*apartient l'interface devis
@@ -722,5 +750,6 @@ module.exports = {
   getListeArticleparFamille,
   getListeArticleparLibelle,
   getListeArticleParSousFamille,
-  getListeArticleParCodeArticle
+  getListeArticleParCodeArticle,
+  getDerniereCodeArticle
 };
