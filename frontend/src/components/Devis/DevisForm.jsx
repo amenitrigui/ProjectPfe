@@ -289,6 +289,7 @@ function DevisForm() {
                       <label className="block font-medium">Transport :</label>
                       <input
                         type="text"
+                        value={devisInfo.transport}
                         className="w-full border border-gray-300 rounded-md p-2"
                         disabled={!activerChampsForm}
                       />
@@ -299,6 +300,7 @@ function DevisForm() {
                       <input
                         type="text"
                         className="w-full border border-gray-300 rounded-md p-2"
+                        value={devisInfo.REFCOMM}
                         disabled={!activerChampsForm}
                       />
 
@@ -309,6 +311,7 @@ function DevisForm() {
                         type="text"
                         className="w-full border border-gray-300 rounded-md p-2"
                         disabled={!activerChampsForm}
+                        value={devisInfo.delailivr}
                       />
                     </div>
                     {/* Information Client */}
