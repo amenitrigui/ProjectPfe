@@ -355,7 +355,7 @@ const getDevisParNUMBL = async (req, res) => {
       const devis = await dbConnection.query(
         `SELECT 
           NUMBL, libpv, ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, 
-          comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT ,transport,modepaie
+          comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT ,transport,modepaie,REFCOMM,delailivr
          FROM dfp 
          WHERE NUMBL LIKE :numbl 
            AND usera = :codeuser`,
