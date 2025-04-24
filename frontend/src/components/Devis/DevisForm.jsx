@@ -77,7 +77,7 @@ function DevisForm() {
     (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
   const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
-  const derniereNumbl = useSelector((state) => state.devisSlice.derniereNumbl); 
+  const derniereNumbl = useSelector((state) => state.devisSlice.derniereNumbl);
   //?==================================================================================================================
   //?==============================================appels UseEffect====================================================
   //?==================================================================================================================
@@ -109,6 +109,7 @@ function DevisForm() {
     dispatch(setToolbarTable("devis"));
     dispatch(setToolbarMode("consultation"));
     dispatch(setActiverChampsForm(false));
+    dispatch(getDerniereNumbl());
   }, []);
 
   // * useEffect #5: remplir le champ NUMBL par le derniere NUMBL récuperé
@@ -126,7 +127,7 @@ function DevisForm() {
       dispatch(getDevisParNUMBL(devisInfo.NUMBL));
       dispatch(getLignesDevis(devisInfo.NUMBL));
     }
-  }, [devisInfo.NUMBL])
+  }, [devisInfo.NUMBL]);
 
   // * useEffect #7 : remplacer la valeur de champ NUMBL
   // * par le derniere NUMBL incrementé par 1 lors d'ajout d'un devis
@@ -206,7 +207,7 @@ function DevisForm() {
               <ion-icon name="menu-outline"></ion-icon>
             </div>
             </div> */}
-            <ToolBar />
+          <ToolBar />
           <div className="details">
             <div className="recentOrders flex flex-row flex-nowrap gap-4">
               <div className="flex-1">
@@ -376,7 +377,7 @@ function DevisForm() {
                 </div>
               </div>
             </div>
-            
+
             <div className="recentCustomers">
               {/* Informations de l'Utilisateur */}
               <div className="space-y-0 p-6 border rounded-lg shadow-md bg-white">
@@ -401,79 +402,14 @@ function DevisForm() {
                   disabled={!activerChampsForm}
                   value={utilisateurConnecte.directeur? utilisateurConnecte.directeur : ""}
                 />
+                <label className="block font-medium mt-4">Commentaire :</label>
+        <textarea
+          rows="10"
+          className="w-full border border-gray-300 rounded-md p-2"
+          disabled={!activerChampsForm}
+        ></textarea>
 
-                <div className="flex flex-col w-full">
-                  {/* Ligne pour "Creation" */}
-                  <div className="flex items-center space-x-4">
-                    <label
-                      className="font-medium w-1/3 text-left block "
-                      style={{ color: "rgb(48, 60, 123)" }}
-                    >
-                      Creation
-                    </label>
-
-                    <input
-                      type="text"
-                      className="border border-gray-300 rounded-md p-2 w-2/3"
-                      value={
-                        infosUtilisateur.codeuser +
-                          " // " +
-                          infosUtilisateur.nom || ""
-                      }
-                      // onChange={(e) => handleChange(e, "usera")}
-                      disabled
-                    />
-                  </div>
-
-                  {/* Ligne pour "Modification" */}
-                  <div className="flex items-center space-x-4">
-                    <label
-                      className="font-medium w-1/3 text-left block "
-                      style={{ color: "rgb(48, 60, 123)" }}
-                    >
-                      Modification
-                    </label>
-                    <input
-                      type="text"
-                      className="border border-gray-300 rounded-md p-2 w-2/3"
-                      value={
-                        devisInfo.userm
-                          ? infosUtilisateur.code + "//" + infosUtilisateur.nom
-                          : ""
-                      }
-                      // onChange={(e) => handleChange(e, "userm")}
-                      disabled
-                    />
-                  </div>
-
-                  {/* Ligne pour "Date Maj" */}
-                  <div className="flex items-center space-x-4">
-                    <label
-                      className="font-medium w-1/3 text-left block "
-                      style={{ color: "rgb(48, 60, 123)" }}
-                    >
-                      Date Maj
-                    </label>
-                    <input
-                      type="text"
-                      className="border border-gray-300 rounded-md p-2 w-2/3"
-                      value={devisInfo.DATEDMAJ || ""}
-                      // onChange={(e) => handleChange(e, "datemaj")}
-                      disabled
-                    />
-                  </div>
-                  <br></br>
-                  <br></br>
-                  <br></br>
-                  <label className="block font-medium mt-4">
-                    Commentaire :
-                  </label>
-                  <textarea
-                    rows="10"
-                    className="w-full border border-gray-300 rounded-md p-2"
-                    disabled={!activerChampsForm}
-                  ></textarea>
-                </div>
+               <DateCreateMAJ objet={devisInfo}/>
               </div>
             </div>
           </div>
@@ -484,10 +420,9 @@ function DevisForm() {
               <LignesDevis />
             </div>
           </div>
-          <div className="bg-gray-300 p-4 sticky bottom-0 w-full">
+          <div className="bg-gray-300 p-10 sticky bottom-5 pt-2 w-full">
             <div className="flex flex-wrap gap-0">
-            <DateCreateMAJ />
-              <div className="flex-1 min-w-[150px]">
+              <div className="flex-1 min-w-[200px]">
                 <label className="block  font-bold">Montant HT :</label>
 
                 <input

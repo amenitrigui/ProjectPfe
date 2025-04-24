@@ -22,14 +22,7 @@ function ParametresFacturationClient() {
       dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
     }
   };
-  const handleChangeFax = (e, colonne) => {
-    if (!isNaN(e.target.value)) {
-      dispatch(setClientInfos({ colonne: "fax", valeur: e.target.value }));
-    }
-    if (e.target.value == "") {
-      dispatch(setClientInfos({ colonne: "fax", valeur: "" }));
-    }
-  };
+  
 
   const handleChangeNumeriqueDouble = (e, colonne) => {
     if (!isNaN(parseFloat(e.target.value))) {

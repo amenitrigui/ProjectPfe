@@ -382,295 +382,282 @@ const Recherche = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center ">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl p-6 relative">
-        {/* Bouton fermer (X) */}
-        <button
-          onClick={() => fermerPopupRecherche()}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-lg"
-        >
-          ✕
-        </button>
-
-        <h2
-          className="text-2xl font-semibold mb-6 text-center"
-          style={{ color: "#2a2185" }}
-        >
-          Rechercher
-          {toolbarTable === "devis" && "  par devis"}{" "}
-          {toolbarTable === "client" && "  par client"}{" "}
-          {toolbarTable === "article" && "  par article"}{" "}
-          {toolbarTable === "sousfamille" && "  par sous famille"}{" "}
-          {toolbarTable === "famille" && "  par famille"}{" "}
-          {toolbarTable === "utilisateur" && "  par utilisateur"}{" "}
-        </h2>
-
-        <div className="flex space-x-6 h-[50vh] overfolw-y-auto">
-          {/* Filtres */}
-          <div className="w-1/3 bg-gray-50 p-4 rounded-xl shadow">
-            <h3 className="text-lg font-medium text-gray-700 mb-4">
-              Rechercher {toolbarTable === "devis" && "Devis"}{" "}
-              {toolbarTable === "client" && "Client"}{" "}
-              {toolbarTable === "article" && "article"}{" "}
-              {toolbarTable === "sousfamille" && "sousfamille"}{" "}
-              {toolbarTable === "famille" && "famille"} par :
-            </h3>
-
-            <div className="space-y-2">
-              {toolbarTable === "devis" &&
-                ["numbl", "client", "montant", "periode", "article"].map(
-                  (filtre) => (
-                    <label key={filtre} className="flex items-center">
-                      <input
-                        type="radio"
-                        name="filtres"
-                        value={filtre}
-                        className="mr-2"
-                        onChange={() => setFiltrerPar(filtre)}
-                      />
-                      {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
-                    </label>
-                  )
-                )}
-
-              {toolbarTable === "client" &&
-                ["code", "raison sociale", "cin"].map((filtre) => (
-                  <label key={filtre} className="flex items-center">
-                    <input
-                      type="radio"
-                      name="filtres"
-                      value={filtre}
-                      className="mr-2"
-                      onChange={() => setFiltrerPar(filtre)}
-                    />
-                    {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
-                  </label>
-                ))}
-
-              {toolbarTable === "article" &&
-                ["code", "libelle", "famille", "SousFamille"].map((filtre) => (
-                  <label key={filtre} className="flex items-center">
-                    <input
-                      type="radio"
-                      name="filtres"
-                      value={filtre}
-                      className="mr-2"
-                      onChange={() => setFiltrerPar(filtre)}
-                    />
-                    {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
-                  </label>
-                ))}
-
-              {toolbarTable === "famille" &&
-                ["code", "libelle"].map((filtre) => (
-                  <label key={filtre} className="flex items-center">
-                    <input
-                      type="radio"
-                      name="filtres"
-                      value={filtre}
-                      className="mr-2"
-                      onChange={() => setFiltrerPar(filtre)}
-                    />
-                    {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
-                  </label>
-                ))}
-
-              {toolbarTable === "sousfamille" &&
-                ["code", "libelle"].map((filtre) => (
-                  <label key={filtre} className="flex items-center">
-                    <input
-                      type="radio"
-                      name="filtres"
-                      value={filtre}
-                      className="mr-2"
-                      onChange={() => setFiltrerPar(filtre)}
-                    />
-                    {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
-                  </label>
-                ))}
-
-              {toolbarTable === "utilisateur" &&
-                ["code", "nom", "directeur", "type"].map((filtre) => (
-                  <label key={filtre} className="flex items-center">
-                    <input
-                      type="radio"
-                      name="filtres"
-                      value={filtre}
-                      className="mr-2"
-                      onChange={() => setFiltrerPar(filtre)}
-                    />
-                    {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
-                  </label>
-                ))}
-            </div>
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
+    <div className="bg-white rounded-2xl shadow-xl w-full max-w-6xl p-6 relative max-h-screen overflow-y-auto">
+      {/* Bouton fermer (X) */}
+      <button
+        onClick={() => fermerPopupRecherche()}
+        className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-lg"
+      >
+        ✕
+      </button>
+  
+      <h2
+        className="text-2xl font-semibold mb-6 text-center"
+        style={{ color: "#2a2185" }}
+      >
+        Rechercher
+        {toolbarTable === "devis" && " par devis"}
+        {toolbarTable === "client" && " par client"}
+        {toolbarTable === "article" && " par article"}
+        {toolbarTable === "sousfamille" && " par sous famille"}
+        {toolbarTable === "famille" && " par famille"}
+        {toolbarTable === "utilisateur" && " par utilisateur"}
+      </h2>
+  
+      <div className="flex flex-col md:flex-row md:space-x-6 space-y-4 md:space-y-0">
+        {/* Filtres */}
+        <div className="md:w-1/3 w-full bg-gray-50 p-4 rounded-xl shadow">
+          <h3 className="text-lg font-medium text-gray-700 mb-4">
+            Rechercher{" "}
+            {toolbarTable === "devis" && "Devis"}
+            {toolbarTable === "client" && "Client"}
+            {toolbarTable === "article" && "Article"}
+            {toolbarTable === "sousfamille" && "Sousfamille"}
+            {toolbarTable === "famille" && "Famille"} par :
+          </h3>
+  
+          <div className="space-y-2">
+            {toolbarTable === "devis" &&
+              ["numbl", "client", "montant", "periode", "article"].map((filtre) => (
+                <label key={filtre} className="flex items-center">
+                  <input
+                    type="radio"
+                    name="filtres"
+                    value={filtre}
+                    className="mr-2"
+                    onChange={() => setFiltrerPar(filtre)}
+                  />
+                  {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
+                </label>
+              ))}
+  
+            {toolbarTable === "client" &&
+              ["code", "raison sociale", "cin"].map((filtre) => (
+                <label key={filtre} className="flex items-center">
+                  <input
+                    type="radio"
+                    name="filtres"
+                    value={filtre}
+                    className="mr-2"
+                    onChange={() => setFiltrerPar(filtre)}
+                  />
+                  {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
+                </label>
+              ))}
+  
+            {toolbarTable === "article" &&
+              ["code", "libelle", "famille", "SousFamille"].map((filtre) => (
+                <label key={filtre} className="flex items-center">
+                  <input
+                    type="radio"
+                    name="filtres"
+                    value={filtre}
+                    className="mr-2"
+                    onChange={() => setFiltrerPar(filtre)}
+                  />
+                  {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
+                </label>
+              ))}
+  
+            {toolbarTable === "famille" &&
+              ["code", "libelle"].map((filtre) => (
+                <label key={filtre} className="flex items-center">
+                  <input
+                    type="radio"
+                    name="filtres"
+                    value={filtre}
+                    className="mr-2"
+                    onChange={() => setFiltrerPar(filtre)}
+                  />
+                  {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
+                </label>
+              ))}
+  
+            {toolbarTable === "sousfamille" &&
+              ["code", "libelle"].map((filtre) => (
+                <label key={filtre} className="flex items-center">
+                  <input
+                    type="radio"
+                    name="filtres"
+                    value={filtre}
+                    className="mr-2"
+                    onChange={() => setFiltrerPar(filtre)}
+                  />
+                  {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
+                </label>
+              ))}
+  
+            {toolbarTable === "utilisateur" &&
+              ["code", "nom", "directeur", "type"].map((filtre) => (
+                <label key={filtre} className="flex items-center">
+                  <input
+                    type="radio"
+                    name="filtres"
+                    value={filtre}
+                    className="mr-2"
+                    onChange={() => setFiltrerPar(filtre)}
+                  />
+                  {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
+                </label>
+              ))}
           </div>
-
-          {/* Champ de recherche */}
-          <div className="w-2/3 bg-gray-50 p-4 rounded-xl shadow">
-            <div className="flex items-center space-x-2 mb-4">
-              <input
-                id="searchInput"
-                type="text"
-                onChange={(e) => handleChampRechercheChange(e.target.value)}
-                className="p-2 border border-gray-300 rounded-lg w-full"
-                placeholder="Entrez votre recherche..."
-                list={
-                  toolbarTable === "client" && filtrerPar === "code"
-                    ? "listeCodesClients"
-                    : toolbarTable === "article" && filtrerPar === "code"
-                    ? "listeCodesArticle"
-                    : toolbarTable === "devis" && filtrerPar === "numbl"
-                    ? "listeCodesNumbl"
-                    : toolbarTable === "famille" && filtrerPar === "code"
-                    ? "listeCodesFamilles"
-                    : ""
-                }
-              />
-              <datalist id="listeCodesClients">
-                {listeToutCodesClients.length > 0 ? (
-                  listeToutCodesClients.map((client, indice) => (
-                    <option key={indice} value={client.code}>
-                      {client.code}
-                    </option>
-                  ))
-                ) : (
-                  <option disabled>Aucun client trouvé</option>
-                )}
-              </datalist>
-
-              <datalist id="listeCodesArticle">
-                {ListeCodeArticles.map((article, indice) => (
-                  <option key={indice} value={article.code}>
-                    {article.code}
+        </div>
+  
+        {/* Champ de recherche + résultat */}
+        <div className="md:w-2/3 w-full bg-gray-50 p-4 rounded-xl shadow">
+          <div className="flex flex-col space-y-2 mb-4">
+            <input
+              id="searchInput"
+              type="text"
+              onChange={(e) => handleChampRechercheChange(e.target.value)}
+              className="p-2 border border-gray-300 rounded-lg w-full"
+              placeholder="Entrez votre recherche..."
+              list={
+                toolbarTable === "client" && filtrerPar === "code"
+                  ? "listeCodesClients"
+                  : toolbarTable === "article" && filtrerPar === "code"
+                  ? "listeCodesArticle"
+                  : toolbarTable === "devis" && filtrerPar === "numbl"
+                  ? "listeCodesNumbl"
+                  : toolbarTable === "famille" && filtrerPar === "code"
+                  ? "listeCodesFamilles"
+                  : ""
+              }
+            />
+            <datalist id="listeCodesClients">
+              {listeToutCodesClients.length > 0 ? (
+                listeToutCodesClients.map((client, indice) => (
+                  <option key={indice} value={client.code}>
+                    {client.code}
                   </option>
-                ))}
-              </datalist>
-
-              <datalist id="listeCodesNumbl">
-                {listeNUMBL.map((codeDevis) => (
-                  <option key={codeDevis.NUMBL} value={codeDevis.NUMBL}>
-                    {codeDevis.NUMBL}
+                ))
+              ) : (
+                <option disabled>Aucun client trouvé</option>
+              )}
+            </datalist>
+  
+            <datalist id="listeCodesArticle">
+              {ListeCodeArticles.map((article, indice) => (
+                <option key={indice} value={article.code}>
+                  {article.code}
+                </option>
+              ))}
+            </datalist>
+  
+            <datalist id="listeCodesNumbl">
+              {listeNUMBL.map((codeDevis) => (
+                <option key={codeDevis.NUMBL} value={codeDevis.NUMBL}>
+                  {codeDevis.NUMBL}
+                </option>
+              ))}
+            </datalist>
+  
+            <datalist id="listeCodesFamilles">
+              {ListeArticle.length > 0 ? (
+                ListeArticle.map((famille, indice) => (
+                  <option key={indice} value={famille.code}>
+                    {famille.code}
                   </option>
-                ))}
-              </datalist>
-
-              <datalist id="listeCodesFamilles">
-                {ListeArticle.length > 0 ? (
-                  ListeArticle.map((famille, indice) => (
-                    <option key={indice} value={famille.code}>
-                      {famille.code}
-                    </option>
-                  ))
-                ) : (
-                  <option disabled>Aucun article trouvé</option>
-                )}
-              </datalist>
-            </div>
-
-            {/* Table des résultats */}
+                ))
+              ) : (
+                <option disabled>Aucun article trouvé</option>
+              )}
+            </datalist>
+          </div>
+  
+          {/* Table des résultats */}
+          <div className="h-[200px] overflow-y-auto">
             {toolbarTable === "client" && (
-              <div className="h-[200px] overflow-y-auto">
-                <DataTable
-                  data={listeClients}
-                  columns={collonesClient}
-                  pagination
-                  fixedHeader
-                  customStyles={customStyles}
-                  striped
-                  selectableRows
-                  onSelectedRowsChange={handleDatatableSelection}
-                />
-              </div>
+              <DataTable
+                data={listeClients}
+                columns={collonesClient}
+                pagination
+                fixedHeader
+                customStyles={customStyles}
+                striped
+                selectableRows
+                onSelectedRowsChange={handleDatatableSelection}
+              />
             )}
             {toolbarTable === "devis" && (
-              <div className="max-h-[400px] overflow-y-auto">
-                <DataTable
-                  data={devisList}
-                  columns={collonesDevis}
-                  pagination
-                  fixedHeader
-                  customStyles={customStyles}
-                  striped
-                  selectableRows
-                  onSelectedRowsChange={handleDatatableSelection}
-                />
-              </div>
+              <DataTable
+                data={devisList}
+                columns={collonesDevis}
+                pagination
+                fixedHeader
+                customStyles={customStyles}
+                striped
+                selectableRows
+                onSelectedRowsChange={handleDatatableSelection}
+              />
             )}
-
             {toolbarTable === "article" && (
-              <div className="max-h-[400px] overflow-y-auto">
-                <DataTable
-                  data={ListeArticle}
-                  columns={colonnesArticle}
-                  pagination
-                  fixedHeader
-                  customStyles={customStyles}
-                  striped
-                  selectableRows
-                  onSelectedRowsChange={handleDatatableSelection}
-                />
-              </div>
+              <DataTable
+                data={ListeArticle}
+                columns={colonnesArticle}
+                pagination
+                fixedHeader
+                customStyles={customStyles}
+                striped
+                selectableRows
+                onSelectedRowsChange={handleDatatableSelection}
+              />
             )}
-
             {toolbarTable === "famille" && (
-              <div className="max-h-[400px] overflow-y-auto">
-                <DataTable
-                  data={listeFamilles}
-                  columns={colonnesFamille}
-                  pagination
-                  fixedHeader
-                  customStyles={customStyles}
-                  striped
-                  selectableRows
-                  onSelectedRowsChange={handleDatatableSelection}
-                />
-              </div>
+              <DataTable
+                data={listeFamilles}
+                columns={colonnesFamille}
+                pagination
+                fixedHeader
+                customStyles={customStyles}
+                striped
+                selectableRows
+                onSelectedRowsChange={handleDatatableSelection}
+              />
             )}
-
             {toolbarTable === "sousfamille" && (
-              <div className="max-h-[400px] overflow-y-auto">
-                <DataTable
-                  data={listeSousfamille}
-                  columns={colonnesSousFamille}
-                  pagination
-                  fixedHeader
-                  customStyles={customStyles}
-                  striped
-                  selectableRows
-                  onSelectedRowsChange={handleDatatableSelection}
-                />
-              </div>
+              <DataTable
+                data={listeSousfamille}
+                columns={colonnesSousFamille}
+                pagination
+                fixedHeader
+                customStyles={customStyles}
+                striped
+                selectableRows
+                onSelectedRowsChange={handleDatatableSelection}
+              />
             )}
             {toolbarTable === "utilisateur" && (
-              <div className="max-h-[400px] overflow-y-auto">
-                <DataTable
-                  data={listeUtilisateur_Superviseur}
-                  columns={colonnesUtilisateur}
-                  pagination
-                  fixedHeader
-                  customStyles={customStyles}
-                  striped
-                  selectableRows
-                  onSelectedRowsChange={handleDatatableSelection}
-                />
-              </div>
+              <DataTable
+                data={listeUtilisateur_Superviseur}
+                columns={colonnesUtilisateur}
+                pagination
+                fixedHeader
+                customStyles={customStyles}
+                striped
+                selectableRows
+                onSelectedRowsChange={handleDatatableSelection}
+              />
             )}
-
-            <button
-              onClick={handleBtnValiderClick}
-              className={`${
-                Object.keys(datatableElementSelection).length == 0
-                  ? "bg-gray-300 hover:bg-gray-700"
-                  : "bg-green-600 hover:bg-green-700"
-              } text-white mt-4 px-4 py-2 rounded-lg transition`}
-              disabled={Object.keys(datatableElementSelection).length == 0}
-            >
-              Valider
-            </button>
           </div>
+  
+          <button
+            onClick={handleBtnValiderClick}
+            className={`${
+              Object.keys(datatableElementSelection).length == 0
+                ? "bg-gray-300 hover:bg-gray-700"
+                : "bg-green-600 hover:bg-green-700"
+            } text-white mt-4 px-4 py-2 rounded-lg transition`}
+            disabled={Object.keys(datatableElementSelection).length == 0}
+          >
+            Valider
+          </button>
         </div>
       </div>
     </div>
+  </div>
+  
   );
 };
 export default Recherche;

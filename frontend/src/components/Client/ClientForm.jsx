@@ -44,6 +44,19 @@ const ClientForm = () => {
   const infosUtilisateur = useSelector(
     (state) => state.utilisateurSlice.infosUtilisateur
   );
+   const handleChangeTel = (e, colonne) => {
+      if (isNumerique(e.target.value)) {
+        dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
+      }
+    };
+    const handleChangeFax = (e, colonne) => {
+      if (!isNaN(e.target.value)) {
+        dispatch(setClientInfos({ colonne: "fax", valeur: e.target.value }));
+      }
+      if (e.target.value == "") {
+        dispatch(setClientInfos({ colonne: "fax", valeur: "" }));
+      }
+    };
   const listeCodesRegion = useSelector(
     (state) => state.clientSlice.listeCodesRegion
   );
@@ -205,15 +218,8 @@ const ClientForm = () => {
   );
 
   const hundleClickButtonSecRegCp = (colonne) => {
-    if (colonne == "secteur") {
-      dispatch(setToolbarTable("secteur"));
-    }
-    if (colonne == "region") {
-      dispatch(setToolbarTable("region"));
-    }
-    if (colonne == "codepostale") {
-      dispatch(setToolbarTable("codepostale"));
-    }
+    dispatch(setToolbarTable(colonne))
+    
     dispatch(setAfficherSecteurPopup(true));
   };
 
@@ -384,7 +390,7 @@ const ClientForm = () => {
                           className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition"
                           // disabled={!activerChampsForm}
                           onClick={() =>
-                            hundleClickButtonSecRegCp("codepostale")
+                            hundleClickButtonSecRegCp("pointvente")
                           }
                         >
                           +
@@ -680,7 +686,7 @@ const ClientForm = () => {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     value={clientInfos.tel1 || ""}
-                    //  onChange={(e) => handleChangeTel(e, "tel1")}
+                      onChange={(e) => handleChangeTel(e, "tel1")}
                     disabled={!activerChampsForm}
                     maxLength={8}
                   />
@@ -696,7 +702,7 @@ const ClientForm = () => {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     value={clientInfos.tel2 || ""}
-                    // onChange={(e) => handleChangeTel(e, "tel2")}
+                     onChange={(e) => handleChangeTel(e, "tel2")}
                     disabled={!activerChampsForm}
                     maxLength={8}
                   />
@@ -729,7 +735,7 @@ const ClientForm = () => {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     value={clientInfos.fax || ""}
-                    // onChange={(e) => handleChangeFax(e, "fax")}
+                     onChange={(e) => handleChangeFax(e, "fax")}
                     disabled={!activerChampsForm}
                     minLength={6}
                     maxLength={9}
@@ -768,7 +774,7 @@ const ClientForm = () => {
               </div>
             </div>
 
-            <DateCreateMAJ />
+            <DateCreateMAJ objet={clientInfos} />
           </div>
         </div>
       </div>

@@ -13,11 +13,11 @@ export const ajouterpointVente = createAsyncThunk(
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/ajouterpointVente`,
       {
-        pointVenteInfo: thunkAPI.getState().pointVenteSlice.pointVenteInfo,
+        PointVenteInfo: thunkAPI.getState().pointVenteSlice.pointVenteInfo,
       }
     );
     console.log(response);
- //  return response.data.newRegion
+ return response.data.newPointVente
   }
 );
 export const pointVenteSlice = createSlice({
