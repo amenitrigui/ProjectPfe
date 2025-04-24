@@ -756,6 +756,7 @@ const ClientForm = () => {
 
               <div className="collapse-content text-sm">
                 <ParametresFacturationClient />
+              <DateCreateMAJ objet={clientInfos} />
               </div>
             </div>
           </div>
@@ -776,7 +777,7 @@ const ClientForm = () => {
               </div>
             </div>
 
-            <DateCreateMAJ objet={clientInfos} />
+         
           </div>
         </div>
       </div>
