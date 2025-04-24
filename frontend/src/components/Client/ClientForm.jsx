@@ -776,7 +776,7 @@ const ClientForm = () => {
               </div>
             </div>
 
-            <DateCreateMAJ />
+            <DateCreateMAJ objet={clientInfos} />
           </div>
         </div>
       </div>

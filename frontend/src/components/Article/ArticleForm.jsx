@@ -29,6 +29,7 @@ import {
 import Tab from "./Tab";
 import OptionsArticle from "./OptionsArticle";
 import { ResponsiveContainer } from "recharts";
+import DateCreateMAJ from "../Common/DateCreateMAJ";
 function ArticleForm() {
   //?==================================================================================================================
   //?=====================================================variables====================================================
@@ -39,6 +40,7 @@ function ArticleForm() {
     (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
   const articleInfos = useSelector((state) => state.articleSlice.articleInfos);
+  console.log(articleInfos)
   const ListeFamille = useSelector((state) => state.articleSlice.ListeFamille);
   const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
   const ListeSousFamille = useSelector(
@@ -398,6 +400,7 @@ function ArticleForm() {
                       <OptionsArticle />
                     </ResponsiveContainer>
                   </div>
+                  <DateCreateMAJ objet={articleInfos}></DateCreateMAJ>
                 </div>
               </div>
             </div>
