@@ -26,6 +26,7 @@ import {
   getLignesDevis,
   viderChampsDevisInfo,
   getDerniereNumbl,
+  getListeSecteur,
 } from "../../app/devis_slices/devisSlice";
 import ToolBar from "../Common/ToolBar";
 import {
@@ -50,8 +51,12 @@ function DevisForm() {
   const listePointsVente = useSelector(
     (state) => state.devisSlice.listePointsVente
   );
+
   const [isOpen, setIsOpen] = useState(false);
   const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
+  const listesecteur = useSelector((state) => state.devisSlice.listesecteur);
+  console.log(listesecteur);
+
   const listeToutCodesClients = useSelector(
     (state) => state.clientSlice.listeToutCodesClients
   );
@@ -82,10 +87,13 @@ function DevisForm() {
   //?==============================================appels UseEffect====================================================
   //?==================================================================================================================
   // * UseEffect #1 : récupérer la liste des codes de devis et liste de points de vente
+
   useEffect(() => {
     dispatch(getListeNumbl());
     dispatch(getListePointsVente());
+    dispatch(getListeSecteur());
   }, []);
+
   // * UseEffect #2 : Récuperer la liste de codes clients lorsque
   // * le mode de toolbar change vers l'ajout
   useEffect(() => {
@@ -253,18 +261,27 @@ function DevisForm() {
                       <select
                         className="select select-bordered w-full max-w-xs"
                         disabled={!activerChampsForm}
-                        value={devisInfo.codesecteur || ""}
-                        //onChange={(e) => handleSelectDevis(e)}
-                      ></select>
+                      >
+                        {listesecteur.map((secteur) => (
+                          <option key={secteur.codesec} value={secteur.codesec}>
+                            {secteur.codesec}
+                          </option>
+                        ))}
+                      </select>
 
                       <label className="block font-medium">
                         Désignation Secteur :
                       </label>
-                      <input
-                        type="text"
-                        className="w-full border border-gray-300 rounded-md p-2"
+                      <select
+                        className="select select-bordered w-full max-w-xs"
                         disabled={!activerChampsForm}
-                      />
+                      >
+                        {listesecteur.map((secteur) => (
+                          <option key={secteur.desisec} value={secteur.desisec}>
+                            {secteur.desisec}
+                          </option>
+                        ))}
+                      </select>
                     </div>
 
                     {/* Détails Devis */}
@@ -403,13 +420,13 @@ function DevisForm() {
                   value={utilisateurConnecte.directeur || ""}
                 />
                 <label className="block font-medium mt-4">Commentaire :</label>
-        <textarea
-          rows="10"
-          className="w-full border border-gray-300 rounded-md p-2"
-          disabled={!activerChampsForm}
-        ></textarea>
+                <textarea
+                  rows="10"
+                  className="w-full border border-gray-300 rounded-md p-2"
+                  disabled={!activerChampsForm}
+                ></textarea>
 
-               <DateCreateMAJ objet={devisInfo}/>
+                <DateCreateMAJ objet={devisInfo} />
               </div>
             </div>
           </div>

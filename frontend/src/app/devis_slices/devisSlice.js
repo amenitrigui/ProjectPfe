@@ -232,6 +232,20 @@ export const getListePointsVente = createAsyncThunk(
   }
 );
 
+// * Action asynchrone pour récupérer la liste des points de vente d'une societé
+export const getListeSecteur = createAsyncThunk(
+  "devisSlice/getListeSecteur",
+  async (_, thunkAPI) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/devis/${
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getListeSecteur`
+    );
+console.log(response)
+  return response.data.secteurDistincts
+
+  }
+);
 export const getDerniereNumbl = createAsyncThunk(
   "devisSlice/getDerniereNumbl",
   async (_, thunkAPI) => {
@@ -385,6 +399,7 @@ export const devisSlice = createSlice({
     listeNUMBL: [],
     // * liste de points de vente
     listePointsVente: [],
+    listesecteur:[],
     // * informations du formulaire de devis
     devisInfo: {
       NUMBL: "",
@@ -593,6 +608,18 @@ export const devisSlice = createSlice({
         state.status = "reussi";
       })
       .addCase(getListePointsVente.rejected, (state, action) => {
+        state.error = action.payload;
+        state.status = "echoue";
+      })
+
+      .addCase(getListeSecteur.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getListeSecteur.fulfilled, (state, action) => {
+        state.listesecteur = action.payload;
+        state.status = "reussi";
+      })
+      .addCase(getListeSecteur.rejected, (state, action) => {
         state.error = action.payload;
         state.status = "echoue";
       })

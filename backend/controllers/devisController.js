@@ -1083,7 +1083,28 @@ const getNbDevisGeneresParAnnee = async (req, res) => {
     dbConnection.close();
   }
 };
+//* url :http://localhost:5000/api/devis/SOLEVO/getListeSecteur
+//*message": "Secteur recupérés avec succès", "pointssecteurDistincts": [ { "desisec": "SOLEVO" },
+    
+const getListeSecteur = async (req, res) => {
+  try {
+    const { dbName } = req.params;
+    const dbConnection = await getDatabaseConnection(dbName);
+    const secteurDistincts = await dbConnection.query(
+      `SELECT DISTINCT(desisec),codesec from secteur`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    );
 
+    return res.status(200).json({
+      message: "Secteur recupérés avec succès",
+      secteurDistincts: secteurDistincts,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 module.exports = {
   getTousDevis,
   getNombreDevis,
@@ -1096,7 +1117,7 @@ module.exports = {
   GetDevisParPeriode,
   getListePointVente,
   getInfoUtilisateur,
-
+  getListeSecteur,
   getLignesDevis,
   getDevisCreator,
   getDerniereNumbl,
