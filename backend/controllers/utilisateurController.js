@@ -60,7 +60,10 @@ const loginUtilisateur = async (req, res) => {
     }
 
     // Recherche de l'utilisateur
-    const user = await User.findOne({ where: { nom } });
+    const user = await User.findOne({ 
+      attributes: ["codeuser","nom","motpasse","email","directeur","type"],
+      where: { nom } 
+    });
     if (!user) {
       return res.status(400).json({ message: "Utilisateur non trouvé." });
     }

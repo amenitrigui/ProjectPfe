@@ -19,7 +19,10 @@ import {
   viderChampsCPostalInfo,
 } from "../../app/cpostal_slices/cpostalSlice";
 import { useLocation } from "react-router-dom";
-import { ajouterpointVente, setPointVenteInfos } from "../../app/pointVente_slice/pointVenteSlice";
+import {
+  ajouterpointVente,
+  setPointVenteInfos,
+} from "../../app/pointVente_slice/pointVenteSlice";
 import { setClientInfos } from "../../app/client_slices/clientSlice";
 
 // Animation
@@ -150,25 +153,53 @@ const Secteur_Region_CpostalForm = () => {
   };
 
   const handleChange = (colonne, valeur) => {
-    console.log(colonne, " ", valeur);
+    console.log(colonne, " ", valeur)
+    if (toolbartable == "pointvente") {
+      dispatch(setPointVenteInfos({ colonne, valeur }));
+      
+      if(colonne == "Code") {
+        dispatch(setClientInfos({colonne: "codepv", valeur}))
+      }
+      if(colonne == "Libelle") {
+        dispatch(setClientInfos({colonne: "Libelle", valeur}))
+      }
+    }
+    if (toolbartable == "codepostale") {
+      dispatch(setCodePostaleInfos({ colonne, valeur }));
+      
+      if(colonne == "CODEp") {
+        dispatch(setClientInfos({colonne: "CODEp", valeur}))
+      }
+      if(colonne == "desicp") {
+        dispatch(setClientInfos({colonne: "desicp", valeur}))
+      }
+    }
+    
     if (toolbartable == "secteur") {
       dispatch(setSecteurInfos({ colonne, valeur }));
-      dispatch(setClientInfos({colonne, valeur}))
+      if(colonne == "codesec") {
+        dispatch(setClientInfos({colonne: "codes", valeur}))
+      }
+      if(colonne == "desisec") {
+        dispatch(setClientInfos({colonne: "desisec", valeur}))
+      }
     }
     if (toolbartable == "region") {
       dispatch(setRegionInfos({ colonne, valeur }));
     }
-    if (toolbartable == "codepostale") {
-      dispatch(setCodePostaleInfos({ colonne, valeur }));
+    if(colonne == "codesec") {
+      dispatch(setClientInfos({colonne: "codes", valeur}))
     }
-    if (toolbartable=="pointvente")
-    {
-      dispatch(setPointVenteInfos({colonne,valeur}))
+    if(colonne == "codergg") {
+      dispatch(setClientInfos({colonne: "codergg", valeur}))
     }
-    console.log(secteurInfo);
-    console.log(regionInfo);
+    if(colonne == "desirgg") {
+      dispatch(setClientInfos({colonne: "desirgg", valeur}))
+    }
   };
-const pointVenteInfo= useSelector((state)=>state.pointVenteSlice.pointVenteInfo)
+  const pointVenteInfo = useSelector(
+    (state) => state.pointVenteSlice.pointVenteInfo
+  );
   const handleSubmit = (e) => {
     e.preventDefault();
     togglePopup();
@@ -185,11 +216,10 @@ const pointVenteInfo= useSelector((state)=>state.pointVenteSlice.pointVenteInfo)
     if (toolbartable === "codepostale") {
       dispatch(ajouterCodePostal());
     }
-    if (toolbartable==="pointvente"){
-      dispatch(ajouterpointVente())
+    if (toolbartable === "pointvente") {
+      dispatch(ajouterpointVente());
     }
     togglePopup();
-    
   };
 
   const getCodeValue = () => {
@@ -197,7 +227,6 @@ const pointVenteInfo= useSelector((state)=>state.pointVenteSlice.pointVenteInfo)
     if (toolbartable === "region") return regionInfo.codergg;
     if (toolbartable === "codepostale") return cpostaleInfo.CODEp;
     if (toolbartable === "pointvente") return cpostaleInfo.Code;
-
 
     return "";
   };
@@ -215,7 +244,6 @@ const pointVenteInfo= useSelector((state)=>state.pointVenteSlice.pointVenteInfo)
     if (toolbartable === "region") return "designation region";
     if (toolbartable === "codepostale") return "designation code postale";
     if (toolbartable === "pointvente") return "designation code point vente";
-
   };
   const getDesignationValue = () => {
     if (toolbartable === "secteur") return secteurInfo.desisec;
@@ -232,7 +260,6 @@ const pointVenteInfo= useSelector((state)=>state.pointVenteSlice.pointVenteInfo)
     if (toolbartable === "region") handleChange("desirgg", valeur);
     if (toolbartable === "codepostale") handleChange("desicp", valeur);
     if (toolbartable === "pointvente") handleChange("Libelle", valeur);
-
   };
 
   return (
@@ -271,8 +298,8 @@ const pointVenteInfo= useSelector((state)=>state.pointVenteSlice.pointVenteInfo)
                     if (toolbartable === "codepostale") {
                       handleChange("CODEp", val);
                     }
-                    if (toolbartable==="pointvente")
-                      handleChange("Code",val)
+                    if (toolbartable === "pointvente")
+                      handleChange("Code", val);
                   }}
                   required
                 />

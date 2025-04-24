@@ -141,6 +141,7 @@ const ajouterDevis = async (req, res) => {
     MHT,
     articles,
   } = req.body.devisInfo;
+  console.log(articles)
 
   articles.map((article) => {
     article.NumBL = NUMBL;
@@ -1096,7 +1097,6 @@ module.exports = {
   GetDevisParPeriode,
   getListePointVente,
   getInfoUtilisateur,
-
   getLignesDevis,
   getDevisCreator,
   getDerniereNumbl,
