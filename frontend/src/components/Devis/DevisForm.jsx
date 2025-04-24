@@ -85,7 +85,7 @@ function DevisForm() {
   // * et récuperer le dernier NUMBL
   useEffect(() => {
     dispatch(getListeNumbl());
-    dispatch(getDerniereNumbl())
+    dispatch(getDerniereNumbl());
     dispatch(getListePointsVente());
   }, []);
   // * UseEffect #2 : Récuperer la liste de codes clients lorsque
@@ -115,15 +115,17 @@ function DevisForm() {
   // * useEffect #5: remplir le champ NUMBL par le derniere NUMBL récuperé
   useEffect(() => {
     if (derniereNumbl && derniereNumbl != "") {
-      dispatch(setDevisInfo({collone: "NUMBL", valeur: "DV"+derniereNumbl}))
+      dispatch(
+        setDevisInfo({ collone: "NUMBL", valeur: "DV" + derniereNumbl })
+      );
     }
   }, [derniereNumbl]);
 
-  // * useEffect #6: récuperer les informations de devis 
+  // * useEffect #6: récuperer les informations de devis
   // * et les lignes de devis par NUMBL
   useEffect(() => {
-    console.log("devisInfo.NUMBL changed to: ", devisInfo.NUMBL)
-    if(devisInfo.NUMBL && devisInfo.NUMBL != "") {
+    console.log("devisInfo.NUMBL changed to: ", devisInfo.NUMBL);
+    if (devisInfo.NUMBL && devisInfo.NUMBL != "") {
       dispatch(getDevisParNUMBL(devisInfo.NUMBL));
       dispatch(getLignesDevis(devisInfo.NUMBL));
     }
@@ -132,10 +134,15 @@ function DevisForm() {
   // * useEffect #7 : remplacer la valeur de champ NUMBL
   // * par le derniere NUMBL incrementé par 1 lors d'ajout d'un devis
   useEffect(() => {
-    if(toolbarMode && toolbarMode === "ajout") {
-      dispatch(setDevisInfo({collone: "NUMBL", valeur: "DV"+(parseInt(derniereNumbl)+1)}))
+    if (toolbarMode && toolbarMode === "ajout") {
+      dispatch(
+        setDevisInfo({
+          collone: "NUMBL",
+          valeur: "DV" + (parseInt(derniereNumbl) + 1),
+        })
+      );
     }
-  }, [toolbarMode])
+  }, [toolbarMode]);
 
   // * useEffect #8: remplir les informations client pour un devis
   useEffect(() => {
@@ -224,7 +231,11 @@ function DevisForm() {
                         type="text"
                         className="w-full border border-gray-300 rounded-md p-2"
                         onChange={(e) => handleSelectDevis(e)}
-                        value={derniereNumbl!= "" && devisInfo.NUMBL == ""? "DV"+derniereNumbl:devisInfo.NUMBL}
+                        value={
+                          derniereNumbl != "" && devisInfo.NUMBL == ""
+                            ? "DV" + derniereNumbl
+                            : devisInfo.NUMBL
+                        }
                         disabled={activerChampsForm}
                         onClick={() => {
                           dispatch(setToolbarTable("devis"));
@@ -391,7 +402,9 @@ function DevisForm() {
                   type="text"
                   className="w-full border border-gray-300 rounded-md p-2"
                   disabled={!activerChampsForm}
-                  value={utilisateurConnecte? utilisateurConnecte.codeuser : ""}
+                  value={
+                    utilisateurConnecte ? utilisateurConnecte.codeuser : ""
+                  }
                 />
                 {console.log(utilisateurConnecte)}
 
@@ -400,16 +413,20 @@ function DevisForm() {
                   type="text"
                   className="w-full border border-gray-300 rounded-md p-2"
                   disabled={!activerChampsForm}
-                  value={utilisateurConnecte.directeur? utilisateurConnecte.directeur : ""}
+                  value={
+                    utilisateurConnecte.directeur
+                      ? utilisateurConnecte.directeur
+                      : ""
+                  }
                 />
                 <label className="block font-medium mt-4">Commentaire :</label>
-        <textarea
-          rows="10"
-          className="w-full border border-gray-300 rounded-md p-2"
-          disabled={!activerChampsForm}
-        ></textarea>
+                <textarea
+                  rows="10"
+                  className="w-full border border-gray-300 rounded-md p-2"
+                  disabled={!activerChampsForm}
+                ></textarea>
 
-               <DateCreateMAJ objet={devisInfo}/>
+                <DateCreateMAJ objet={devisInfo} />
               </div>
             </div>
           </div>

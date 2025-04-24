@@ -60,13 +60,14 @@ const loginUtilisateur = async (req, res) => {
     }
 
     // Recherche de l'utilisateur
-    const user = await User.findOne({ where: { nom } });
+    const user = await User.findOne({ 
+      attributes: { exclude: ["mp1","mp2","mp3","mp4","mp5"]},
+      where: { nom } 
+    });
+
     if (!user) {
       return res.status(400).json({ message: "Utilisateur non trouvé." });
     }
-
-    console.log(user);
-
     // Vérification du mot de passe
     // comparaison de mot de passe donnée
     // avec le hash dans la bd
@@ -100,7 +101,7 @@ const loginUtilisateur = async (req, res) => {
     return res.status(200).json({
       message: "Connexion réussie.",
       token,
-      user: user,
+      user: user ,
       societies: societies.map((s) => ({
         societe: s.societe, // Code de la société
         rsoc: s.rsoc, // Nom de la société

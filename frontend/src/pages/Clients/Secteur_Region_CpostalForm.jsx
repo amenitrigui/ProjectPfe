@@ -245,7 +245,9 @@ const pointVenteInfo= useSelector((state)=>state.pointVenteSlice.pointVenteInfo)
                 : toolbartable === "region"
                 ? "Région"
                 : toolbartable === "codepostale"
-                ? "Code postale"
+                ? "Code postale":
+                toolbartable === "pointvente"
+                ? "Point vente"
                 : ""}
             </h2>
             <form onSubmit={handleSubmit}>

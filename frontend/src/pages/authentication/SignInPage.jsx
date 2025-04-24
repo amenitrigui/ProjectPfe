@@ -44,6 +44,7 @@ function SignInPage() {
       const data = await response.json(); // convertir la reponse de seurveur en objet javascript
 
       if (response.ok) {
+        console.log(data.user)
         dispatch(setutilisateurConnecteEntiere(data.user))
         dispatch(setToken(data.token));
         localStorage.setItem("societies", JSON.stringify(data.societies));

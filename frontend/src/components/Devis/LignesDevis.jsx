@@ -59,6 +59,7 @@ function LignesDevis() {
               <tr
                 key={`${article.famille}-${article.CodeART}`}
                 className="transition-all duration-150 ease-in-out hover:bg-[#2A2185]"
+                onDoubleClick={console.log("ok")}
               >
                 <td className="p-3 border border-gray-300">
                   {article.famille}
