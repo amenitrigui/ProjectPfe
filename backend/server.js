@@ -12,6 +12,7 @@ const sousfamilleRoutes = require("./routes/sousfamilleRoutes")
 const Stock_ArticleRoutes= require("./routes/Stock_ArticleRoutes")
 const Valorisation_ArticleRoutes= require("./routes/Valorisation_ArticleRoutes")
 const utilisateurSystemRoutes=require("./routes/utilisateurSystemRoutes");
+const pointventeRoutes=require("./routes/pointVenteRoutes")
 const { getDatabaseConnection } = require("./common/commonMethods");
 require("dotenv").config();
 
@@ -43,6 +44,7 @@ app.use("/api/sousfamille", sousfamilleRoutes);
 app.use("/api/Stock_Article",Stock_ArticleRoutes );
 app.use("/api/Valorisation_Article",Valorisation_ArticleRoutes );
 app.use("/api/utilisateurSystem",utilisateurSystemRoutes );
+app.use("/api/pointvente",pointventeRoutes)
 
 // * Test de connexion à la base de données
 app.get("/", async (req, res) => {

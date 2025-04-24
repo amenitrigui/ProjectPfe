@@ -65,7 +65,7 @@ function DetailsBanqueClient() {
 
   const handleChangeCheckbox = (e, colonne) => {
     console.log(e.target.checked, " ", colonne);
-    console.log(toolbarMode)
+    console.log(toolbarMode);
     if (toolbarMode == "ajout" || toolbarMode == "modification") {
       dispatch(
         setClientInfos({
@@ -114,52 +114,66 @@ function DetailsBanqueClient() {
         </div>
         <div className="flex">
           <div className="flex flex-col w-1/2">
-            <label className="block" style={{ color: "rgb(48, 60, 123)" }}>
-              Matricules fiscales
-            </label>
+            {/* Matricule fiscale et Numéro de décision sur la même ligne */}
+            <div className="flex flex-nowrap gap-4">
+              <div className="flex flex-col w-1/2">
+                <label className="block" style={{ color: "rgb(48, 60, 123)" }}>
+                  Matricule fiscale
+                </label>
+                <input
+                  type="text"
+                  className="border border-gray-300 rounded-md p-2"
+                  value={clientInfos.matriculef || ""}
+                  onChange={(e) => handleChangeNumeriqueDouble(e, "matriculef")}
+                  disabled={!activerChampsForm}
+                  maxLength={17}
+                />
+              </div>
 
-            <input
-              type="text"
-              className=" border border-gray-300 rounded-md p-2 "
-              value={clientInfos.matriculef || ""}
-              onChange={(e) => handleChangeNumeriqueDouble(e, "matriculef")}
-              disabled={!activerChampsForm}
-              maxLength={17}
-            />
+              <div className="flex flex-col w-1/2">
+                <label className="block" style={{ color: "rgb(48, 60, 123)" }}>
+                  Numéro de décision
+                </label>
+                <input
+                  type="text"
+                  className="border border-gray-300 rounded-md p-2"
+                  value={clientInfos.decision || ""}
+                  onChange={(e) => handleChangeNumDecision(e, "decision")}
+                  disabled={!activerChampsForm}
+                  maxLength={12}
+                />
+              </div>
+            </div>
 
-            <label className="block" style={{ color: "rgb(48, 60, 123)" }}>
-              Numero de desicion
-            </label>
-            <input
-              type="text"
-              className="border border-gray-300 rounded-md p-2 "
-              value={clientInfos.decision || ""}
-              onChange={(e) => handleChangeNumDecision(e, "decision")}
-              disabled={!activerChampsForm}
-              maxLength={12}
-            />
-            <label className="block" style={{ color: "rgb(48, 60, 123)" }}>
-              Date debut autorisation:
-            </label>
-            <input
-              type="date"
-              className="border border-gray-300 rounded-md p-2 "
-              value={clientInfos.datedebaut ? clientInfos.datedebaut : ""}
-              onChange={(e) => handleChange(e, "datedebaut")}
-              disabled={!activerChampsForm}
-            />
+            {/* Date début et fin autorisation sur la même ligne */}
+            <div className="flex flex-nowrap gap-4 mt-4">
+              <div className="flex flex-col w-1/2">
+                <label className="block" style={{ color: "rgb(48, 60, 123)" }}>
+                  Date début autorisation
+                </label>
+                <input
+                  type="date"
+                  className="border border-gray-300 rounded-md p-2"
+                  value={clientInfos.datedebaut ? clientInfos.datedebaut : ""}
+                  onChange={(e) => handleChange(e, "datedebaut")}
+                  disabled={!activerChampsForm}
+                />
+              </div>
 
-            <label className="block" style={{ color: "rgb(48, 60, 123)" }}>
-              Date fin autorisation:
-            </label>
+              <div className="flex flex-col w-1/2">
+                <label className="block" style={{ color: "rgb(48, 60, 123)" }}>
+                  Date fin autorisation
+                </label>
+                <input
+                  type="date"
+                  className="border border-gray-300 rounded-md p-2"
+                  value={clientInfos.datefinaut ? clientInfos.datefinaut : ""}
+                  onChange={(e) => handleChange(e, "datefinaut")}
+                  disabled={!activerChampsForm}
+                />
+              </div>
+            </div>
 
-            <input
-              type="date"
-              className="border border-gray-300 rounded-md p-2 "
-              value={clientInfos.datefinaut ? clientInfos.datefinaut : ""}
-              onChange={(e) => handleChange(e, "datefinaut")}
-              disabled={!activerChampsForm}
-            />
             <div className="flex flex-nowrap">
               <input
                 type="checkbox"
@@ -195,7 +209,12 @@ function DetailsBanqueClient() {
             <div className="flex flex-nowrap">
               <select
                 className="border border-gray-300 rounded-md w-1/3 p-2"
-                value={clientInfos.susptva === "1" || clientInfos.susptva?.toUpperCase() === "O"? "1" : "0"}
+                value={
+                  clientInfos.susptva === "1" ||
+                  clientInfos.susptva?.toUpperCase() === "O"
+                    ? "1"
+                    : "0"
+                }
                 disabled={!activerChampsForm}
                 onChange={(e) => hundleSelectTous(e, "susptva")}
               >
@@ -209,8 +228,6 @@ function DetailsBanqueClient() {
                 Suspendu du TVA
               </label>
             </div>
-          </div>
-          <div className="flex flex-col w-1/2 p-8  gap-10 ">
             {/* Ligne 1 */}
             <div className="flex flex-wrap md:flex-nowrap gap-4">
               <div className="flex items-center space-x-2 w-full md:w-1/2">
@@ -324,6 +341,26 @@ function DetailsBanqueClient() {
                 onChange={(e) => handleChangeCheckbox(e, "offretick")}
               />
               <label className="text-blue-900">Fact ticket de caisse</label>
+            </div>
+          </div>
+
+          <div className="flex flex-col w-1/2 p-8  gap-10 ">
+            <div className="flex flex-col">
+              <label
+                className="block font-bold text-center"
+                style={{ color: "rgb(48, 60, 123)" }}
+              >
+                commentaire
+              </label>
+
+              <textarea
+                className="w-full border border-gray-300 rounded-md p-2"
+                cols={30}
+                rows={8}
+                value={clientInfos.Commentaire || ""}
+                onChange={(e) => handleChange(e, "Commentaire")}
+                disabled={!activerChampsForm}
+              />
             </div>
           </div>
         </div>

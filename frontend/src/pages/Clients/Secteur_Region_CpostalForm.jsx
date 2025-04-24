@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled, { keyframes } from "styled-components";
-import { setAfficherSecteurPopup } from "../../app/interface_slices/interfaceSlice";
+import {
+  setAfficherSecteurPopup,
+  setToolbarTable,
+} from "../../app/interface_slices/interfaceSlice";
 import {
   ajouterSecteur,
   setSecteurInfos,
@@ -13,7 +16,9 @@ import {
 import {
   ajouterCodePostal,
   setCodePostaleInfos,
+  viderChampsCPostalInfo,
 } from "../../app/cpostal_slices/cpostalSlice";
+import { useLocation } from "react-router-dom";
 
 // Animation
 const fadeIn = keyframes`
@@ -120,6 +125,7 @@ const SubmitButton = styled.button`
 
 const Secteur_Region_CpostalForm = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const afficherSecteurPopup = useSelector(
     (state) => state.interfaceSlice.afficherSecteurPopup
@@ -136,9 +142,13 @@ const Secteur_Region_CpostalForm = () => {
 
   const togglePopup = () => {
     dispatch(setAfficherSecteurPopup(false));
+    if (location.pathname.toLowerCase() === "/clientformtout") {
+      dispatch(setToolbarTable("client"));
+    }
   };
 
   const handleChange = (colonne, valeur) => {
+    console.log(colonne, " ", valeur);
     if (toolbartable == "secteur") {
       dispatch(setSecteurInfos({ colonne, valeur }));
     }
@@ -148,9 +158,6 @@ const Secteur_Region_CpostalForm = () => {
     if (toolbartable == "codepostale") {
       dispatch(setCodePostaleInfos({ colonne, valeur }));
     }
-    console.log(secteurInfo)
-    console.log(regionInfo)
-
   };
 
   const handleSubmit = (e) => {
@@ -159,13 +166,20 @@ const Secteur_Region_CpostalForm = () => {
   };
 
   const hundleAjout = () => {
-    if (toolbartable === "secteur") dispatch(ajouterSecteur());
-    if (toolbartable === "region") dispatch(ajouterRegion());
-    if (toolbartable === "codepostale") dispatch(ajouterCodePostal());
+    if (toolbartable === "secteur") {
+      dispatch(ajouterSecteur());
+      console.log(secteurInfo);
+    }
+    if (toolbartable === "region") {
+      dispatch(ajouterRegion());
+    }
+    if (toolbartable === "codepostale") {
+      dispatch(ajouterCodePostal());
+    }
+    togglePopup();
   };
 
   const getCodeValue = () => {
-  
     if (toolbartable === "secteur") return secteurInfo.codesec;
     if (toolbartable === "region") return regionInfo.codergg;
     if (toolbartable === "codepostale") return cpostaleInfo.CODEp;
@@ -203,7 +217,16 @@ const Secteur_Region_CpostalForm = () => {
       {afficherSecteurPopup && (
         <PopupContainer>
           <PopupContent>
-            <h2>Formulaire Popup</h2>
+            <h2>
+              Formulaire{" "}
+              {toolbartable === "secteur"
+                ? "Secteur"
+                : toolbartable === "region"
+                ? "Région"
+                : toolbartable === "codepostale"
+                ? "Code postale"
+                : ""}
+            </h2>
             <form onSubmit={handleSubmit}>
               <FormGroup>
                 <FormLabel htmlFor="champ1">{getLabel()}</FormLabel>
@@ -214,11 +237,15 @@ const Secteur_Region_CpostalForm = () => {
                   value={getCodeValue()}
                   onChange={(e) => {
                     const val = e.target.value;
-                    if (toolbartable === "secteur")
+                    if (toolbartable === "secteur") {
                       handleChange("codesec", val);
-                    if (toolbartable === "region") handleChange("codergg", val);
-                    if (toolbartable === "codepostale")
+                    }
+                    if (toolbartable === "region") {
+                      handleChange("codergg", val);
+                    }
+                    if (toolbartable === "codepostale") {
                       handleChange("CODEp", val);
+                    }
                   }}
                   required
                 />

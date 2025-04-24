@@ -397,11 +397,21 @@ body {
 
 .recentCustomers {
   position: relative;
-  display: grid;
+  /* display: grid; */
   width: 120%;
-  min-height: 500px;
+  min-height: 300px;
   padding: 20px;
-  background: var(--white);
+  background:var(--white);
+  box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
+}
+.banquedetails{
+  position: relative;
+  /* display: grid; */
+  width: 162%;
+  min-height: 100px;
+  padding: 20px;
+  background:var(--white);
   box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
   border-radius: 20px;
 }

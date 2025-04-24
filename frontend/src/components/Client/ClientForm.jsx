@@ -185,7 +185,6 @@ const ClientForm = () => {
       dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
     }
   };
-
   const handleChangeAlphaphetique = (e, colonne) => {
     if (isAlphabetique(e.target.value)) {
       dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
@@ -196,6 +195,15 @@ const ClientForm = () => {
       dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
     }
   };
+  const CpostaleInfo = useSelector(
+    (state) => state.codePostaleSlice.CpostaleInfo
+  );
+  const RegionInfo = useSelector((state) => state.regionSlice.RegionInfo);
+  const secteurInfo = useSelector((state) => state.secteurSlice.secteurInfo);
+  const toolbarTable = useSelector(
+    (state) => state.interfaceSlice.toolbarTable
+  );
+
   const hundleClickButtonSecRegCp = (colonne) => {
     if (colonne == "secteur") {
       dispatch(setToolbarTable("secteur"));
@@ -227,7 +235,10 @@ const ClientForm = () => {
       dispatch(setActiverBoutonsValiderAnnuler(true));
     }
   }, [insertionDepuisDevisForm]);
-  console.log(clientInfos);
+
+  useEffect(() => {
+    console.log(toolbarTable)
+  },[toolbarTable])
   return (
     <div className="container">
       <SideBar />
@@ -238,13 +249,12 @@ const ClientForm = () => {
             <div className="cardHeader">
               <h2
                 style={{
-                  color: "rgb(48, 60, 123)",
+                  color: "rgb(8, 9, 14)",
                   fontWeight: "bold",
-                  fontStyle: "italic",
                 }}
                 className="text-3xl"
               >
-                Fiche Client
+                Fiche client
               </h2>
             </div>
             <div className="flex flex-wrap">
@@ -261,7 +271,7 @@ const ClientForm = () => {
                   list="listeCodesClients"
                   value={clientInfos.code !== "" ? clientInfos.code : ""}
                   onChange={(e) => handleChangeCodeClient(e, "code")}
-                  disabled={activerChampsForm}
+                  // disabled={activerChampsForm}
                   maxLength={8}
                   onClick={() => afficherRecherchePopup()}
                 />
@@ -299,7 +309,7 @@ const ClientForm = () => {
             </div>
             <div className="flex flex-col w-full">
               <label
-                className="font-bold mb-1"
+                className="font-bold  pt-3 pb-3"
                 style={{ color: "rgb(48, 60, 123)" }}
               >
                 Raison Sociale
@@ -312,7 +322,7 @@ const ClientForm = () => {
                 disabled={!activerChampsForm}
               />
             </div>
-            <div className="collapse bg-base-100 border-base-300 border">
+            <div className="collapse bg-base-100 border-base-300 border mt-3">
               <input type="checkbox" />
               <div
                 className="collapse-title font-semibold mb-1"
@@ -385,7 +395,7 @@ const ClientForm = () => {
                 </div>
                 <div className="flex flex-col w-full gap-0">
                   <label
-                    className="font-bold mb-1"
+                    className="font-bold pt-3 pb-3"
                     style={{ color: "rgb(48, 60, 123)" }}
                   >
                     Activite
@@ -402,7 +412,7 @@ const ClientForm = () => {
                 <div className="mt-3 flex flex-col">
                   <div className="flex flex-col w-full">
                     <label
-                      className="font-bold mb-1"
+                      className="font-bold pt-3 pb-3"
                       style={{ color: "rgb(48, 60, 123)" }}
                     >
                       Nature
@@ -420,7 +430,7 @@ const ClientForm = () => {
                     {/* Champ Code Postal */}
                     <div className="flex flex-col w-1/3">
                       <label
-                        className="font-bold mb-1"
+                        className="font-bold  pt-3 pb-3"
                         style={{ color: "rgb(48, 60, 123)" }}
                       >
                         C. Postal
@@ -429,7 +439,13 @@ const ClientForm = () => {
                         <input
                           type="text"
                           className="border border-gray-300 rounded-md p-2 w-full"
-                          value={clientInfos.cp? clientInfos.cp : ""}
+                          value={
+                            toolbarMode === "consultation"
+                              ? clientInfos.cp
+                              : toolbarTable === "codepostale"
+                              ? CpostaleInfo.CODEp
+                              : ""
+                          }
                           list="listeCodesPosteaux"
                           onChange={(e) => handleChangeCodePostal(e)}
                           disabled={!activerChampsForm}
@@ -452,7 +468,7 @@ const ClientForm = () => {
                     {/* Champ Ville + bouton */}
                     <div className="flex flex-col w-2/3">
                       <label
-                        className="font-bold mb-1"
+                        className="font-bold  pt-3 pb-3"
                         style={{ color: "rgb(48, 60, 123)" }}
                       >
                         Désignation code postal
@@ -461,7 +477,13 @@ const ClientForm = () => {
                         <input
                           type="text"
                           className="border border-gray-300 rounded-md p-2 w-full"
-                          value={clientInfos.desicp || ""}
+                          value={
+                            toolbarMode === "consultation"
+                              ? clientInfos.desicp
+                              : toolbarTable === "codepostale"
+                              ? CpostaleInfo.desicp
+                              : ""
+                          }
                           onChange={(e) => handleChange(e, "ville")}
                           disabled={!activerChampsForm}
                         />
@@ -486,7 +508,7 @@ const ClientForm = () => {
                     {/* Champ Secteur */}
                     <div className="flex flex-col w-1/3">
                       <label
-                        className="font-bold mb-1"
+                        className="font-bold  pt-3 pb-3"
                         style={{ color: "rgb(48, 60, 123)" }}
                       >
                         Secteur
@@ -496,6 +518,13 @@ const ClientForm = () => {
                         className="border border-gray-300 rounded-md p-2"
                         valeur={clientInfos.codes !== "" ?clientInfos.codes : ""}
                         disabled={!activerChampsForm}
+                        value={
+                          toolbarMode === "consultation"
+                            ? clientInfos.codesec
+                            : toolbarTable === "secteur"
+                            ? secteurInfo.codesec
+                            : ""
+                        }
                         list="listeCodesSecteur"
                         onChange={(e) => handleSecteurChange(e)}
                       />
@@ -515,7 +544,7 @@ const ClientForm = () => {
                     {/* Champ Type Secteur + bouton */}
                     <div className="flex flex-col w-2/3">
                       <label
-                        className="font-bold mb-1"
+                        className="font-bold  pt-3 pb-3"
                         style={{ color: "rgb(48, 60, 123)" }}
                       >
                         Désignation secteur
@@ -525,7 +554,13 @@ const ClientForm = () => {
                           type="text"
                           className="border border-gray-300 rounded-md p-2 w-full"
                           disabled={!activerChampsForm}
-                          value={clientInfos.desisec}
+                          value={
+                            toolbarMode === "consultation"
+                              ? clientInfos.desisec
+                              : toolbarTable === "secteur"
+                              ? secteurInfo.desisec
+                              : ""
+                          }
                         />
 
                         {(toolbarMode == "ajout" ||
@@ -547,7 +582,7 @@ const ClientForm = () => {
                     {/* Champ Région */}
                     <div className="flex flex-col w-1/3">
                       <label
-                        className="font-bold mb-1"
+                        className="font-bold  pt-3 pb-3"
                         style={{ color: "rgb(48, 60, 123)" }}
                       >
                         Région
@@ -558,6 +593,13 @@ const ClientForm = () => {
                         className="border border-gray-300 rounded-md p-2"
                         disabled={!activerChampsForm}
                         list="listeCodesRegion"
+                        value={
+                          toolbarMode === "consultation"
+                            ? clientInfos.codergg
+                            : toolbarTable === "region"
+                            ? RegionInfo.codergg
+                            : ""
+                        }
                         onChange={(e) => hundleRegionChange(e)}
                       />
                       <datalist id="listeCodesRegion">
@@ -576,7 +618,7 @@ const ClientForm = () => {
                     {/* Champ Type Région + bouton */}
                     <div className="flex flex-col w-2/3">
                       <label
-                        className="font-bold mb-1"
+                        className="font-bold  pt-3 pb-3"
                         style={{ color: "rgb(48, 60, 123)" }}
                       >
                         Désignation région
@@ -586,7 +628,13 @@ const ClientForm = () => {
                           type="text"
                           className="border border-gray-300 rounded-md p-2 w-full"
                           disabled={!activerChampsForm}
-                          value={clientInfos.desirgg}
+                          value={
+                            toolbarMode === "consultation"
+                              ? clientInfos.desirgg
+                              : toolbarTable === "region"
+                              ? RegionInfo.desirgg
+                              : ""
+                          }
                         />
                         {(toolbarMode == "ajout" ||
                           toolbarMode == "modification") && (
@@ -608,14 +656,96 @@ const ClientForm = () => {
           </div>
 
           <div className="recentCustomers">
-            <div className="collapse bg-base-100 border-base-300 border">
+            <div className="card rounded-box  space-y-2">
+              <h2
+                style={{
+                  color: "rgb(8, 9, 14)",
+                  fontWeight: "bold",
+                }}
+                className="text-xxl"
+              >
+                Paramètre de facturation
+              </h2>
+
+              <div className="flex flex-wrap">
+                <div className="flex flex-col w-1/3">
+                  <label
+                    className="font-bold mb-1"
+                    style={{ color: "rgb(48, 60, 123)" }}
+                  >
+                    Tel 1
+                  </label>
+
+                  <input
+                    type="text"
+                    className="border border-gray-300 rounded-md p-2"
+                    value={clientInfos.tel1 || ""}
+                    //  onChange={(e) => handleChangeTel(e, "tel1")}
+                    disabled={!activerChampsForm}
+                    maxLength={8}
+                  />
+                </div>
+                <div className="flex flex-col w-2/3">
+                  <label
+                    className="font-bold mb-1"
+                    style={{ color: "rgb(48, 60, 123)" }}
+                  >
+                    Tel 2
+                  </label>
+                  <input
+                    type="text"
+                    className="border border-gray-300 rounded-md p-2"
+                    value={clientInfos.tel2 || ""}
+                    // onChange={(e) => handleChangeTel(e, "tel2")}
+                    disabled={!activerChampsForm}
+                    maxLength={8}
+                  />
+                </div>
+              </div>
+              <div className="flex flex-wrap">
+                <div className="flex flex-col w-1/3">
+                  <label
+                    className="font-bold mt-1"
+                    style={{ color: "rgb(48, 60, 123)" }}
+                  >
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    className="border border-gray-300 rounded-md p-2"
+                    value={clientInfos.email || ""}
+                    onChange={(e) => handleChange(e, "email")}
+                    disabled={!activerChampsForm}
+                  />
+                </div>
+                <div className="flex flex-col w-2/3">
+                  <label
+                    className="font-bold  mt-1"
+                    style={{ color: "rgb(48, 60, 123)" }}
+                  >
+                    Fax
+                  </label>
+                  <input
+                    type="text"
+                    className="border border-gray-300 rounded-md p-2"
+                    value={clientInfos.fax || ""}
+                    // onChange={(e) => handleChangeFax(e, "fax")}
+                    disabled={!activerChampsForm}
+                    minLength={6}
+                    maxLength={9}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="collapse bg-base-100 border-base-300 border mt-6">
               <input type="checkbox" />
               <div
-                className="collapse-title font-semibold mb-1"
+                className="collapse-title font-semibold "
                 style={{ color: "rgb(48, 60, 123)" }}
               >
-                Paramètres de facturation
+                Liste client A bloquer
               </div>
+
               <div className="collapse-content text-sm">
                 <ParametresFacturationClient />
               </div>
@@ -624,32 +754,21 @@ const ClientForm = () => {
         </div>
         {/* 2eme whada */}
         <div className="details">
-          <div className="collapse bg-base-100 border-base-300 border">
-            <input type="checkbox" />
-            <div
-              className="collapse-title font-semibold mb-1"
-              style={{ color: "rgb(48, 60, 123)" }}
-            >
-              Banque
-            </div>
-            <div className="collapse-content text-sm">
-              <DetailsBanqueClient />
-            </div>
-          </div>
-
-          <div className="recentCustomers">
+          <div className="banquedetails">
             <div className="collapse bg-base-100 border-base-300 border">
               <input type="checkbox" />
               <div
                 className="collapse-title font-semibold mb-1"
                 style={{ color: "rgb(48, 60, 123)" }}
               >
-                Date de création et modification
+                Banque
               </div>
               <div className="collapse-content text-sm">
-                <DateCreateMAJ />
+                <DetailsBanqueClient />
               </div>
             </div>
+
+            <DateCreateMAJ />
           </div>
         </div>
       </div>

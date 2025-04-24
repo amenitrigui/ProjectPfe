@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import { Route, Routes, useLocation } from "react-router-dom";
@@ -59,11 +59,11 @@ function App() {
   useEffect(() => {
     dispatch(setToolbarMode("consultation"))
     dispatch(setActiverBoutonsValiderAnnuler(false))
-    dispatch(viderChampsArticleInfo());
-    dispatch(viderChampsCPostalInfo());
-    dispatch(viderChampsClientInfo());
-    dispatch(viderChampsDevisInfo());
-    dispatch(viderChampsRegionInfo());
+    // dispatch(viderChampsArticleInfo());
+    // dispatch(viderChampsCPostalInfo());
+    // dispatch(viderChampsClientInfo());
+    // dispatch(viderChampsDevisInfo());
+    // dispatch(viderChampsRegionInfo());
     if(location.pathname.toLowerCase() == "/dashboard") {
       dispatch(setIsDashBoardRoute(true));
     }if(location.pathname.toLowerCase() != "/dashboard") {

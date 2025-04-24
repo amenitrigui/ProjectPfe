@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
-function TableArticle() {
+function LignesDevis() {
   //?==================================================================================================================
   //?=====================================================Variables====================================================
   //?==================================================================================================================
@@ -54,7 +54,7 @@ function TableArticle() {
           </tr>
         </thead>
         <tbody>
-          {(devisInfo.articles || []).length > 0 ? (
+          {(devisInfo.articles && (devisInfo.articles).length) > 0 ? (
             devisInfo.articles.map((article) => (
               <tr
                 key={`${article.famille}-${article.CodeART}`}
@@ -99,4 +99,4 @@ function TableArticle() {
   );
 }
 
-export default TableArticle;
+export default LignesDevis;
