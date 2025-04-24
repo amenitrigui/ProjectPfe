@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import { Route, Routes, useLocation } from "react-router-dom";
@@ -34,6 +34,11 @@ import ImprimerDevis from "./pages/Devis/Imprimer";
 import SecteurForm from "./pages/Clients/SecteurForm";
 import Test1 from "./test/Test1";
 import Secteur_Region_CpostalForm  from "./pages/Clients/Secteur_Region_CpostalForm";
+import { viderChampsArticleInfo } from "./app/article_slices/articleSlice";
+import { viderChampsCPostalInfo } from "./app/cpostal_slices/cpostalSlice";
+import { viderChampsClientInfo } from "./app/client_slices/clientSlice";
+import { viderChampsDevisInfo } from "./app/devis_slices/devisSlice";
+import { viderChampsRegionInfo } from "./app/region_slices/regionSlice";
 
 function App() {
   //?==================================================================================================================
@@ -54,6 +59,11 @@ function App() {
   useEffect(() => {
     dispatch(setToolbarMode("consultation"))
     dispatch(setActiverBoutonsValiderAnnuler(false))
+    // dispatch(viderChampsArticleInfo());
+    // dispatch(viderChampsCPostalInfo());
+    // dispatch(viderChampsClientInfo());
+    // dispatch(viderChampsDevisInfo());
+    // dispatch(viderChampsRegionInfo());
     if(location.pathname.toLowerCase() == "/dashboard") {
       dispatch(setIsDashBoardRoute(true));
     }if(location.pathname.toLowerCase() != "/dashboard") {

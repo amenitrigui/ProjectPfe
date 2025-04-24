@@ -1,185 +1,96 @@
-import React, { useState } from "react";
-import SideBar from "../components/Common/SideBar";
-import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
-  faArrowLeft,
-  faArrowRight,
-  faBars,
-  faBoxesStacked,
-  faCheck,
-  faEdit,
-  faFolderPlus,
-  faHamburger,
-  faList,
-  faSignOut,
-  faStepBackward,
-  faTimes,
-  faTrashAlt,
-  faWrench,
-} from "@fortawesome/free-solid-svg-icons";
+  getVilleParCodePostal,
+  setClientInfos,
+  viderChampsClientInfo
+} from '../app/client_slices/clientSlice';
+import { setDevisInfo } from '../app/devis_slices/devisSlice';
+
 function Test1() {
-  const elementsDrawer = [
-    { name: "Dashboard", icon: "home-outline", path: "/dashboard" },
-    {
-      name: "Gestion Clients",
-      icon: "people-outline",
-      path: "/ClientFormTout",
-    },
-    {
-      name: "Gestion Articles",
-      icon: "chatbubble-outline",
-      path: "/ArticleFormTout",
-    },
-    {
-      name: "Gestion Devis",
-      icon: "lock-closed-outline",
-      path: "/DevisFormTout",
-    },
-    {
-      name: "Gestion Utilisateurs",
-      icon: "help-outline",
-      path: "/UtilisateurFormTout",
-    },
-    {
-      name: "Liste de société",
-      icon: "help-outline",
-      path: "/SocietiesList",
-    },
-    { name: "Settings", icon: "settings-outline", path: "/Parametres" },
-    {
-      name: "Déconnexion",
-      icon: "log-out-outline",
-      path: "/deconnexion",
-    },
-    {
-      name: "Déconnexion",
-      icon: "log-out-outline",
-      path: "/deconnexion",
-    },
-    {
-      name: "Déconnexion",
-      icon: "log-out-outline",
-      path: "/deconnexion",
-    },
-    {
-      name: "Déconnexion",
-      icon: "log-out-outline",
-      path: "/deconnexion",
-    },
-    {
-      name: "Déconnexion",
-      icon: "log-out-outline",
-      path: "/deconnexion",
-    },
-    {
-      name: "Déconnexion",
-      icon: "log-out-outline",
-      path: "/deconnexion",
-    },
-  ];
+  const dispatch = useDispatch();
+  const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
+  const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
+  const utilisateurConnecte = useSelector((state) => state.utilisateurSystemSlice.utilisateurConnecte);
+  const insertionDepuisDevisForm = useSelector((state) => state.devisSlice.insertionDepuisDevisForm);
 
-  const [afficher, setAfficher] = useState(false);
-
-  const toggleDrawer = () => {
-    setAfficher(!afficher);
+  const handleChange = (e, colonne) => {
+    if (e.target.value === '') {
+      dispatch(viderChampsClientInfo());
+    }
+    if (colonne === 'cp' && e.target.value.length === 4) {
+      dispatch(getVilleParCodePostal(e.target.value));
+    }
+    dispatch(setClientInfos({ colonne, valeur: e.target.value }));
+    if (insertionDepuisDevisForm) {
+      dispatch(setDevisInfo({ colonne, valeur: e.target.value }));
+    }
   };
+
   return (
     <>
-      <nav className="w-full border-b border-gray-300 px-4 py-2 bg-white shadow-sm overflow-x-auto">
-        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-          
-          <>
-          {/* Nouveau */}
-          <button
-              type="button"
-              className="flex flex-col items-center w-20 p-2 mr-20 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition-all duration-200"
-            >
-              <FontAwesomeIcon icon={faBars} className="text-xl mb-1" />
-              <span className="text-xs font-semibold">Menu</span>
-            </button>
-            {/* Nouveau */}
-            <button
-              type="button"
-              className="flex flex-col items-center w-20 p-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition-all duration-200"
-            >
-              <FontAwesomeIcon icon={faFolderPlus} className="text-xl mb-1" />
-              <span className="text-xs font-semibold">Nouveau</span>
-            </button>
-            {/* Modifier */}
-            <button
-              type="button"
-              className="flex flex-col items-center w-20 p-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-lg transition-all duration-200"
-            >
-              <FontAwesomeIcon icon={faEdit} className="text-xl mb-1" />
-              <span className="text-xs font-semibold">Modifier</span>
-            </button>
-            {/* Supprimer */}
-            <button
-              type="button"
-              className="flex flex-col items-center w-20 p-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition-all duration-200"
-            >
-              <FontAwesomeIcon icon={faTrashAlt} className="text-xl mb-1" />
-              <span className="text-xs font-semibold">Supprimer</span>
-            </button>
-            <button
-              type="button"
-              className="flex flex-col items-center w-20 p-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all duration-200"
-            >
-              <FontAwesomeIcon icon={faList} className="text-xl mb-1" />
-              <span className="text-xs font-semibold">Liste</span>
-            </button>
-            {/* Précédent */}
-            <button
-              type="button"
-              className="flex flex-col items-center w-20 p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-all duration-200"
-            >
-              <FontAwesomeIcon icon={faArrowLeft} className="text-xl mb-1" />
-              <span className="text-xs font-semibold">Précédent</span>
-            </button>
-            <button
-              type="button"
-              className="flex flex-col items-center w-20 p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-all duration-200"
-            >
-              <FontAwesomeIcon icon={faArrowRight} className="text-xl mb-1" />
-              <span className="text-xs font-semibold">Suivant</span>
-            </button>
-            {/* Edition */}
-            <button
-              type="button"
-              className="flex flex-col items-center w-20 p-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-lg transition-all duration-200"
-            >
-              <FontAwesomeIcon icon={faWrench} className="text-xl mb-1" />
-              <span className="text-xs font-semibold">Édition</span>
-            </button>
-            {/* Quitter */}
-            <button className="flex flex-col items-center w-20 p-2 bg-orange-100 hover:bg-orange-200 text-orange-700 rounded-lg transition-all duration-200">
-              <FontAwesomeIcon icon={faSignOut} />
-              <span>Quitter</span>
-            </button>
-          </>
-          <>
-            {/* Valider */}
-            <button
-              type="button"
-              className="flex flex-col items-center w-20 p-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all duration-200"
-            >
-              <FontAwesomeIcon icon={faCheck} className="text-xl mb-1" />
-              <span className="text-xs font-semibold">Valider</span>
-            </button>
+      {/* Le reste de la page ici */}
+      
+      <div className="fixed bottom-0 w-full bg-white shadow-inner border-t border-gray-300 z-50">
+        <div className="max-w-6xl mx-auto px-4 py-4">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            {(toolbarMode === "ajout" || toolbarMode === "consultation") && (
+              <>
+                <div className="flex flex-1 items-center space-x-2">
+                  <label className="w-28 font-medium text-sm text-gray-700">Création</label>
+                  <input
+                    type="text"
+                    className="border border-gray-300 rounded-md p-2 flex-1"
+                    value={
+                      clientInfos.usera ||
+                      `${utilisateurConnecte.codeuser} // ${utilisateurConnecte.nom}`
+                    }
+                    onChange={(e) => handleChange(e, "usera")}
+                    disabled
+                  />
+                </div>
+                <div className="flex flex-1 items-center space-x-2">
+                  <label className="w-28 font-medium text-sm text-gray-700">Date</label>
+                  <input
+                    type="date"
+                    className="border border-gray-300 rounded-md p-2 flex-1"
+                    value={clientInfos.datec}
+                    onChange={(e) => handleChange(e, "datec")}
+                    disabled
+                  />
+                </div>
+              </>
+            )}
 
-            {/* Annuler */}
-            <button
-              type="button"
-              className="flex flex-col items-center w-20 p-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg transition-all duration-200"
-            >
-              <FontAwesomeIcon icon={faTimes} className="text-xl mb-1" />
-              <span className="text-xs font-semibold">Annuler</span>
-            </button>
-          </>
+            {toolbarMode === "modification" && (
+              <>
+                <div className="flex flex-1 items-center space-x-2">
+                  <label className="w-28 font-medium text-sm text-gray-700">Modification</label>
+                  <input
+                    type="text"
+                    className="border border-gray-300 rounded-md p-2 flex-1"
+                    value={clientInfos.userm || ''}
+                    onChange={(e) => handleChange(e, "userm")}
+                    disabled
+                  />
+                </div>
+                <div className="flex flex-1 items-center space-x-2">
+                  <label className="w-28 font-medium text-sm text-gray-700">Date Maj</label>
+                  <input
+                    type="date"
+                    className="border border-gray-300 rounded-md p-2 flex-1"
+                    value={clientInfos.datemaj || ''}
+                    onChange={(e) => handleChange(e, "datemaj")}
+                    disabled
+                  />
+                </div>
+              </>
+            )}
+          </div>
         </div>
-      </nav>
+      </div>
     </>
   );
 }
+
 export default Test1;

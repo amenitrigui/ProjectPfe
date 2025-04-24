@@ -4,6 +4,8 @@ import { useState } from "react";
 import ToolBar from "../Common/ToolBar";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  getArticleParCode,
+  getDerniereCodeArticle,
   getDesignationFamilleParCodeFamille,
   getdesignationSousFamillebycodeSousFamille,
   getListeCodesArticles,
@@ -27,21 +29,26 @@ import {
 import Tab from "./Tab";
 import OptionsArticle from "./OptionsArticle";
 import { ResponsiveContainer } from "recharts";
+import DateCreateMAJ from "../Common/DateCreateMAJ";
 function ArticleForm() {
   //?==================================================================================================================
   //?=====================================================variables====================================================
   //?==================================================================================================================
+  const dispatch = useDispatch();
   // * pour afficher le sidebar
   const ouvrireMenuDrawer = useSelector(
     (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
   const articleInfos = useSelector((state) => state.articleSlice.articleInfos);
+  console.log(articleInfos)
   const ListeFamille = useSelector((state) => state.articleSlice.ListeFamille);
   const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
   const ListeSousFamille = useSelector(
     (state) => state.articleSlice.ListeSousFamille
   );
-  const dispatch = useDispatch();
+  const derniereCodeArticle = useSelector(
+    (state) => state.articleSlice.derniereCodeArticle
+  );
   //?==================================================================================================================
   //?==============================================appels UseEffect====================================================
   //?==================================================================================================================
@@ -86,6 +93,16 @@ function ArticleForm() {
     }
   }, [articleInfos.code]);
 
+  useEffect(() => {
+    dispatch(getDerniereCodeArticle());
+  }, []);
+
+  useEffect(() => {
+    if (derniereCodeArticle && derniereCodeArticle != "") {
+      dispatch(getArticleParCode(derniereCodeArticle));
+    }
+  }, [derniereCodeArticle]);
+
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
@@ -113,7 +130,7 @@ function ArticleForm() {
         dispatch(getdesignationSousFamillebycodeSousFamille(valeur));
       } else {
         dispatch(
-            setArticleInfos({ colonne: "Libellesousfamille", valeur: "" })
+          setArticleInfos({ colonne: "Libellesousfamille", valeur: "" })
         );
       }
     }
@@ -383,6 +400,7 @@ function ArticleForm() {
                       <OptionsArticle />
                     </ResponsiveContainer>
                   </div>
+                  <DateCreateMAJ objet={articleInfos}></DateCreateMAJ>
                 </div>
               </div>
             </div>

@@ -749,7 +749,28 @@ const getNbTotalDevisGeneres = async (req, res) => {
     const Devis = defineDfpModel(dbConnection);
     const nbDevisGeneresTotal = await Devis.count({
       where: {
-        executer: "G",
+        [Op.and]: [
+          {
+            [Op.not]: {
+              executer: "N",
+            },
+          },
+          {
+            [Op.not]: {
+              executer: "",
+            },
+          },
+          {
+            [Op.not]: {
+              executer: "A",
+            },
+          },
+          {
+            [Op.not]: {
+              executer: null,
+            },
+          },
+        ],
       },
     });
     console.log(nbDevisGeneresTotal);
@@ -782,7 +803,36 @@ const getNbTotalDevisGeneresParUtilisateur = async (req, res) => {
 
     const nbDevisGeneresTotal = await Devis.count({
       where: {
-        [Op.and]: [{ executer: "G" }, { usera: codeuser }],
+        [Op.and]: [
+          {
+            [Op.not]: {
+              executer: "N",
+            },
+          },
+          {
+            [Op.not]: {
+              executer: "",
+            },
+          },
+          {
+            [Op.not]: {
+              executer: "A",
+            },
+          },
+          {
+            [Op.not]: {
+              executer: "C",
+            },
+          },
+          {
+            [Op.not]: {
+              executer: null,
+            },
+          },
+          {
+            usera: codeuser,
+          },
+        ],
       },
     });
     console.log(nbDevisGeneresTotal);
@@ -815,7 +865,16 @@ const getNbDevisNonGeneresParUtilisateur = async (req, res) => {
     const Devis = defineDfpModel(dbConnection);
     const nbDevisNonGeneresParUtilisateur = await Devis.count({
       where: {
-        [Op.and]: [{ executer: `` }, { usera: codeuser }],
+        [Op.and]: [
+          {
+            [Op.not]: {
+              executer: "G",
+            },
+          },
+          {
+            usera: codeuser,
+          },
+        ],
       },
     });
     return res.status(200).json({
@@ -843,7 +902,7 @@ const getNbTotalDevisAnnulees = async (req, res) => {
     const Devis = defineDfpModel(dbConnection);
     const nbDevisANnulees = await Devis.count({
       where: {
-        executer: "A",
+        executer: "A", 
       },
     });
 
@@ -927,10 +986,6 @@ const getNbTotalDevisSansStatus = async (req, res) => {
     dbConnection.close();
   }
 };
-// ! still testing !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// !!!!!!
-// ! thou art warned !!!!!!!!!!!!
-// ! !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // * url : http://localhost:5000/api/devis/SOLEVO/getListeDevisAvecPagination?page=1&limit=10
 const getListeDevisAvecPagination = async (req, res) => {
   const { dbName } = req.params;
@@ -977,13 +1032,11 @@ const getAnneesDistinctGenerationDevis = async (req, res) => {
       raw: true,
     });
 
-    return res
-      .status(200)
-      .json({
-        message:
-          "annees distinctes de generation de devis recuperées avec succès",
-        annees,
-      });
+    return res.status(200).json({
+      message:
+        "annees distinctes de generation de devis recuperées avec succès",
+      annees,
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   } finally {
@@ -1059,5 +1112,5 @@ module.exports = {
   getNbTotalDevisSansStatus,
   getListeDevisAvecPagination,
   getAnneesDistinctGenerationDevis,
-  getNbDevisGeneresParAnnee
+  getNbDevisGeneresParAnnee,
 };

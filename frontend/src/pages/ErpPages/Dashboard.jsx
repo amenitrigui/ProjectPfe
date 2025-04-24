@@ -110,8 +110,8 @@ const Dashboard = () => {
   const statsDevis = [
     { name: "Générés", value: nbTotalDevisGeneres },
     { name: "Annulées", value: nbTotalDevisAnnulees },
-    { name: "En cours", value: nbDevisEncours },
-    { name: "Sans Status", value: nbTotDevisSansStatus },
+    { name: `Générés par ${utilisateurConnecte.codeuser}`, value: nbTotalDevisGeneresParUtilisateur },
+    { name: `Non Générés ${utilisateurConnecte.codeuser}`, value: nbTotalDevisNonGeneresParUtilisateur },
   ];
   const anneesDistinctGenerationDevis = useSelector((state) => state.devisSlice.anneesDistinctGenerationDevis);
   //?==================================================================================================================
@@ -213,7 +213,7 @@ const Dashboard = () => {
                   nameKey="name"
                   cx="50%"
                   cy="50%"
-                  outerRadius={80}
+                  outerRadius={70}
                   fill="#8884d8"
                   label
                 >
@@ -242,7 +242,7 @@ const Dashboard = () => {
                   nameKey="name"
                   cx="50%"
                   cy="50%"
-                  outerRadius={80}
+                  outerRadius={70}
                   fill="#82ca9d"
                   label
                 >
@@ -262,8 +262,9 @@ const Dashboard = () => {
           {/* Bar Chart */}
           <div className="p-4 bg-white shadow rounded">
             <div className="cardHeader mb-4">
-              <h2>Nombre Devis par Mois et Année</h2>
+              <h2>Nombre de devis générés par mois et année</h2>
             </div>
+            <input type="checkbox" /> Afficher les résultats pour l'utilisateur courant
             <select className="w-full select border-none focus:outline-none focus:ring-0 appearance-none" value={anneeSelectionne} onChange={(e) => {setAnneeSelectionne(e.target.value)}}>
               {anneesDistinctGenerationDevis.map((annee) => {
                 return (

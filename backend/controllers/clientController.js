@@ -115,6 +115,8 @@ const AjouterClient = async (req, res) => {
       adresse: clientInfos.adresse,
       activite: clientInfos.activite,
       cp: clientInfos.cp,
+      codes: clientInfos.codes,
+      coder: clientInfos.coder,
       desicp: clientInfos.desicp,
       nature: clientInfos.nature, // !
       desisec: clientInfos.desisec, // !
@@ -132,20 +134,23 @@ const AjouterClient = async (req, res) => {
       gsm1: clientInfos.gsm1,
       gsm2: clientInfos.gsm2,
       gsm3: clientInfos.gsm3,
-      datec:clientInfos.datec,
+      datcreat:clientInfos.datcreat,
       nposte1: clientInfos.nposte1,
       nposte2: clientInfos.nposte2,
       nposte3: clientInfos.nposte3,
       Commentaire: clientInfos.Commentaire,
-      usera: clientInfos.usera, // ! 
+      codepv: clientInfos.codepv,
+      usera: clientInfos.usera,
       fact: clientInfos.fact, // ! checkbox à vérifier
-      timbref: clientInfos.timbref, // ! checkbox à vérifier
-      cltexport: clientInfos.cltexport, // ! checkbox à vérifier
-      suspfodec: clientInfos.suspfodec, // ! checkbox à vérifier
-      regime: clientInfos.regime, // ! checkbox à vérifier
-      exon: clientInfos.exon, // ! checkbox à vérifier
-      majotva: clientInfos.majotva, // ! checkbox à vérifier
-      fidel: clientInfos.fidel, // ! checkbox à vérifier
+      timbref: clientInfos.timbref,
+      cltexport: clientInfos.cltexport,
+      suspfodec: clientInfos.suspfodec,
+      regime: clientInfos.regime,
+      exon: clientInfos.exon,
+      majotva: clientInfos.majotva,
+      fidel: clientInfos.fidel,
+      ptva: clientInfos.ptva,
+      offretick: clientInfos.offretick,
       datefinaut: clientInfos.datefinaut,
       datedebaut: clientInfos.datedebaut,
       decision: clientInfos.decision,

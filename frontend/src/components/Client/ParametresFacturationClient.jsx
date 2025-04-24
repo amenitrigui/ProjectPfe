@@ -22,14 +22,7 @@ function ParametresFacturationClient() {
       dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
     }
   };
-  const handleChangeFax = (e, colonne) => {
-    if (!isNaN(e.target.value)) {
-      dispatch(setClientInfos({ colonne: "fax", valeur: e.target.value }));
-    }
-    if (e.target.value == "") {
-      dispatch(setClientInfos({ colonne: "fax", valeur: "" }));
-    }
-  };
+  
 
   const handleChangeNumeriqueDouble = (e, colonne) => {
     if (!isNaN(parseFloat(e.target.value))) {
@@ -41,6 +34,7 @@ function ParametresFacturationClient() {
       dispatch(setClientInfos({ colonne: "decision", valeur: e.target.value }));
   };
   const hundleSelectTous = (e, champ) => {
+    console.log("champ: ",champ," valeur: ",e.target.value)
     dispatch(setClientInfos({ colonne: champ, valeur: e.target.value }));
   };
   const handleChangeAlphaphetique = (e, colonne) => {
@@ -56,7 +50,7 @@ function ParametresFacturationClient() {
   const handleChange = (e, colonne) => {
     // * si aucun code client est selectionné
     // * vider les champs
-    if (e.target.value == "") {
+    if (colonne === "code" && e.target.value == "") {
       dispatch(viderChampsClientInfo());
     }
     if (e)
@@ -71,83 +65,11 @@ function ParametresFacturationClient() {
 
   return (
     <>
-      <div className="card rounded-box p-6 space-y-2">
+      <div className="card rounded-box p-0 space-y-2">
         {/* Conteneur pour Code Client, Type Client et CIN */}
-        <div className="flex flex-wrap">
-          <div className="flex flex-col w-1/3">
-            <label
-              className="font-bold mb-1"
-              style={{ color: "rgb(48, 60, 123)" }}
-            >
-              Tel 1
-            </label>
+        
 
-            <input
-              type="text"
-              className="border border-gray-300 rounded-md p-2"
-              value={clientInfos.tel1 || ""}
-              onChange={(e) => handleChangeTel(e, "tel1")}
-              disabled={!activerChampsForm}
-              maxLength={8}
-            />
-          </div>
-          <div className="flex flex-col w-2/3">
-            <label
-              className="font-bold mb-1"
-              style={{ color: "rgb(48, 60, 123)" }}
-            >
-              Tel 2
-            </label>
-            <input
-              type="text"
-              className="border border-gray-300 rounded-md p-2"
-              value={clientInfos.tel2 || ""}
-              onChange={(e) => handleChangeTel(e, "tel2")}
-              disabled={!activerChampsForm}
-              maxLength={8}
-            />
-          </div>
-        </div>
-        <div className="flex flex-wrap">
-          <div className="flex flex-col w-1/3">
-            <label
-              className="font-bold mb-1"
-              style={{ color: "rgb(48, 60, 123)" }}
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              className="border border-gray-300 rounded-md p-2"
-              value={clientInfos.email || ""}
-              onChange={(e) => handleChange(e, "email")}
-              disabled={!activerChampsForm}
-            />
-          </div>
-          <div className="flex flex-col w-2/3">
-            <label
-              className="font-bold mb-1"
-              style={{ color: "rgb(48, 60, 123)" }}
-            >
-              Fax
-            </label>
-            <input
-              type="text"
-              className="border border-gray-300 rounded-md p-2"
-              value={clientInfos.fax || ""}
-              onChange={(e) => handleChangeFax(e, "fax")}
-              disabled={!activerChampsForm}
-              minLength={6}
-              maxLength={9}
-            />
-          </div>
-        </div>
-
-        <div className="flex flex-cols">
-          <button className="btn" disabled={activerChampsForm}>
-            Liste clients bloquer
-          </button>
-        </div>
+       
 
         <table className="table table-xl w-full">
           {/* head */}
@@ -313,13 +235,14 @@ function ParametresFacturationClient() {
 
             <select
               className="border border-gray-300 rounded-md p-2"
+              value={clientInfos.tarif || ""}
               disabled={!activerChampsForm}
               onChange={(e) => hundleSelectTous(e, "tarif")}
             >
-              <option value="prix1">prix1</option>
-              <option value="prix2">prix2</option>
-              <option value="prix3">prix3</option>
-              <option value="prix4">prix4</option>
+              <option value="Prix 1">Prix 1</option>
+              <option value="Prix 2">Prix 2</option>
+              <option value="Prix 3">Prix 3</option>
+              <option value="Prix 4">Prix 4</option>
             </select>
           </div>
         </div>
@@ -387,13 +310,14 @@ function ParametresFacturationClient() {
             </label>
             <select
               className="border border-gray-300 rounded-md p-2 w-11/12"
+              value={clientInfos.blockage === "1" || clientInfos.blockage?.toUpperCase() === "O"? "1" : "0"}
               disabled={!activerChampsForm}
               onChange={(e) => {
                 hundleSelectTous(e, "blockage");
               }}
             >
-              <option value="O">O</option>
-              <option value="N">N</option>
+              <option value="1">O</option>
+              <option value="0">N</option>
             </select>
           </div>
           <div className="flex flex-col">
@@ -402,13 +326,14 @@ function ParametresFacturationClient() {
             </label>
             <select
               className="border border-gray-300 rounded-md p-2 w-11/12"
+              value={clientInfos.contrat === "1" || clientInfos.contrat?.toUpperCase() === "O"? "1" : "0"}
               disabled={!activerChampsForm}
               onChange={(e) => {
-                hundleSelectTous(e, "Contrat");
+                hundleSelectTous(e, "contrat");
               }}
             >
-              <option value="O">O</option>
-              <option value="N">N</option>
+              <option value="1">O</option>
+              <option value="0">N</option>
             </select>
           </div>
         </div>

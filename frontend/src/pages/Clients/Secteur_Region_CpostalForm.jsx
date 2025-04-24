@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled, { keyframes } from "styled-components";
-import { setAfficherSecteurPopup } from "../../app/interface_slices/interfaceSlice";
+import {
+  setAfficherSecteurPopup,
+  setToolbarTable,
+} from "../../app/interface_slices/interfaceSlice";
 import {
   ajouterSecteur,
   setSecteurInfos,
@@ -13,7 +16,10 @@ import {
 import {
   ajouterCodePostal,
   setCodePostaleInfos,
+  viderChampsCPostalInfo,
 } from "../../app/cpostal_slices/cpostalSlice";
+import { useLocation } from "react-router-dom";
+import { ajouterpointVente, setPointVenteInfos } from "../../app/pointVente_slice/pointVenteSlice";
 
 // Animation
 const fadeIn = keyframes`
@@ -120,6 +126,7 @@ const SubmitButton = styled.button`
 
 const Secteur_Region_CpostalForm = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const afficherSecteurPopup = useSelector(
     (state) => state.interfaceSlice.afficherSecteurPopup
@@ -136,9 +143,13 @@ const Secteur_Region_CpostalForm = () => {
 
   const togglePopup = () => {
     dispatch(setAfficherSecteurPopup(false));
+    if (location.pathname.toLowerCase() === "/clientformtout") {
+      dispatch(setToolbarTable("client"));
+    }
   };
 
   const handleChange = (colonne, valeur) => {
+    console.log(colonne, " ", valeur);
     if (toolbartable == "secteur") {
       dispatch(setSecteurInfos({ colonne, valeur }));
     }
@@ -148,27 +159,43 @@ const Secteur_Region_CpostalForm = () => {
     if (toolbartable == "codepostale") {
       dispatch(setCodePostaleInfos({ colonne, valeur }));
     }
-    console.log(secteurInfo)
-    console.log(regionInfo)
-
+    if (toolbartable=="pointvente")
+    {
+      dispatch(setPointVenteInfos({colonne,valeur}))
+    }
+    console.log(secteurInfo);
+    console.log(regionInfo);
   };
-
+const pointVenteInfo= useSelector((state)=>state.pointVenteSlice.pointVenteInfo)
   const handleSubmit = (e) => {
     e.preventDefault();
     togglePopup();
   };
 
   const hundleAjout = () => {
-    if (toolbartable === "secteur") dispatch(ajouterSecteur());
-    if (toolbartable === "region") dispatch(ajouterRegion());
-    if (toolbartable === "codepostale") dispatch(ajouterCodePostal());
+    if (toolbartable === "secteur") {
+      dispatch(ajouterSecteur());
+      console.log(secteurInfo);
+    }
+    if (toolbartable === "region") {
+      dispatch(ajouterRegion());
+    }
+    if (toolbartable === "codepostale") {
+      dispatch(ajouterCodePostal());
+    }
+    if (toolbartable==="pointvente"){
+      dispatch(ajouterpointVente())
+    }
+    togglePopup();
+    
   };
 
   const getCodeValue = () => {
-  
     if (toolbartable === "secteur") return secteurInfo.codesec;
     if (toolbartable === "region") return regionInfo.codergg;
     if (toolbartable === "codepostale") return cpostaleInfo.CODEp;
+    if (toolbartable === "pointvente") return cpostaleInfo.Code;
+
 
     return "";
   };
@@ -177,17 +204,23 @@ const Secteur_Region_CpostalForm = () => {
     if (toolbartable === "secteur") return "Code secteur";
     if (toolbartable === "region") return "Code région";
     if (toolbartable === "codepostale") return "Code postale";
+    if (toolbartable === "pointvente") return "Code pointVente";
+
     return "";
   };
   const getLabel2 = () => {
     if (toolbartable === "secteur") return "designation Secteur";
     if (toolbartable === "region") return "designation region";
     if (toolbartable === "codepostale") return "designation code postale";
+    if (toolbartable === "pointvente") return "designation code point vente";
+
   };
   const getDesignationValue = () => {
     if (toolbartable === "secteur") return secteurInfo.desisec;
     if (toolbartable === "region") return regionInfo.desirgg;
     if (toolbartable === "codepostale") return cpostaleInfo.desicp;
+    if (toolbartable === "pointvente") return pointVenteInfo.Libelle;
+
     return "";
   };
 
@@ -196,6 +229,8 @@ const Secteur_Region_CpostalForm = () => {
     if (toolbartable === "secteur") handleChange("desisec", valeur);
     if (toolbartable === "region") handleChange("desirgg", valeur);
     if (toolbartable === "codepostale") handleChange("desicp", valeur);
+    if (toolbartable === "pointvente") handleChange("Libelle", valeur);
+
   };
 
   return (
@@ -203,7 +238,16 @@ const Secteur_Region_CpostalForm = () => {
       {afficherSecteurPopup && (
         <PopupContainer>
           <PopupContent>
-            <h2>Formulaire Popup</h2>
+            <h2>
+              Formulaire{" "}
+              {toolbartable === "secteur"
+                ? "Secteur"
+                : toolbartable === "region"
+                ? "Région"
+                : toolbartable === "codepostale"
+                ? "Code postale"
+                : ""}
+            </h2>
             <form onSubmit={handleSubmit}>
               <FormGroup>
                 <FormLabel htmlFor="champ1">{getLabel()}</FormLabel>
@@ -214,11 +258,17 @@ const Secteur_Region_CpostalForm = () => {
                   value={getCodeValue()}
                   onChange={(e) => {
                     const val = e.target.value;
-                    if (toolbartable === "secteur")
+                    if (toolbartable === "secteur") {
                       handleChange("codesec", val);
-                    if (toolbartable === "region") handleChange("codergg", val);
-                    if (toolbartable === "codepostale")
+                    }
+                    if (toolbartable === "region") {
+                      handleChange("codergg", val);
+                    }
+                    if (toolbartable === "codepostale") {
                       handleChange("CODEp", val);
+                    }
+                    if (toolbartable==="pointvente")
+                      handleChange("Code",val)
                   }}
                   required
                 />

@@ -266,6 +266,19 @@ export const getListeArticleParCodeArticle = createAsyncThunk(
   }
 );
 
+export const getDerniereCodeArticle = createAsyncThunk(
+  "articleSlice/getDerniereCodeArticle",
+  async(_,thunkAPI) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/article/${
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getDerniereCodeArticle`
+    )
+
+    return response.data.derniereCodeArticle.code;
+  }
+)
+
 const defaultArticleInfos = {
   // ! ajouter les valeurs par défaut pour les états de checkbox
   code: "",
@@ -300,6 +313,7 @@ const defaultArticleInfos = {
   datemaj: new Date().toISOString().split("T")[0],
   libelleFamille: "",
   Libellesousfamille: "",
+  derniereCodeArticle: "",
 };
 
 export const articleSlice = createSlice({
@@ -512,14 +526,22 @@ export const articleSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getListeArticleParCodeArticle.fulfilled, (state, action) => {
-        
         state.ListeArticle = action.payload;
-       
-       
-
         state.status = "reussi";
       })
       .addCase(getListeArticleParCodeArticle.rejected, (state, action) => {
+        state.erreur = action.payload;
+        state.status = "echoue";
+      })
+      
+      .addCase(getDerniereCodeArticle.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getDerniereCodeArticle.fulfilled, (state, action) => {
+        state.derniereCodeArticle = action.payload;
+        state.status = "reussi";
+      })
+      .addCase(getDerniereCodeArticle.rejected, (state, action) => {
         state.erreur = action.payload;
         state.status = "echoue";
       });

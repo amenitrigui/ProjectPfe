@@ -62,7 +62,7 @@ export const cpostalSlice = createSlice({
       })
       .addCase(ajouterCodePostal.fulfilled, (state, action) => {
         state.status = "réussi";
-       // state.li = action.payload;
+        state.CpostaleInfo = action.payload;
       })
       .addCase(ajouterCodePostal.rejected, (state, action) => {
         state.status = "échoué";

@@ -131,7 +131,12 @@ const selectDatabase = async (req, res) => {
     const decoded = verifyTokenValidity(req);
     const codeuser = decoded.codeuser;
     await getDbConnection(databaseName);
-
+    const Utilisateur = defineUserModel(connexionDbUserErp)
+    await Utilisateur.update({socutil: databaseName},{
+      where: {
+        codeuser: codeuser
+      }
+    })
     return res.status(200).json({
       message: `Connecté à la base ${databaseName}`,
       databaseName,
