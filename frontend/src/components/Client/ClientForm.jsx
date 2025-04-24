@@ -44,6 +44,19 @@ const ClientForm = () => {
   const infosUtilisateur = useSelector(
     (state) => state.utilisateurSlice.infosUtilisateur
   );
+   const handleChangeTel = (e, colonne) => {
+      if (isNumerique(e.target.value)) {
+        dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
+      }
+    };
+    const handleChangeFax = (e, colonne) => {
+      if (!isNaN(e.target.value)) {
+        dispatch(setClientInfos({ colonne: "fax", valeur: e.target.value }));
+      }
+      if (e.target.value == "") {
+        dispatch(setClientInfos({ colonne: "fax", valeur: "" }));
+      }
+    };
   const listeCodesRegion = useSelector(
     (state) => state.clientSlice.listeCodesRegion
   );
@@ -73,13 +86,27 @@ const ClientForm = () => {
   }, [dernierCodeClient]);
 
   useEffect(() => {
-    console.log(clientInfos.code);
+    if (
+      clientInfos &&
+      clientInfos.code &&
+      clientInfos.code != "" &&
+      clientInfos.code != (parseInt(dernierCodeClient) + 1).toString()
+    ) {
+      dispatch(getClientParCode(clientInfos.code));
+    }
   }, [clientInfos.code]);
 
   useEffect(() => {
-    console.log(toolbarMode);
-    if (toolbarMode === "ajout") {
+    if (toolbarMode === "consultation") {
       dispatch(getClientParCode(parseInt(dernierCodeClient) + 1));
+    }
+    if (toolbarMode === "ajout") {
+      dispatch(
+        setClientInfos({
+          colonne: "code",
+          valeur: (parseInt(dernierCodeClient) + 1).toString(),
+        })
+      );
     }
   }, [toolbarMode]);
 
@@ -106,7 +133,7 @@ const ClientForm = () => {
   const handleChange = (e, colonne) => {
     // * si aucun code client est selectionné
     // * vider les champs
-    if (e.target.value == "") {
+    if (colonne == "code" && e.target.value == "") {
       dispatch(viderChampsClientInfo());
     }
     if (e)
@@ -130,6 +157,7 @@ const ClientForm = () => {
   };
 
   const handleSecteurChange = (e) => {
+    dispatch(setClientInfos({ colonne: "codes", valeur: e.target.value }));
     if (e.target.value.length == 3) {
       dispatch(getDesignationSecteurparCodeSecteur(e.target.value));
     }
@@ -138,6 +166,7 @@ const ClientForm = () => {
     }
   };
   const hundleRegionChange = (e) => {
+    dispatch(setClientInfos({ colonne: "coder", valeur: e.target.value }));
     if (e.target.value.length == 3) {
       dispatch(getVilleParRegion(e.target.value));
     }
@@ -194,15 +223,8 @@ const ClientForm = () => {
   console.log(toolbarTable);
 
   const hundleClickButtonSecRegCp = (colonne) => {
-    if (colonne == "secteur") {
-      dispatch(setToolbarTable("secteur"));
-    }
-    if (colonne == "region") {
-      dispatch(setToolbarTable("region"));
-    }
-    if (colonne == "codepostale") {
-      dispatch(setToolbarTable("codepostale"));
-    }
+    dispatch(setToolbarTable(colonne))
+    
     dispatch(setAfficherSecteurPopup(true));
   };
 
@@ -224,6 +246,7 @@ const ClientForm = () => {
       dispatch(setActiverBoutonsValiderAnnuler(true));
     }
   }, [insertionDepuisDevisForm]);
+  console.log(clientInfos);
   return (
     <div className="container">
       <SideBar />
@@ -332,7 +355,7 @@ const ClientForm = () => {
                   />
                 </div>
                 <div className="flex flex-wrap gap-0">
-                  <div className="flex flex-col w-1/2">
+                  <div className="flex flex-col w-1/3">
                     <label
                       className="font-bold mb-1"
                       style={{ color: "rgb(48, 60, 123)" }}
@@ -347,20 +370,35 @@ const ClientForm = () => {
                       onChange={(e) => handleChange(e, "codepv")} //codpv
                     />
                   </div>
-                  <div className="flex flex-col w-1/2">
+                  <div className="flex flex-col w-2/3">
                     <label
                       className="font-bold mb-1"
                       style={{ color: "rgb(48, 60, 123)" }}
                     >
                       Libelle P. Vente
                     </label>
-                    <input
-                      type="text"
-                      className="border border-gray-300 rounded-md p-2"
-                      disabled={!activerChampsForm}
-                      value={clientInfos.Libelle || ""}
-                      onChange={(e) => handleChange(e, "Libelle")}
-                    />
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="text"
+                        className="border border-gray-300 rounded-md p-2 w-full"
+                        disabled={!activerChampsForm}
+                        value={clientInfos.Libelle || ""}
+                        onChange={(e) => handleChange(e, "Libelle")}
+                      />
+                      {(toolbarMode == "ajout" ||
+                        toolbarMode == "modification") && (
+                        <button
+                          type="button"
+                          className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition"
+                          // disabled={!activerChampsForm}
+                          onClick={() =>
+                            hundleClickButtonSecRegCp("pointvente")
+                          }
+                        >
+                          +
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
                 <div className="flex flex-col w-full gap-0">
@@ -441,7 +479,7 @@ const ClientForm = () => {
                         className="font-bold  pt-3 pb-3"
                         style={{ color: "rgb(48, 60, 123)" }}
                       >
-                        Ville
+                        Désignation code postal
                       </label>
                       <div className="flex items-center space-x-2">
                         <input
@@ -486,6 +524,7 @@ const ClientForm = () => {
                       <input
                         type="text"
                         className="border border-gray-300 rounded-md p-2"
+                        valeur={clientInfos.codes !== "" ?clientInfos.codes : ""}
                         disabled={!activerChampsForm}
                         value={
                           toolbarMode === "consultation"
@@ -516,7 +555,7 @@ const ClientForm = () => {
                         className="font-bold  pt-3 pb-3"
                         style={{ color: "rgb(48, 60, 123)" }}
                       >
-                        Type Secteur
+                        Désignation secteur
                       </label>
                       <div className="flex items-center space-x-2">
                         <input
@@ -558,6 +597,7 @@ const ClientForm = () => {
                       </label>
                       <input
                         type="text"
+                        valeur={clientInfos.coder !== "" ? clientInfos.coder : ""}
                         className="border border-gray-300 rounded-md p-2"
                         disabled={!activerChampsForm}
                         list="listeCodesRegion"
@@ -589,7 +629,7 @@ const ClientForm = () => {
                         className="font-bold  pt-3 pb-3"
                         style={{ color: "rgb(48, 60, 123)" }}
                       >
-                        Type Région
+                        Désignation région
                       </label>
                       <div className="flex items-center space-x-2">
                         <input
@@ -648,7 +688,7 @@ const ClientForm = () => {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     value={clientInfos.tel1 || ""}
-                    //  onChange={(e) => handleChangeTel(e, "tel1")}
+                      onChange={(e) => handleChangeTel(e, "tel1")}
                     disabled={!activerChampsForm}
                     maxLength={8}
                   />
@@ -664,7 +704,7 @@ const ClientForm = () => {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     value={clientInfos.tel2 || ""}
-                    // onChange={(e) => handleChangeTel(e, "tel2")}
+                     onChange={(e) => handleChangeTel(e, "tel2")}
                     disabled={!activerChampsForm}
                     maxLength={8}
                   />
@@ -697,7 +737,7 @@ const ClientForm = () => {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     value={clientInfos.fax || ""}
-                    // onChange={(e) => handleChangeFax(e, "fax")}
+                     onChange={(e) => handleChangeFax(e, "fax")}
                     disabled={!activerChampsForm}
                     minLength={6}
                     maxLength={9}

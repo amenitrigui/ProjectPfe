@@ -261,11 +261,11 @@ export const clientSlice = createSlice({
     clientInfos: {
       code: "",
       rsoc: "",
-      datec: new Date().toISOString().split("T")[0],
+      datcreat: new Date().toISOString().split("T")[0],
       cp: "",
       adresse: "",
       email: "",
-      matemaj:"",
+      matemaj: "",
       telephone: "",
       tel1: "",
       tel2: "",
@@ -318,10 +318,6 @@ export const clientSlice = createSlice({
     listeToutCodesPosteaux: [],
     status: "inactive",
     erreur: null,
-    // todo: change this to french
-    // todo: this is for later tho
-    // todo: hence the "todo"
-    // todo: todo
     filters: {
       code: "",
       rsoc: "",
@@ -362,6 +358,7 @@ export const clientSlice = createSlice({
         telephone: "",
         tel1: "",
         tel2: "",
+        datcreat: new Date().toISOString().split("T")[0],
         telex: "",
         desrep: "",
         aval2: "",
@@ -370,14 +367,24 @@ export const clientSlice = createSlice({
         datemaj: "",
         userm: "",
         usera: "",
-        offretick: "",
-        timbref: "",
-        cltexport: "",
-        suspfodec: "",
-        regime: "",
-        exon: "",
-        majotva: "",
-        fidel: "",
+        // ? les champs suivantes sont des checkboxes
+        // ? on initialise leurs valeurs à 0 pour dire
+        // ? que initialement ils sont décochés
+        offretick: "0",
+        timbref: "0",
+        cltexport: "0",
+        suspfodec: "0",
+        regime: "0",
+        exon: "0",
+        majotva: "0",
+        fidel: "0",
+        // ? =========================================
+        // ? les champs suivantes sont des selects
+        // ? on initialise leurs valeurs à 0 pour dire
+        // ? Non (N)
+        blockage: "0",
+        contrat: "0",
+        // ? ==========================================
         datefinaut: "",
         datedebaut: "",
         decision: "",
@@ -393,10 +400,8 @@ export const clientSlice = createSlice({
         typecli: "L",
         cin: "",
         fax: "",
-
         codesec: "",
         desisec: "",
-
         codergg: "",
         desirgg: "",
         desicp: "",
@@ -527,7 +532,7 @@ export const clientSlice = createSlice({
       })
       .addCase(getClientParRaisonSociale.fulfilled, (state, action) => {
         state.listeClients = action.payload;
-        
+
         state.status = "réussi";
       })
       .addCase(getClientParRaisonSociale.rejected, (state, action) => {

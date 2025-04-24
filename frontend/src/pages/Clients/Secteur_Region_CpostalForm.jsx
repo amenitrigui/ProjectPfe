@@ -15,6 +15,7 @@ import {
   setCodePostaleInfos,
   viderChampsCPostalInfo,
 } from "../../app/cpostal_slices/cpostalSlice";
+import { ajouterpointVente, setPointVenteInfos } from "../../app/pointVente_slice/pointVenteSlice";
 
 // Animation
 const fadeIn = keyframes`
@@ -149,10 +150,14 @@ const Secteur_Region_CpostalForm = () => {
     if (toolbartable == "codepostale") {
       dispatch(setCodePostaleInfos({ colonne, valeur }));
     }
+    if (toolbartable=="pointvente")
+    {
+      dispatch(setPointVenteInfos({colonne,valeur}))
+    }
     console.log(secteurInfo);
     console.log(regionInfo);
   };
-
+const pointVenteInfo= useSelector((state)=>state.pointVenteSlice.pointVenteInfo)
   const handleSubmit = (e) => {
     e.preventDefault();
     togglePopup();
@@ -164,6 +169,9 @@ const Secteur_Region_CpostalForm = () => {
     if (toolbartable === "codepostale") {
       dispatch(ajouterCodePostal());
     }
+    if (toolbartable==="pointvente"){
+      dispatch(ajouterpointVente())
+    }
 
     
   };
@@ -172,6 +180,8 @@ const Secteur_Region_CpostalForm = () => {
     if (toolbartable === "secteur") return secteurInfo.codesec;
     if (toolbartable === "region") return regionInfo.codergg;
     if (toolbartable === "codepostale") return cpostaleInfo.CODEp;
+    if (toolbartable === "pointvente") return cpostaleInfo.Code;
+
 
     return "";
   };
@@ -180,17 +190,23 @@ const Secteur_Region_CpostalForm = () => {
     if (toolbartable === "secteur") return "Code secteur";
     if (toolbartable === "region") return "Code région";
     if (toolbartable === "codepostale") return "Code postale";
+    if (toolbartable === "pointvente") return "Code pointVente";
+
     return "";
   };
   const getLabel2 = () => {
     if (toolbartable === "secteur") return "designation Secteur";
     if (toolbartable === "region") return "designation region";
     if (toolbartable === "codepostale") return "designation code postale";
+    if (toolbartable === "pointvente") return "designation code point vente";
+
   };
   const getDesignationValue = () => {
     if (toolbartable === "secteur") return secteurInfo.desisec;
     if (toolbartable === "region") return regionInfo.desirgg;
     if (toolbartable === "codepostale") return cpostaleInfo.desicp;
+    if (toolbartable === "pointvente") return pointVenteInfo.Libelle;
+
     return "";
   };
 
@@ -199,6 +215,8 @@ const Secteur_Region_CpostalForm = () => {
     if (toolbartable === "secteur") handleChange("desisec", valeur);
     if (toolbartable === "region") handleChange("desirgg", valeur);
     if (toolbartable === "codepostale") handleChange("desicp", valeur);
+    if (toolbartable === "pointvente") handleChange("Libelle", valeur);
+
   };
 
   return (
@@ -222,6 +240,8 @@ const Secteur_Region_CpostalForm = () => {
                     if (toolbartable === "region") handleChange("codergg", val);
                     if (toolbartable === "codepostale")
                       handleChange("CODEp", val);
+                    if (toolbartable==="pointvente")
+                      handleChange("Code",val)
                   }}
                   required
                 />

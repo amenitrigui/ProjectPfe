@@ -56,8 +56,8 @@ function DateCreateMAJ() {
               <input
                 type="date"
                 className="border border-gray-300 rounded-md p-2 w-full sm:w-auto"
-                value={clientInfos.datec}
-                onChange={(e) => handleChange(e, 'datec')}
+                value={clientInfos.datcreat}
+                onChange={(e) => handleChange(e, 'datcreat')}
                 disabled
               />
             </div>

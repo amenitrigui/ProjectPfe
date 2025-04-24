@@ -138,8 +138,7 @@ function ToolBar() {
 
     if (toolbarTable == "client") {
       dispatch(viderChampsClientInfo());
-      dispatch(getDerniereCodeClient());
-      dispatch(setClientInfos({ colonne: "code", valeur: dernierCodeClient }));
+      dispatch(setClientInfos({ colonne: "usera", valeur: utilisateurConnecte.codeuser }));
       // * dispatch une action pour récuperer le code + nom d'utilisateur courant
       // dispatch(getUtilisateurParCode());
     }
@@ -456,7 +455,7 @@ function ToolBar() {
                     onClick={handleQuitterClick}
                     className="flex flex-col items-center w-16 sm:w-20 p-2 bg-orange-100 hover:bg-orange-200 text-orange-700 rounded-lg transition-all duration-200"
                   >
-                    <FontAwesomeIcon icon={faSignOutAlt} />
+                    <FontAwesomeIcon icon={faSignOutAlt} className="text-xl mb-1"/>
                     <span className="text-[10px] sm:text-xs">Quitter</span>
                   </button>
                 </>
