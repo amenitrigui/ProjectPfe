@@ -20,6 +20,7 @@ import {
 } from "../../app/cpostal_slices/cpostalSlice";
 import { useLocation } from "react-router-dom";
 import { ajouterpointVente, setPointVenteInfos } from "../../app/pointVente_slice/pointVenteSlice";
+import { setClientInfos } from "../../app/client_slices/clientSlice";
 
 // Animation
 const fadeIn = keyframes`
@@ -152,6 +153,7 @@ const Secteur_Region_CpostalForm = () => {
     console.log(colonne, " ", valeur);
     if (toolbartable == "secteur") {
       dispatch(setSecteurInfos({ colonne, valeur }));
+      dispatch(setClientInfos({colonne, valeur}))
     }
     if (toolbartable == "region") {
       dispatch(setRegionInfos({ colonne, valeur }));
@@ -246,6 +248,8 @@ const pointVenteInfo= useSelector((state)=>state.pointVenteSlice.pointVenteInfo)
                 ? "Région"
                 : toolbartable === "codepostale"
                 ? "Code postale"
+                : toolbartable === "pointvente"
+                ? "Point vente"
                 : ""}
             </h2>
             <form onSubmit={handleSubmit}>

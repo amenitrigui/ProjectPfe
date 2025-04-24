@@ -8,7 +8,6 @@ import {
 import { setDevisInfo } from '../../app/devis_slices/devisSlice';
 
 function DateCreateMAJ(props) {
-  console.log(props)
   const dispatch = useDispatch();
   const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
   const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
