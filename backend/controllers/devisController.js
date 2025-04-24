@@ -21,7 +21,7 @@ const getTousDevis = async (req, res) => {
     const dbConnection = await getDatabaseConnection(dbName);
 
     const result = await dbConnection.query(
-      `SELECT NUMBL, DATEBL,libpv, datt,CODECLI,ADRCLI,RSCLI,MTTC,CODEFACTURE,usera,RSREP,codesecteur FROM dfp `,
+      `SELECT NUMBL, DATEBL,libpv, datt,CODECLI,ADRCLI,RSCLI,MTTC,CODEFACTURE,usera,RSREP,codesecteur ,delailivr  , transport FROM dfp `,
       { type: QueryTypes.SELECT }
     );
 

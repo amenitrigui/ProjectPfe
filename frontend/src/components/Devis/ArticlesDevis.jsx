@@ -76,7 +76,9 @@ function ArticlesDevis() {
     <div className="space-y-4 p-4 border rounded-md mt-4">
       <h3 className="text-lg font-bold">Articles</h3>
   
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 items-center">
+      {/* Première grille d’inputs */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        {/* FAMILLE */}
         <div>
           <label className="block font-medium">FAMILLE</label>
           <input
@@ -84,15 +86,12 @@ function ArticlesDevis() {
             className="w-full border border-gray-300 rounded-md p-2"
             value={articleInfos.famille}
             placeholder="Sélectionner ou taper une famille"
-            onChange={(e) => {
-              handlecodeFamilleChange(e.target.value);
-            }}
-            onClick={() => {
-              afficherRecherchePopup("famille");
-            }}
+            onChange={(e) => handlecodeFamilleChange(e.target.value)}
+            onClick={() => afficherRecherchePopup("famille")}
           />
         </div>
   
+        {/* CODE ARTICLE */}
         <div>
           <label className="block font-medium">CODE ARTICLE</label>
           <input
@@ -101,66 +100,69 @@ function ArticlesDevis() {
             value={articleInfos.code || ""}
             list="listecodeArticle"
             placeholder="Sélectionner ou taper un code d'article"
-            onChange={(e) => {
-              handleCodeArticleChange(e.target.value);
-            }}
+            onChange={(e) => handleCodeArticleChange(e.target.value)}
             onClick={() => afficherRecherchePopup("article")}
           />
         </div>
   
+        {/* LIBELLE */}
         <div>
           <label className="block font-medium">LIBELLE</label>
           <input
             type="text"
             placeholder="Sélectionner un code article"
-            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full border border-gray-300 rounded-md p-2"
             value={articleInfos.libelle || ""}
             onChange={(e) => handleChangementChamp("libelle", e)}
             readOnly
           />
         </div>
   
+        {/* UNITE */}
         <div>
           <label className="block font-medium">UNITE</label>
           <input
             type="text"
             placeholder="Sélectionner un code article"
-            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full border border-gray-300 rounded-md p-2"
             value={articleInfos.unite || ""}
             readOnly
             onChange={(e) => handleChangementChamp("unite", e)}
           />
         </div>
   
+        {/* QUANTITE */}
         <div>
           <label className="block font-medium">QUANTITE</label>
           <input
             type="text"
             placeholder="Sélectionner un code article"
-            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full border border-gray-300 rounded-md p-2"
             onChange={(e) => handleChangementChamp("quantite", e)}
           />
         </div>
   
+        {/* CONFIG */}
         <div>
           <label className="block font-medium">CONFIG</label>
           <textarea
             placeholder="Sélectionner un code article"
-            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full border border-gray-300 rounded-md p-2"
             value={articleInfos.CONFIG}
             onChange={(e) => handleChangementChamp("CONFIG", e)}
           />
         </div>
       </div>
   
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 items-center">
+      {/* Deuxième grille d’inputs */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <div>
           <label className="block font-medium">REMISE</label>
           <input
             type="text"
             step="0.001"
             placeholder="Remise"
-            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full border border-gray-300 rounded-md p-2"
             onChange={(e) => handleChangementChamp("DREMISE", e)}
           />
         </div>
@@ -170,7 +172,7 @@ function ArticlesDevis() {
           <input
             type="text"
             placeholder="tauxtva"
-            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full border border-gray-300 rounded-md p-2"
             value={articleInfos.tauxtva || ""}
             onChange={(e) => handleChangementChamp("tauxtva", e)}
           />
@@ -184,7 +186,7 @@ function ArticlesDevis() {
             placeholder="puttc"
             value={puttc}
             readOnly
-            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full border border-gray-300 rounded-md p-2"
           />
         </div>
   
@@ -193,7 +195,7 @@ function ArticlesDevis() {
           <input
             type="text"
             placeholder="netHt"
-            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full border border-gray-300 rounded-md p-2"
             value={netHt}
             readOnly
           />
@@ -204,7 +206,7 @@ function ArticlesDevis() {
           <input
             type="text"
             placeholder="nbrunite"
-            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full border border-gray-300 rounded-md p-2"
             value={articleInfos.nbrunite || ""}
             readOnly
           />
@@ -218,11 +220,12 @@ function ArticlesDevis() {
             placeholder="prix1"
             value={articleInfos.prix1 || ""}
             readOnly
-            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full border border-gray-300 rounded-md p-2"
           />
         </div>
       </div>
   
+      {/* Boutons d'action */}
       <div className="flex flex-col sm:flex-row sm:justify-end space-y-2 sm:space-y-0 sm:space-x-2 mt-4">
         <button
           className="text-green-500 p-2 border rounded-lg hover:bg-green-100"
@@ -248,6 +251,7 @@ function ArticlesDevis() {
       </div>
     </div>
   </div>
+  
   
   );
 }

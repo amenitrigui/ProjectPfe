@@ -58,7 +58,7 @@ function LignesDevis() {
             devisInfo.articles.map((article) => (
               <tr
                 key={`${article.famille}-${article.CodeART}`}
-                className="transition-all duration-150 ease-in-out hover:bg-[#2A2185]"
+                className="transition-all duration-150 ease-in-out hover:bg-[#2A2185]" 
               >
                 <td className="p-3 border border-gray-300">
                   {article.famille}
