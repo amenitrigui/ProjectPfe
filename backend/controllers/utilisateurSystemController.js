@@ -1,14 +1,7 @@
 const { getDatabaseConnection } = require("../common/commonMethods");
 const defineUtilisateurModel = require("../models/utilisateur/utilisateur");
 const defineUserModel = require("../models/utilisateur/utilisateur");
-let connexionDbUserErp;
-
-const getUtilisateurDbConnection = async () => {
-  if (!connexionDbUserErp) {
-    connexionDbUserErp = await getDatabaseConnection(process.env.DB_USERS_NAME);
-  }
-  return connexionDbUserErp;
-};
+const { sequelizeConnexionDbUtilisateur } = require("../db/config");
 // const bcrypt = require("bcryptjs");
 
 // * enregistrer une nouvelle utilisateur
@@ -31,8 +24,7 @@ const AjouterUtilisateur = async (req, res) => {
       .json({ message: "Tous les champs doivent être remplis." });
     }
     
-    await getUtilisateurDbConnection();
-    const user = defineUserModel(connexionDbUserErp);
+    const user = defineUserModel(sequelizeConnexionDbUtilisateur);
     const existingUser = await user.findOne({ where: { email: User.email } });
 
     if (existingUser) {
@@ -72,11 +64,10 @@ const AjouterUtilisateur = async (req, res) => {
 // * http://localhost:5000/api/utilisateurSystem/getDerniereCodeUtilisateur
 const getDerniereCodeUtilisateur = async (req, res) => {
   try {
-    await getUtilisateurDbConnection();
-    const derniereCodeUtilisateur = await connexionDbUserErp.query(
+    const derniereCodeUtilisateur = await sequelizeConnexionDbUtilisateur.query(
       `SELECT codeuser FROM utilisateur ORDER BY CAST(codeuser AS UNSIGNED) DESC LIMIT 1`,
       {
-        type: connexionDbUserErp.QueryTypes.SELECT,
+        type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
       }
     );
 
@@ -94,7 +85,7 @@ const ModifierUtilisateur = async (req, res) => {
   const { MajUtilisateur } = req.body;
 
   try {
-    const Utilisateur = defineUtilisateurModel(connexionDbUserErp);
+    const Utilisateur = defineUtilisateurModel(sequelizeConnexionDbUtilisateur);
     const user = await Utilisateur.findOne({
       where: { codeuser: MajUtilisateur.codeuser },
     });
@@ -128,7 +119,7 @@ const ModifierUtilisateur = async (req, res) => {
 const supprimerUtilisateur = async (req, res) => {
   const { codeuser } = req.query;
   try {
-    const Utilisateur = defineUtilisateurModel(connexionDbUserErp);
+    const Utilisateur = defineUtilisateurModel(sequelizeConnexionDbUtilisateur);
 
     await Utilisateur.destroy({ where: { codeuser: codeuser } });
 
@@ -148,13 +139,13 @@ const getListeUtilisateurParCode = async (req, res) => {
   try {
     //const decoded = verifyTokenValidity(req, res);
 
-    const result = await connexionDbUserErp.query(
+    const result = await sequelizeConnexionDbUtilisateur.query(
       `select codeuser,nom,directeur, type from utilisateur where codeuser = :codeuser `,
       {
         replacements: {
           codeuser: codeuser,
         },
-        type: connexionDbUserErp.QueryTypes.SELECT,
+        type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
       }
     );
 
@@ -172,15 +163,14 @@ const getListeUtilisateurParNom = async (req, res) => {
   console.log(nom);
   try {
     //const decoded = verifyTokenValidity(req, res);
-    const dbConnection = await getDatabaseConnection(process.env.DB_USERS_NAME, res);
 
-    const result = await dbConnection.query(
+    const result = await sequelizeConnexionDbUtilisateur.query(
       `select codeuser,nom,directeur,type from utilisateur where nom LIKE :nom `,
       {
         replacements: {
           nom: "%" + nom + "%",
         },
-        type: dbConnection.QueryTypes.SELECT,
+        type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
       }
     );
 
@@ -198,15 +188,14 @@ const getListeUtilisateurParDirecteur = async (req, res) => {
 
   try {
     //const decoded = verifyTokenValidity(req, res);
-    const dbConnection = await getDatabaseConnection(process.env.DB_USERS_NAME, res);
 
-    const result = await dbConnection.query(
+    const result = await sequelizeConnexionDbUtilisateur.query(
       `select codeuser,nom,directeur,type from utilisateur where directeur LIKE :directeur `,
       {
         replacements: {
           directeur: "%" + directeur + "%",
         },
-        type: dbConnection.QueryTypes.SELECT,
+        type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
       }
     );
 
@@ -224,15 +213,14 @@ const getListeUtilisateurParType = async (req, res) => {
 
   try {
     //const decoded = verifyTokenValidity(req, res);
-    const dbConnection = await getDatabaseConnection(process.env.DB_USERS_NAME, res);
 
-    const result = await dbConnection.query(
+    const result = await sequelizeConnexionDbUtilisateur.query(
       `select codeuser,nom,directeur,type from utilisateur where type LIKE :type `,
       {
         replacements: {
           type: "%" + type + "%",
         },
-        type: dbConnection.QueryTypes.SELECT,
+        type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
       }
     );
 
@@ -248,12 +236,11 @@ const getListeUtilisateurParType = async (req, res) => {
 const getListeUtilisateur = async (req, res) => {
   try {
     //const decoded = verifyTokenValidity(req, res);
-    const dbConnection = await getDatabaseConnection(process.env.DB_USERS_NAME, res);
 
-    const result = await dbConnection.query(
+    const result = await sequelizeConnexionDbUtilisateur.query(
       `select codeuser,nom,directeur, email ,type from utilisateur `,
       {
-        type: dbConnection.QueryTypes.SELECT,
+        type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
       }
     );
 
@@ -269,7 +256,6 @@ const getListeUtilisateur = async (req, res) => {
 const filterListeUtilisateur = async (req, res) => {
   const { filters } = req.query;
   console.log(filters);
-  const dbConnection = await getDatabaseConnection(process.env.DB_USERS_NAME, res);
 
   let whereClauses = [];
 
@@ -304,9 +290,9 @@ const filterListeUtilisateur = async (req, res) => {
      FROM utilisateur 
       ${whereCondition ? "WHERE " + whereCondition : ""}`;
 
-  const result = await dbConnection.query(query, {
+  const result = await sequelizeConnexionDbUtilisateur.query(query, {
     replacements: replacements,
-    type: dbConnection.QueryTypes.SELECT,
+    type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
   });
 
   return res.status(200).json({
@@ -318,10 +304,9 @@ const filterListeUtilisateur = async (req, res) => {
 const getCodeUtilisateurSuivant = async (req, res) => {
  
   try {
-    const dbConnection = await getDatabaseConnection(process.env.DB_USERS_NAME, res);
 
     // On récupère le code max existant
-    const [rows] = await dbConnection.query(`SELECT MAX(codeuser) AS maxCode FROM utilisateur`);
+    const [rows] = await sequelizeConnexionDbUtilisateur.query(`SELECT MAX(codeuser) AS maxCode FROM utilisateur`);
 
     let codeSuivant = 1; // Valeur par défaut si aucun utilisateur
 

@@ -21,6 +21,17 @@ export const loginUtilisateur = createAsyncThunk(
   }
 )
 
+export const deconnecterUtilisateur = createAsyncThunk(
+  "utilisateurSlice/deconnecterUtilisateur",
+  async(_,thunkAPI) => {
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/api/utilisateurs/deconnecterUtilisateur`
+    )
+
+    console.log(response)
+  }
+)
+
 export const getUtilisateurParCode = createAsyncThunk(
   "utilisateurSlice/getUtilisateurParCode",
   async (codeuser, thunkAPI) => {

@@ -1,4 +1,5 @@
 const { getDatabaseConnection } = require("../common/commonMethods");
+const { getConnexionBd } = require("../db/config");
 const defineCodePostalemodels= require("../models/societe/cpostal")
 //* récuperer la ville associé à un code postal
 // * example:
@@ -9,7 +10,7 @@ const getVilleParCodePostale = async (req, res) => {
   const { dbName, cp } = req.params;
   try {
     console.log(dbName, " ", cp);
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const ville = await dbConnection.query(
       `SELECT desicp from cpostal where CODEp = :cp`,
       {
@@ -36,7 +37,7 @@ const getVilleParCodePostale = async (req, res) => {
 const getListeCodesPosteaux = async (req, res) => {
   const { dbName } = req.params;
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const listeCodesPosteaux = await dbConnection.query(
       `SELECT CODEp from cpostal`,
       {
@@ -62,7 +63,7 @@ const getCodePostalParVille = async (req, res) => {
   const { ville } = req.query;
 
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const codePostal = await dbConnection.query(
       `
           SELECT CODEp from cpostal where desicp = :ville
@@ -94,7 +95,7 @@ const ajouterCodePostal = async (req, res) => {
   console.log("ajouter Code postal :", CodePostalInfo);
 
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const CodePostale = defineCodePostalemodels(dbConnection);
     const newCodePostal = await CodePostale.create({
       //add + save min base 3ibrt 3ml insert into mn base de donnes

@@ -1,5 +1,6 @@
 const defineLignedepot = require("../models/societe/lignedepot");
 const { getDatabaseConnection } = require("../common/commonMethods");
+const { getConnexionBd } = require("../db/config")
 //* url : http://localhost:5000/api/Stock_Article/SOLEVO/getlistepointvente
 const getlistepointvente = async (req, res) => {
   const { dbName } = req.params;
@@ -9,7 +10,7 @@ const getlistepointvente = async (req, res) => {
     });
   }
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const listepointVente = await dbConnection.query(
       `select Code ,Libelle from pointvente `,
       {
@@ -46,7 +47,7 @@ const getListedepotdeStockparpcodepointvente = async (req, res) => {
     return res.status(400).json({message: "Le code d'article est requis ."})
   }
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const listedepot = await dbConnection.query(
       `select Code ,Libelle from depot where codepv = :codepv `,
 
@@ -82,7 +83,7 @@ const getQteTotalArticle = async(req, res) => {
     return res.status(400).json({message: "le code d'article est requis ."})
   }
   try{
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const LigneDepot = defineLignedepot(dbConnection);
     const qteTotal = await LigneDepot.sum('qteart', {where: { codeart: codeArticle}})
 
@@ -116,7 +117,7 @@ const getQteTotalArticlParPointVente = async(req, res) => {
     return res.status(400).json({message: "le code d'article est requis ."})
   }
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const LigneDepot = defineLignedepot(dbConnection);
 
     const qteTotArt = await LigneDepot.sum('qteart', {where: {

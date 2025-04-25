@@ -303,6 +303,7 @@ const defaultArticleInfos = {
   NGP: "",
   sav: "",
   cons: "",
+  Dtcons: "0",
   nomenclature: "",
   gestionstock: "",
   avecconfig: "",

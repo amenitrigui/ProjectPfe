@@ -32,7 +32,6 @@ export const AjouterDevis = createAsyncThunk(
   "slice/AddDevis",
   async (_, thunkAPI) => {
     const devisInfo = thunkAPI.getState().devisSlice.devisInfo;
-    console.log(devisInfo);
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
@@ -107,7 +106,6 @@ export const getListeDevisParNUMBL = createAsyncThunk(
       }
     );
 
-    console.log(response);
     return response.data.listeDevis;
   }
 );
@@ -160,7 +158,6 @@ export const getDevisParCodeClient = createAsyncThunk(
         },
       }
     );
-    console.log(response);
     return response.data.devis;
   }
 );
@@ -243,7 +240,6 @@ export const getListeSecteur = createAsyncThunk(
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeSecteur`
     );
-    console.log(response);
     return response.data.secteurDistincts;
   }
 );
@@ -271,7 +267,6 @@ export const getDerniereNumbl = createAsyncThunk(
       );
     }
     console.log(response)
-
     return response.data.derniereNumbl;
   }
 );
@@ -668,11 +663,8 @@ export const devisSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getDerniereNumbl.fulfilled, (state, action) => {
-        // state.derniereNumbl =
-        //   "DV" +
-        //   (parseInt(action.payload.NUMBL.substring(2, 9)) + 1).toString();
-        if (action.payload.NUMBL && action.payload.NUMBL.length > 0) {
-          state.derniereNumbl = parseInt(action.payload.NUMBL.substring(2, 9));
+        if (action.payload && action.payload.length > 0) {
+          state.derniereNumbl = parseInt(action.payload.substring(2, 9));
           state.status = "reussi";
         }
       })

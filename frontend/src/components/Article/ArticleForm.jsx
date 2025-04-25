@@ -341,10 +341,10 @@ function ArticleForm() {
                   <input
                     type="checkbox"
                     className="h-5 w-5 text-blue-600 rounded focus:ring-blue-500"
-                    checked={articleInfos.dtcons == 1}
+                    checked={articleInfos.Dtcons == 1}
                     disabled={!activerChampsForm}
                     onChange={(e) =>
-                      handleChangeCheckbox(e.target.checked, "dtcons")
+                      handleChangeCheckbox(e.target.checked, "Dtcons")
                     }
                   />
                   <label className="font-semibold text-blue-900">DC</label>

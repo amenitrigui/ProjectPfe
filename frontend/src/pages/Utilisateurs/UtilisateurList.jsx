@@ -10,14 +10,14 @@ import { filterListeUtilisateur, getListeUtilisateur, setFiltresSaisient } from 
 
 function UtilisateurList() {
   const dispatch = useDispatch();
-  const listeUtilisateur_Superviseur = useSelector((store) => store.Utilisateur_SuperviseurSlices.listeUtilisateur_Superviseur);
+  const listeUtilisateur_Superviseur = useSelector((store) => store.utilisateurSystemSlice.listeUtilisateur_Superviseur);
 
   useEffect(() => {
     dispatch(getListeUtilisateur());
    // dispatch(setToolbarTable("client"));
   }, []);
 
-  const filtersUtilisateur = useSelector((store) => store.Utilisateur_SuperviseurSlices.filtersUtilisateur);
+  const filtersUtilisateur = useSelector((store) => store.utilisateurSystemSlice.filtersUtilisateur);
 
   const handleFilterChange = (e, column) => {
     dispatch(setFiltresSaisient({ valeur: e.target.value, collonne: column }));

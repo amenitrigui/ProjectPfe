@@ -55,7 +55,6 @@ function DevisForm() {
   const [isOpen, setIsOpen] = useState(false);
   const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
   const listesecteur = useSelector((state) => state.devisSlice.listesecteur);
-  console.log(listesecteur);
 
   const listeToutCodesClients = useSelector(
     (state) => state.clientSlice.listeToutCodesClients
@@ -86,11 +85,14 @@ function DevisForm() {
   //?==================================================================================================================
   //?==============================================appels UseEffect====================================================
   //?==================================================================================================================
-  // * UseEffect #1 : récupérer la liste des codes de devis et liste de points de vente
-  // * et récuperer le dernier NUMBL
+  // * UseEffect #1 : désactiver tous les champs
+  // * et indiquer qu'on va utiliser la table de devis
+  // * récupérer la liste des codes de devis et liste de points de vente
   useEffect(() => {
+    dispatch(setToolbarTable("devis"));
+    dispatch(setToolbarMode("consultation"));
+    dispatch(setActiverChampsForm(false));
     dispatch(getListeNumbl());
-    dispatch(getDerniereNumbl(utilisateurConnecte.codeuser))
     dispatch(getListePointsVente());
     dispatch(getListeSecteur());
   }, []);
@@ -110,14 +112,10 @@ function DevisForm() {
   //   }
   // }, [devisInfo.CODECLI]);
 
-  // * useEffect #4 : désactiver tous les champs
-  // * et indiquer qu'on va utiliser la table de devis
+  // * useEffect #4 : récuperer le dernier NUMBL
   useEffect(() => {
-    dispatch(setToolbarTable("devis"));
-    dispatch(setToolbarMode("consultation"));
-    dispatch(setActiverChampsForm(false));
-    dispatch(getDerniereNumbl());
-  }, []);
+    dispatch(getDerniereNumbl(utilisateurConnecte.codeuser));
+  }, []); 
 
   // * useEffect #5: remplir le champ NUMBL par le derniere NUMBL récuperé
   useEffect(() => {
@@ -131,6 +129,7 @@ function DevisForm() {
   // * useEffect #6: récuperer les informations de devis
   // * et les lignes de devis par NUMBL
   useEffect(() => {
+    console.log("toolbarMode: ",toolbarMode)
     console.log("devisInfo.NUMBL changed to: ", devisInfo.NUMBL)
     if(devisInfo.NUMBL && devisInfo.NUMBL != "" && toolbarMode !="ajout") {
       dispatch(getDevisParNUMBL(devisInfo.NUMBL));
@@ -141,7 +140,8 @@ function DevisForm() {
   // * useEffect #7 : remplacer la valeur de champ NUMBL
   // * par le derniere NUMBL incrementé par 1 lors d'ajout d'un devis
   useEffect(() => {
-    if (toolbarMode && toolbarMode === "ajout") {
+    if (toolbarMode && toolbarMode === "ajout" && derniereNumbl!=devisInfo.NUMBL) {
+      console.log(derniereNumbl)
       dispatch(
         setDevisInfo({
           collone: "NUMBL",
@@ -211,7 +211,6 @@ function DevisForm() {
   const afficherRecherchePopup = () => {
     dispatch(setAfficherRecherchePopup(true));
   };
-  console.log(devisInfo);
   return (
     <>
       <div className="container">
@@ -426,7 +425,6 @@ function DevisForm() {
                     utilisateurConnecte ? utilisateurConnecte.codeuser : ""
                   }
                 />
-                {console.log(utilisateurConnecte)}
 
                 <label className="block font-medium">RSREP :</label>
                 <input

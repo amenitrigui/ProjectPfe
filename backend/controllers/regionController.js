@@ -1,5 +1,6 @@
 const { getDatabaseConnection } = require("../common/commonMethods");
 const defineregionmodels = require("../models/societe/region");
+const { getConnexionBd } = require("../db/config")
 
 //* récuperer la liste de régions
 // * example:
@@ -9,7 +10,7 @@ const defineregionmodels = require("../models/societe/region");
 const getListeCodeRegions = async (req, res) => {
   const { dbName } = req.params;
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const listeCodesRegion = await dbConnection.query(
       `SELECT codergg from region`,
       {
@@ -34,11 +35,11 @@ const getVilleParRegion = async (req, res) => {
   const { dbName, codeRegion } = req.params;
   console.log(dbName, " ", codeRegion);
   try {
-    const dbConnexion = await getDatabaseConnection(dbName);
-    const ListRegion = await dbConnexion.query(
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const ListRegion = await dbConnection.query(
       `Select desirgg from region where codergg = :codeRegion`,
       {
-        type: dbConnexion.QueryTypes.SELECT,
+        type: dbConnection.QueryTypes.SELECT,
         replacements: {
           codeRegion,
         },
@@ -58,7 +59,7 @@ const ajouterRegion = async (req, res) => {
   console.log("ajouter Region infos :", RegionInfo);
 
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const Region = defineregionmodels(dbConnection);
     const newRegion = await Region.create({
       //add + save min base 3ibrt 3ml insert into mn base de donnes

@@ -1,4 +1,5 @@
 const { getDatabaseConnection } = require("../common/commonMethods");
+const { getConnexionBd } = require("../db/config")
 const defineregionmodels = require("../models/societe/region");
 const definePointVentemodels=require("../models/societe/pointvente")
 //* récuperer la liste de régions
@@ -9,7 +10,7 @@ const definePointVentemodels=require("../models/societe/pointvente")
 const getListeCodeRegions = async (req, res) => {
   const { dbName } = req.params;
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const listeCodesRegion = await dbConnection.query(
       `SELECT codergg from region`,
       {
@@ -34,11 +35,11 @@ const getVilleParRegion = async (req, res) => {
   const { dbName, codeRegion } = req.params;
   console.log(dbName, " ", codeRegion);
   try {
-    const dbConnexion = await getDatabaseConnection(dbName);
-    const ListRegion = await dbConnexion.query(
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const ListRegion = await dbConnection.query(
       `Select desirgg from region where codergg = :codeRegion`,
       {
-        type: dbConnexion.QueryTypes.SELECT,
+        type: dbConnection.QueryTypes.SELECT,
         replacements: {
           codeRegion,
         },
@@ -58,7 +59,7 @@ const ajouterpointVente = async (req, res) => {
   console.log("ajouter PointVenteInfo infos :", PointVenteInfo);
 
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const PointVente = definePointVentemodels(dbConnection);
     const newPointVente = await PointVente.create({
       //add + save min base 3ibrt 3ml insert into mn base de donnes
