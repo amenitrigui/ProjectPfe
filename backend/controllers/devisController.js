@@ -1148,10 +1148,7 @@ module.exports = {
   GetDevisParPeriode,
   getListePointVente,
   getInfoUtilisateur,
-<<<<<<< HEAD
-=======
   getListeSecteur,
->>>>>>> 3d75565406b0813ffd3f4b02fb611826923ef145
   getLignesDevis,
   getDevisCreator,
   getDerniereNumbl,
