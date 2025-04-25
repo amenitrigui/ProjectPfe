@@ -38,7 +38,7 @@ import {
   setToolbarTable,
 } from "../../app/interface_slices/interfaceSlice";
 import SideBar from "../Common/SideBar";
-import TableArticle from "./TableArticle";
+import LignesDevis from "./LignesDevis";
 import ArticlesDevis from "./ArticlesDevis";
 import DateCreateMAJ from "../Common/DateCreateMAJ";
 
@@ -87,9 +87,10 @@ function DevisForm() {
   //?==============================================appels UseEffect====================================================
   //?==================================================================================================================
   // * UseEffect #1 : récupérer la liste des codes de devis et liste de points de vente
-
+  // * et récuperer le dernier NUMBL
   useEffect(() => {
     dispatch(getListeNumbl());
+    dispatch(getDerniereNumbl(utilisateurConnecte.codeuser))
     dispatch(getListePointsVente());
     dispatch(getListeSecteur());
   }, []);
@@ -102,21 +103,15 @@ function DevisForm() {
 
   // * UseEffect #3 : récuperer les information de client
   // * associé avec le devis selectionné
-  useEffect(() => {
-    if (devisInfo.CODECLI) {
-      dispatch(getClientParCode(devisInfo.CODECLI));
-    }
-  }, [devisInfo.CODECLI]);
+  // useEffect(() => {
+  //   console.log("devisInfo.CODECLI changed to: ", devisInfo.CODECLI)
+  //   if (devisInfo.CODECLI && devisInfo.CODECLI != "") {
+  //     dispatch(getClientParCode(devisInfo.CODECLI));
+  //   }
+  // }, [devisInfo.CODECLI]);
 
-  // * UseEffect #4 : récuperer les information d'utilisateur connecté
-  useEffect(() => {
-    if (devisInfo.CODECLI) {
-      dispatch(getClientParCode(devisInfo.CODECLI));
-    }
-  }, [devisInfo.CODECLI]);
-  // * useEffect #5 : désactiver tous les champs
+  // * useEffect #4 : désactiver tous les champs
   // * et indiquer qu'on va utiliser la table de devis
-
   useEffect(() => {
     dispatch(setToolbarTable("devis"));
     dispatch(setToolbarMode("consultation"));
@@ -124,22 +119,32 @@ function DevisForm() {
     dispatch(getDerniereNumbl());
   }, []);
 
+  // * useEffect #5: remplir le champ NUMBL par le derniere NUMBL récuperé
   useEffect(() => {
     if (derniereNumbl && derniereNumbl != "") {
-      dispatch(
-        setDevisInfo({ collone: "NUMBL", valeur: "DV" + derniereNumbl })
-      );
-      dispatch(getDevisParNUMBL("DV" + derniereNumbl));
-      dispatch(getLignesDevis("DV" + derniereNumbl));
+      dispatch(setDevisInfo({collone: "NUMBL", valeur: "DV"+derniereNumbl}))
     }
   }, [derniereNumbl]);
+
+  // * useEffect #6: récuperer les informations de devis 
+  // * et les lignes de devis par NUMBL
   useEffect(() => {
-    if (devisInfo.NUMBL && devisInfo.NUMBL != "") {
+    console.log("devisInfo.NUMBL changed to: ", devisInfo.NUMBL)
+    if(devisInfo.NUMBL && devisInfo.NUMBL != "" && toolbarMode !="ajout") {
       dispatch(getDevisParNUMBL(devisInfo.NUMBL));
       dispatch(getLignesDevis(devisInfo.NUMBL));
     }
   }, [devisInfo.NUMBL]);
 
+  // * useEffect #7 : remplacer la valeur de champ NUMBL
+  // * par le derniere NUMBL incrementé par 1 lors d'ajout d'un devis
+  useEffect(() => {
+    if(toolbarMode && toolbarMode === "ajout") {
+      dispatch(setDevisInfo({collone: "NUMBL", valeur: "DV"+(parseInt(derniereNumbl)+1)}))
+    }
+  }, [toolbarMode])
+
+  // * useEffect #8: remplir les informations client pour un devis
   useEffect(() => {
     if (clientInfos) {
       dispatch(setDevisInfo({ collone: "CODECLI", valeur: clientInfos.code }));
@@ -148,7 +153,7 @@ function DevisForm() {
         setDevisInfo({ collone: "ADRCLI", valeur: clientInfos.adresse })
       );
     }
-  }, [clientInfos.code]);
+  }, [clientInfos.code, clientInfos.rsoc, clientInfos.adresse]);
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
@@ -226,11 +231,7 @@ function DevisForm() {
                         type="text"
                         className="w-full border border-gray-300 rounded-md p-2"
                         onChange={(e) => handleSelectDevis(e)}
-                        value={
-                          derniereNumbl != "" && devisInfo.NUMBL == ""
-                            ? derniereNumbl
-                            : devisInfo.NUMBL
-                        }
+                        value={derniereNumbl!= "" && devisInfo.NUMBL == ""? "DV"+derniereNumbl:devisInfo.NUMBL}
                         disabled={activerChampsForm}
                         onClick={() => {
                           dispatch(setToolbarTable("devis"));
@@ -409,15 +410,16 @@ function DevisForm() {
                   type="text"
                   className="w-full border border-gray-300 rounded-md p-2"
                   disabled={!activerChampsForm}
-                  value={utilisateurConnecte.codeuser || ""}
+                  value={utilisateurConnecte? utilisateurConnecte.codeuser : ""}
                 />
+                {console.log(utilisateurConnecte)}
 
                 <label className="block font-medium">RSREP :</label>
                 <input
                   type="text"
                   className="w-full border border-gray-300 rounded-md p-2"
                   disabled={!activerChampsForm}
-                  value={utilisateurConnecte.directeur || ""}
+                  value={utilisateurConnecte.directeur? utilisateurConnecte.directeur : ""}
                 />
                 <label className="block font-medium mt-4">Commentaire :</label>
                 <textarea
@@ -434,7 +436,7 @@ function DevisForm() {
           {toolbarMode === "ajout" && <ArticlesDevis />}
           <div className="mt-6">
             <div className="p-4 sticky bottom-0 w-full overflow-x-auto">
-              <TableArticle />
+              <LignesDevis />
             </div>
           </div>
           <div className="bg-gray-300 p-10 sticky bottom-5 pt-2 w-full">

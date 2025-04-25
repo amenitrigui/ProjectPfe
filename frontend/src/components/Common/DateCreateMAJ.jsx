@@ -8,7 +8,6 @@ import {
 import { setDevisInfo } from '../../app/devis_slices/devisSlice';
 
 function DateCreateMAJ(props) {
-  console.log(props)
   const dispatch = useDispatch();
   const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
   const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
@@ -57,7 +56,7 @@ function DateCreateMAJ(props) {
               <input
                 type="date"
                 className="border border-gray-300 rounded-md p-2 w-full sm:w-auto"
-                value={clientInfos.datcreat}
+                value={toolbarMode === "ajout"? new Date().toISOString().split("T")[0] : clientInfos.datcreat? clientInfos.datcreat: ""}
                 onChange={(e) => handleChange(e, 'datcreat')}
                 disabled
               />

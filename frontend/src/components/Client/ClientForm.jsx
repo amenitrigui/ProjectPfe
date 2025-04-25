@@ -198,7 +198,6 @@ const ClientForm = () => {
       dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
     }
   };
-  console.log(clientInfos);
   const handleChangeAlphaphetique = (e, colonne) => {
     if (isAlphabetique(e.target.value)) {
       dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
@@ -212,15 +211,11 @@ const ClientForm = () => {
   const CpostaleInfo = useSelector(
     (state) => state.codePostaleSlice.CpostaleInfo
   );
-  console.log(CpostaleInfo);
   const RegionInfo = useSelector((state) => state.regionSlice.RegionInfo);
-  console.log(RegionInfo);
   const secteurInfo = useSelector((state) => state.secteurSlice.secteurInfo);
-  console.log(secteurInfo);
   const toolbarTable = useSelector(
     (state) => state.interfaceSlice.toolbarTable
   );
-  console.log(toolbarTable);
 
   const hundleClickButtonSecRegCp = (colonne) => {
     dispatch(setToolbarTable(colonne))
@@ -246,7 +241,10 @@ const ClientForm = () => {
       dispatch(setActiverBoutonsValiderAnnuler(true));
     }
   }, [insertionDepuisDevisForm]);
-  console.log(clientInfos);
+
+  useEffect(() => {
+    console.log(toolbarTable)
+  },[toolbarTable])
   return (
     <div className="container">
       <SideBar />

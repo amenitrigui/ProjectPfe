@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled, { keyframes } from "styled-components";
-import { setAfficherSecteurPopup } from "../../app/interface_slices/interfaceSlice";
+import {
+  setAfficherSecteurPopup,
+  setToolbarTable,
+} from "../../app/interface_slices/interfaceSlice";
 import {
   ajouterSecteur,
   setSecteurInfos,
@@ -15,7 +18,9 @@ import {
   setCodePostaleInfos,
   viderChampsCPostalInfo,
 } from "../../app/cpostal_slices/cpostalSlice";
+import { useLocation } from "react-router-dom";
 import { ajouterpointVente, setPointVenteInfos } from "../../app/pointVente_slice/pointVenteSlice";
+import { setClientInfos } from "../../app/client_slices/clientSlice";
 
 // Animation
 const fadeIn = keyframes`
@@ -122,6 +127,7 @@ const SubmitButton = styled.button`
 
 const Secteur_Region_CpostalForm = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const afficherSecteurPopup = useSelector(
     (state) => state.interfaceSlice.afficherSecteurPopup
@@ -138,11 +144,16 @@ const Secteur_Region_CpostalForm = () => {
 
   const togglePopup = () => {
     dispatch(setAfficherSecteurPopup(false));
+    if (location.pathname.toLowerCase() === "/clientformtout") {
+      dispatch(setToolbarTable("client"));
+    }
   };
 
   const handleChange = (colonne, valeur) => {
+    console.log(colonne, " ", valeur);
     if (toolbartable == "secteur") {
       dispatch(setSecteurInfos({ colonne, valeur }));
+      dispatch(setClientInfos({colonne, valeur}))
     }
     if (toolbartable == "region") {
       dispatch(setRegionInfos({ colonne, valeur }));
@@ -164,15 +175,20 @@ const pointVenteInfo= useSelector((state)=>state.pointVenteSlice.pointVenteInfo)
   };
 
   const hundleAjout = () => {
-    if (toolbartable === "secteur") dispatch(ajouterSecteur());
-    if (toolbartable === "region") dispatch(ajouterRegion());
+    if (toolbartable === "secteur") {
+      dispatch(ajouterSecteur());
+      console.log(secteurInfo);
+    }
+    if (toolbartable === "region") {
+      dispatch(ajouterRegion());
+    }
     if (toolbartable === "codepostale") {
       dispatch(ajouterCodePostal());
     }
     if (toolbartable==="pointvente"){
       dispatch(ajouterpointVente())
     }
-
+    togglePopup();
     
   };
 
@@ -224,7 +240,18 @@ const pointVenteInfo= useSelector((state)=>state.pointVenteSlice.pointVenteInfo)
       {afficherSecteurPopup && (
         <PopupContainer>
           <PopupContent>
-            <h2>Formulaire Popup</h2>
+            <h2>
+              Formulaire{" "}
+              {toolbartable === "secteur"
+                ? "Secteur"
+                : toolbartable === "region"
+                ? "Région"
+                : toolbartable === "codepostale"
+                ? "Code postale"
+                : toolbartable === "pointvente"
+                ? "Point vente"
+                : ""}
+            </h2>
             <form onSubmit={handleSubmit}>
               <FormGroup>
                 <FormLabel htmlFor="champ1">{getLabel()}</FormLabel>
@@ -235,11 +262,15 @@ const pointVenteInfo= useSelector((state)=>state.pointVenteSlice.pointVenteInfo)
                   value={getCodeValue()}
                   onChange={(e) => {
                     const val = e.target.value;
-                    if (toolbartable === "secteur")
+                    if (toolbartable === "secteur") {
                       handleChange("codesec", val);
-                    if (toolbartable === "region") handleChange("codergg", val);
-                    if (toolbartable === "codepostale")
+                    }
+                    if (toolbartable === "region") {
+                      handleChange("codergg", val);
+                    }
+                    if (toolbartable === "codepostale") {
                       handleChange("CODEp", val);
+                    }
                     if (toolbartable==="pointvente")
                       handleChange("Code",val)
                   }}

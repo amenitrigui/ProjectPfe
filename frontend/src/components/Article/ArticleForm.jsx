@@ -40,7 +40,7 @@ function ArticleForm() {
     (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
   const articleInfos = useSelector((state) => state.articleSlice.articleInfos);
-  console.log(articleInfos)
+  console.log(articleInfos);
   const ListeFamille = useSelector((state) => state.articleSlice.ListeFamille);
   const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
   const ListeSousFamille = useSelector(
@@ -176,8 +176,9 @@ function ArticleForm() {
               <div className="flex-1 space-y-4">
                 {/* Famille/Sous-Famille */}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
-                  <div className="col-span-12 md:col-span-1 space-y-1">
+                <div className="flex flex-wrap items-end gap-4">
+                  {/* Code Famille */}
+                  <div className="flex-1 min-w-[200px] space-y-1">
                     <label className="block font-semibold text-blue-900">
                       Code Famille
                     </label>
@@ -204,7 +205,8 @@ function ArticleForm() {
                     </datalist>
                   </div>
 
-                  <div className="col-span-12 md:col-span-1 space-y-1">
+                  {/* Désignation Famille */}
+                  <div className="flex-1 min-w-[200px] space-y-1">
                     <label className="block font-semibold text-blue-900">
                       Désignation Famille
                     </label>
@@ -222,9 +224,10 @@ function ArticleForm() {
                     />
                   </div>
 
-                  <div className="col-span-12 md:col-span-1 flex items-end">
+                  {/* Bouton */}
+                  <div className="flex items-end">
                     <button
-                      className="btn btn-outline btn-accent w-full"
+                      className="btn btn-sm btn-outline btn-accent"
                       onClick={() => togglePopup("famille")}
                     >
                       <i className="fas fa-plus-circle"></i>
@@ -407,7 +410,7 @@ function ArticleForm() {
           </div>
         </div>
         <div className="details p-6">
-          <div className="collapse bg-base-100 border-base-300 border w-[100vw]">
+          <div className="collapse bg-base-100 border-base-300 border h-120 w-[92vw]">
             <input type="checkbox" />
             <div
               className="collapse-title font-semibold mb-1"
@@ -415,7 +418,7 @@ function ArticleForm() {
             >
               Informations supplementaires d'article
             </div>
-            <div className="collapse-content text-sm">
+            <div className="collapse-content  text-sm w-[57vw]">
               <Tab />
             </div>
           </div>

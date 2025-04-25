@@ -72,155 +72,145 @@ function ValorisationTab() {
   }
   return (
     <>
-      <div className="overflow-x-auto">
-        <table className="table">
-          {/* head */}
-          <thead>
-            <tr>
-              <th></th>
-              <th>Prix Ht</th>
-              <th>Prix TTC</th>
-              <th>Rem.Max</th>
-            </tr>
-          </thead>
-          <tbody>
-            {/* row 1 */}
-            <tr>
-              <th>Prix 1</th>
-              <td>
-                <input
-                  type="text"
-                  placeholder="Extra Small"
-                  className="input input-xs"
-                  value={
-                    listePrixVente.length > 0 ? listePrixVente[0].prix1 : ""
-                  }
-                  onChange={(e) => {handleChangePrixUnitaireArticle("prix1",e.target.value)}}
-                />
-              </td>
-              <td>
-                <input
-                  type="text"
-                  placeholder="Extra Small"
-                  className="input input-xs"
-                  value={
-                    listePrixVente.length > 0 ? listePrixVente[0].prix1ttc : ""
-                  }
-                  onChange={(e) => {handleChangePrixUnitaireTTCArticle("prix1ttc",e.target.value)}}
-                />
-              </td>
-              <td>
-                <input
-                  type="text"
-                  placeholder="Extra Small"
-                  className="input input-xs"
-                  value={
-                    listePrixVente.length > 0 ? listePrixVente[0].remmax : ""
-                  }
-                  onChange={(e) => {handleChange("remmax",e.target.value)}}
-                />
-              </td>
-            </tr>
-            {/* row 2 */}
-            <tr>
-              <th>prix2</th>
-              <td>
-                <input
-                  type="text"
-                  placeholder="Extra Small"
-                  className="input input-xs"
-                  value={
-                    listePrixVente.length > 0 ? listePrixVente[0].prix2 : ""
-                  }
-                  onChange={(e) => {handleChangePrixUnitaireArticle("prix2",e.target.value)}}
+     <div className="overflow-x-auto w-full">
+  <table className="table w-full min-w-[600px]">
+    {/* head */}
+    <thead className="bg-base-200 text-xs sm:text-sm">
+      <tr>
+        <th></th>
+        <th>Prix HT</th>
+        <th>Prix TTC</th>
+        <th>Rem.Max</th>
+      </tr>
+    </thead>
+    <tbody className="text-xs sm:text-sm">
+      {/* row 1 */}
+      <tr>
+        <th>Prix 1</th>
+        <td>
+          <input
+            type="text"
+            placeholder="HT"
+            className="input input-xs w-full"
+            value={listePrixVente.length > 0 ? listePrixVente[0].prix1 : ""}
+            onChange={(e) =>
+              handleChangePrixUnitaireArticle("prix1", e.target.value)
+            }
+          />
+        </td>
+        <td>
+          <input
+            type="text"
+            placeholder="TTC"
+            className="input input-xs w-full"
+            value={listePrixVente.length > 0 ? listePrixVente[0].prix1ttc : ""}
+            onChange={(e) =>
+              handleChangePrixUnitaireTTCArticle("prix1ttc", e.target.value)
+            }
+          />
+        </td>
+        <td>
+          <input
+            type="text"
+            placeholder="Remise"
+            className="input input-xs w-full"
+            value={listePrixVente.length > 0 ? listePrixVente[0].remmax : ""}
+            onChange={(e) => handleChange("remmax", e.target.value)}
+          />
+        </td>
+      </tr>
 
-                />
-              </td>
-              <td>
-                <input
-                  type="text"
-                  placeholder="Extra Small"
-                  className="input input-xs"
-                  value={
-                    listePrixVente.length > 0 ? listePrixVente[0].prix2ttc : ""
-                  }
-                  onChange={(e) => {handleChangePrixUnitaireTTCArticle("prix2ttc",e.target.value)}}
+      {/* row 2 */}
+      <tr>
+        <th>Prix 2</th>
+        <td>
+          <input
+            type="text"
+            className="input input-xs w-full"
+            value={listePrixVente.length > 0 ? listePrixVente[0].prix2 : ""}
+            onChange={(e) =>
+              handleChangePrixUnitaireArticle("prix2", e.target.value)
+            }
+          />
+        </td>
+        <td>
+          <input
+            type="text"
+            className="input input-xs w-full"
+            value={listePrixVente.length > 0 ? listePrixVente[0].prix2ttc : ""}
+            onChange={(e) =>
+              handleChangePrixUnitaireTTCArticle("prix2ttc", e.target.value)
+            }
+          />
+        </td>
+      </tr>
 
-                />
-              </td>
-            </tr>
-            {/* row 3 */}
-            <tr>
-              <th>prix 3</th>
-              <td>
-                <input
-                  type="text"
-                  placeholder="Extra Small"
-                  className="input input-xs"
-                  value={
-                    listePrixVente.length > 0 ? listePrixVente[0].prix3 : ""
-                  }
-                  onChange={(e) => {handleChangePrixUnitaireArticle("prix3",e.target.value)}}
+      {/* row 3 */}
+      <tr>
+        <th>Prix 3</th>
+        <td>
+          <input
+            type="text"
+            className="input input-xs w-full"
+            value={listePrixVente.length > 0 ? listePrixVente[0].prix3 : ""}
+            onChange={(e) =>
+              handleChangePrixUnitaireArticle("prix3", e.target.value)
+            }
+          />
+        </td>
+        <td>
+          <input
+            type="text"
+            className="input input-xs w-full"
+            value={listePrixVente.length > 0 ? listePrixVente[0].prix3ttc : ""}
+            onChange={(e) =>
+              handleChangePrixUnitaireTTCArticle("prix3ttc", e.target.value)
+            }
+          />
+        </td>
+      </tr>
 
-                />
-              </td>
-              <td>
-                <input
-                  type="text"
-                  placeholder="Extra Small"
-                  className="input input-xs"
-                  value={
-                    listePrixVente.length > 0 ? listePrixVente[0].prix3ttc : ""
-                  }
-                  onChange={(e) => {handleChangePrixUnitaireTTCArticle("prix3ttc",e.target.value)}}
+      {/* row 4 */}
+      <tr>
+        <th>Prix 4</th>
+        <td>
+          <input
+            type="text"
+            className="input input-xs w-full"
+            value={listePrixVente.length > 0 ? listePrixVente[0].prix4 : ""}
+            onChange={(e) =>
+              handleChangePrixUnitaireArticle("prix4", e.target.value)
+            }
+          />
+        </td>
+        <td>
+          <input
+            type="text"
+            className="input input-xs w-full"
+            value={listePrixVente.length > 0 ? listePrixVente[0].prix4ttc : ""}
+            onChange={(e) =>
+              handleChangePrixUnitaireTTCArticle("prix4ttc", e.target.value)
+            }
+          />
+        </td>
+      </tr>
 
-                />
-              </td>
-            </tr>
-            {/* row 4 */}
-            <tr>
-              <th>prix 4</th>
-              <td>
-                <input
-                  type="text"
-                  placeholder="Extra Small"
-                  className="input input-xs"
-                  value={
-                    listePrixVente.length > 0 ? listePrixVente[0].prix4 : ""
-                  }
-                  onChange={(e) => {handleChangePrixUnitaireArticle("prix4",e.target.value)}}
-                />
-              </td>
-              <td>
-                <input
-                  type="text"
-                  placeholder="Extra Small"
-                  className="input input-xs"
-                  value={
-                    listePrixVente.length > 0 ? listePrixVente[0].prix4ttc : ""
-                  }
-                  onChange={(e) => {handleChangePrixUnitaireTTCArticle("prix4ttc",e.target.value)}}
-                />
-              </td>
-            </tr>
-            {/* row 5 */}
-            <tr>
-              <th>prix 1 publique</th>
-              <td>
-                <input
-                  type="text"
-                  placeholder="Extra Small"
-                  className="input input-xs"
-                  value={
-                    listePrixVente.length > 0 ? listePrixVente[0].prixpub : ""
-                  }
-                  onChange={(e) => {handleChange("prixpub",e.target.value)}}
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      {/* row 5 */}
+      <tr>
+        <th>Prix 1 publique</th>
+        <td>
+          <input
+            type="text"
+            className="input input-xs w-full"
+            value={listePrixVente.length > 0 ? listePrixVente[0].prixpub : ""}
+            onChange={(e) => handleChange("prixpub", e.target.value)}
+          />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
     </>
   );
 }

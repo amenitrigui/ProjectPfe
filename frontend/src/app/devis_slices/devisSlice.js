@@ -72,7 +72,8 @@ export const getTotalChiffres = createAsyncThunk(
 export const getDevisParNUMBL = createAsyncThunk(
   "Slice/getDevisParNUMBL",
   async (NUMBL, thunkAPI) => {
-    const codeuser = thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte.codeuser;
+    const codeuser =
+      thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte.codeuser;
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
@@ -128,7 +129,8 @@ export const getDevisCountByMonthAndYear = createAsyncThunk(
 export const getDevisParMontant = createAsyncThunk(
   "devisSlice/getDevisParMontant",
   async (montant, thunkAPI) => {
-    const codeuser = thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte.codeuser;
+    const codeuser =
+      thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte.codeuser;
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
@@ -147,7 +149,8 @@ export const getDevisParMontant = createAsyncThunk(
 export const getDevisParCodeClient = createAsyncThunk(
   "slice/getDevisParCodeClient",
   async (CODECLI, thunkAPI) => {
-    const codeuser = thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte.codeuser;
+    const codeuser =
+      thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte.codeuser;
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
@@ -186,7 +189,8 @@ export const getInfoUtilisateur = createAsyncThunk(
 export const getDevisParPeriode = createAsyncThunk(
   "slice/getDevisParPeriode",
   async (DATEBL, thunkAPI) => {
-    const codeuser = thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte.codeuser;
+    const codeuser =
+      thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte.codeuser;
 
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
@@ -241,26 +245,35 @@ export const getListeSecteur = createAsyncThunk(
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeSecteur`
     );
-console.log(response)
-  return response.data.secteurDistincts
-
+    console.log(response);
+    return response.data.secteurDistincts;
   }
 );
 export const getDerniereNumbl = createAsyncThunk(
   "devisSlice/getDerniereNumbl",
-  async (_, thunkAPI) => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/devis/${
-        thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getDerniereNumbl`,
-      {
-        params: {
-          codeuser:
-            thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte
-              .codeuser,
-        },
-      }
-    );
+  async (codeuser, thunkAPI) => {
+    let response;
+    if (codeuser) {
+      response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/devis/${
+          thunkAPI.getState().utilisateurSystemSlice.dbName
+        }/getDerniereNumbl`,
+        {
+          params: {
+            codeuser: codeuser,
+          },
+        }
+      );
+    }
+    if (!codeuser) {
+      response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/devis/${
+          thunkAPI.getState().utilisateurSystemSlice.dbName
+        }/getDerniereNumbl`
+      );
+    }
+    console.log(response)
+
     return response.data.derniereNumbl;
   }
 );
@@ -376,16 +389,19 @@ export const getAnneesDistinctGenerationDevis = createAsyncThunk(
 export const getNbDevisGeneresParAnnee = createAsyncThunk(
   `devisSlice/getNbDevisGeneresParAnnee`,
   async (annee, thunkAPI) => {
-    const response = await axios.get(`
+    const response = await axios.get(
+      `
       ${process.env.REACT_APP_API_URL}/api/devis/${
-      thunkAPI.getState().utilisateurSystemSlice.dbName
-    }/getNbDevisGeneresParAnnee`,{
-      params: {
-        annee: annee
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getNbDevisGeneresParAnnee`,
+      {
+        params: {
+          annee: annee,
+        },
       }
-    });
+    );
 
-    return response.data.nbDevisParAnne
+    return response.data.nbDevisParAnne;
   }
 );
 export const devisSlice = createSlice({
@@ -399,7 +415,7 @@ export const devisSlice = createSlice({
     listeNUMBL: [],
     // * liste de points de vente
     listePointsVente: [],
-    listesecteur:[],
+    listesecteur: [],
     // * informations du formulaire de devis
     devisInfo: {
       NUMBL: "",
@@ -443,7 +459,7 @@ export const devisSlice = createSlice({
     nbTotDevisSansStatus: 0,
     derniereNumbl: "",
     anneesDistinctGenerationDevis: [],
-    nbDevisGeneresParAnnee: []
+    nbDevisGeneresParAnnee: [],
   },
   reducers: {
     setDevisInfo: (state, action) => {
@@ -456,6 +472,7 @@ export const devisSlice = createSlice({
     setDevisInfoEntiere: (state, action) => {
       state.devisInfo = action.payload;
     },
+
     viderChampsDevisInfo: (state) => {
       state.devisInfo = {
         NUMBL: "",
@@ -781,7 +798,7 @@ export const devisSlice = createSlice({
       .addCase(getAnneesDistinctGenerationDevis.rejected, (state, action) => {
         state.status = "echoue";
       })
-      
+
       .addCase(getNbDevisGeneresParAnnee.pending, (state) => {
         state.status = "chargement";
       })
