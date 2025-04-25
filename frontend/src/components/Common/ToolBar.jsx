@@ -34,6 +34,7 @@ import {
 import {
   getDerniereNumbl,
   getDevisParNUMBL,
+  setDevisInfo,
   viderChampsDevisInfo,
 } from "../../app/devis_slices/devisSlice";
 import { getUtilisateurParCode } from "../../app/utilisateur_slices/utilisateurSlice";
@@ -134,6 +135,7 @@ function ToolBar() {
       dispatch(viderChampsDevisInfo());
       dispatch(viderChampsClientInfo());
       dispatch(getDerniereNumbl());
+      dispatch(setDevisInfo({collone: "usera",valeur: utilisateurConnecte.codeuser}))
     }
 
     if (toolbarTable == "client") {

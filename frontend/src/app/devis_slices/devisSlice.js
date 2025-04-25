@@ -32,6 +32,7 @@ export const AjouterDevis = createAsyncThunk(
   "slice/AddDevis",
   async (_, thunkAPI) => {
     const devisInfo = thunkAPI.getState().devisSlice.devisInfo;
+    console.log(devisInfo);
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
@@ -122,9 +123,6 @@ export const getDevisCountByMonthAndYear = createAsyncThunk(
 );
 
 // * Action asynchrone pour récupérer la liste des devis par montant
-// ! on peut retourner des devis dont le montant est
-// ! presque celle qu'on recherche
-// ! exemple: si on cherche par le montant 3205, on peut retourner des résultat pour 3205.7 et ainsi de suite
 export const getDevisParMontant = createAsyncThunk(
   "devisSlice/getDevisParMontant",
   async (montant, thunkAPI) => {
@@ -397,7 +395,7 @@ export const devisSlice = createSlice({
       numPage: 1,
       cp: "",
       DATEBL: new Date().toISOString().split("T")[0],
-      MREMISE: "",
+      MREMISE: 0,
       MTTC: "",
       MTVA: "",
       comm: "",
@@ -459,7 +457,7 @@ export const devisSlice = createSlice({
         usera: "",
         RSCLI: "",
         codesecteur: "",
-        MHT: "",
+        MHT: 0,
         articles: [],
         quantite: 0,
         DREMISE: 0,

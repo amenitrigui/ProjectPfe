@@ -2,7 +2,9 @@ const { QueryTypes, Op } = require("sequelize");
 const defineDfpModel = require("../models/societe/dfp");
 const defineLdfpModel = require("../models/societe/ldfp");
 const { getDatabaseConnection } = require("../common/commonMethods");
+const { dbConnection } = require("../db/config")
 
+console.log()
 // * récuperer la liste des dévis d'une societé donnée (dbName)
 // * example:
 // * input :
@@ -92,7 +94,8 @@ const getNombreDevis = async (req, res) => {
   }
 
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    console.log(dbConnection)
+    // const dbConnection = await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     const devisCount = await Devis.count({
       distinct: true,
@@ -141,8 +144,6 @@ const ajouterDevis = async (req, res) => {
     MHT,
     articles,
   } = req.body.devisInfo;
-  console.log(articles)
-
   articles.map((article) => {
     article.NumBL = NUMBL;
   });
@@ -179,16 +180,19 @@ const ajouterDevis = async (req, res) => {
       MHT,
       codesecteur,
       cp,
+      usera,
       comm,
       RSCLI,
       MLETTRE: mlettre,
     };
 
+    console.log(dfpData);
+
     const devis = await Dfp.create(dfpData);
     articles.map(async (article) => {
       article.NLigne = articles.length;
       article.CodeART = article.code;
-      const ligneDevis = await ldfp.create(article);
+      const ligneDevis = null//await ldfp.create(article);
       console.log(ligneDevis);
     });
 
@@ -519,6 +523,8 @@ const getDerniereNumbl = async (req, res) => {
         },
       }
     );
+
+    console.log(derniereNumbl);
 
     const premiereNumbl = await dbConnection.query(
       `SELECT NUMBL from dfp where DateBl = (SELECT MIN(DATEBL) from dfp) and usera = :codeuser ORDER BY (NUMBL) ASC LIMIT 1`,
@@ -1044,6 +1050,20 @@ const getAnneesDistinctGenerationDevis = async (req, res) => {
     dbConnection.close();
   }
 };
+
+const getDirecteursDevis = async (req, res) => {
+  const { dbName } = req.params
+  let dbConnection;
+  try{
+    dbConnection = await getDatabaseConnection(dbName);
+  }catch(error){
+    return res.statuss(500).json({message: error.message})
+  }finally{
+    if(dbConnection) {
+      dbConnection.close();
+    }
+  }
+}
 
 // * récupere le nombre de devis générés par mois selon l'année
 // * pour une societé donnée (dbName)

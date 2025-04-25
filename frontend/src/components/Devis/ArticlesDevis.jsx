@@ -12,7 +12,7 @@ import {
   setArticleInfos,
   viderChampsArticleInfo,
 } from "../../app/article_slices/articleSlice";
-import { setDevisArticles } from "../../app/devis_slices/devisSlice";
+import { setDevisArticles, setDevisInfo } from "../../app/devis_slices/devisSlice";
 import { setAfficherRecherchePopup, setToolbarTable } from "../../app/interface_slices/interfaceSlice";
 
 function ArticlesDevis() {
@@ -57,13 +57,12 @@ function ArticlesDevis() {
       alert("la quantité est necessaire");
       return false;
     }
-
-    if(!articleInfos.DREMISE) {
-      alert("le champ remise est necessaire");
-      return false;
-    }
-
+    console.log(devisInfo.MREMISE)
+    console.log(articleInfos.DREMISE);
+    console.log(parseInt(devisInfo.MHT)+parseInt(netHt))
     dispatch(setDevisArticles(articleInfos));
+    dispatch(setDevisInfo({collone: "MHT", valeur: parseInt(devisInfo.MHT)+parseInt(netHt)}))
+    dispatch(setDevisInfo({collone: "MREMISE"}))
     dispatch(viderChampsArticleInfo());
   }
 
