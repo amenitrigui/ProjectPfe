@@ -10,7 +10,7 @@ const configParDefautDb = {
   logging: console.log,//false,
   pool: {
     max: 5,
-    min: 0,
+    min: 1,
     acquire: 30000,
     idle: 10000,
   },
@@ -21,10 +21,7 @@ const configParDefautDb = {
 };
 
 // * Récupère la connexion avec une base des données donnée (dbName)
-const getBdConnexion = (nomDb = "") => {
-  console.log(
-    "=============================tentative de connexion à :" + nomDb
-  );
+const connecterAuBaseDonnees = (nomDb = "") => {
   // * Si le mot de passe est défini dans le fichier .env, on l'ajoute à la chaîne de connexion.
   // * Sinon, on utilise une chaîne vide.
   const partieMdp = process.env.DB_PASSWORD
@@ -42,18 +39,20 @@ const getBdConnexion = (nomDb = "") => {
     ...configParDefautDb,
     database: nomDb || undefined,
   });
-  console.log("===========================obj connexion: ", objConnexion)
   return objConnexion;
 };
 
 // * Connexion avec le serveur MYSQL (sans base de données spécifique)
-let dbConnection = getBdConnexion(); //conxexion avexc serveur mysql
+let dbConnection = connecterAuBaseDonnees(); //conxexion avexc serveur mysql
 const setBdConnexion = (nomDb) => {
-  dbConnection = getBdConnexion(nomDb);
+  dbConnection = connecterAuBaseDonnees(nomDb);
 };
+const getConnexionBd = () => {
+  return dbConnection;
+}
 
 // * Connexion avec la base des données "usererpsole"
-const sequelizeConnexionDbUtilisateur = getBdConnexion(
+const sequelizeConnexionDbUtilisateur = connecterAuBaseDonnees(
   process.env.DB_USERS_NAME
 ); ///connexion specifiquenmrnt le non de la base de donnnes
 
@@ -79,8 +78,7 @@ const testerConnexionUtilisateurSocieteBd = async () => {
 testerConnexionUtilisateurSocieteBd();
 
 module.exports = {
-  dbConnection,
+  getConnexionBd,
   setBdConnexion,
-  sequelizeConnexionDbUtilisateur,
-  getBdConnexion,
+  sequelizeConnexionDbUtilisateur
 };

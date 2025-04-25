@@ -7,7 +7,7 @@ const {
   envoyerDemandeReinitialisationMp,
   reinitialiserMotPasse,
   getUtilisateurParCode,
-  deconnecter
+  deconnecterUtilisateur
 } = require("../controllers/utilisateurController");
 
 // * connexion pour un utilisateur
@@ -23,6 +23,6 @@ router.put("/reinitialiserMotPasse", reinitialiserMotPasse);
 router.post("/select-database", selectDatabase);
 // * récuperer un utilisateur par son code
 router.get("getUtilisateurParCode/:codeuser", getUtilisateurParCode);
-router.post("/deconnecter", deconnecter)
+router.post("/deconnecter", deconnecterUtilisateur)
 
 module.exports = router;

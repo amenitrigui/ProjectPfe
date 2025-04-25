@@ -49,6 +49,7 @@ function ArticleForm() {
   const derniereCodeArticle = useSelector(
     (state) => state.articleSlice.derniereCodeArticle
   );
+  console.log(derniereCodeArticle)
   const FamilleInfos = useSelector((state) => state.familleSlice.FamilleInfos);
   const SousFamilleInfos = useSelector(
     (state) => state.sousfamilleSlice.SousFamilleInfos
@@ -104,6 +105,7 @@ function ArticleForm() {
 
   useEffect(() => {
     if (derniereCodeArticle && derniereCodeArticle != "") {
+      console.log(derniereCodeArticle)
       dispatch(getArticleParCode(derniereCodeArticle));
     }
   }, [derniereCodeArticle]);
@@ -382,11 +384,13 @@ function ArticleForm() {
                           type="text"
                           className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
                           value={articleInfos.tauxtva}
+                          
                           onChange={(e) =>
                             hundlesubmitTousLesChamp(e.target.value, "tauxtva")
                           }
                           disabled={!activerChampsForm}
                         />
+                    {    console.log(articleInfos.tauxtva)}
                       </div>
                       <div className="space-y-1">
                         <label className="block font-semibold text-blue-900">

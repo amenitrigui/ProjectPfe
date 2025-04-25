@@ -55,7 +55,6 @@ function DevisForm() {
   const [isOpen, setIsOpen] = useState(false);
   const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
   const listesecteur = useSelector((state) => state.devisSlice.listesecteur);
-  console.log(listesecteur);
 
   const listeToutCodesClients = useSelector(
     (state) => state.clientSlice.listeToutCodesClients
@@ -86,11 +85,14 @@ function DevisForm() {
   //?==================================================================================================================
   //?==============================================appels UseEffect====================================================
   //?==================================================================================================================
-  // * UseEffect #1 : récupérer la liste des codes de devis et liste de points de vente
-  // * et récuperer le dernier NUMBL
+  // * UseEffect #1 : désactiver tous les champs
+  // * et indiquer qu'on va utiliser la table de devis
+  // * récupérer la liste des codes de devis et liste de points de vente
   useEffect(() => {
+    dispatch(setToolbarTable("devis"));
+    dispatch(setToolbarMode("consultation"));
+    dispatch(setActiverChampsForm(false));
     dispatch(getListeNumbl());
-    dispatch(getDerniereNumbl(utilisateurConnecte.codeuser));
     dispatch(getListePointsVente());
     dispatch(getListeSecteur());
   }, []);
@@ -110,14 +112,10 @@ function DevisForm() {
   //   }
   // }, [devisInfo.CODECLI]);
 
-  // * useEffect #4 : désactiver tous les champs
-  // * et indiquer qu'on va utiliser la table de devis
+  // * useEffect #4 : récuperer le dernier NUMBL
   useEffect(() => {
-    dispatch(setToolbarTable("devis"));
-    dispatch(setToolbarMode("consultation"));
-    dispatch(setActiverChampsForm(false));
-    dispatch(getDerniereNumbl());
-  }, []);
+    dispatch(getDerniereNumbl(utilisateurConnecte.codeuser));
+  }, []); 
 
   // * useEffect #5: remplir le champ NUMBL par le derniere NUMBL récuperé
   useEffect(() => {
@@ -131,8 +129,9 @@ function DevisForm() {
   // * useEffect #6: récuperer les informations de devis
   // * et les lignes de devis par NUMBL
   useEffect(() => {
-    console.log("devisInfo.NUMBL changed to: ", devisInfo.NUMBL);
-    if (devisInfo.NUMBL && devisInfo.NUMBL != "" && toolbarMode != "ajout") {
+    console.log("toolbarMode: ",toolbarMode)
+    console.log("devisInfo.NUMBL changed to: ", devisInfo.NUMBL)
+    if(devisInfo.NUMBL && devisInfo.NUMBL != "" && toolbarMode !="ajout") {
       dispatch(getDevisParNUMBL(devisInfo.NUMBL));
       dispatch(getLignesDevis(devisInfo.NUMBL));
     }
@@ -141,7 +140,8 @@ function DevisForm() {
   // * useEffect #7 : remplacer la valeur de champ NUMBL
   // * par le derniere NUMBL incrementé par 1 lors d'ajout d'un devis
   useEffect(() => {
-    if (toolbarMode && toolbarMode === "ajout") {
+    if (toolbarMode && toolbarMode === "ajout" && derniereNumbl!=devisInfo.NUMBL) {
+      console.log(derniereNumbl)
       dispatch(
         setDevisInfo({
           collone: "NUMBL",
@@ -206,12 +206,11 @@ function DevisForm() {
   const handleChangeCodeClient = (valeur) => {
     console.log(valeur);
     dispatch(setDevisInfo({ collone: "CODECLI", valeur: valeur }));
-    dispatch(getClientParCode(valeur));
+   
   };
   const afficherRecherchePopup = () => {
     dispatch(setAfficherRecherchePopup(true));
   };
-  console.log(devisInfo);
   return (
     <>
       <div className="container">
@@ -315,6 +314,13 @@ function DevisForm() {
                       <input
                         type="text"
                         value={devisInfo.transport}
+                        onChange={(e) =>
+                          setDevisInfo({
+                            collone: "transport",
+                            valeur: e.target.value,
+                          })
+                        }
+                        
                         className="w-full border border-gray-300 rounded-md p-2"
                         disabled={!activerChampsForm}
                       />
@@ -327,6 +333,12 @@ function DevisForm() {
                         className="w-full border border-gray-300 rounded-md p-2"
                         value={devisInfo.REFCOMM}
                         disabled={!activerChampsForm}
+                        onChange={(e) =>
+                          setDevisInfo({
+                            collone: "REFCOMM",
+                            valeur: e.target.value,
+                          })
+                        }
                       />
 
                       <label className="block font-medium">
@@ -337,6 +349,12 @@ function DevisForm() {
                         className="w-full border border-gray-300 rounded-md p-2"
                         disabled={!activerChampsForm}
                         value={devisInfo.delailivr}
+                        onChange={(e) =>
+                          setDevisInfo({
+                            collone: "delailivr",
+                            valeur: e.target.value,
+                          })
+                        }
                       />
                     </div>
                     {/* Information Client */}
@@ -356,7 +374,8 @@ function DevisForm() {
                         type="text"
                         className="w-full border border-gray-300 rounded-md p-2"
                         disabled={!activerChampsForm}
-                        value={clientInfos.code || ""}
+                        value={devisInfo.CODECLI || ""}
+
                         onChange={(e) => handleChangeCodeClient(e.target.value)}
                         onClick={() => {
                           dispatch(setToolbarTable("client"));
@@ -382,7 +401,7 @@ function DevisForm() {
                             valeur: e.target.value,
                           });
                         }}
-                        value={clientInfos.rsoc || ""}
+                        value={devisInfo.RSCLI || ""}
                       />
 
                       <label className="block font-medium">Adresse :</label>
@@ -390,7 +409,7 @@ function DevisForm() {
                         type="text"
                         className="w-full border border-gray-300 rounded-md p-2"
                         disabled={!activerChampsForm}
-                        value={clientInfos.adresse || ""}
+                        value={devisInfo.ADRCLI || ""}
                         onChange={(e) =>
                           setDevisInfo({
                             collone: "ADRCLI",
@@ -421,7 +440,6 @@ function DevisForm() {
                     utilisateurConnecte ? utilisateurConnecte.codeuser : ""
                   }
                 />
-                {console.log(utilisateurConnecte)}
 
                 <label className="block font-medium">RSREP :</label>
                 <input
@@ -439,6 +457,12 @@ function DevisForm() {
                   rows="10"
                   className="w-full border border-gray-300 rounded-md p-2"
                   disabled={!activerChampsForm}
+                  onChange={(e) =>
+                    setDevisInfo({
+                      collone: "comm",
+                      valeur: e.target.value,
+                    })
+                  }
                 ></textarea>
 
                 <DateCreateMAJ objet={devisInfo} />

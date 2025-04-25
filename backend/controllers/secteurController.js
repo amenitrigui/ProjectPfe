@@ -1,4 +1,5 @@
 const { getDatabaseConnection } = require("../common/commonMethods");
+const { getConnexionBd } = require("../db/config")
 const defineSecteurModel = require("../models/societe/secteur")
 //* récuperer la liste de codes secteurs
 // * example:
@@ -9,7 +10,7 @@ const defineSecteurModel = require("../models/societe/secteur")
 const getListeCodesSecteur = async (req, res) => {
     const { dbName } = req.params;
     try {
-      const dbConnection = await getDatabaseConnection(dbName);
+      const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
       const listeCodesSecteurs = await dbConnection.query(
         `SELECT codesec from secteur`,
         {
@@ -38,7 +39,7 @@ const getListeCodesSecteur = async (req, res) => {
     const { dbName, codesecteur } = req.params;
     console.log(dbName, " ", codesecteur);
     try {
-      const dbConnection = await getDatabaseConnection(dbName);
+      const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
       const secteurInfo = await dbConnection.query(
         `Select codesec, desisec from secteur where codesec = :codesecteur `,
         {
@@ -67,7 +68,7 @@ const { dbName } = req.params;
   console.log("ajouterSecteur infos :",secteurInfo)
   
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const Secteur = defineSecteurModel(dbConnection);
     const newSecteur = await Secteur.create({
       //add + save min base 3ibrt 3ml insert into mn base de donnes

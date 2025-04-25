@@ -1,4 +1,4 @@
-const { getDatabaseConnection } = require("../common/commonMethods");
+const { getConnexionBd } = require("../db/config");
 //* utl http://localhost:5000/api/Valorisation_Article/SOLEVO/getPrixVente?code=0
 const getPrixVente = async (req, res) => {
   const { dbName } = req.params;
@@ -11,7 +11,7 @@ const getPrixVente = async (req, res) => {
   }
 
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const getPrixVente = await dbConnection.query(
       `select prix1,prix2,prix3,prix4, prix1ttc,prix2ttc,prix3ttc,prix4ttc ,remmax,prixpub from article where code =:code `,
 

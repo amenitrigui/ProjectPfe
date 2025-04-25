@@ -7,7 +7,7 @@ const nodeMailer = require("nodemailer");
 const { google } = require("googleapis");
 const handlebars = require("handlebars");
 const fs = require("fs");
-const { sequelizeConnexionDbUtilisateur,getBdConnexion, dbConnection, setBdConnexion } = require("../db/config");
+const { sequelizeConnexionDbUtilisateur, setBdConnexion, getConnexionBd } = require("../db/config");
 const {
   verifyTokenValidity,
 } = require("../common/commonMethods");
@@ -287,14 +287,21 @@ const getUtilisateurParCode = async (req, res) => {
 
 // * fermer les connexions récuperés avec la base des données d'utilisateurs (userErpSole)
 // * et avec le base de données sélectionnée de connexion
-const deconnecter = async(req, res) => {
+// * verb : post
+// * url: http://localhost:5000/api/utilisateurs/deconnecterUtilisateur
+const deconnecterUtilisateur = async(req, res) => {
   try {
+    const connexionBd = getConnexionBd();
     if(sequelizeConnexionDbUtilisateur){
       sequelizeConnexionDbUtilisateur.close();
+      console.log("deconnecté de base de données utilisateurs");
     }
-    if(dbConnection) {
-      dbConnection.close();
+    if(connexionBd) {
+      connexionBd.close();
+      console.log("deconnecté de base de données société");
     }
+
+    return res.status(200).json({message: "déconnexion effectuée avec succès"})
   }catch(error){
     return res.status(500).json({message: error.message})
   }
@@ -306,5 +313,5 @@ module.exports = {
   envoyerDemandeReinitialisationMp,
   reinitialiserMotPasse,
   getUtilisateurParCode,
-  deconnecter
+  deconnecterUtilisateur
 };

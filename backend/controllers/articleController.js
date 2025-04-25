@@ -4,6 +4,7 @@ const defineFamilleModel = require("../models/societe/famille");
 const defineLdfpModel = require("../models/societe/ldfp");
 const defineSousFamilleModel = require("../models/societe/sousfamille");
 const { getDatabaseConnection } = require("../common/commonMethods");
+const { getConnexionBd } = require("../db/config")
 
 // * méthode pour récuperer la liste de familles (code+libelle)
 // * exemple :
@@ -20,7 +21,7 @@ const getListeFamilles = async (req, res) => {
   }
 
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
 
     const Familles = defineFamilleModel(dbConnection);
 
@@ -62,7 +63,7 @@ const getCodesArticlesByFamille = async (req, res) => {
   }
 
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const Article = defineArticleModel(dbConnection);
 
     const articles = await Article.findAll({
@@ -113,7 +114,7 @@ const suprimerArticle = async (req, res) => {
   }
 
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const article = await dbConnection.query(
       `Delete FROM ARTICLE WHERE code = :code`,
       {
@@ -138,7 +139,7 @@ const getArticleParCode = async (req, res) => {
     return res.status(400).json({message: "l'un ou les deux paramètres sont nulles"})
   }
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const article = await dbConnection.query(
       `SELECT * FROM ARTICLE WHERE code = :code`,
       {
@@ -165,7 +166,7 @@ const ajouterArticle = async (req, res) => {
   const { dbName } = req.params;
   const { articleAjoute } = req.body;
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const Article = defineArticleModel(dbConnection);
     const article = await Article.findOne({
       where: {
@@ -237,7 +238,7 @@ const modifierArticle = async (req, res) => {
   const { article } = req.body;
   const { code } = req.params;
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const Article = defineArticleModel(dbConnection);
 
     const articleAModifier = await Article.findOne({
@@ -296,7 +297,7 @@ const modifierArticle = async (req, res) => {
 const getListeArticles = async (req, res) => {
   const { dbName } = req.params;
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const listeArticles = await dbConnection.query(`SELECT * FROM ARTICLE`, {
       type: dbConnection.QueryTypes.SELECT,
     });
@@ -335,7 +336,7 @@ const filtrerListeArticle = async (req, res) => {
   const { dbName } = req.params;
   const { filters } = req.query;
 
-  const dbConnection = await getDatabaseConnection(dbName);
+  const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
   // ? liste des conditions
   // ? exemple : ["NUML like :numbl, "libpv like :libpv"...]
   let whereClauses = [];
@@ -396,7 +397,7 @@ const filtrerListeArticle = async (req, res) => {
 const getToutCodesArticle = async (req, res) => {
   try {
     const { dbName } = req.params;
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
 
     const listeCodesArticles = await dbConnection.query(
       `SELECT code FROM article ORDER BY code`,
@@ -426,7 +427,7 @@ const getDesignationFamilleParCodeFamille = async (req, res) => {
     return res.status(400).json({message: "l'un ou les deux paramètres sont nulles"})
   }
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const getDesignationFamilleParCodeFamille = await dbConnection.query(
       `select libelle from famille where code = :code`,
       {
@@ -452,7 +453,7 @@ const getListecodesousFamille = async (req, res) => {
   const { dbName } = req.params;
 
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const getcodesousFamille = await dbConnection.query(
       `select code from sousfamille`,
       {
@@ -480,7 +481,7 @@ const getCodeFamilleParDesignationFamille = async (req, res) => {
         .status(400)
         .json({ message: "dbName et desFamille sont réquises" });
     }
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const Familles = defineFamilleModel(dbConnection);
     const codesFamillesTrouves = await Familles.findAll({
       attributes: ["code"],
@@ -515,7 +516,7 @@ const getCodeFamilleParDesignationFamille = async (req, res) => {
 const getCodeSousFamilleParDesignationSousFamille = async (req, res) => {
   const { dbName, desSousFamille } = req.params;
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const SousFamilles = defineSousFamilleModel(dbConnection);
     const sousFamillesTrouves = await SousFamilles.findAll({
       attributes: ["code"],
@@ -550,7 +551,7 @@ const getCodeSousFamilleParDesignationSousFamille = async (req, res) => {
 const getArticleParLibelle = async (req, res) => {
   const { dbName, libelle } = req.params;
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const Article = defineArticleModel(dbConnection);
     const articlesTrouves = await Article.findAll({
       where: { libelle: { [Op.like]: '%'+libelle+'%' } },
@@ -585,7 +586,7 @@ const getdesignationSousFamillebycodeSousFamille = async (req, res) => {
   const { dbName, codeSousFamille } = req.params;
 
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
 
     const result = await dbConnection.query(
       `SELECT libelle FROM sousfamille WHERE code = :code`,
@@ -615,7 +616,7 @@ const getListeArticleparFamille = async (req, res) => {
   const { dbName } = req.params;
   const { codeFamille } = req.query;
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const ListecodeFamille = await dbConnection.query(
       `select * from article where famille LIKE :famille`,
       {
@@ -639,7 +640,7 @@ const getListeArticleparLibelle = async (req, res) => {
   const { dbName } = req.params;
   const { libelle } = req.query;
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const ListelibelleArticle = await dbConnection.query(
       `Select * from article where libelle like :libelle`,
 
@@ -664,7 +665,7 @@ const getListeArticleparLibelle = async (req, res) => {
 const getListeArticleParSousFamille = async (req, res) => {
   const { dbName, SousFamille } = req.params;
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const ListeArticleSousFamille = await dbConnection.query(
       `Select * from article where codesousfam like :codesousfam`,
 
@@ -692,7 +693,7 @@ const getListeArticleParSousFamille = async (req, res) => {
 const getListeArticleParCodeArticle=async(req,res)=>{
   const { dbName, codeArticle } = req.params;
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const ListecodeArticle = await dbConnection.query(
       `select * from article where code LIKE :code`,
       {
@@ -732,7 +733,9 @@ const getDerniereCodeArticle = async(req, res) => {
     }
     if(derniereCodeArticle && derniereCodeArticle.length > 0){
       // ?? ?????? ? ?? ? ??? ??? ?? ?? ? ?? ???
-      return res.status(200).json({message: "succès", derniereCodeArticle: derniereCodeArticle[0]})
+      console.log(derniereCodeArticle[(derniereCodeArticle.length)-1])
+      return res.status(200).json({message: "succès", derniereCodeArticle: derniereCodeArticle[(derniereCodeArticle.length)-1]})
+
     }
   }catch(error) {
     return res.status(500).json({message: error.message})
