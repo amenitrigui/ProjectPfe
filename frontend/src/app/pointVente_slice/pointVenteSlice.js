@@ -1,8 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-
-
 //* url: http://localhost:5000/api/pointvente/SOLEVO/ajouterpointVente
 
 export const ajouterpointVente = createAsyncThunk(
@@ -17,15 +15,20 @@ export const ajouterpointVente = createAsyncThunk(
       }
     );
     console.log(response);
- return response.data.newPointVente
+    return response.data.newPointVente;
   }
 );
+
+const pointVenteInfoInitiales = {
+  Code: "",
+  Libelle: "",
+};
 export const pointVenteSlice = createSlice({
   name: "pointVenteSlice",
   initialState: {
+    pointVenteInfoInitiales,
     pointVenteInfo: {
-      Code: "",
-      Libelle: "",
+      ...pointVenteInfoInitiales,
     },
     listeCodespointVente: [],
     status: "inactive",
@@ -43,25 +46,21 @@ export const pointVenteSlice = createSlice({
     },
     viderChampsPointVenteInfo: (state) => {
       state.pointVenteInfo = {
-        Code: "",
-        Libelle: "",
+        ...pointVenteInfoInitiales,
       };
     },
-
-   
   },
   // * on utilise l'objet builder pour replacer l'opérateur switch case ...
   // * l'objet builder nous permet d'écrire des cas plus lisibles et flexibles
   extraReducers: (builder) => {
     builder
 
-     
       .addCase(ajouterpointVente.pending, (state) => {
         state.status = "chargement";
       })
       .addCase(ajouterpointVente.fulfilled, (state, action) => {
         console.log(action.payload);
-       /// state.RegionInfo.desirgg = action.payload.desirgg;
+        /// state.RegionInfo.desirgg = action.payload.desirgg;
         state.status = "réussi";
       })
       .addCase(ajouterpointVente.rejected, (state, action) => {
@@ -72,9 +71,9 @@ export const pointVenteSlice = createSlice({
 });
 
 export const {
-    viderChampsPointVenteInfo,
+  viderChampsPointVenteInfo,
 
-    setPointVenteInfosEntiere,
-    setPointVenteInfos,
+  setPointVenteInfosEntiere,
+  setPointVenteInfos,
 } = pointVenteSlice.actions;
 export default pointVenteSlice.reducer;

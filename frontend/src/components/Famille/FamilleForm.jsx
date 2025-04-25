@@ -10,6 +10,7 @@ import {
   ajouterSousFamille,
   setSousFamilleInfos,
 } from "../../app/sousfamille_slices/sousfamilleSlice";
+import { setArticleInfos } from "../../app/article_slices/articleSlice";
 
 // Définition des animations
 const fadeIn = keyframes`
@@ -139,67 +140,148 @@ const FamilleForm = () => {
     togglePopup();
   };
   const toolbartable = useSelector((state) => state.interfaceSlice.toolbarTable);
-
-  const hundleAjout = () => {
-    if (toolbartable == "famille") {
-      dispatch(ajouterFamille());
-    }
-    if (toolbartable == "sousfamille") {
-      dispatch(ajouterSousFamille());
-    }
-  };
   const FamilleInfos = useSelector((state) => state.familleSlice.FamilleInfos);
   const SousFamilleInfos=useSelector((state)=>state.sousfamilleSlice.SousFamilleInfos)
+console.log(toolbartable)
+  const hundleAjout = () => {
+    if (toolbartable == "famille") {
+
+      dispatch(ajouterFamille());
+      dispatch(setArticleInfos({colonne:"famille",valeur:FamilleInfos.code}))
+      dispatch(setArticleInfos({colonne:"libelleFamille",valeur:FamilleInfos.libelle}))
+
+    }
+    if (toolbartable == "sousfamille") {
+
+      dispatch(ajouterSousFamille());
+      dispatch(setArticleInfos({colonne:"codesousfam",valeur:SousFamilleInfos.code}))
+      dispatch(setArticleInfos({colonne:"Libellesousfamille",valeur:SousFamilleInfos.libelle}))
+    }
+  };
+
 
   const afficherFamillePopub = useSelector(
     (state) => state.interfaceSlice.afficherFamillePopub
   );
   return (
-    <AppContainer>
-      {afficherFamillePopub && (
-        <PopupContainer>
-          <PopupContent>
-            <h2>Formulaire Popup</h2>
-            <form onSubmit={handleSubmit}>
-              <FormGroup>
-                <FormLabel htmlFor="champ1">Code:</FormLabel>
-                <FormInput
-                  type="text"
-                  id="champ1"
-                  name="champ1"
-                  value={toolbartable=="famille"?FamilleInfos.code:SousFamilleInfos.code}
-                  onChange={(e) => handleChange("code", e.target.value, toolbartable=="famille" ?"famille": "sousfamille")}
-                  placeholder="Entrez du texte ici"
-                  required
-                />
-              </FormGroup>
-
-              <FormGroup>
-                <FormLabel htmlFor="champ2">Libelle:</FormLabel>
-                <FormInput
-                  type="text"
-                  id="champ2"
-                  name="champ2"
-                  value={toolbartable=="famille"?FamilleInfos.libelle:SousFamilleInfos.libelle}
-                  onChange={(e) => handleChange("libelle", e.target.value,toolbartable=="famille" ?"famille": "sousfamille")}
-                  placeholder="Entrez du texte ici"
-                  required
-                />
-              </FormGroup>
-
-              <ButtonsContainer>
-                <CancelButton type="button" onClick={togglePopup}>
-                  Annuler
-                </CancelButton>
-                <SubmitButton type="submit" onClick={() => hundleAjout()}>
-                  Valider
-                </SubmitButton>
-              </ButtonsContainer>
-            </form>
-          </PopupContent>
-        </PopupContainer>
-      )}
-    </AppContainer>
+    <AppContainer style={{ position: "relative", zIndex: 10 }}>
+    {afficherFamillePopub && (
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "1rem",
+          zIndex: 999,
+        }}
+      >
+        <div
+          style={{
+            backgroundColor: "#fff",
+            width: "100%",
+            maxWidth: "500px",
+            borderRadius: "10px",
+            padding: "2rem",
+            boxShadow: "0 0 10px rgba(0,0,0,0.3)",
+          }}
+        >
+          <h2 style={{ marginBottom: "1rem", fontSize: "1.25rem" }}>Formulaire Popup</h2>
+          <form onSubmit={handleSubmit}>
+            <div style={{ marginBottom: "1rem" }}>
+              <label htmlFor="champ1" style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600" }}>
+                Code:
+              </label>
+              <input
+                type="text"
+                id="champ1"
+                name="champ1"
+                value={toolbartable === "famille" ? FamilleInfos.code : SousFamilleInfos.code}
+                onChange={(e) =>
+                  handleChange("code", e.target.value, toolbartable === "famille" ? "famille" : "sousfamille")
+                }
+                placeholder="Entrez du texte ici"
+                required
+                style={{
+                  width: "100%",
+                  padding: "0.5rem",
+                  border: "1px solid #ccc",
+                  borderRadius: "5px",
+                }}
+              />
+            </div>
+  
+            <div style={{ marginBottom: "1rem" }}>
+              <label htmlFor="champ2" style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600" }}>
+                Libelle:
+              </label>
+              <input
+                type="text"
+                id="champ2"
+                name="champ2"
+                value={toolbartable === "famille" ? FamilleInfos.libelle : SousFamilleInfos.libelle}
+                onChange={(e) =>
+                  handleChange("libelle", e.target.value, toolbartable === "famille" ? "famille" : "sousfamille")
+                }
+                placeholder="Entrez du texte ici"
+                required
+                style={{
+                  width: "100%",
+                  padding: "0.5rem",
+                  border: "1px solid #ccc",
+                  borderRadius: "5px",
+                }}
+              />
+            </div>
+  
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: "1rem",
+                flexWrap: "wrap",
+                marginTop: "1rem",
+              }}
+            >
+              <button
+                type="button"
+                onClick={togglePopup}
+                style={{
+                  backgroundColor: "#ccc",
+                  border: "none",
+                  padding: "0.6rem 1.2rem",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                Annuler
+              </button>
+              <button
+                type="submit"
+                onClick={() => hundleAjout()}
+                style={{
+                  backgroundColor: "#2a2185",
+                  color: "#fff",
+                  border: "none",
+                  padding: "0.6rem 1.2rem",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                Valider
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    )}
+  </AppContainer>
+  
   );
 };
 

@@ -144,23 +144,27 @@ export const getCodeUtilisateurSuivant = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getCodeUtilisateurSuivant`
     );
-    return response
+    return response;
   }
 );
+const utilisateurSystemInfoInitiales = {
+  codeuser: "",
+  motpasse: "test",
+  nom: "",
+  email: "",
+  type: "",
+  directeur: "",
+};
 export const utilisateurSystemSlices = createSlice({
   name: "utilisateurSystemSlices",
   initialState: {
+    utilisateurSystemInfoInitiales,
     listeUtilisateur_Superviseur: [],
     Utilisateur_SuperviseurInfos: {
-      codeuser: "",
-      motpasse: "test",
-      nom: "",
-      email: "",
-      type: "",
-      directeur: "",
+      ...utilisateurSystemInfoInitiales
     },
     utilisateurConnecte: {
-      codeuser:"",
+      codeuser: "",
       nom: "",
       type: "",
     },
@@ -200,11 +204,7 @@ export const utilisateurSystemSlices = createSlice({
     },
     setViderChampsUtilisateur: (state, action) => {
       state.Utilisateur_SuperviseurInfos = {
-        codeuser: "",
-        email: "",
-        type: "",
-        directeur: "",
-        motpasse: "",
+        ...utilisateurSystemInfoInitiales
       };
     },
     setDbName: (state, action) => {
@@ -244,7 +244,7 @@ export const utilisateurSystemSlices = createSlice({
       })
       .addCase(getListeUtilisateurParCode.fulfilled, (state, action) => {
         state.status = "succès";
-        state.Utilisateur_SuperviseurInfos=action.payload[0]
+        state.Utilisateur_SuperviseurInfos = action.payload[0];
         state.listeUtilisateur_Superviseur = action.payload;
       })
       .addCase(getListeUtilisateurParCode.rejected, (state, action) => {
@@ -304,7 +304,8 @@ export const {
   setViderChampsUtilisateur,
   setUtilisateurSupInfo,
   setFiltresSaisient,
-  setDbName, setToken
+  setDbName,
+  setToken,
 } = utilisateurSystemSlices.actions;
 
 export default utilisateurSystemSlices.reducer;

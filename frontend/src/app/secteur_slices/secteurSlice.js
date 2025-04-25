@@ -30,30 +30,30 @@ export const getListeSousFamillesParLibelleSousFamille = createAsyncThunk(
 export const ajouterSecteur = createAsyncThunk(
   "secteurSlice/ajouterSecteur",
   async (_, thunkAPI) => {
-   
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/secteur/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/ajouterSecteur`,
       {
-        secteurInfo:
-          thunkAPI.getState().secteurSlice.secteurInfo,
+        secteurInfo: thunkAPI.getState().secteurSlice.secteurInfo,
       }
     );
     console.log(response);
-    return response.data.newSecteur
-
-    ;
+    return response.data.newSecteur;
   }
 );
 
+const secteurInfoInitiales = {
+  codesec: "",
+  desisec: "",
+};
 export const secteurSlice = createSlice({
   name: "secteurSlice",
   initialState: {
+    secteurInfoInitiales,
     listeSecteur: [],
     secteurInfo: {
-        codesec: "",
-        desisec: "",
+      ...secteurInfoInitiales
     },
   },
   reducers: {
@@ -66,12 +66,11 @@ export const secteurSlice = createSlice({
     },
   },
 
-//   extraReducers: (builder) => {
-//     builder
-      
-//   },
+  //   extraReducers: (builder) => {
+  //     builder
+
+  //   },
 });
-export const { setListeSecteur, setSecteurInfos } =
-secteurSlice.actions;
+export const { setListeSecteur, setSecteurInfos } = secteurSlice.actions;
 
 export default secteurSlice.reducer;

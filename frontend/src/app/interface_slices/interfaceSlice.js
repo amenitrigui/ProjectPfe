@@ -23,14 +23,14 @@ export const interfaceSlice = createSlice({
     activerBoutonsValiderAnnuler: false,
     // * mode de toolbar: insertion/modification/consultation
     toolbarMode: "consultation",
-    setAlertModifier:"",
+    setAlertModifier: "",
     afficherRecherchePopup: false,
     ouvrireMenuDrawer: true,
     afficherFamillePopub: false,
     afficherSecteurPopup: false,
     ouvrireAvatarMenu: false,
     isDashBoardRoute: true,
-    lignedevisSelectionne: []
+    lignedevisSelectionne: [],
   },
 
   reducers: {
@@ -43,19 +43,19 @@ export const interfaceSlice = createSlice({
     setAfficherRecherchePopup: (state, action) => {
       state.afficherRecherchePopup = action.payload;
     },
-    setAfficherFamillePopub: (state,action)=>{
-      state.afficherFamillePopub=action.payload
+    setAfficherFamillePopub: (state, action) => {
+      state.afficherFamillePopub = action.payload;
     },
-    setLignedevisSelectionne:(state,action)=>{
-state.lignedevisSelectionne=action.payload
+    setLignedevisSelectionne: (state, action) => {
+      state.lignedevisSelectionne = action.payload;
     },
 
     setAlertMessage: (state, action) => {
       state.message = action.payload;
       state.afficherAlert = true;
     },
-    setAfficherSecteurPopup:(state,action)=>{
-      state.afficherSecteurPopup=action.payload
+    setAfficherSecteurPopup: (state, action) => {
+      state.afficherSecteurPopup = action.payload;
     },
     toggleAlert: (state) => {
       state.afficherAlert = !state.afficherAlert;
@@ -68,10 +68,10 @@ state.lignedevisSelectionne=action.payload
       state.messageAlertModal = action.payload;
     },
     setAfficherAlert: (state, action) => {
-      state.afficherAlert = action.payload; 
+      state.afficherAlert = action.payload;
     },
     setAfficherAlertModal: (state, action) => {
-      state.afficherAlertModal = action.payload; 
+      state.afficherAlertModal = action.payload;
     },
     setToolbarTable: (state, action) => {
       state.toolbarTable = action.payload;
@@ -88,7 +88,7 @@ state.lignedevisSelectionne=action.payload
 
     setOuvrireDrawerMenu: (state, action) => {
       state.ouvrireMenuDrawer = action.payload;
-    }
+    },
   },
 });
 export const {
@@ -108,6 +108,6 @@ export const {
   setAfficherFamillePopub,
   setAfficherSecteurPopup,
   setOuvrireAvatarMenu,
-  setIsDashBoardRoute
+  setIsDashBoardRoute,
 } = interfaceSlice.actions;
 export default interfaceSlice.reducer;

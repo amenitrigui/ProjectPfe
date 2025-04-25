@@ -49,15 +49,19 @@ export const ajouterRegion = createAsyncThunk(
       }
     );
     console.log(response);
-   return response.data.newRegion
+    return response.data.newRegion;
   }
 );
+const regionInfoInitiales = {
+  codergg: "",
+  desirgg: "",
+};
 export const regionSlice = createSlice({
   name: "Regionslice",
   initialState: {
+    regionInfoInitiales,
     RegionInfo: {
-      codergg: "",
-      desirgg: "",
+      ...regionInfoInitiales
     },
     listeCodesRegion: [],
     status: "inactive",
@@ -75,12 +79,9 @@ export const regionSlice = createSlice({
     },
     viderChampsRegionInfo: (state) => {
       state.RegionInfo = {
-        codergg: "",
-        desigg: "",
+        ...regionInfoInitiales
       };
     },
-
-   
   },
   // * on utilise l'objet builder pour replacer l'opérateur switch case ...
   // * l'objet builder nous permet d'écrire des cas plus lisibles et flexibles

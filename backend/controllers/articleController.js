@@ -178,6 +178,7 @@ const ajouterArticle = async (req, res) => {
         .status(500)
         .json({ message: "article deja existant on ne peut pas le reajoute" });
     } else {
+      console.log("avantajout")
       const articleCree = await Article.create({
         code: articleAjoute.code,
         libelle: articleAjoute.libelle,
@@ -189,6 +190,7 @@ const ajouterArticle = async (req, res) => {
         comptec: articleAjoute.comptec,
         type: articleAjoute.type,
         typeart: articleAjoute.typeart,
+        remmax:articleAjoute.remmax,
         colisage: articleAjoute.colisage,
         import: articleAjoute.import,
         tauxtva: articleAjoute.tauxtva,
@@ -206,9 +208,19 @@ const ajouterArticle = async (req, res) => {
         avecconfig: articleAjoute.avecconfig,
         ventevrac: articleAjoute.ventevrac,
         usera: articleAjoute.usera,
-        Dtcons: articleAjoute.Dtcons,
+        Dtcons:articleAjoute.Dtcons,
+        prix1TTC:articleAjoute.prix1TTC,
+        prix2TTC:articleAjoute.prix2TTC,
+        prix3TTC:articleAjoute.prix3TTC,
+        prix4TTC:articleAjoute.prix4TTC,
+        prix1:articleAjoute.prix1,
+        prix2:articleAjoute.prix2,
+        prix3:articleAjoute.prix3,
+        prix4:articleAjoute.prix4,
         datecreate: new Date().toISOString().split("T")[0],
       });
+      console.log("apresajout")
+
       return res
         .status(200)
         .json({ message: "article ajoute avec succes", articleCree });
