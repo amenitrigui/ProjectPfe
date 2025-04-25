@@ -244,6 +244,10 @@ export const getListeSecteur = createAsyncThunk(
     return response.data.secteurDistincts;
   }
 );
+
+// * méthode pour récuperer le dernière numbl : 
+// * si on fournit le paramètre codeuser, on récupere le derniere numbl pour cet utilisateur
+// * si on ne fournit pas le paramètre codeuser, on récupere le numbl de dernière devis généré quelle que soit l'utilisateur qui l'a créé
 export const getDerniereNumbl = createAsyncThunk(
   "devisSlice/getDerniereNumbl",
   async (codeuser, thunkAPI) => {
@@ -267,7 +271,6 @@ export const getDerniereNumbl = createAsyncThunk(
         }/getDerniereNumbl`
       );
     }
-    console.log(response)
     return response.data.derniereNumbl;
   }
 );
@@ -422,6 +425,7 @@ const devisInfoInitiales = {
   codesecteur: "",
   MHT: 0,
   email: "",
+  REFCOMM: "",
   articles: [],
 }
 export const devisSlice = createSlice({

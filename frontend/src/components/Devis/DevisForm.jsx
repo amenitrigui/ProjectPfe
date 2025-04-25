@@ -119,6 +119,7 @@ function DevisForm() {
 
   // * useEffect #5: remplir le champ NUMBL par le derniere NUMBL récuperé
   useEffect(() => {
+    console.log("derniereNumbl changed to: ",derniereNumbl)
     if (derniereNumbl && derniereNumbl != "") {
       dispatch(
         setDevisInfo({ collone: "NUMBL", valeur: "DV" + derniereNumbl })
@@ -129,7 +130,6 @@ function DevisForm() {
   // * useEffect #6: récuperer les informations de devis
   // * et les lignes de devis par NUMBL
   useEffect(() => {
-    console.log("toolbarMode: ",toolbarMode)
     console.log("devisInfo.NUMBL changed to: ", devisInfo.NUMBL)
     if(devisInfo.NUMBL && devisInfo.NUMBL != "" && toolbarMode !="ajout") {
       dispatch(getDevisParNUMBL(devisInfo.NUMBL));
@@ -141,7 +141,6 @@ function DevisForm() {
   // * par le derniere NUMBL incrementé par 1 lors d'ajout d'un devis
   useEffect(() => {
     if (toolbarMode && toolbarMode === "ajout" && derniereNumbl!=devisInfo.NUMBL) {
-      console.log(derniereNumbl)
       dispatch(
         setDevisInfo({
           collone: "NUMBL",
@@ -164,7 +163,7 @@ function DevisForm() {
 
   useEffect(() => {
     if(devisInfo.NUMBL==="" && derniereNumbl!==""){
-      console.log(derniereNumbl)
+      // console.log(derniereNumbl)
       // dispatch(getDevisParNUMBL(derniereNumbl))
     }
   },[devisInfo.NUMBL])
@@ -211,14 +210,12 @@ function DevisForm() {
     (state) => state.utilisateurSystemSlice.utilisateurConnecte
   );
   const handleChangeCodeClient = (valeur) => {
-    console.log(valeur);
     dispatch(setDevisInfo({ collone: "CODECLI", valeur: valeur }));
    
   };
   const afficherRecherchePopup = () => {
     dispatch(setAfficherRecherchePopup(true));
   };
-  console.log(devisInfo);
   return (
     <>
       <div className="container">

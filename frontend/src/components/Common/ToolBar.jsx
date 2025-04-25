@@ -242,7 +242,11 @@ function ToolBar() {
   // * cacher les bouttons valider/annuler
   // * réafficher les autres bouttons
   // * vider toutes les champs
-  const annulerOperation = () => {
+  const handleAnnulerBtnClick = () => {
+    if(toolbarTable === "devis"){
+      dispatch(getDerniereNumbl(utilisateurConnecte.codeuser))
+      console.log("nice");
+    }
     dispatch(setActiverBoutonsValiderAnnuler(false));
     dispatch(setActiverChampsForm(false));
     dispatch(viderChampsClientInfo());
@@ -479,7 +483,7 @@ function ToolBar() {
 
                   <button
                     type="button"
-                    onClick={annulerOperation}
+                    onClick={() => {handleAnnulerBtnClick()}}
                     className="flex flex-col items-center w-16 sm:w-20 p-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg transition-all duration-200"
                   >
                     <FontAwesomeIcon icon={faTimes} className="text-xl mb-1" />
