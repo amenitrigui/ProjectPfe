@@ -9,16 +9,8 @@ import {
   setArticleInfos,
   viderChampsArticleInfo,
 } from "../../app/article_slices/articleSlice";
-<<<<<<< HEAD
 import { setDevisArticles, setDevisInfo } from "../../app/devis_slices/devisSlice";
 import { setAfficherRecherchePopup, setToolbarTable } from "../../app/interface_slices/interfaceSlice";
-=======
-import { setDevisArticles } from "../../app/devis_slices/devisSlice";
-import {
-  setAfficherRecherchePopup,
-  setToolbarTable,
-} from "../../app/interface_slices/interfaceSlice";
->>>>>>> 3d75565406b0813ffd3f4b02fb611826923ef145
 
 function ArticlesDevis() {
   //?==================================================================================================================
@@ -73,18 +65,9 @@ function ArticlesDevis() {
       alert("la quantité est necessaire");
       return false;
     }
-<<<<<<< HEAD
     console.log(devisInfo.MREMISE)
     console.log(articleInfos.DREMISE);
     console.log(parseInt(devisInfo.MHT)+parseInt(netHt))
-=======
-
-    if (!articleInfos.DREMISE) {
-      alert("le champ remise est necessaire");
-      return false;
-    }
-
->>>>>>> 3d75565406b0813ffd3f4b02fb611826923ef145
     dispatch(setDevisArticles(articleInfos));
     dispatch(setDevisInfo({collone: "MHT", valeur: parseInt(devisInfo.MHT)+parseInt(netHt)}))
     dispatch(setDevisInfo({collone: "MREMISE"}))

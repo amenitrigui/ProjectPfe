@@ -7,7 +7,7 @@ const configParDefautDb = {
   port: process.env.DB_PORT,
   dialect: "mysql",
   dialectModule: require("mysql2"),
-  logging: none,// console.log,
+  logging: console.log,//false,
   pool: {
     max: 5,
     min: 0,
