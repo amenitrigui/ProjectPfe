@@ -6,6 +6,8 @@ import {
   filtrerListeArticle,
   getListeArticles,
 } from "../../app/article_slices/articleSlice";
+import SideBar from "../../components/Common/SideBar";
+import ToolBar from "../../components/Common/ToolBar";
 function ArticleList() {
   const dispatch = useDispatch();
   const listeArticle = useSelector((state) => state.articleSlice.ListeArticle);
@@ -65,25 +67,17 @@ function ArticleList() {
       },
     },
   };
+  const ouvrireMenuDrawer = useSelector(
+    (state) => state.interfaceSlice.ouvrireMenuDrawer
+  );
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      <div className="flex-1 p-6">
-        <div className="mt-2 flex items-center relative">
-          <Link
-            to="/ArticleFormTout"
-            className="text-lg font-semibold text-[primaryColor] underline hover:text-blue-500 absolute left-0"
-          >
-            ← Retour
-          </Link>
+    <div className="container">
+      <SideBar></SideBar>
 
-          <h1
-            className="text-2xl font-bold text-center flex-1"
-            style={{ color: primaryColor }}
-          >
-            Liste d'Article
-          </h1>
-        </div>
+      
+      <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
+       <ToolBar></ToolBar>
 
         {/* Filtres */}
         <div className="grid grid-cols-3 gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
@@ -113,6 +107,7 @@ function ArticleList() {
           />
         </div>
       </div>
+    
     </div>
   );
 }

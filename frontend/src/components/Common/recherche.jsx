@@ -201,12 +201,15 @@ const Recherche = () => {
 
     if (toolbarTable == "devis") {
       switch (filtrerPar) {
-        case "client":
-          dispatch(getDevisParCodeClient(valeur));
-          break;
+      
         case "numbl":
           dispatch(getListeDevisParNUMBL(valeur));
           break;
+          case "client":
+            console.log(filtrerPar,valeur)
+            dispatch(getDevisParCodeClient(valeur));
+
+            break;
         case "montant":
           dispatch(getDevisParMontant(valeur));
           break;

@@ -40,7 +40,7 @@ function ArticleForm() {
     (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
   const articleInfos = useSelector((state) => state.articleSlice.articleInfos);
-  console.log(articleInfos)
+  console.log(articleInfos);
   const ListeFamille = useSelector((state) => state.articleSlice.ListeFamille);
   const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
   const ListeSousFamille = useSelector(
@@ -49,6 +49,12 @@ function ArticleForm() {
   const derniereCodeArticle = useSelector(
     (state) => state.articleSlice.derniereCodeArticle
   );
+  console.log(derniereCodeArticle)
+  const FamilleInfos = useSelector((state) => state.familleSlice.FamilleInfos);
+  const SousFamilleInfos = useSelector(
+    (state) => state.sousfamilleSlice.SousFamilleInfos
+  );
+
   //?==================================================================================================================
   //?==============================================appels UseEffect====================================================
   //?==================================================================================================================
@@ -99,6 +105,7 @@ function ArticleForm() {
 
   useEffect(() => {
     if (derniereCodeArticle && derniereCodeArticle != "") {
+      console.log(derniereCodeArticle)
       dispatch(getArticleParCode(derniereCodeArticle));
     }
   }, [derniereCodeArticle]);
@@ -165,7 +172,7 @@ function ArticleForm() {
         <div className="details p-6">
           <div className="ameni">
             {/* Titre */}
-            <div className="cardHeader mb-6">
+            <div className="cardHeader ">
               <h2 className="text-3xl font-bold text-blue-900 italic">
                 Fiche Article
               </h2>
@@ -176,15 +183,18 @@ function ArticleForm() {
               <div className="flex-1 space-y-4">
                 {/* Famille/Sous-Famille */}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
-                  <div className="col-span-12 md:col-span-1 space-y-1">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                  {/* Code Sous-Famille */}
+                  <div className="col-span-12 md:col-span-3 space-y-1">
                     <label className="block font-semibold text-blue-900">
                       Code Famille
                     </label>
                     <input
                       type="text"
                       className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                      value={articleInfos.famille}
+                      value={
+                        articleInfos.famille
+                      }
                       onChange={(e) =>
                         hundlesubmitTousLesChamp(e.target.value, "famille")
                       }
@@ -204,14 +214,18 @@ function ArticleForm() {
                     </datalist>
                   </div>
 
-                  <div className="col-span-12 md:col-span-1 space-y-1">
+                  {/* Désignation Famille */}
+                  <div className="col-span-12 md:col-span-7 space-y-1">
                     <label className="block font-semibold text-blue-900">
                       Désignation Famille
                     </label>
                     <input
                       type="text"
                       className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                      value={articleInfos.libelleFamille}
+                      value={
+                       
+                           articleInfos.libelleFamille
+                      }
                       onChange={(e) =>
                         hundlesubmitTousLesChamp(
                           e.target.value,
@@ -222,7 +236,8 @@ function ArticleForm() {
                     />
                   </div>
 
-                  <div className="col-span-12 md:col-span-1 flex items-end">
+                  {/* Bouton */}
+                  <div className="col-span-12 md:col-span-2 flex items-end">
                     <button
                       className="btn btn-outline btn-accent w-full"
                       onClick={() => togglePopup("famille")}
@@ -241,7 +256,9 @@ function ArticleForm() {
                     <input
                       type="text"
                       className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                      value={articleInfos.codesousfam}
+                      value={
+                        articleInfos.codesousfam
+                      }
                       list="listeCodesSousFamille"
                       onChange={(e) =>
                         hundlesubmitTousLesChamp(e.target.value, "codesousfam")
@@ -269,7 +286,9 @@ function ArticleForm() {
                     <input
                       type="text"
                       className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                      value={articleInfos.Libellesousfamille}
+                      value={
+                        articleInfos.Libellesousfamille
+                      }
                       disabled={!activerChampsForm}
                       onChange={(e) =>
                         hundlesubmitTousLesChamp(
@@ -332,62 +351,63 @@ function ArticleForm() {
                     />
                   </div>
                 </div>
-
-                {/* Checkbox DC */}
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    className="h-5 w-5 text-blue-600 rounded focus:ring-blue-500"
-                    checked={articleInfos.dtcons == 1}
-                    disabled={!activerChampsForm}
-                    onChange={(e) =>
-                      handleChangeCheckbox(e.target.checked, "dtcons")
-                    }
-                  />
-                  <label className="font-semibold text-blue-900">DC</label>
-                </div>
-
-                {/* Taxe */}
-                <fieldset className="border border-gray-300 p-4 rounded-lg mt-4">
-                  <legend className="px-2 text-lg font-semibold text-blue-900">
-                    Taxe
-                  </legend>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <label className="block font-semibold text-blue-900">
-                        %TVA
-                      </label>
-                      <input
-                        type="text"
-                        className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                        value={articleInfos.tauxtva}
-                        onChange={(e) =>
-                          hundlesubmitTousLesChamp(e.target.value, "tauxtva")
-                        }
-                        disabled={!activerChampsForm}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="block font-semibold text-blue-900">
-                        Fodec
-                      </label>
-                      <input
-                        type="text"
-                        className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                        value={articleInfos.fodec}
-                        onChange={(e) =>
-                          hundlesubmitTousLesChamp(e.target.value, "fodec")
-                        }
-                        disabled={!activerChampsForm}
-                      />
-                    </div>
-                  </div>
-                </fieldset>
               </div>
 
               {/* Section Options (droite) */}
               <div className="flex-1 space-y-4">
                 <div className="collapse bg-base-100 border-base-300 border">
+                  {/* Checkbox DC */}
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      className="h-5 w-5 text-blue-600 rounded focus:ring-blue-500"
+                      checked={articleInfos.Dtcons == 1}
+                      disabled={!activerChampsForm}
+                      onChange={(e) =>
+                        handleChangeCheckbox(e.target.checked, "Dtcons")
+                      }
+                    />
+                    <label className="font-semibold text-blue-900">DC</label>
+                  </div>
+
+                  {/* Taxe */}
+                  <fieldset className="border border-gray-300 p-4 rounded-lg mt-4">
+                    <legend className="px-2 text-lg font-semibold text-blue-900">
+                      Taxe
+                    </legend>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="block font-semibold text-blue-900">
+                          %TVA
+                        </label>
+                        <input
+                          type="text"
+                          className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
+                          value={articleInfos.tauxtva}
+                          
+                          onChange={(e) =>
+                            hundlesubmitTousLesChamp(e.target.value, "tauxtva")
+                          }
+                          disabled={!activerChampsForm}
+                        />
+                    {    console.log(articleInfos.tauxtva)}
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block font-semibold text-blue-900">
+                          Fodec
+                        </label>
+                        <input
+                          type="text"
+                          className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
+                          value={articleInfos.fodec}
+                          onChange={(e) =>
+                            hundlesubmitTousLesChamp(e.target.value, "fodec")
+                          }
+                          disabled={!activerChampsForm}
+                        />
+                      </div>
+                    </div>
+                  </fieldset>
                   <input type="checkbox" />
                   <div
                     className="collapse-title font-semibold mb-1"
@@ -407,7 +427,7 @@ function ArticleForm() {
           </div>
         </div>
         <div className="details p-6">
-          <div className="collapse bg-base-100 border-base-300 border w-[100vw]">
+          <div className="collapse bg-base-100 border-base-300 border h-120 w-[90vw]">
             <input type="checkbox" />
             <div
               className="collapse-title font-semibold mb-1"
@@ -415,7 +435,7 @@ function ArticleForm() {
             >
               Informations supplementaires d'article
             </div>
-            <div className="collapse-content text-sm">
+            <div className="collapse-content  text-sm w-[55vw]">
               <Tab />
             </div>
           </div>

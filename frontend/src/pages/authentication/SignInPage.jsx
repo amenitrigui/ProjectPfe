@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
+import { toast,ToastContainer,Bounce } from "react-toastify"
 import {
   setToken,
-  setutilisateurSliceEntire, 
+  setutilisateurSliceEntire,
   setutilisateurConnecteEntiere,
 } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 
@@ -44,8 +45,8 @@ function SignInPage() {
       const data = await response.json(); // convertir la reponse de seurveur en objet javascript
 
       if (response.ok) {
-        console.log(data.user)
-        dispatch(setutilisateurConnecteEntiere(data.user))
+        console.log(data.user);
+        dispatch(setutilisateurConnecteEntiere(data.user));
         dispatch(setToken(data.token));
         localStorage.setItem("societies", JSON.stringify(data.societies));
         // localStorage.setItem("codeuser", JSON.stringify(data.codeuser));
@@ -59,6 +60,20 @@ function SignInPage() {
     }
   };
 
+  useEffect(() => {
+    toast("Date mise à jour 25/04/2025 15:43", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    });
+  }, []);
+
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600"
@@ -68,8 +83,20 @@ function SignInPage() {
         backgroundPosition: "center",
         backgroundAttachment: "fixed",
       }}
-      
     >
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
       <div className="flex bg-white md:h-[600px] h-[55vh] bg-opacity-90 rounded-xl shadow-2xl w-full max-w-4xl overflow-hidden">
         {" "}
         <div className="flex items-center justify-center w-1/2 bg-gradient-to-r from-blue-600 to-purple-700 p-6">

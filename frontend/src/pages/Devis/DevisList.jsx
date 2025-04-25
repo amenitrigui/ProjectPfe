@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getDevisList, setDevisList } from "../../app/devis_slices/devisSlice";
 import DevisFormTout from "./DevisFormTout";
+import SideBar from "../../components/Common/SideBar";
+import ToolBar from "../../components/Common/ToolBar";
 function DevisList() {
   const [filteredDevis, setFilteredDevis] = useState([]);
   const dataBaseName = localStorage.getItem("selectedDatabase");
@@ -55,7 +57,7 @@ function DevisList() {
   const columns = [
     { name: "N°Devis", selector: (row) => row.NUMBL, sortable: true },
     { name: "Date", selector: (row) => row.DATEBL, sortable: true },
-    { name: "G.", selector: (row) => row.CODEFACTURE},
+    { name: "G.", selector: (row) => row.CODEFACTURE },
     { name: "B.L", selector: (row) => row.CODECLI },
     { name: "Client", selector: (row) => row.RSCLI },
     { name: "MTTC", selector: (row) => row.MTTC },
@@ -88,22 +90,17 @@ function DevisList() {
       },
     },
   };
+   const ouvrireMenuDrawer = useSelector(
+      (state) => state.interfaceSlice.ouvrireMenuDrawer
+    );
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="mt-2 flex items-center relative">
-  <Link
-    to="/DevisFormTout"
-    className="text-lg font-semibold underline text-[rgb(48,60,123)] hover:text-blue-500 absolute left-0"
-  >
-    ← Retour
-  </Link>
+    <div className="container">
+      <SideBar />
 
-  <h1 className="text-2xl font-bold text-center flex-1" style={{ color: "rgb(48, 60, 123)" }}>
-    Liste devis
-  </h1>
-</div>
-
+      
+      <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
+        <ToolBar></ToolBar>
       {/* Barre de filtre */}
       <div className="grid grid-cols-3 gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
         {columns.map((col, index) => (
@@ -129,6 +126,7 @@ function DevisList() {
           highlightOnHover
           striped
         />
+      </div>
       </div>
     </div>
   );

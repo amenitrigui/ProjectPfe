@@ -47,17 +47,6 @@ const data02 = [
   { name: "Refusés", value: 1398 },
   { name: "En cours", value: 9800 },
 ];
-
-const data03 = [
-  { name: "Jan", devis: 400 },
-  { name: "Fév", devis: 300 },
-  { name: "Mar", devis: 200 },
-  { name: "Avr", devis: 278 },
-  { name: "Mai", devis: 189 },
-  { name: "Juin", devis: 239 },
-  { name: "Juil", devis: 349 },
-];
-
 const Dashboard = () => {
   //?==================================================================================================================
   //?=====================================================variables====================================================
@@ -264,7 +253,6 @@ const Dashboard = () => {
             <div className="cardHeader mb-4">
               <h2>Nombre de devis générés par mois et année</h2>
             </div>
-            <input type="checkbox" /> Afficher les résultats pour l'utilisateur courant
             <select className="w-full select border-none focus:outline-none focus:ring-0 appearance-none" value={anneeSelectionne} onChange={(e) => {setAnneeSelectionne(e.target.value)}}>
               {anneesDistinctGenerationDevis.map((annee) => {
                 return (

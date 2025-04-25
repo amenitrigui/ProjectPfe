@@ -21,6 +21,17 @@ export const loginUtilisateur = createAsyncThunk(
   }
 )
 
+export const deconnecterUtilisateur = createAsyncThunk(
+  "utilisateurSlice/deconnecterUtilisateur",
+  async(_,thunkAPI) => {
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/api/utilisateurs/deconnecterUtilisateur`
+    )
+
+    console.log(response)
+  }
+)
+
 export const getUtilisateurParCode = createAsyncThunk(
   "utilisateurSlice/getUtilisateurParCode",
   async (codeuser, thunkAPI) => {
@@ -37,18 +48,22 @@ export const getUtilisateurParCode = createAsyncThunk(
   }
 );
 
+const infoUtilisateurInitiales = {
+  codeuser: "",
+  nom: "",
+  type:"",
+  directeur:""
+}
 export const utilisateurSlice = createSlice({
   name: "utilisateurSlice",
   initialState: {
     codeuser: "",
     status: "",
+    infoUtilisateurInitiales,
     erreur: "",
     listeUtilisateur: [],
     infosUtilisateur: {
-      codeuser: "",
-      nom: "",
-      type:"",
-      directeur:""
+      ...infoUtilisateurInitiales
     },
   },
   reducers: {

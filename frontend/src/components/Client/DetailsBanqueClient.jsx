@@ -78,40 +78,30 @@ function DetailsBanqueClient() {
   return (
     <>
       <div className="card rounded-box p-6 space-y-2">
-        <div className="flex flex-nowrap">
-          <div className="flex flex-col w-1/3">
-            <label
-              className="block font-bold"
-              style={{ color: "rgb(48, 60, 123)" }}
-            >
-              Nom
-            </label>
-            <input
-              type="text"
-              className="border border-gray-300 rounded-md p-2"
-              disabled={!activerChampsForm}
-              value={clientInfos.banque || ""}
-              onChange={(e) => handleChangeNom(e, "banque")}
-            />
-          </div>
-          <div className="flex flex-col w-2/3">
-            <label
-              className="block font-bold"
-              style={{ color: "rgb(48, 60, 123)" }}
-            >
-              Rib
-            </label>
+      <div className="flex flex-wrap md:flex-nowrap gap-4">
+  <div className="flex flex-col w-full md:w-1/3">
+    <label className="block font-bold text-blue-900">Nom</label>
+    <input
+      type="text"
+      className="border border-gray-300 rounded-md p-2"
+      disabled={!activerChampsForm}
+      value={clientInfos.banque || ""}
+      onChange={(e) => handleChangeNom(e, "banque")}
+    />
+  </div>
+  <div className="flex flex-col w-full md:w-2/3">
+    <label className="block font-bold text-blue-900">Rib</label>
+    <input
+      type="text"
+      className="border border-gray-300 rounded-md p-2"
+      disabled={!activerChampsForm}
+      value={clientInfos.compteb || ""}
+      onChange={(e) => handleChangeRib(e, "compteb")}
+      maxLength={20}
+    />
+  </div>
+</div>
 
-            <input
-              type="text"
-              className="border border-gray-300 rounded-md p-2"
-              disabled={!activerChampsForm}
-              value={clientInfos.compteb || ""}
-              onChange={(e) => handleChangeRib(e, "compteb")}
-              maxLength={20}
-            />
-          </div>
-        </div>
         <div className="flex">
           <div className="flex flex-col w-1/2">
             {/* Matricule fiscale et Numéro de décision sur la même ligne */}

@@ -120,10 +120,11 @@ export const getDesignationFamilleParCodeFamille = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getDesignationFamilleParCodeFamille`, {
+      }/getDesignationFamilleParCodeFamille`,
+      {
         params: {
-          codeFamille: codeFamille
-        }
+          codeFamille: codeFamille,
+        },
       }
     );
     return response.data.getDesignationFamilleParCodeFamille[0].libelle;
@@ -160,10 +161,11 @@ export const getArticleParCode = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getArticleParCode`, {
+      }/getArticleParCode`,
+      {
         params: {
-          code: code
-        }
+          code: code,
+        },
       }
     );
     return response.data.article;
@@ -181,11 +183,10 @@ export const ajouterArticle = createAsyncThunk(
       {
         articleAjoute: thunkAPI.getState().articleSlice.articleInfos,
       }
-
     );
 
     console.log(response);
- //return response.data
+    //return response.data
   }
 );
 export const modifierarticle = createAsyncThunk(
@@ -211,10 +212,11 @@ export const getListeArticleparFamille = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getListeArticleparFamille`, {
+      }/getListeArticleparFamille`,
+      {
         params: {
-          codeFamille: codeFamille
-        }
+          codeFamille: codeFamille,
+        },
       }
     );
     console.log(response);
@@ -228,10 +230,11 @@ export const getListeArticleparLibelle = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getListeArticleparLibelle`, {
+      }/getListeArticleparLibelle`,
+      {
         params: {
-          libelle: libelle
-        }
+          libelle: libelle,
+        },
       }
     );
     console.log(response);
@@ -268,16 +271,16 @@ export const getListeArticleParCodeArticle = createAsyncThunk(
 
 export const getDerniereCodeArticle = createAsyncThunk(
   "articleSlice/getDerniereCodeArticle",
-  async(_,thunkAPI) => {
+  async (_, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getDerniereCodeArticle`
-    )
+    );
 
     return response.data.derniereCodeArticle.code;
   }
-)
+);
 
 const defaultArticleInfos = {
   // ! ajouter les valeurs par défaut pour les états de checkbox
@@ -303,6 +306,17 @@ const defaultArticleInfos = {
   NGP: "",
   sav: "",
   cons: "",
+  Dtcons: "0",
+  remmax: "",
+  prix1ttc: "",
+  prix2TTC: "",
+  prix3TTC: "",
+  prix4TTC: "",
+
+  prix1: "",
+  prix2: "",
+  prix3: "",
+  prix4: "",
   nomenclature: "",
   gestionstock: "",
   avecconfig: "",
@@ -533,11 +547,12 @@ export const articleSlice = createSlice({
         state.erreur = action.payload;
         state.status = "echoue";
       })
-      
+
       .addCase(getDerniereCodeArticle.pending, (state) => {
         state.status = "chargement";
       })
       .addCase(getDerniereCodeArticle.fulfilled, (state, action) => {
+        console.log(action.payload);
         state.derniereCodeArticle = action.payload;
         state.status = "reussi";
       })

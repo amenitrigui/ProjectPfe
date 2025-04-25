@@ -7,19 +7,10 @@ const nodeMailer = require("nodemailer");
 const { google } = require("googleapis");
 const handlebars = require("handlebars");
 const fs = require("fs");
-
+const { sequelizeConnexionDbUtilisateur, setBdConnexion, getConnexionBd } = require("../db/config");
 const {
-  getDatabaseConnection,
   verifyTokenValidity,
 } = require("../common/commonMethods");
-let connexionDbUserErp;
-
-const getDbConnection = async () => {
-  if (!connexionDbUserErp) {
-    connexionDbUserErp = await getDatabaseConnection(process.env.DB_USERS_NAME);
-  }
-  return connexionDbUserErp;
-};
 
 // * initialisation de client OAuth2 avec
 // * les paramètres: clientId, clientSecret, redirectUrl
@@ -50,8 +41,7 @@ const loginUtilisateur = async (req, res) => {
   const { nom, motpasse } = req.body;
 
   try {
-    await getDbConnection();
-    const User = defineUserModel(connexionDbUserErp);
+    const User = defineUserModel(sequelizeConnexionDbUtilisateur);
     // Vérification que tous les champs sont remplis
     if (!nom || !motpasse) {
       return res
@@ -61,17 +51,12 @@ const loginUtilisateur = async (req, res) => {
 
     // Recherche de l'utilisateur
     const user = await User.findOne({ 
-      attributes: { exclude: ["mp1","mp2","mp3","mp4","mp5"]},
+      attributes: ["codeuser","nom","motpasse","email","directeur","type"],
       where: { nom } 
     });
-
     if (!user) {
       return res.status(400).json({ message: "Utilisateur non trouvé." });
     }
-    // Vérification du mot de passe
-    // comparaison de mot de passe donnée
-    // avec le hash dans la bd
-    // const isPasswordMatched = bcrypt.compareSync(motpasse, user.motpasse);
 
     if (motpasse !== user.motpasse){
       return res.status(401).json({ message: "Mot de passe incorrect." });
@@ -79,14 +64,14 @@ const loginUtilisateur = async (req, res) => {
 
     // * Requête pour récupérer les sociétés (rsoc) associées avec le nom d'utilisateur
     // * ceci est pour le composant de  liste des sociétés
-    const societies = await connexionDbUserErp.query(
+    const societies = await sequelizeConnexionDbUtilisateur.query(
       `SELECT us.societe, s.rsoc
        FROM usersoc us
        JOIN societe s ON us.societe = s.code
        WHERE us.codeuser = :codeuser`,
       {
         replacements: { codeuser: user.codeuser },
-        type: connexionDbUserErp.QueryTypes.SELECT,
+        type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
       }
     );
     // Création du token JWT
@@ -131,8 +116,8 @@ const selectDatabase = async (req, res) => {
   try {
     const decoded = verifyTokenValidity(req);
     const codeuser = decoded.codeuser;
-    await getDbConnection(databaseName);
-    const Utilisateur = defineUserModel(connexionDbUserErp)
+    setBdConnexion(databaseName);
+    const Utilisateur = defineUserModel(sequelizeConnexionDbUtilisateur)
     await Utilisateur.update({socutil: databaseName},{
       where: {
         codeuser: codeuser
@@ -161,7 +146,7 @@ const envoyerDemandeReinitialisationMp = async (req, res) => {
   }
 
   try {
-    const User = defineUserModel(connexionDbUserErp);
+    const User = defineUserModel(sequelizeConnexionDbUtilisateur);
     const user = await User.findOne({ where: { email } });
 
     if (!user) {
@@ -247,7 +232,7 @@ const reinitialiserMotPasse = async (req, res) => {
 
   try {
     const decodedJWT = verifyTokenValidity(req, res);
-    const User = defineUserModel(connexionDbUserErp);
+    const User = defineUserModel(sequelizeConnexionDbUtilisateur);
 
     const user = await User.findOne({ where: { email } });
     if (!user) {
@@ -279,10 +264,10 @@ const getUtilisateurParCode = async (req, res) => {
   const { codeuser } = req.params;
 
   try {
-    const utilisateur = await connexionDbUserErp.query(
+    const utilisateur = await sequelizeConnexionDbUtilisateur.query(
       "SELECT * FROM utilisateur WHERE codeuser = :codeuser",
       {
-        type: connexionDbUserErp.QueryTypes.SELECT,
+        type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
         replacements: { codeuser: codeuser },
       }
     );
@@ -300,10 +285,33 @@ const getUtilisateurParCode = async (req, res) => {
   }
 };
 
+// * fermer les connexions récuperés avec la base des données d'utilisateurs (userErpSole)
+// * et avec le base de données sélectionnée de connexion
+// * verb : post
+// * url: http://localhost:5000/api/utilisateurs/deconnecterUtilisateur
+const deconnecterUtilisateur = async(req, res) => {
+  try {
+    const connexionBd = getConnexionBd();
+    if(sequelizeConnexionDbUtilisateur){
+      sequelizeConnexionDbUtilisateur.close();
+      console.log("deconnecté de base de données utilisateurs");
+    }
+    if(connexionBd) {
+      connexionBd.close();
+      console.log("deconnecté de base de données société");
+    }
+
+    return res.status(200).json({message: "déconnexion effectuée avec succès"})
+  }catch(error){
+    return res.status(500).json({message: error.message})
+  }
+}
+
 module.exports = {
   loginUtilisateur,
   selectDatabase,
   envoyerDemandeReinitialisationMp,
   reinitialiserMotPasse,
   getUtilisateurParCode,
+  deconnecterUtilisateur
 };

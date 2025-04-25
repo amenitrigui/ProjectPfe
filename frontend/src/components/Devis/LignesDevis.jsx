@@ -1,5 +1,6 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setLignedevisSelectionne } from "../../app/interface_slices/interfaceSlice";
 
 function LignesDevis() {
   //?==================================================================================================================
@@ -7,7 +8,7 @@ function LignesDevis() {
   //?==================================================================================================================
   const devisInfo = useSelector((state) => state.devisSlice.devisInfo);
   const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
-
+const dispatch = useDispatch()
   //?==================================================================================================================
   //?===================================================appels UseEffect===============================================
   //?==================================================================================================================
@@ -15,10 +16,26 @@ function LignesDevis() {
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
+  const handleClick = (e) => {
+    const tr = e.currentTarget; // Get the current <tr> element
+    const tds = tr.querySelectorAll('td'); // Select all <td> elements within the <tr>
+    
+    // Create an array to hold the values
+    const values = [];
+  
+    // Loop through each <td> and push its text content to the values array
+    tds.forEach(td => {
+      values.push(td.textContent.trim()); // Use trim() to remove any extra whitespace
+    });
+  
+    console.log(values); // Log the array of values
+    dispatch(setLignedevisSelectionne(values))
+  };
+  
   return (
     <>
-      <table className="min-w-[600px] sm:min-w-full table-auto border-collapse border border-gray-300">
-        <thead className="bg-gray-300">
+      <table className="min-w-[600px] sm:min-w-full table-auto border-collapse border bg-gray-100 p-3">
+        <thead className="bg-gray-100 p-3">
           {/* Ajout du fond gris pour l'en-tête */}
           <tr>
             <th className="p-3 text-left text-sm font-medium text-gray-600 border">
@@ -58,13 +75,12 @@ function LignesDevis() {
             devisInfo.articles.map((article) => (
               <tr
                 key={`${article.famille}-${article.CodeART}`}
-                className="transition-all duration-150 ease-in-out hover:bg-[#2A2185]"
-                onDoubleClick={console.log("ok")}
+                className="transition-all duration-150 ease-in-out hover:bg-[#2A2185] "  onDoubleClick={(e) => handleClick(e)}
               >
-                <td className="p-3 border border-gray-300">
+                <td className="p-3 border border-gray-300" id="codefamille">
                   {article.famille}
                 </td>
-                <td className="p-3 border border-gray-300">{toolbarMode === "consultation" ? article.CodeART : article.code}</td>
+                <td className="p-3 border border-gray-300" id="codeart">{toolbarMode === "consultation" ? article.CodeART : article.code}</td>
                 <td className="p-3 border border-gray-300">{toolbarMode === "consultation" ? article.Unite : article.unite}</td>
                 <td className="p-3 border border-gray-300">
                   {toolbarMode === "consultation" ? (article.QteART).toFixed(3) : article.quantite}

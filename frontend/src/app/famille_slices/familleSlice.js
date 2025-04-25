@@ -67,20 +67,23 @@ export const ajouterFamille = createAsyncThunk(
       }
     );
 
- 
+    console.log(response);
     return response.data.FamilleCree;
   }
 );
 
 // * thunk pour récuperer la liste de sous-familles par libelle
-
+const familleInfoInitiales = {
+  code: "",
+  libelle: "",
+};
 export const familleSlice = createSlice({
   name: "familleSlice",
   initialState: {
+    familleInfoInitiales,
     listeFamilles: [],
     FamilleInfos: {
-      code: "",
-      libelle: "",
+      ...familleInfoInitiales,
     },
     status: "",
     erreur: "",

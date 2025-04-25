@@ -1,8 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-
-
 export const ajouterCodePostal = createAsyncThunk(
   "CodePostaleSlice/ajouterCodePostal",
   async (_, thunkAPI) => {
@@ -15,23 +13,23 @@ export const ajouterCodePostal = createAsyncThunk(
       }
     );
     console.log(response);
-      return response.data.newCodePostal
-
+    return response.data.newCodePostal;
   }
 );
+const cpostalInfoInitiales = {
+  CODEp: "",
+  desicp: "",
+};
 export const cpostalSlice = createSlice({
   name: "cpostaleslice",
   initialState: {
-   
+    cpostalInfoInitiales,
     CpostaleInfo: {
-      CODEp: "",
-      desicp: "",
+      ...cpostalInfoInitiales
     },
-
 
     status: "inactive",
     erreur: null,
-   
   },
   reducers: {
     setCodePostaleList: (state, action) => {
@@ -48,8 +46,7 @@ export const cpostalSlice = createSlice({
     },
     viderChampsCPostalInfo: (state) => {
       state.CpostaleInfo = {
-        CODEp: "",
-        desicp: "",
+        ...cpostalInfoInitiales
       };
     },
   },
