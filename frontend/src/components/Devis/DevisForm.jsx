@@ -213,10 +213,12 @@ function DevisForm() {
   const handleChangeCodeClient = (valeur) => {
     console.log(valeur);
     dispatch(setDevisInfo({ collone: "CODECLI", valeur: valeur }));
+   
   };
   const afficherRecherchePopup = () => {
     dispatch(setAfficherRecherchePopup(true));
   };
+  console.log(devisInfo);
   return (
     <>
       <div className="container">
@@ -257,6 +259,8 @@ function DevisForm() {
                       <select
                         className="select select-bordered w-full max-w-xs"
                         disabled={!activerChampsForm}
+                        value={devisInfo.libpv}
+                        onChange={(e) => {handleChange(e,"libpv")}}
                       >
                         {listePointsVente.map((pointVente) => (
                           <option
@@ -274,6 +278,8 @@ function DevisForm() {
                       <select
                         className="select select-bordered w-full max-w-xs"
                         disabled={!activerChampsForm}
+                        onChange={(e) => {handleChange(e,"codesecteur")}}
+                        value={devisInfo.codesecteur}
                       >
                         {listesecteur.map((secteur) => (
                           <option key={secteur.codesec} value={secteur.codesec}>
@@ -310,17 +316,16 @@ function DevisForm() {
                         disabled={!activerChampsForm}
                         value={devisInfo.DATEBL}
                         onChange={(e) =>
-                          setDevisInfo({
-                            collone: "DATEBL",
-                            valeur: e.target.value,
-                          })
+                          handleChange(e, "DATEBL")
                         }
                       />
                       <label className="block font-medium">Transport :</label>
                       <input
                         type="text"
                         value={devisInfo.transport}
-                        onChange={(e)=> {handleChange(e,"transport")}}
+                        onChange={(e) =>
+                          handleChange(e, "transport")
+                        } 
                         className="w-full border border-gray-300 rounded-md p-2"
                         disabled={!activerChampsForm}
                       />
@@ -332,8 +337,10 @@ function DevisForm() {
                         type="text"
                         className="w-full border border-gray-300 rounded-md p-2"
                         value={devisInfo.REFCOMM}
-                        onChange={(e) => {handleChange(e,"REFCOMM")}}
                         disabled={!activerChampsForm}
+                        onChange={(e) =>
+                          handleChange(e, "REFCOMM")
+                        }
                       />
 
                       <label className="block font-medium">
@@ -344,7 +351,9 @@ function DevisForm() {
                         className="w-full border border-gray-300 rounded-md p-2"
                         disabled={!activerChampsForm}
                         value={devisInfo.delailivr}
-                        onChange={(e) => {handleChange((e,"delailivr"))}}
+                        onChange={(e) =>
+                          handleChange(e, "delailivr")
+                        }
                       />
                     </div>
                     {/* Information Client */}
@@ -385,10 +394,7 @@ function DevisForm() {
                         className="w-full border border-gray-300 rounded-md p-2"
                         disabled={!activerChampsForm}
                         onChange={(e) => {
-                          setDevisInfo({
-                            collone: "RSCLI",
-                            valeur: e.target.value,
-                          });
+                          handleChange(e,"RSCLI")
                         }}
                         value={devisInfo.RSCLI || ""}
                       />
@@ -400,10 +406,7 @@ function DevisForm() {
                         disabled={!activerChampsForm}
                         value={devisInfo.ADRCLI || ""}
                         onChange={(e) =>
-                          setDevisInfo({
-                            collone: "ADRCLI",
-                            valeur: e.target.value,
-                          })
+                          handleChange(e, "ADRCLI")
                         }
                       />  
                     </div>
@@ -447,7 +450,9 @@ function DevisForm() {
                   className="w-full border border-gray-300 rounded-md p-2"
                   disabled={!activerChampsForm}
                   value={devisInfo.comm}
-                  onChange={(e) => {handleChange(e,"comm")}}
+                  onChange={(e) =>
+                    handleChange(e,"comm")
+                  }
                 ></textarea>
 
                 <DateCreateMAJ objet={devisInfo} />

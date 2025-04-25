@@ -38,6 +38,7 @@ export const AjouterDevis = createAsyncThunk(
       }/ajouterDevis`,
       { devisInfo }
     );
+    console.log(response.data.devis)
     return response.data.devis;
   }
 );
@@ -400,7 +401,7 @@ export const getNbDevisGeneresParAnnee = createAsyncThunk(
 
 const devisInfoInitiales = {
   NUMBL: "",
-  libpv: "",
+  libpv: "SIEGE LOCAL",
   ADRCLI: "",
   CODECLI: "",
   delailivr: "",

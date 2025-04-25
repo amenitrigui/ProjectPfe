@@ -733,7 +733,9 @@ const getDerniereCodeArticle = async(req, res) => {
     }
     if(derniereCodeArticle && derniereCodeArticle.length > 0){
       // ?? ?????? ? ?? ? ??? ??? ?? ?? ? ?? ???
-      return res.status(200).json({message: "succès", derniereCodeArticle: derniereCodeArticle[0]})
+      console.log(derniereCodeArticle[(derniereCodeArticle.length)-1])
+      return res.status(200).json({message: "succès", derniereCodeArticle: derniereCodeArticle[(derniereCodeArticle.length)-1]})
+
     }
   }catch(error) {
     return res.status(500).json({message: error.message})
