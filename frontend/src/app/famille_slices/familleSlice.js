@@ -67,7 +67,7 @@ export const ajouterFamille = createAsyncThunk(
       }
     );
 
- 
+ console.log(response)
     return response.data.FamilleCree;
   }
 );

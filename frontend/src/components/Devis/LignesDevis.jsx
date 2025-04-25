@@ -34,8 +34,8 @@ const dispatch = useDispatch()
   
   return (
     <>
-      <table className="min-w-[600px] sm:min-w-full table-auto border-collapse border border-gray-300">
-        <thead className="bg-gray-300">
+      <table className="min-w-[600px] sm:min-w-full table-auto border-collapse border bg-gray-100 p-3">
+        <thead className="bg-gray-100 p-3">
           {/* Ajout du fond gris pour l'en-tête */}
           <tr>
             <th className="p-3 text-left text-sm font-medium text-gray-600 border">
