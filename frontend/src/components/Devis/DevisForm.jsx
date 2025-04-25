@@ -338,6 +338,7 @@ function DevisForm() {
                         className="w-full border border-gray-300 rounded-md p-2"
                         value={devisInfo.REFCOMM}
                         disabled={!activerChampsForm}
+                      
                         onChange={(e) =>
                           handleChange(e, "REFCOMM")
                         }
@@ -349,7 +350,6 @@ function DevisForm() {
                       <input
                         type="text"
                         className="w-full border border-gray-300 rounded-md p-2"
-                        disabled={!activerChampsForm}
                         value={devisInfo.delailivr}
                         onChange={(e) =>
                           handleChange(e, "delailivr")
