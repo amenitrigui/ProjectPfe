@@ -61,7 +61,7 @@ function SignInPage() {
   };
 
   useEffect(() => {
-    toast("Date mise à jour"+new Date().toISOString(), {
+    toast("Date mise à jour 225/04/2025 22:20", {
       position: "top-right",
       autoClose: 5000,
       hideProgressBar: false,

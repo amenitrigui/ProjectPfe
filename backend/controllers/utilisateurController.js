@@ -41,6 +41,7 @@ const loginUtilisateur = async (req, res) => {
   const { nom, motpasse } = req.body;
 
   try {
+    console.log("login utilisateur entry point")
     const User = defineUserModel(sequelizeConnexionDbUtilisateur);
     console.log(sequelizeConnexionDbUtilisateur);
     // Vérification que tous les champs sont remplis
