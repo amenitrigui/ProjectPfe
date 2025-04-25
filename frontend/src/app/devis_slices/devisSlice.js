@@ -398,6 +398,32 @@ export const getNbDevisGeneresParAnnee = createAsyncThunk(
     return response.data.nbDevisParAnne;
   }
 );
+
+const devisInfoInitiales = {
+  NUMBL: "",
+  libpv: "",
+  ADRCLI: "",
+  CODECLI: "",
+  delailivr: "",
+  modepaie: "",
+  transport: "",
+  numPage: 1,
+  cp: "",
+  DATEBL: new Date().toISOString().split("T")[0],
+  MREMISE: 0,
+  MTTC: 0,
+  MTVA: 0,
+  comm: "",
+  RSREP: "",
+  CODEREP: "",
+  TIMBRE: 0,
+  usera: "",
+  RSCLI: "",
+  codesecteur: "",
+  MHT: 0,
+  email: "",
+  articles: [],
+}
 export const devisSlice = createSlice({
   name: "devisSlice",
   initialState: {
@@ -410,32 +436,10 @@ export const devisSlice = createSlice({
     // * liste de points de vente
     listePointsVente: [],
     listesecteur: [],
+    devisInfoInitiales,
     // * informations du formulaire de devis
     devisInfo: {
-      NUMBL: "",
-      libpv: "",
-      ADRCLI: "",
-      CODECLI: "",
-      delailivr: "",
-      modepaie: "",
-      transport: "",
-      numPage: 1,
-      cp: "",
-      DATEBL: new Date().toISOString().split("T")[0],
-      MREMISE: 0,
-      MTTC: "",
-      MTVA: "",
-      comm: "",
-      RSREP: "",
-      CODEREP: "",
-      TIMBRE: "",
-      usera: "",
-      RSCLI: "",
-      codesecteur: "",
-      MHT: "",
-      email: "",
-
-      articles: [],
+      ...devisInfoInitiales
     },
     nbTotalDevisGeneres: 0,
     nbTotalDevisGeneresParUtilisateur: 0,
@@ -469,26 +473,7 @@ export const devisSlice = createSlice({
 
     viderChampsDevisInfo: (state) => {
       state.devisInfo = {
-        NUMBL: "",
-        libpv: "",
-        ADRCLI: "",
-        CODECLI: "",
-        cp: "",
-        DATEBL: new Date().toISOString().split("T")[0],
-        MREMISE: "",
-        MTTC: "",
-        MTVA: "",
-        comm: "",
-        RSREP: "",
-        CODEREP: "",
-        TIMBRE: "",
-        usera: "",
-        RSCLI: "",
-        codesecteur: "",
-        MHT: 0,
-        articles: [],
-        quantite: 0,
-        DREMISE: 0,
+        ...devisInfoInitiales
       };
     },
     setDevisClientInfos: (state, action) => {

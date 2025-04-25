@@ -95,7 +95,7 @@ function ValorisationTab() {
             type="text"
             placeholder="HT"
             className="input input-xs w-full"
-            value={articleInfos.prix1 ||""}
+            value={articleInfos.prix1 ||"0"}
             onChange={(e) =>
               handleChangePrixUnitaireArticle("prix1", e.target.value)
             }
@@ -106,7 +106,7 @@ function ValorisationTab() {
             type="text"
             placeholder="TTC"
             className="input input-xs w-full"
-            value={articleInfos.prix1ttc || ""}
+            value={articleInfos.prix1ttc || "0"}
             onChange={(e) =>
               handleChangePrixUnitaireTTCArticle("prix1ttc", e.target.value)
             }
@@ -117,7 +117,7 @@ function ValorisationTab() {
             type="text"
             placeholder="Remise"
             className="input input-xs w-full"
-            value={articleInfos.remmax || ""}
+            value={articleInfos.remmax || "0"}
             onChange={(e) => handleChange("remmax", e.target.value)}
           />
         </td>
@@ -130,7 +130,7 @@ function ValorisationTab() {
           <input
             type="text"
             className="input input-xs w-full"
-            value={articleInfos.prix2 ||""}
+            value={articleInfos.prix2 ||"0"}
             onChange={(e) =>
               handleChangePrixUnitaireArticle("prix2", e.target.value)
             }
@@ -140,7 +140,7 @@ function ValorisationTab() {
           <input
             type="text"
             className="input input-xs w-full"
-            value={articleInfos.prix2ttc ||""}
+            value={articleInfos.prix2ttc ||"0"}
             onChange={(e) =>
               handleChangePrixUnitaireTTCArticle("prix2ttc", e.target.value)
             }
@@ -155,7 +155,7 @@ function ValorisationTab() {
           <input
             type="text"
             className="input input-xs w-full"
-            value={articleInfos.prix3 || ""}
+            value={articleInfos.prix3 || "0"}
             onChange={(e) =>
               handleChangePrixUnitaireArticle("prix3", e.target.value)
             }
@@ -165,7 +165,7 @@ function ValorisationTab() {
           <input
             type="text"
             className="input input-xs w-full"
-            value={articleInfos.prix3ttc || ""}
+            value={articleInfos.prix3ttc || "0"}
             onChange={(e) =>
               handleChangePrixUnitaireTTCArticle("prix3ttc", e.target.value)
             }
@@ -180,7 +180,7 @@ function ValorisationTab() {
           <input
             type="text"
             className="input input-xs w-full"
-            value={articleInfos.prix4 || ""}
+            value={articleInfos.prix4 || "0"}
             onChange={(e) =>
               handleChangePrixUnitaireArticle("prix4", e.target.value)
             }
@@ -190,7 +190,7 @@ function ValorisationTab() {
           <input
             type="text"
             className="input input-xs w-full"
-            value={articleInfos.prix4ttc ||""}
+            value={articleInfos.prix4ttc ||"0"}
             onChange={(e) =>
               handleChangePrixUnitaireTTCArticle("prix4ttc", e.target.value)
             }
@@ -205,7 +205,7 @@ function ValorisationTab() {
           <input
             type="text"
             className="input input-xs w-full"
-            value={articleInfos.prixpub || ""}
+            value={articleInfos.prixpub || "0"}
             onChange={(e) => handleChange("prixpub", e.target.value)}
           />
         </td>

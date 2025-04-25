@@ -48,18 +48,22 @@ export const getUtilisateurParCode = createAsyncThunk(
   }
 );
 
+const infoUtilisateurInitiales = {
+  codeuser: "",
+  nom: "",
+  type:"",
+  directeur:""
+}
 export const utilisateurSlice = createSlice({
   name: "utilisateurSlice",
   initialState: {
     codeuser: "",
     status: "",
+    infoUtilisateurInitiales,
     erreur: "",
     listeUtilisateur: [],
     infosUtilisateur: {
-      codeuser: "",
-      nom: "",
-      type:"",
-      directeur:""
+      ...infoUtilisateurInitiales
     },
   },
   reducers: {

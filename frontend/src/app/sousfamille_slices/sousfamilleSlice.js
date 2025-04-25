@@ -41,18 +41,21 @@ export const ajouterSousFamille = createAsyncThunk(
       }
     );
     console.log(response);
-    return response.data.SousFamilleCree
-    ;
+    return response.data.SousFamilleCree;
   }
 );
 
+const sousfamilleInfoInitiales = {
+  code: "",
+  libelle: "",
+};
 export const sousfamilleSlice = createSlice({
   name: "sousfamilleSlice",
   initialState: {
     listeSousfamille: [],
+    sousfamilleInfoInitiales,
     SousFamilleInfos: {
-      code: "",
-      libelle: "",
+      ...sousfamilleInfoInitiales
     },
   },
   reducers: {

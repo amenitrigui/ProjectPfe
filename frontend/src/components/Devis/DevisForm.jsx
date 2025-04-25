@@ -161,6 +161,13 @@ function DevisForm() {
       );
     }
   }, [clientInfos.code, clientInfos.rsoc, clientInfos.adresse]);
+
+  useEffect(() => {
+    if(devisInfo.NUMBL==="" && derniereNumbl!==""){
+      console.log(derniereNumbl)
+      // dispatch(getDevisParNUMBL(derniereNumbl))
+    }
+  },[devisInfo.NUMBL])
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
@@ -333,6 +340,7 @@ function DevisForm() {
                         className="w-full border border-gray-300 rounded-md p-2"
                         value={devisInfo.REFCOMM}
                         disabled={!activerChampsForm}
+                      
                         onChange={(e) =>
                           setDevisInfo({
                             collone: "REFCOMM",
@@ -347,13 +355,13 @@ function DevisForm() {
                       <input
                         type="text"
                         className="w-full border border-gray-300 rounded-md p-2"
-                        disabled={!activerChampsForm}
                         value={devisInfo.delailivr}
+                        disabled={!activerChampsForm}
                         onChange={(e) =>
-                          setDevisInfo({
+                         dispatch(setDevisInfo({
                             collone: "delailivr",
                             valeur: e.target.value,
-                          })
+                          }))
                         }
                       />
                     </div>
@@ -375,7 +383,6 @@ function DevisForm() {
                         className="w-full border border-gray-300 rounded-md p-2"
                         disabled={!activerChampsForm}
                         value={devisInfo.CODECLI || ""}
-
                         onChange={(e) => handleChangeCodeClient(e.target.value)}
                         onClick={() => {
                           dispatch(setToolbarTable("client"));
@@ -416,7 +423,7 @@ function DevisForm() {
                             valeur: e.target.value,
                           })
                         }
-                      />
+                      />  
                     </div>
                   </div>
                 </div>
