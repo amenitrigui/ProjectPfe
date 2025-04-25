@@ -7,11 +7,11 @@ function Tab() {
   return (
     <>
       <div className="test">
-        <div className="w-full min-h-screen p-4">
+        <div className="w-50 min-h-screen p-1">
           {/* Conteneur principal des onglets - Taille augmentée */}
           <div
             role="tablist"
-            className="tabs tabs-lifted tabs-lg w-full [&>.tab]:flex-1 [&>.tab]:px-6 [&>.tab]:py-4 [&>.tab]:text-lg"
+              className="tabs tabs-lifted tabs-lg w-full flex-wrap [&>.tab]:flex-1 [&>.tab]:px-4 [&>.tab]:py-4 [&>.tab]:text-base sm:[&>.tab]:text-lg"
           >
             {/* Onglet Stock */}
             <input
@@ -30,7 +30,7 @@ function Tab() {
               aria-label="Valorisation"
               defaultChecked
             />
-            <div className="tab-content bg-base-100 border-base-300 rounded-lg p-8 w-full min-h-[400px] space-y-6">
+            <div className="tab-content bg-base-100 border-base-300 rounded-lg p-20 w-full min-h-[400px] space-y-6">
               <div className="w-full h-full">
                 {/* Contenu Valorisation */}
                 <ValorisationTab />

@@ -26,6 +26,7 @@ import {
   getLignesDevis,
   viderChampsDevisInfo,
   getDerniereNumbl,
+  getListeSecteur,
 } from "../../app/devis_slices/devisSlice";
 import ToolBar from "../Common/ToolBar";
 import {
@@ -50,8 +51,12 @@ function DevisForm() {
   const listePointsVente = useSelector(
     (state) => state.devisSlice.listePointsVente
   );
+
   const [isOpen, setIsOpen] = useState(false);
   const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
+  const listesecteur = useSelector((state) => state.devisSlice.listesecteur);
+  console.log(listesecteur);
+
   const listeToutCodesClients = useSelector(
     (state) => state.clientSlice.listeToutCodesClients
   );
@@ -85,9 +90,11 @@ function DevisForm() {
   // * et récuperer le dernier NUMBL
   useEffect(() => {
     dispatch(getListeNumbl());
-    dispatch(getDerniereNumbl());
+    dispatch(getDerniereNumbl(utilisateurConnecte.codeuser))
     dispatch(getListePointsVente());
+    dispatch(getListeSecteur());
   }, []);
+
   // * UseEffect #2 : Récuperer la liste de codes clients lorsque
   // * le mode de toolbar change vers l'ajout
   useEffect(() => {
@@ -124,8 +131,8 @@ function DevisForm() {
   // * useEffect #6: récuperer les informations de devis
   // * et les lignes de devis par NUMBL
   useEffect(() => {
-    console.log("devisInfo.NUMBL changed to: ", devisInfo.NUMBL);
-    if (devisInfo.NUMBL && devisInfo.NUMBL != "" && toolbarMode != "ajout") {
+    console.log("devisInfo.NUMBL changed to: ", devisInfo.NUMBL)
+    if(devisInfo.NUMBL && devisInfo.NUMBL != "" && toolbarMode !="ajout") {
       dispatch(getDevisParNUMBL(devisInfo.NUMBL));
       dispatch(getLignesDevis(devisInfo.NUMBL));
     }
@@ -267,18 +274,27 @@ function DevisForm() {
                       <select
                         className="select select-bordered w-full max-w-xs"
                         disabled={!activerChampsForm}
-                        value={devisInfo.codesecteur || ""}
-                        //onChange={(e) => handleSelectDevis(e)}
-                      ></select>
+                      >
+                        {listesecteur.map((secteur) => (
+                          <option key={secteur.codesec} value={secteur.codesec}>
+                            {secteur.codesec}
+                          </option>
+                        ))}
+                      </select>
 
                       <label className="block font-medium">
                         Désignation Secteur :
                       </label>
-                      <input
-                        type="text"
-                        className="w-full border border-gray-300 rounded-md p-2"
+                      <select
+                        className="select select-bordered w-full max-w-xs"
                         disabled={!activerChampsForm}
-                      />
+                      >
+                        {listesecteur.map((secteur) => (
+                          <option key={secteur.desisec} value={secteur.desisec}>
+                            {secteur.desisec}
+                          </option>
+                        ))}
+                      </select>
                     </div>
 
                     {/* Détails Devis */}

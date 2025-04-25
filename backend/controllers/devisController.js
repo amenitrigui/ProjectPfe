@@ -513,28 +513,38 @@ const getDerniereNumbl = async (req, res) => {
   try {
     const { dbName } = req.params;
     const { codeuser } = req.query;
+    let derniereNumbl;
+
     const dbConnection = await getDatabaseConnection(dbName);
-    const derniereNumbl = await dbConnection.query(
-      `SELECT NUMBL from dfp where DateBl = (SELECT MAX(DATEBL) from dfp) and usera = :codeuser ORDER BY (NUMBL) DESC LIMIT 1`,
-      {
-        type: dbConnection.QueryTypes.SELECT,
-        replacements: {
-          codeuser,
-        },
-      }
-    );
+    if (codeuser) {
+      derniereNumbl = await dbConnection.query(
+        `SELECT MAX(NUMBL) from dfp where usera = :codeuser `,
+        {
+          type: dbConnection.QueryTypes.SELECT,
+          replacements: {
+            codeuser,
+          },
+        }
+      );
+    }
+    if (!codeuser) {
+      derniereNumbl = await dbConnection.query(
+        `SELECT NUMBL from dfp where DateBl = (SELECT MAX(DATEBL) from dfp) ORDER BY (NUMBL) DESC LIMIT 1`,
+        {
+          type: dbConnection.QueryTypes.SELECT,
+        }
+      );
+    }
 
-    console.log(derniereNumbl);
-
-    const premiereNumbl = await dbConnection.query(
-      `SELECT NUMBL from dfp where DateBl = (SELECT MIN(DATEBL) from dfp) and usera = :codeuser ORDER BY (NUMBL) ASC LIMIT 1`,
-      {
-        type: dbConnection.QueryTypes.SELECT,
-        replacements: {
-          codeuser,
-        },
-      }
-    );
+    // const premiereNumbl = await dbConnection.query(
+    //   `SELECT NUMBL from dfp where DateBl = (SELECT MIN(DATEBL) from dfp) and usera = :codeuser ORDER BY (NUMBL) ASC LIMIT 1`,
+    //   {
+    //     type: dbConnection.QueryTypes.SELECT,
+    //     replacements: {
+    //       codeuser,
+    //     },
+    //   }
+    // );
     // ? derniereNumbl: derniereNumbl[0] || {}
     // ? pour que le backend ne plantera pas si derniereNumbl retourne aucune résultat
     // ? c'est à dire un tableau vide: []
@@ -544,14 +554,14 @@ const getDerniereNumbl = async (req, res) => {
         derniereNumbl: derniereNumbl[0],
       });
     }
-    if (premiereNumbl.length != 0) {
-      return res.status(200).json({
-        message: "premier numbl récuperé avec succès",
-        derniereNumbl: premiereNumbl[0],
-      });
-    }
+    // if (premiereNumbl.length != 0) {
+    //   return res.status(200).json({
+    //     message: "premier numbl récuperé avec succès",
+    //     derniereNumbl: premiereNumbl[0],
+    //   });
+    // }
 
-    if (derniereNumbl.length == 0 && premiereNumbl.length == 0) {
+    if (derniereNumbl.length == 0) {
       return res.status(400).json({
         message: "aucun numbl trouvé pour cet utilisateur",
       });
@@ -909,7 +919,7 @@ const getNbTotalDevisAnnulees = async (req, res) => {
     const Devis = defineDfpModel(dbConnection);
     const nbDevisANnulees = await Devis.count({
       where: {
-        executer: "A", 
+        executer: "A",
       },
     });
 
@@ -1104,7 +1114,28 @@ const getNbDevisGeneresParAnnee = async (req, res) => {
     dbConnection.close();
   }
 };
+//* url :http://localhost:5000/api/devis/SOLEVO/getListeSecteur
+//*message": "Secteur recupérés avec succès", "pointssecteurDistincts": [ { "desisec": "SOLEVO" },
 
+const getListeSecteur = async (req, res) => {
+  try {
+    const { dbName } = req.params;
+    const dbConnection = await getDatabaseConnection(dbName);
+    const secteurDistincts = await dbConnection.query(
+      `SELECT DISTINCT(desisec),codesec from secteur`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    );
+
+    return res.status(200).json({
+      message: "Secteur recupérés avec succès",
+      secteurDistincts: secteurDistincts,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 module.exports = {
   getTousDevis,
   getNombreDevis,
@@ -1117,6 +1148,10 @@ module.exports = {
   GetDevisParPeriode,
   getListePointVente,
   getInfoUtilisateur,
+<<<<<<< HEAD
+=======
+  getListeSecteur,
+>>>>>>> 3d75565406b0813ffd3f4b02fb611826923ef145
   getLignesDevis,
   getDevisCreator,
   getDerniereNumbl,

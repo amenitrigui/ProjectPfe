@@ -12,6 +12,8 @@ import {
 import {
   setToolbarTable,
 } from "../../app/interface_slices/interfaceSlice";
+import SideBar from "../../components/Common/SideBar";
+import ToolBar from "../../components/Common/ToolBar";
 
 function ClientList() {
   const dispatch = useDispatch();
@@ -77,26 +79,17 @@ function ClientList() {
       dispatch(setClientsASupprimer([]));
     }
   };
+  const ouvrireMenuDrawer = useSelector(
+    (state) => state.interfaceSlice.ouvrireMenuDrawer
+  );
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      <div className="flex-1 p-6">
-        <div className="mt-2 flex items-center relative">
-          <Link
-            to="/ClientFormTout"
-            className="text-lg font-semibold text-[primaryColor] underline hover:text-blue-500 absolute left-0"
-          >
-            ← Retour
-          </Link>
+    <div className="container">
+    <SideBar></SideBar>
 
-          <h1
-            className="text-2xl font-bold text-center flex-1"
-            style={{ color: primaryColor }}
-          >
-            Liste Client
-          </h1>
-        </div>
-
+    
+    <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
+      <ToolBar></ToolBar>
         {/* Filtres */}
         <div className="grid grid-cols-3 gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
           {Object.keys(filters).map((column, index) => (

@@ -30,6 +30,7 @@ export const interfaceSlice = createSlice({
     afficherSecteurPopup: false,
     ouvrireAvatarMenu: false,
     isDashBoardRoute: true,
+    lignedevisSelectionne: []
   },
 
   reducers: {
@@ -45,6 +46,10 @@ export const interfaceSlice = createSlice({
     setAfficherFamillePopub: (state,action)=>{
       state.afficherFamillePopub=action.payload
     },
+    setLignedevisSelectionne:(state,action)=>{
+state.lignedevisSelectionne=action.payload
+    },
+
     setAlertMessage: (state, action) => {
       state.message = action.payload;
       state.afficherAlert = true;
@@ -89,6 +94,7 @@ export const interfaceSlice = createSlice({
 export const {
   setAlertMessage,
   toggleAlert,
+  setLignedevisSelectionne,
   setTypeAlert,
   setMessageAlertModal,
   setAfficherAlertModal,
