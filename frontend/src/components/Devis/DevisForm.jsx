@@ -27,6 +27,7 @@ import {
   viderChampsDevisInfo,
   getDerniereNumbl,
   getListeSecteur,
+  getDesignationSecteurparCodeSecteur,
 } from "../../app/devis_slices/devisSlice";
 import ToolBar from "../Common/ToolBar";
 import {
@@ -95,6 +96,7 @@ function DevisForm() {
     dispatch(getListeNumbl());
     dispatch(getListePointsVente());
     dispatch(getListeSecteur());
+    dispatch(getDesignationSecteurparCodeSecteur("002"))
   }, []);
 
   // * UseEffect #2 : Récuperer la liste de codes clients lorsque
@@ -182,6 +184,10 @@ function DevisForm() {
     else dispatch(viderChampsDevisInfo());
   };
   const handleChange = (e, col) => {
+    if (col="codesecteur")
+    {
+      dispatch()
+    }
     dispatch(
       setDevisInfo({
         collone: col,
@@ -218,6 +224,7 @@ function DevisForm() {
   const afficherRecherchePopup = () => {
     dispatch(setAfficherRecherchePopup(true));
   };
+  console.log(devisInfo);
   return (
     <>
       <div className="container">
@@ -258,6 +265,8 @@ function DevisForm() {
                       <select
                         className="select select-bordered w-full max-w-xs"
                         disabled={!activerChampsForm}
+                        value={devisInfo.libpv}
+                        onChange={(e) => {handleChange(e,"libpv")}}
                       >
                         {listePointsVente.map((pointVente) => (
                           <option
@@ -275,6 +284,8 @@ function DevisForm() {
                       <select
                         className="select select-bordered w-full max-w-xs"
                         disabled={!activerChampsForm}
+                        onChange={(e) => {handleChange(e,"codesecteur")}}
+                        value={devisInfo.codesecteur}
                       >
                         {listesecteur.map((secteur) => (
                           <option key={secteur.codesec} value={secteur.codesec}>
@@ -286,16 +297,15 @@ function DevisForm() {
                       <label className="block font-medium">
                         Désignation Secteur :
                       </label>
-                      <select
-                        className="select select-bordered w-full max-w-xs"
+                      <input
+                        type="text"
+                        className="w-full border border-gray-300 rounded-md p-2"
                         disabled={!activerChampsForm}
-                      >
-                        {listesecteur.map((secteur) => (
-                          <option key={secteur.desisec} value={secteur.desisec}>
-                            {secteur.desisec}
-                          </option>
-                        ))}
-                      </select>
+                        value={devisInfo.desisec}
+                        onChange={(e) =>
+                          handleChange(e, "desisec")
+                        }
+                      />
                     </div>
 
                     {/* Détails Devis */}
@@ -311,10 +321,7 @@ function DevisForm() {
                         disabled={!activerChampsForm}
                         value={devisInfo.DATEBL}
                         onChange={(e) =>
-                          setDevisInfo({
-                            collone: "DATEBL",
-                            valeur: e.target.value,
-                          })
+                          handleChange(e, "DATEBL")
                         }
                       />
                       <label className="block font-medium">Transport :</label>
@@ -322,12 +329,8 @@ function DevisForm() {
                         type="text"
                         value={devisInfo.transport}
                         onChange={(e) =>
-                          setDevisInfo({
-                            collone: "transport",
-                            valeur: e.target.value,
-                          })
-                        }
-                        
+                          handleChange(e, "transport")
+                        } 
                         className="w-full border border-gray-300 rounded-md p-2"
                         disabled={!activerChampsForm}
                       />
@@ -342,10 +345,7 @@ function DevisForm() {
                         disabled={!activerChampsForm}
                       
                         onChange={(e) =>
-                          setDevisInfo({
-                            collone: "REFCOMM",
-                            valeur: e.target.value,
-                          })
+                          handleChange(e, "REFCOMM")
                         }
                       />
 
@@ -356,12 +356,8 @@ function DevisForm() {
                         type="text"
                         className="w-full border border-gray-300 rounded-md p-2"
                         value={devisInfo.delailivr}
-                        disabled={!activerChampsForm}
                         onChange={(e) =>
-                         dispatch(setDevisInfo({
-                            collone: "delailivr",
-                            valeur: e.target.value,
-                          }))
+                          handleChange(e, "delailivr")
                         }
                       />
                     </div>
@@ -403,10 +399,7 @@ function DevisForm() {
                         className="w-full border border-gray-300 rounded-md p-2"
                         disabled={!activerChampsForm}
                         onChange={(e) => {
-                          setDevisInfo({
-                            collone: "RSCLI",
-                            valeur: e.target.value,
-                          });
+                          handleChange(e,"RSCLI")
                         }}
                         value={devisInfo.RSCLI || ""}
                       />
@@ -418,10 +411,7 @@ function DevisForm() {
                         disabled={!activerChampsForm}
                         value={devisInfo.ADRCLI || ""}
                         onChange={(e) =>
-                          setDevisInfo({
-                            collone: "ADRCLI",
-                            valeur: e.target.value,
-                          })
+                          handleChange(e, "ADRCLI")
                         }
                       />  
                     </div>
@@ -464,11 +454,9 @@ function DevisForm() {
                   rows="10"
                   className="w-full border border-gray-300 rounded-md p-2"
                   disabled={!activerChampsForm}
+                  value={devisInfo.comm}
                   onChange={(e) =>
-                    setDevisInfo({
-                      collone: "comm",
-                      valeur: e.target.value,
-                    })
+                    handleChange(e,"comm")
                   }
                 ></textarea>
 

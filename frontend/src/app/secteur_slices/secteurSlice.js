@@ -26,6 +26,7 @@ export const getListeSousFamillesParLibelleSousFamille = createAsyncThunk(
     return response.data.LibellesousFamilles;
   }
 );
+
 //* thunk pour ajouter un sous famille
 export const ajouterSecteur = createAsyncThunk(
   "secteurSlice/ajouterSecteur",

@@ -147,6 +147,8 @@ const ajouterDevis = async (req, res) => {
     MHT,
     articles,
   } = req.body.devisInfo;
+
+  console.log("[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[", req.body.devisInfo)
   articles.map((article) => {
     article.NumBL = NUMBL;
   });
