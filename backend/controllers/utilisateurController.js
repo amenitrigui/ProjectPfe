@@ -49,7 +49,6 @@ const loginUtilisateur = async (req, res) => {
       "DB_USERS_NAME: ", process.env.DB_USERS_NAME)
 
     const User = defineUserModel(sequelizeConnexionDbUtilisateur);
-    console.log(sequelizeConnexionDbUtilisateur);
     // Vérification que tous les champs sont remplis
     if (!nom || !motpasse) {
       return res
@@ -108,8 +107,7 @@ const loginUtilisateur = async (req, res) => {
   }
 };
 
-// * Recupère la liste de devis pour une sociète donnée
-// ! useless
+// * Etablir une connexion avec la base de données selectionnée
 // * verb : post
 // * http://localhost:5000/api/utilisateurs/select-database
 const selectDatabase = async (req, res) => {

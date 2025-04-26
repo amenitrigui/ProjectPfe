@@ -25,15 +25,15 @@ const connecterAuBaseDonnees = (nomDb = "") => {
   // * Si le mot de passe est défini dans le fichier .env, on l'ajoute à la chaîne de connexion.
   // * Sinon, on utilise une chaîne vide.
   const partieMdp = process.env.DB_PASSWORD
-    ? `:${process.env.DB_PASSWORD}`
+    ? `${encodeURIComponent(process.env.DB_PASSWORD)}`
     : "";
 
   // * Chaîne de connexion dynamique :
   // * - Si une base de données (nomDb) est spécifiée, la connexion est établie avec elle.
   // * - Sinon, la connexion est établie avec le serveur MySQL sans base spécifique.
   const chaineConnexion = nomDb
-    ? `mysql://${process.env.DB_USER}${partieMdp}@${process.env.DB_HOST}:${process.env.DB_PORT}/${nomDb}`
-    : `mysql://${process.env.DB_USER}${partieMdp}@${process.env.DB_HOST}:${process.env.DB_PORT}`;
+    ? `mysql://${process.env.DB_USER}:${partieMdp}@${process.env.DB_HOST}:${process.env.DB_PORT}/${nomDb}`
+    : `mysql://${process.env.DB_USER}:${partieMdp}@${process.env.DB_HOST}:${process.env.DB_PORT}`;
   // * Retourne l'objet de connexion Sequelize pour la base de données spécifiée (ou le serveur MySQL).
   const objConnexion = new Sequelize(chaineConnexion, {
     ...configParDefautDb,
