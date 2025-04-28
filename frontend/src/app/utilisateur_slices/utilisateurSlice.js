@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { setToken } from "../utilisateurSystemSlices/utilisateurSystemSlice";
+
 
 export const loginUtilisateur = createAsyncThunk(
   "utilisateurSlice/loginUtilisateur",
@@ -11,8 +13,8 @@ export const loginUtilisateur = createAsyncThunk(
           motpasse: infosConnexion.motpasse 
         }
       )
-
-      console.log(response);
+      return response.data
+     
     }catch(error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || error.message
@@ -62,6 +64,7 @@ export const utilisateurSlice = createSlice({
     infoUtilisateurInitiales,
     erreur: "",
     listeUtilisateur: [],
+    responseLogin:{},
     infosUtilisateur: {
       ...infoUtilisateurInitiales
     },
@@ -96,8 +99,10 @@ export const utilisateurSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(loginUtilisateur.fulfilled, (state, action) => {
-        // state.token = action.payload.token;
-        state.status = "succès";
+        if(action.payload && action.payload != {}){
+          state.responseLogin= action.payload;
+          state.status = "succès";
+        }
       })
       .addCase(loginUtilisateur.rejected, (state, action) => {
         state.erreur = action.payload;

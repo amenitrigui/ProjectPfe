@@ -24,6 +24,7 @@ import {
   viderChampsDevisInfo,
   getDerniereNumbl,
   getListeSecteur,
+  getDesignationSecteurparCodeSecteur,
 } from "../../app/devis_slices/devisSlice";
 import ToolBar from "../Common/ToolBar";
 import {
@@ -90,6 +91,7 @@ function DevisForm() {
     dispatch(getListeNumbl());
     dispatch(getListePointsVente());
     dispatch(getListeSecteur());
+    dispatch(getDesignationSecteurparCodeSecteur("002"))
   }, []);
 
   // * UseEffect #2 : Récuperer la liste de codes clients lorsque
@@ -157,6 +159,10 @@ function DevisForm() {
     else dispatch(viderChampsDevisInfo());
   };
   const handleChange = (e, col) => {
+    if (col="codesecteur")
+    {
+      dispatch()
+    }
     dispatch(
       setDevisInfo({
         collone: col,
@@ -264,16 +270,15 @@ function DevisForm() {
                       <label className="block font-medium">
                         Désignation Secteur :
                       </label>
-                      <select
-                        className="select select-bordered w-full max-w-xs"
+                      <input
+                        type="text"
+                        className="w-full border border-gray-300 rounded-md p-2"
                         disabled={!activerChampsForm}
-                      >
-                        {listesecteur.map((secteur) => (
-                          <option key={secteur.desisec} value={secteur.desisec}>
-                            {secteur.desisec}
-                          </option>
-                        ))}
-                      </select>
+                        value={devisInfo.desisec}
+                        onChange={(e) =>
+                          handleChange(e, "desisec")
+                        }
+                      />
                     </div>
 
                     {/* Détails Devis */}

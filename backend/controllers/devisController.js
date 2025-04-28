@@ -1,4 +1,4 @@
-const { QueryTypes, Op } = require("sequelize");
+const { QueryTypes, Op, where } = require("sequelize");
 const defineDfpModel = require("../models/societe/dfp");
 const defineLdfpModel = require("../models/societe/ldfp");
 const { getDatabaseConnection } = require("../common/commonMethods");
@@ -148,7 +148,7 @@ const ajouterDevis = async (req, res) => {
     articles,
   } = req.body.devisInfo;
 
-  console.log("[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[", req.body.devisInfo)
+  console.log("[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[", req.body.devisInfo);
   articles.map((article) => {
     article.NumBL = NUMBL;
   });
@@ -1073,6 +1073,57 @@ const getDirecteursDevis = async (req, res) => {
     }
   }
 };
+//* url : http://localhost:5000/api/devis/SOLEVO/getDevisparRepresentant
+//* {"message": "Nombre de devis générés par représentant récupéré avec succès",
+// *"data": [  {    "rep": "01",    "nombreTotalDevis": 62  }, {   "rep": "MANAI KAOUTHER"    "nombreTotalDevis": 0 },
+
+const getDevisparRepresentant = async (req, res) => {
+  const { dbName } = req.params;
+
+  let dbConnection;
+  try {
+    dbConnection = await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    const Rep = await dbConnection.query(
+      `select distinct(rsoc) from representant`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    );
+    const RPDevis = [];
+    //* parcourir la liste de representant
+    for (let annee = 0; annee < Rep.length; annee++) {
+      const Rep = await dbConnection.query(
+        `select distinct(rsoc) from representant`,
+        {
+          type: dbConnection.QueryTypes.SELECT,
+        }
+      );
+
+      // SELECT COUNT(*) FROM dfp WHERE RSREP="01"
+      const nbDevis = await Devis.count({
+        where: {
+          RSREP: Rep[annee].rsoc,
+        },
+      });
+      RPDevis.push({
+        rep: Rep[annee].rsoc,
+        nombreTotalDevis: nbDevis,
+      });
+    }
+
+    return res.status(200).json({
+      message: `Nombre de devis total par représentant récupéré avec succès`,
+      nombredevisparrepresentant: RPDevis,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  } finally {
+    if (dbConnection) {
+      await dbConnection.close();
+    }
+  }
+};
 
 // * récupere le nombre de devis générés par mois selon l'année
 // * pour une societé donnée (dbName)
@@ -1135,6 +1186,7 @@ const getListeSecteur = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
 module.exports = {
   getTousDevis,
   getNombreDevis,
@@ -1152,6 +1204,7 @@ module.exports = {
   getDevisCreator,
   getDerniereNumbl,
   annulerDevis,
+  getDevisparRepresentant,
   getListeDevisParCodeClient,
   getListeDevisParNUMBL,
   getNbTotalDevisGeneres,

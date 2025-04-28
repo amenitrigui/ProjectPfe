@@ -1,62 +1,39 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
-import { toast,ToastContainer,Bounce } from "react-toastify"
+import { toast, ToastContainer, Bounce } from "react-toastify";
 import {
   setToken,
   setutilisateurSliceEntire,
   setutilisateurConnecteEntiere,
 } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
+import { loginUtilisateur } from "../../app/utilisateur_slices/utilisateurSlice";
 
 function SignInPage() {
-  const [nom, setNom] = useState("");
-  const [password, setPassword] = useState("");
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const erreur = useSelector((state) => state.utilisateurSlice.erreur);
-  const [error, setError] = useState("");
-  const status = useSelector((state) => state.utilisateurSlice.status);
+  const responseLogin = useSelector(
+    (state) => state.utilisateurSlice.responseLogin
+  );
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  // useEffect(()=>{
+  //   dispatch(loginUtilisateur({nom:"hanen",motpasse:"hanen123ps"}))
+  // },[])
+  const [nom, setNom] = useState("");
+  const [motpasse, setMotpasse] = useState("");
+  const hundleLogin = (e) => {
     e.preventDefault();
 
-    const trimmedNom = nom.trim();
-    const trimmedPassword = password.trim();
-    if (!trimmedNom || !trimmedPassword) {
-      setError("Tous les champs doivent être remplis");
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/utilisateurs/loginUtilisateur`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            nom: trimmedNom,
-            motpasse: trimmedPassword,
-          }),
-        }
+    dispatch(loginUtilisateur({ nom, motpasse }));
+    if (responseLogin && Object.values(responseLogin).length != 0) {
+      dispatch(setutilisateurConnecteEntiere(responseLogin.user));
+      dispatch(setToken(responseLogin.token));
+      localStorage.setItem(
+        "societies",
+        JSON.stringify(responseLogin.societies)
       );
-
-      const data = await response.json(); // convertir la reponse de seurveur en objet javascript
-
-      if (response.ok) {
-        console.log(data.user);
-        dispatch(setutilisateurConnecteEntiere(data.user));
-        dispatch(setToken(data.token));
-        localStorage.setItem("societies", JSON.stringify(data.societies));
-        // localStorage.setItem("codeuser", JSON.stringify(data.codeuser));
-        navigate("/SocietiesList");
-      } else {
-        setError(data.message || "Erreur de connexion. Veuillez réessayer.");
-      }
-    } catch (error) {
-      console.error("Erreur lors de la connexion:", error);
-      setError("Une erreur est survenue. Veuillez réessayer.");
+      // localStorage.setItem("codeuser", JSON.stringify(data.codeuser));
+      navigate("/SocietiesList");
     }
   };
 
@@ -112,12 +89,12 @@ function SignInPage() {
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
             Connexion
           </h2>
-          {error && (
+          {/* {error && (
             <div className="bg-red-100 text-red-700 p-3 rounded-lg mb-4 text-center">
-              {error}
+               {error} 
             </div>
-          )}
-          <form onSubmit={(e) => handleSubmit(e)}>
+          )} */}
+          <form onSubmit={(e) => hundleLogin(e)}>
             <div className="mb-6">
               <label
                 htmlFor="nom"
@@ -130,7 +107,6 @@ function SignInPage() {
                 id="nom"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 placeholder="Entrez votre nom d'utilisateur"
-                value={nom}
                 onChange={(e) => setNom(e.target.value)}
                 required
               />
@@ -147,8 +123,7 @@ function SignInPage() {
                 id="password"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 placeholder="Entrez votre mot de passe"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => setMotpasse(e.target.value)}
                 required
               />
             </div>

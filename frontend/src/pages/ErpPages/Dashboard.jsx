@@ -7,11 +7,13 @@ import {
   ResponsiveContainer,
   Tooltip,
   BarChart,
-  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   Legend,
+  Line,
+  Bar,
+  LineChart,
 } from "recharts";
 
 import {
@@ -26,6 +28,7 @@ import {
   getNbTotalDevisSansStatus,
   getAnneesDistinctGenerationDevis,
   getNbDevisGeneresParAnnee,
+  getDevisparRepresentant,
 } from "../../app/devis_slices/devisSlice";
 
 import SideBar from "../../components/Common/SideBar";
@@ -47,6 +50,38 @@ const data02 = [
   { name: "Refusés", value: 1398 },
   { name: "En cours", value: 9800 },
 ];
+const data = [
+  {
+    month: "January",
+    savings: 5000,
+    loss: 500,
+  },
+  {
+    month: "February",
+    savings: 8000,
+    loss: 300,
+  },
+  {
+    month: "March",
+    savings: 3000,
+    loss: 800,
+  },
+  {
+    month: "April",
+    savings: 6000,
+    loss: 100,
+  },
+  {
+    month: "May",
+    savings: 4000,
+    loss: 700,
+  },
+  {
+    month: "June",
+    savings: 9000,
+    loss: 1200,
+  },
+];
 const Dashboard = () => {
   //?==================================================================================================================
   //?=====================================================variables====================================================
@@ -55,7 +90,9 @@ const Dashboard = () => {
     (state) => state.devisSlice.devisMonthYear
   );
   const dispatch = useDispatch();
-  const [anneeSelectionne, setAnneeSelectionne] = useState(new Date().getFullYear());
+  const [anneeSelectionne, setAnneeSelectionne] = useState(
+    new Date().getFullYear()
+  );
 
   const ouvrireMenuDrawer = useSelector(
     (state) => state.interfaceSlice.ouvrireMenuDrawer
@@ -71,7 +108,10 @@ const Dashboard = () => {
   const nbTotDevisSansStatus = useSelector(
     (state) => state.devisSlice.nbTotDevisSansStatus
   );
-
+  const nbDevisparrepresentant = useSelector(
+    (state) => state.devisSlice.nbDevisparrepresentant
+  );
+  console.log(nbDevisparrepresentant);
   const utilisateurConnecte = useSelector(
     (state) => state.utilisateurSystemSlice.utilisateurConnecte
   );
@@ -87,7 +127,9 @@ const Dashboard = () => {
     (state) => state.devisSlice.nbTotalDevisNonGeneresParUtilisateur
   );
 
-  const nbDevisGeneresParAnnee = useSelector((state) => state.devisSlice.nbDevisGeneresParAnnee);
+  const nbDevisGeneresParAnnee = useSelector(
+    (state) => state.devisSlice.nbDevisGeneresParAnnee
+  );
   // Transformer les données pour le BarChart
   const chartData = nbDevisGeneresParAnnee.map((item) => {
     return {
@@ -99,10 +141,18 @@ const Dashboard = () => {
   const statsDevis = [
     { name: "Générés", value: nbTotalDevisGeneres },
     { name: "Annulées", value: nbTotalDevisAnnulees },
-    { name: `Générés par ${utilisateurConnecte.codeuser}`, value: nbTotalDevisGeneresParUtilisateur },
-    { name: `Non Générés ${utilisateurConnecte.codeuser}`, value: nbTotalDevisNonGeneresParUtilisateur },
+    {
+      name: `Générés par ${utilisateurConnecte.codeuser}`,
+      value: nbTotalDevisGeneresParUtilisateur,
+    },
+    {
+      name: `Non Générés ${utilisateurConnecte.codeuser}`,
+      value: nbTotalDevisNonGeneresParUtilisateur,
+    },
   ];
-  const anneesDistinctGenerationDevis = useSelector((state) => state.devisSlice.anneesDistinctGenerationDevis);
+  const anneesDistinctGenerationDevis = useSelector(
+    (state) => state.devisSlice.anneesDistinctGenerationDevis
+  );
   //?==================================================================================================================
   //?=================================================appels UseEffect=================================================
   //?==================================================================================================================
@@ -117,12 +167,13 @@ const Dashboard = () => {
     dispatch(getNbDevisNonGeneresParUtilisateur());
     dispatch(getNbTotalDevisSansStatus());
     dispatch(getAnneesDistinctGenerationDevis());
-    dispatch(getNbDevisGeneresParAnnee(new Date().getFullYear()))
+    dispatch(getNbDevisGeneresParAnnee(new Date().getFullYear()));
+    dispatch(getDevisparRepresentant());
   }, []);
 
   useEffect(() => {
-    dispatch(getNbDevisGeneresParAnnee(anneeSelectionne))
-  },[anneeSelectionne])
+    dispatch(getNbDevisGeneresParAnnee(anneeSelectionne));
+  }, [anneeSelectionne]);
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
@@ -189,36 +240,35 @@ const Dashboard = () => {
         </div>
 
         <div className="details grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-          {/* Pie Chart - Clients */}
+          {/* Bar Chart */}
           <div className="p-4 bg-white shadow rounded">
             <div className="cardHeader mb-4">
-              <h2>Statistiques Clients</h2>
+              <h2>Nombre de devis par représentant</h2>
+
+
+              
             </div>
-            <ResponsiveContainer width="100%" height={250}>
-              <PieChart>
-                <Pie
-                  data={data01}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={70}
-                  fill="#8884d8"
-                  label
-                >
-                  {data01.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-                <Legend />
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+
+            <hr className="mb-4" />
+
+            {/* Ajout d'une div avec overflow-x-auto */}
+            <div className="overflow-x-auto">
+              <div style={{ minWidth: "1000px", height: "260px" }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={nbDevisparrepresentant}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="rep" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="nombreTotalDevis" fill="#8884d8" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
           </div>
-          {/* Pie Chart - Devis */}
+
+          {/* Pie Chart */}
           <div className="p-4 bg-white shadow rounded">
             <div className="cardHeader mb-4">
               <h2>Statistiques Devis</h2>
@@ -253,14 +303,20 @@ const Dashboard = () => {
             <div className="cardHeader mb-4">
               <h2>Nombre de devis générés par mois et année</h2>
             </div>
-            <select className="w-full select border-none focus:outline-none focus:ring-0 appearance-none" value={anneeSelectionne} onChange={(e) => {setAnneeSelectionne(e.target.value)}}>
-              {anneesDistinctGenerationDevis.map((annee) => {
-                return (
-                  <option key={annee.year} value={annee.year}>{annee.year}</option>
-                )
-              })}
+            <select
+              className="w-full select border-none focus:outline-none focus:ring-0 appearance-none"
+              value={anneeSelectionne}
+              onChange={(e) => {
+                setAnneeSelectionne(e.target.value);
+              }}
+            >
+              {anneesDistinctGenerationDevis.map((annee) => (
+                <option key={annee.year} value={annee.year}>
+                  {annee.year}
+                </option>
+              ))}
             </select>
-            <hr></hr>
+            <hr />
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" />
