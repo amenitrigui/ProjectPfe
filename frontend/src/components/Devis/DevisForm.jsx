@@ -92,6 +92,7 @@ function DevisForm() {
     dispatch(getListePointsVente());
     dispatch(getListeSecteur());
     dispatch(getDesignationSecteurparCodeSecteur("002"))
+    dispatch(getDerniereNumbl(utilisateurConnecte.codeuser))
   }, []);
 
   // * UseEffect #2 : Récuperer la liste de codes clients lorsque
@@ -102,9 +103,7 @@ function DevisForm() {
 
   // * useEffect #5: remplir le champ NUMBL par le derniere NUMBL récuperé
   useEffect(() => {
-    console.log("derniereNumbl changed to: ",derniereNumbl)
     if (derniereNumbl && derniereNumbl != "") {
-      console.log(derniereNumbl)
       dispatch(
         setDevisInfo({ collone: "NUMBL", valeur: "DV" + derniereNumbl })
       );
@@ -114,7 +113,7 @@ function DevisForm() {
   // * useEffect #6: récuperer les informations de devis
   // * et les lignes de devis par NUMBL
   useEffect(() => {
-    console.log("devisInfo.NUMBL changed to: ", devisInfo.NUMBL)
+    // console.log("devisInfo.NUMBL changed to: ", devisInfo.NUMBL)
     if(devisInfo.NUMBL && devisInfo.NUMBL != "" && toolbarMode !="ajout") {
       dispatch(getDevisParNUMBL(devisInfo.NUMBL));
       dispatch(getLignesDevis(devisInfo.NUMBL));
@@ -159,9 +158,9 @@ function DevisForm() {
     else dispatch(viderChampsDevisInfo());
   };
   const handleChange = (e, col) => {
-    if (col="codesecteur")
+    if (col=="codesecteur")
     {
-      dispatch()
+      dispatch(getDesignationSecteurparCodeSecteur(e.target.value))
     }
     dispatch(
       setDevisInfo({

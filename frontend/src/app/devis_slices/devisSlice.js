@@ -252,7 +252,6 @@ export const getDesignationSecteurparCodeSecteur = createAsyncThunk(
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getDesignationSecteurparCodeSecteur/${codesecteur}`
     );
-    console.log(response);
     return response.data.secteurInfo;
   }
 ); // * méthode pour récuperer le dernière numbl :
@@ -281,7 +280,6 @@ export const getDerniereNumbl = createAsyncThunk(
         }/getDerniereNumbl`
       );
     }
-    console.log(response);
     return response.data.derniereNumbl;
   }
 );
@@ -455,6 +453,7 @@ const devisInfoInitiales = {
   MHT: 0,
   email: "",
   REFCOMM: "",
+  desisec: "",
   articles: [],
 };
 export const devisSlice = createSlice({
@@ -684,7 +683,6 @@ export const devisSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getDerniereNumbl.fulfilled, (state, action) => {
-        console.log(action.payload)
         if (action.payload && action.payload.length > 0) {
           state.derniereNumbl = parseInt(action.payload.substring(2, 9));
           state.status = "reussi";

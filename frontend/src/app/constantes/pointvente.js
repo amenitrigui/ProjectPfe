@@ -1,0 +1,4 @@
+const pointVenteInfoInitiales = {
+  Code: "",
+  Libelle: "",
+};
