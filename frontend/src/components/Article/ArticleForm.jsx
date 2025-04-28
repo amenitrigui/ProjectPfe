@@ -435,7 +435,7 @@ function ArticleForm() {
             >
               Informations supplementaires d'article
             </div>
-            <div className="collapse-content  text-sm w-[55vw]">
+            <div className="collapse-content  text-sm w-[45vw]">
               <Tab />
             </div>
           </div>

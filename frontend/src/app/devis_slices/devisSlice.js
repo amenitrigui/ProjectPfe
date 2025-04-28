@@ -244,6 +244,18 @@ export const getListeSecteur = createAsyncThunk(
     return response.data.secteurDistincts;
   }
 );
+export const getListeCodeVendeur = createAsyncThunk(
+  "devisslice/getListeCodeVendeur",
+  async (_, thunkAPI) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/devis/${
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getListeCodeVendeur`
+    );
+    console.log(response);
+    return response.data.VendeurDistincts;
+  }
+);
 export const getDesignationSecteurparCodeSecteur = createAsyncThunk(
   "devisslice/getDesignationSecteurparCodeSecteur",
   async (codesecteur, thunkAPI) => {
@@ -405,8 +417,8 @@ export const getDevisparRepresentant = createAsyncThunk(
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getDevisparRepresentant`
     );
-    console.log(response)
-    return response.data.nombredevisparrepresentant
+    console.log(response);
+    return response.data.nombredevisparrepresentant;
   }
 );
 export const getNbDevisGeneresParAnnee = createAsyncThunk(
@@ -427,7 +439,23 @@ export const getNbDevisGeneresParAnnee = createAsyncThunk(
     return response.data.nbDevisParAnne;
   }
 );
-
+export const getrepresentantparcodevendeur = createAsyncThunk(
+  "devisSlice/getrepresentantparcodevendeur",
+  async (CODEREP, thunkAPI) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/devis/${
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getrepresentantparcodevendeur`,
+      {
+        params: {
+          CODEREP: CODEREP,
+        },
+      }
+    );
+    console.log(response);
+    return response.data.data;
+  }
+);
 const devisInfoInitiales = {
   NUMBL: "",
   libpv: "SIEGE LOCAL",
@@ -445,10 +473,11 @@ const devisInfoInitiales = {
   comm: "",
   CODEREP: "",
   RSREP: "",
-  CODEREP: "",
+
   TIMBRE: 0,
   usera: "",
   RSCLI: "",
+  desisec: "",
   codesecteur: "",
   MHT: 0,
   email: "",
@@ -466,10 +495,11 @@ export const devisSlice = createSlice({
     // * liste de codes de devis
     listeNUMBL: [],
     //* liste de devis generes par reprensetant
-    nbDevisparrepresentant:[],
+    nbDevisparrepresentant: [],
     // * liste de points de vente
     listePointsVente: [],
     listesecteur: [],
+    listeVendeur: [],
     devisInfoInitiales,
     // * informations du formulaire de devis
     devisInfo: {
@@ -837,6 +867,7 @@ export const devisSlice = createSlice({
       .addCase(
         getDesignationSecteurparCodeSecteur.fulfilled,
         (state, action) => {
+          console.log(action.payload[0]);
           state.devisInfo["desisec"] = action.payload[0].desisec;
           state.status = "reussi";
         }
@@ -846,7 +877,31 @@ export const devisSlice = createSlice({
         (state, action) => {
           state.status = "echoue";
         }
-      );
+      )
+
+      .addCase(getrepresentantparcodevendeur.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getrepresentantparcodevendeur.fulfilled, (state, action) => {
+        state.devisInfo = action.payload;
+        console.log(action.payload);
+          state.devisInfo["RSREP"]= action.payload[0].RSREP;
+        state.status = "reussi";
+      })
+      .addCase(getrepresentantparcodevendeur.rejected, (state, action) => {
+        state.status = "echoue";
+      })
+
+      .addCase(getListeCodeVendeur.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getListeCodeVendeur.fulfilled, (state, action) => {
+        state.listeVendeur = action.payload;
+        state.status = "reussi";
+      })
+      .addCase(getListeCodeVendeur.rejected, (state, action) => {
+        state.status = "echoue";
+      });
   },
 });
 export const {

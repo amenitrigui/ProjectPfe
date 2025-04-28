@@ -1183,6 +1183,63 @@ const getListeSecteur = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+//* url : http://localhost:5000/api/devis/SOLEVO/getListeCodeVendeur
+//* "message": "listede vendeur recuperes",
+//* "VendeurDistincts": [ {   "CODEREP": "01",  "RSREP": "01"  },
+//* {
+//*    "CODEREP": "E45",
+//*    "RSREP": "RIM BEN ALI "
+//*    },
+const getListeCodeVendeur = async (req, res) => {
+  const { dbName } = req.params;
+  try {
+    const dbConnection = getConnexionBd();
+    const VendeurDistincts = await dbConnection.query(
+      `select DISTINCT(CODEREP) ,RSREP from dfp`,
+      { type: dbConnection.QueryTypes.SELECT }
+    );
+    return res
+      .status(200)
+      .json({ message: "listede vendeur recuperes", VendeurDistincts });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+//*http://localhost:5000/api/devis/SOLEVO/getrepresentantparcodevendeur?CODEREP=12
+// {
+//   "message": "Liste de désignation vendeur récupérée avec succès",
+//   "data": [
+//     {
+//       "RSREP": "22",
+//       "CODEREP": "12"
+//     }
+//   ]
+// }
+const getrepresentantparcodevendeur = async (req, res) => {
+  const { CODEREP } = req.query;
+  try {
+    const dbConnection = getConnexionBd();
+    
+    // Utilisation correcte de query avec replacements
+    const vendeurs = await dbConnection.query(
+      `SELECT RSREP FROM dfp where CODEREP =:CODEREP`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+        replacements: {
+          CODEREP:CODEREP
+        }, 
+      }
+    );
+
+    return res.status(200).json({
+      message: "Liste de désignation vendeur récupérée avec succès",
+      data: vendeurs, // retourne vraiment la liste des vendeurs !
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 
 module.exports = {
   getTousDevis,
@@ -1214,4 +1271,6 @@ module.exports = {
   getListeDevisAvecPagination,
   getAnneesDistinctGenerationDevis,
   getNbDevisGeneresParAnnee,
+  getListeCodeVendeur,
+  getrepresentantparcodevendeur,
 };

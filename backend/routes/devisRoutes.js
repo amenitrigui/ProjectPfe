@@ -29,7 +29,7 @@ const {
   getListeDevisAvecPagination,
   getAnneesDistinctGenerationDevis,
   getNbDevisGeneresParAnnee,getListeSecteur,
-  getDevisparRepresentant
+  getDevisparRepresentant,getListeCodeVendeur,getrepresentantparcodevendeur
 } = require("../controllers/devisController");
 //devis controller mt3na
 router.post("/:dbName/ajouterDevis", ajouterDevis);
@@ -66,6 +66,10 @@ router.get("/:dbName/getListeDevisAvecPagination", getListeDevisAvecPagination);
 router.get("/:dbName/getAnneesDistinctGenerationDevis", getAnneesDistinctGenerationDevis);
 router.get("/:dbName/getNbDevisGeneresParAnnee", getNbDevisGeneresParAnnee);
 router.get("/:dbName/getDevisparRepresentant", getDevisparRepresentant);
+router.get("/:dbName/getListeCodeVendeur", getListeCodeVendeur);
+router.get("/:dbName/getrepresentantparcodevendeur", getrepresentantparcodevendeur);
+
+
 
 
 module.exports = router;

@@ -119,13 +119,7 @@ function UtilitaireTab() {
           />
         </div>
 
-        {/* Section Historique */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-          <h3 className="text-lg font-semibold text-blue-800 mb-4">
-            Historique
-          </h3>
-          <UtilisateurCreaModif />
-        </div>
+        
       </div>
     </>
   );
