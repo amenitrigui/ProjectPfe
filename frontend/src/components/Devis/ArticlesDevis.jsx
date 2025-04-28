@@ -30,7 +30,6 @@ function ArticlesDevis() {
   const lignedevisSelectionne = useSelector(
     (state) => state.interfaceSlice.lignedevisSelectionne
   );
-  console.log(lignedevisSelectionne);
   //?==================================================================================================================
   //?=================================================appels useEffect=================================================
   //?==================================================================================================================
@@ -71,9 +70,9 @@ function ArticlesDevis() {
       alert("la quantité est necessaire");
       return false;
     }
-    console.log(devisInfo.MREMISE);
-    console.log(articleInfos.DREMISE);
-    console.log(parseInt(devisInfo.MHT) + parseInt(netHt));
+    // console.log(devisInfo.MREMISE);
+    // console.log(articleInfos.DREMISE);
+    // console.log(parseInt(devisInfo.MHT) + parseInt(netHt));
     dispatch(setDevisArticles(articleInfos));
     dispatch(
       setDevisInfo({

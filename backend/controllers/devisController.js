@@ -1,4 +1,4 @@
-const { QueryTypes, Op } = require("sequelize");
+const { QueryTypes, Op, where } = require("sequelize");
 const defineDfpModel = require("../models/societe/dfp");
 const defineLdfpModel = require("../models/societe/ldfp");
 const { getDatabaseConnection } = require("../common/commonMethods");
@@ -148,7 +148,7 @@ const ajouterDevis = async (req, res) => {
     articles,
   } = req.body.devisInfo;
 
-  console.log("[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[", req.body.devisInfo)
+  console.log("[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[", req.body.devisInfo);
   articles.map((article) => {
     article.NumBL = NUMBL;
   });
@@ -264,7 +264,7 @@ const GetDevisParPeriode = async (req, res) => {
 
     const devis = await dbConnection.query(
       `SELECT 
-          NUMBL, libpv, ADRCLI, CODECLI,  DATEBL, MREMISE, MTTC, 
+          NUMBL, libpv, ADRCLI, CODECLI,  DATEBL, MREMISE, MTTC, mlettre,
           comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT ,transport,REFCOMM,delailivr
        FROM dfp 
        WHERE DATEBL LIKE :DATEBL AND usera = :codeuser`,
@@ -300,7 +300,7 @@ const GetDevisListParClient = async (req, res) => {
 
     const devis = await dbConnection.query(
       `SELECT 
-          NUMBL, libpv, ADRCLI, CODECLI,  DATEBL, MREMISE, MTTC, 
+          NUMBL, libpv, ADRCLI, CODECLI,  DATEBL, MREMISE, MTTC, mlettre,
           comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT ,transport,REFCOMM,delailivr
        FROM dfp 
        WHERE CODECLI LIKE :codecli AND usera = :codeuser`,
@@ -369,7 +369,7 @@ const getDevisParNUMBL = async (req, res) => {
     if (NUMBL && codeuser) {
       const devis = await dbConnection.query(
         `SELECT 
-          NUMBL, libpv, ADRCLI, CODECLI,  DATEBL, MREMISE, MTTC, 
+          NUMBL, libpv, ADRCLI, CODECLI,  DATEBL, MREMISE, MTTC, mlettre,
           comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT ,transport,REFCOMM,delailivr
          FROM dfp 
          WHERE NUMBL LIKE :numbl 
@@ -462,7 +462,7 @@ const getDevisParMontant = async (req, res) => {
       // Ici on convertit le montant en nombre pour s'assurer que la comparaison fonctionne
       const devis = await dbConnection.query(
         `SELECT 
-          NUMBL, libpv, ADRCLI, CODECLI,  DATEBL, MREMISE, MTTC, 
+          NUMBL, libpv, ADRCLI, CODECLI,  DATEBL, MREMISE, MTTC, mlettre,
           comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT ,transport,REFCOMM,delailivr
         FROM dfp 
         WHERE MTTC  LIKE :montant AND usera = :codeuser`,
@@ -573,9 +573,10 @@ const getDerniereNumbl = async (req, res) => {
 // * example:
 // * input : NUMBL = DV2500155
 // * output : Devis ayant NUMBL = DV2500155 est supprimé
-// * http://localhost:5000/api/devis/SOLEVO/deleteDevis/DV2500155
-const deleteDevis = async (req, res) => {
+// * http://localhost:5000/api/devis/SOLEVO/annulerDevis/DV2500155
+const annulerDevis = async (req, res) => {
   const { dbName, NUMBL } = req.params;
+  const { codeuser } = req.query;
   if (!NUMBL || NUMBL.trim() === "") {
     return res
       .status(400)
@@ -1072,6 +1073,57 @@ const getDirecteursDevis = async (req, res) => {
     }
   }
 };
+//* url : http://localhost:5000/api/devis/SOLEVO/getDevisparRepresentant
+//* {"message": "Nombre de devis générés par représentant récupéré avec succès",
+// *"data": [  {    "rep": "01",    "nombreTotalDevis": 62  }, {   "rep": "MANAI KAOUTHER"    "nombreTotalDevis": 0 },
+
+const getDevisparRepresentant = async (req, res) => {
+  const { dbName } = req.params;
+
+  let dbConnection;
+  try {
+    dbConnection = await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    const Rep = await dbConnection.query(
+      `select distinct(rsoc) from representant`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    );
+    const RPDevis = [];
+    //* parcourir la liste de representant
+    for (let annee = 0; annee < Rep.length; annee++) {
+      const Rep = await dbConnection.query(
+        `select distinct(rsoc) from representant`,
+        {
+          type: dbConnection.QueryTypes.SELECT,
+        }
+      );
+
+      // SELECT COUNT(*) FROM dfp WHERE RSREP="01"
+      const nbDevis = await Devis.count({
+        where: {
+          RSREP: Rep[annee].rsoc,
+        },
+      });
+      RPDevis.push({
+        rep: Rep[annee].rsoc,
+        nombreTotalDevis: nbDevis,
+      });
+    }
+
+    return res.status(200).json({
+      message: `Nombre de devis total par représentant récupéré avec succès`,
+      nombredevisparrepresentant: RPDevis,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  } finally {
+    if (dbConnection) {
+      await dbConnection.close();
+    }
+  }
+};
 
 // * récupere le nombre de devis générés par mois selon l'année
 // * pour une societé donnée (dbName)
@@ -1134,6 +1186,7 @@ const getListeSecteur = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
 module.exports = {
   getTousDevis,
   getNombreDevis,
@@ -1150,7 +1203,8 @@ module.exports = {
   getLignesDevis,
   getDevisCreator,
   getDerniereNumbl,
-  deleteDevis,
+  annulerDevis,
+  getDevisparRepresentant,
   getListeDevisParCodeClient,
   getListeDevisParNUMBL,
   getNbTotalDevisGeneres,

@@ -41,6 +41,13 @@ const loginUtilisateur = async (req, res) => {
   const { nom, motpasse } = req.body;
 
   try {
+    console.log("login utilisateur entry point")
+    console.log("DB_USER: ",process.env.DB_USER," ",
+      "DB_HOST: ",process.env.DB_HOST," ",
+      "DB_PORT: ",process.env.DB_PORT," ",
+      "DB_PASSWORD: ",process.env.DB_PASSWORD," ",
+      "DB_USERS_NAME: ", process.env.DB_USERS_NAME)
+
     const User = defineUserModel(sequelizeConnexionDbUtilisateur);
     // Vérification que tous les champs sont remplis
     if (!nom || !motpasse) {
@@ -86,7 +93,7 @@ const loginUtilisateur = async (req, res) => {
     return res.status(200).json({
       message: "Connexion réussie.",
       token,
-      user: user,
+      user: user ,
       societies: societies.map((s) => ({
         societe: s.societe, // Code de la société
         rsoc: s.rsoc, // Nom de la société
@@ -100,8 +107,7 @@ const loginUtilisateur = async (req, res) => {
   }
 };
 
-// * Recupère la liste de devis pour une sociète donnée
-// ! useless
+// * Etablir une connexion avec la base de données selectionnée
 // * verb : post
 // * http://localhost:5000/api/utilisateurs/select-database
 const selectDatabase = async (req, res) => {

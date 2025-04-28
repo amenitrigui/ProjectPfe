@@ -37,7 +37,7 @@ import {
   setDevisInfo,
   viderChampsDevisInfo,
 } from "../../app/devis_slices/devisSlice";
-import { getUtilisateurParCode } from "../../app/utilisateur_slices/utilisateurSlice";
+import { deconnecterUtilisateur, getUtilisateurParCode } from "../../app/utilisateur_slices/utilisateurSlice";
 import { viderChampsArticleInfo } from "../../app/article_slices/articleSlice";
 import {
   getListeUtilisateurParCode,
@@ -242,7 +242,11 @@ function ToolBar() {
   // * cacher les bouttons valider/annuler
   // * réafficher les autres bouttons
   // * vider toutes les champs
-  const annulerOperation = () => {
+  const handleAnnulerBtnClick = () => {
+    if(toolbarTable === "devis"){
+      dispatch(getDerniereNumbl(utilisateurConnecte.codeuser))
+      console.log("nice");
+    }
     dispatch(setActiverBoutonsValiderAnnuler(false));
     dispatch(setActiverChampsForm(false));
     dispatch(viderChampsClientInfo());
@@ -308,6 +312,11 @@ function ToolBar() {
   useClickOutside([menuRef, buttonRef], () => {
     dispatch(setOuvrireAvatarMenu(false));
   });
+
+  const handleDeconnexionBtnClick = () => {
+    dispatch(setOuvrireAvatarMenu(false));
+    dispatch(deconnecterUtilisateur());
+  }
   return (
     <>
       <nav className="w-full border-b border-gray-300 px-4 py-2 bg-white shadow-sm sticky top-0 z-50">
@@ -479,7 +488,7 @@ function ToolBar() {
 
                   <button
                     type="button"
-                    onClick={annulerOperation}
+                    onClick={() => {handleAnnulerBtnClick()}}
                     className="flex flex-col items-center w-16 sm:w-20 p-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg transition-all duration-200"
                   >
                     <FontAwesomeIcon icon={faTimes} className="text-xl mb-1" />
@@ -542,7 +551,7 @@ function ToolBar() {
                   <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-t">
                     <Link
                       to="/"
-                      onClick={() => dispatch(setOuvrireAvatarMenu(false))}
+                      onClick={() => handleDeconnexionBtnClick()}
                       className="flex items-center"
                     >
                       <FaSignOutAlt className="mr-3" /> Déconnexion

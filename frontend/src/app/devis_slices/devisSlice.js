@@ -255,7 +255,9 @@ export const getDesignationSecteurparCodeSecteur = createAsyncThunk(
     console.log(response);
     return response.data.secteurInfo;
   }
-);
+); // * méthode pour récuperer le dernière numbl :
+// * si on fournit le paramètre codeuser, on récupere le derniere numbl pour cet utilisateur
+// * si on ne fournit pas le paramètre codeuser, on récupere le numbl de dernière devis généré quelle que soit l'utilisateur qui l'a créé
 export const getDerniereNumbl = createAsyncThunk(
   "devisSlice/getDerniereNumbl",
   async (codeuser, thunkAPI) => {
@@ -283,13 +285,19 @@ export const getDerniereNumbl = createAsyncThunk(
     return response.data.derniereNumbl;
   }
 );
-export const deleteDevis = createAsyncThunk(
-  "devisSlice/deleteDevis",
+export const annulerDevis = createAsyncThunk(
+  "devisSlice/annulerDevis",
   async (NUMBL, thunkAPI) => {
     const response = await axios.delete(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/deleteDevis/${NUMBL}`
+      }/annulerDevis/${NUMBL}`,
+      {
+        params: {
+          codeuser:
+            thunkAPI.utilisateurSystemSlice.utilisateurConnecte.codeuser,
+        },
+      }
     );
     return response;
   }
@@ -391,7 +399,18 @@ export const getAnneesDistinctGenerationDevis = createAsyncThunk(
     return response.data.annees;
   }
 );
-
+export const getDevisparRepresentant = createAsyncThunk(
+  `devisSlice/getDevisparRepresentant`,
+  async (_, thunkAPI) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/devis/${
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getDevisparRepresentant`
+    );
+    console.log(response)
+    return response.data.nombredevisparrepresentant
+  }
+);
 export const getNbDevisGeneresParAnnee = createAsyncThunk(
   `devisSlice/getNbDevisGeneresParAnnee`,
   async (annee, thunkAPI) => {
@@ -434,6 +453,7 @@ const devisInfoInitiales = {
   codesecteur: "",
   MHT: 0,
   email: "",
+  REFCOMM: "",
   articles: [],
 };
 export const devisSlice = createSlice({
@@ -445,6 +465,8 @@ export const devisSlice = createSlice({
     devisMonthYear: [],
     // * liste de codes de devis
     listeNUMBL: [],
+    //* liste de devis generes par reprensetant
+    nbDevisparrepresentant:[],
     // * liste de points de vente
     listePointsVente: [],
     listesecteur: [],
@@ -798,17 +820,33 @@ export const devisSlice = createSlice({
         state.status = "echoue";
       })
 
+      .addCase(getDevisparRepresentant.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getDevisparRepresentant.fulfilled, (state, action) => {
+        state.nbDevisparrepresentant = action.payload;
+        state.status = "reussi";
+      })
+      .addCase(getDevisparRepresentant.rejected, (state, action) => {
+        state.status = "echoue";
+      })
 
       .addCase(getDesignationSecteurparCodeSecteur.pending, (state) => {
         state.status = "chargement";
       })
-      .addCase(getDesignationSecteurparCodeSecteur.fulfilled, (state, action) => {
-        state.devisInfo["desisec"] = action.payload[0].desisec;
-        state.status = "reussi";
-      })
-      .addCase(getDesignationSecteurparCodeSecteur.rejected, (state, action) => {
-        state.status = "echoue";
-      });
+      .addCase(
+        getDesignationSecteurparCodeSecteur.fulfilled,
+        (state, action) => {
+          state.devisInfo["desisec"] = action.payload[0].desisec;
+          state.status = "reussi";
+        }
+      )
+      .addCase(
+        getDesignationSecteurparCodeSecteur.rejected,
+        (state, action) => {
+          state.status = "echoue";
+        }
+      );
   },
 });
 export const {

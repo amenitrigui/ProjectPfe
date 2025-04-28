@@ -9,7 +9,6 @@ const SocietiesList = () => {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.utilisateurSystemSlice.token);
   const utilisateurConnecte = useSelector((state) => state.utilisateurSystemSlice.utilisateurConnecte);
-  console.log(utilisateurConnecte)
   if (token == "") {
     navigate("/");
   }
