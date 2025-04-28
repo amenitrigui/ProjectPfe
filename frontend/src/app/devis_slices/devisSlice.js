@@ -274,13 +274,17 @@ export const getDerniereNumbl = createAsyncThunk(
     return response.data.derniereNumbl;
   }
 );
-export const deleteDevis = createAsyncThunk(
-  "devisSlice/deleteDevis",
+export const annulerDevis = createAsyncThunk(
+  "devisSlice/annulerDevis",
   async (NUMBL, thunkAPI) => {
     const response = await axios.delete(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/deleteDevis/${NUMBL}`
+      }/annulerDevis/${NUMBL}`,{
+        params: {
+          codeuser: thunkAPI.utilisateurSystemSlice.utilisateurConnecte.codeuser
+        }
+      }
     );
     return response;
   }

@@ -37,7 +37,7 @@ import {
   setDevisInfo,
   viderChampsDevisInfo,
 } from "../../app/devis_slices/devisSlice";
-import { getUtilisateurParCode } from "../../app/utilisateur_slices/utilisateurSlice";
+import { deconnecterUtilisateur, getUtilisateurParCode } from "../../app/utilisateur_slices/utilisateurSlice";
 import { viderChampsArticleInfo } from "../../app/article_slices/articleSlice";
 import {
   getListeUtilisateurParCode,
@@ -312,6 +312,11 @@ function ToolBar() {
   useClickOutside([menuRef, buttonRef], () => {
     dispatch(setOuvrireAvatarMenu(false));
   });
+
+  const handleDeconnexionBtnClick = () => {
+    dispatch(setOuvrireAvatarMenu(false));
+    dispatch(deconnecterUtilisateur());
+  }
   return (
     <>
       <nav className="w-full border-b border-gray-300 px-4 py-2 bg-white shadow-sm sticky top-0 z-50">
@@ -546,7 +551,7 @@ function ToolBar() {
                   <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-t">
                     <Link
                       to="/"
-                      onClick={() => dispatch(setOuvrireAvatarMenu(false))}
+                      onClick={() => handleDeconnexionBtnClick()}
                       className="flex items-center"
                     >
                       <FaSignOutAlt className="mr-3" /> Déconnexion

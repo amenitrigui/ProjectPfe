@@ -264,7 +264,7 @@ const GetDevisParPeriode = async (req, res) => {
 
     const devis = await dbConnection.query(
       `SELECT 
-          NUMBL, libpv, ADRCLI, CODECLI,  DATEBL, MREMISE, MTTC, 
+          NUMBL, libpv, ADRCLI, CODECLI,  DATEBL, MREMISE, MTTC, mlettre,
           comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT ,transport,REFCOMM,delailivr
        FROM dfp 
        WHERE DATEBL LIKE :DATEBL AND usera = :codeuser`,
@@ -300,7 +300,7 @@ const GetDevisListParClient = async (req, res) => {
 
     const devis = await dbConnection.query(
       `SELECT 
-          NUMBL, libpv, ADRCLI, CODECLI,  DATEBL, MREMISE, MTTC, 
+          NUMBL, libpv, ADRCLI, CODECLI,  DATEBL, MREMISE, MTTC, mlettre,
           comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT ,transport,REFCOMM,delailivr
        FROM dfp 
        WHERE CODECLI LIKE :codecli AND usera = :codeuser`,
@@ -369,7 +369,7 @@ const getDevisParNUMBL = async (req, res) => {
     if (NUMBL && codeuser) {
       const devis = await dbConnection.query(
         `SELECT 
-          NUMBL, libpv, ADRCLI, CODECLI,  DATEBL, MREMISE, MTTC, 
+          NUMBL, libpv, ADRCLI, CODECLI,  DATEBL, MREMISE, MTTC, mlettre,
           comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT ,transport,REFCOMM,delailivr
          FROM dfp 
          WHERE NUMBL LIKE :numbl 
@@ -462,7 +462,7 @@ const getDevisParMontant = async (req, res) => {
       // Ici on convertit le montant en nombre pour s'assurer que la comparaison fonctionne
       const devis = await dbConnection.query(
         `SELECT 
-          NUMBL, libpv, ADRCLI, CODECLI,  DATEBL, MREMISE, MTTC, 
+          NUMBL, libpv, ADRCLI, CODECLI,  DATEBL, MREMISE, MTTC, mlettre,
           comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT ,transport,REFCOMM,delailivr
         FROM dfp 
         WHERE MTTC  LIKE :montant AND usera = :codeuser`,
@@ -573,9 +573,10 @@ const getDerniereNumbl = async (req, res) => {
 // * example:
 // * input : NUMBL = DV2500155
 // * output : Devis ayant NUMBL = DV2500155 est supprimé
-// * http://localhost:5000/api/devis/SOLEVO/deleteDevis/DV2500155
-const deleteDevis = async (req, res) => {
+// * http://localhost:5000/api/devis/SOLEVO/annulerDevis/DV2500155
+const annulerDevis = async (req, res) => {
   const { dbName, NUMBL } = req.params;
+  const { codeuser } = req.query;
   if (!NUMBL || NUMBL.trim() === "") {
     return res
       .status(400)
@@ -1150,7 +1151,7 @@ module.exports = {
   getLignesDevis,
   getDevisCreator,
   getDerniereNumbl,
-  deleteDevis,
+  annulerDevis,
   getListeDevisParCodeClient,
   getListeDevisParNUMBL,
   getNbTotalDevisGeneres,

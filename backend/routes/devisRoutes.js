@@ -16,7 +16,7 @@ const {
   getLignesDevis,
   getDevisCreator,
   getDerniereNumbl,
-  deleteDevis,
+  annulerDevis,
   getListeDevisParCodeClient,
   getListeDevisParNUMBL,
   getNbTotalDevisGeneres,
@@ -45,7 +45,7 @@ router.get("/:dbName/getListePointVente", getListePointVente);
 router.get("/:dbName/getLignesDevis/:NumBL", getLignesDevis);
 router.get("/:dbName/getDevisCreator", getDevisCreator);
 router.get("/:dbName/getDerniereNumbl", getDerniereNumbl);
-router.delete("/:dbName/deleteDevis/:NUMBL", deleteDevis);
+router.delete("/:dbName/annulerDevis/:NUMBL", annulerDevis);
 
 router.get("/:dbName/getListeSecteur", getListeSecteur);
 
