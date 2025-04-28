@@ -1,0 +1,4 @@
+const cpostalInfoInitiales = {
+  CODEp: "",
+  desicp: "",
+};

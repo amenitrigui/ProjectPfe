@@ -264,7 +264,6 @@ export const getDesignationSecteurparCodeSecteur = createAsyncThunk(
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getDesignationSecteurparCodeSecteur/${codesecteur}`
     );
-    console.log(response);
     return response.data.secteurInfo;
   }
 ); // * méthode pour récuperer le dernière numbl :
@@ -293,7 +292,6 @@ export const getDerniereNumbl = createAsyncThunk(
         }/getDerniereNumbl`
       );
     }
-    console.log(response);
     return response.data.derniereNumbl;
   }
 );
@@ -484,6 +482,7 @@ const devisInfoInitiales = {
   MHT: 0,
   email: "",
   REFCOMM: "",
+  desisec: "",
   articles: [],
 };
 export const devisSlice = createSlice({

@@ -193,9 +193,6 @@ const ajouterDevis = async (req, res) => {
       RSCLI,
       mlettre,
     };
-
-    console.log(dfpData);
-
     const devis = await Dfp.create(dfpData);
     articles.map(async (article) => {
       article.NLigne = articles.length;

@@ -1,0 +1,4 @@
+const secteurInfoInitiales = {
+  codesec: "",
+  desisec: "",
+};

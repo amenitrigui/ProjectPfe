@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { defaultArticleInfos, defaultLigneDevisInfos } from "../constantes/article";
 import axios from "axios";
 
 // * récupere la liste de familles
@@ -282,54 +283,53 @@ export const getDerniereCodeArticle = createAsyncThunk(
   }
 );
 
-const defaultArticleInfos = {
-  // ! ajouter les valeurs par défaut pour les états de checkbox
-  code: "",
-  libelle: "",
-  unite: "",
-  famille: "",
-  codesousfam: "",
-  codebarre: "",
-  nbrunite: "",
-  comptec: "",
-  type: "",
-  typeart: "",
-  colisage: "",
-  import: "",
-  tauxtva: "",
-  prixbrut: "",
-  prixnet: "",
-  fodec: "",
-  CONFIG: "",
-  reforigine: "",
-  lieustock: "",
-  NGP: "",
-  sav: "",
-  cons: "",
-  Dtcons: "0",
-  remmax: "",
-  prix1ttc: "",
-  prix2TTC: "",
-  prix3TTC: "",
-  prix4TTC: "",
+// const defaultArticleInfos = {
+//   code: "",
+//   libelle: "",
+//   unite: "",
+//   famille: "",
+//   codesousfam: "",
+//   codebarre: "",
+//   nbrunite: "",
+//   comptec: "",
+//   type: "",
+//   typeart: "",
+//   colisage: "",
+//   import: "",
+//   tauxtva: "",
+//   prixbrut: "",
+//   prixnet: "",
+//   fodec: "",
+//   CONFIG: "",
+//   reforigine: "",
+//   lieustock: "",
+//   NGP: "",
+//   sav: "",
+//   cons: "",
+//   Dtcons: "0",
+//   remmax: "",
+//   prix1ttc: "",
+//   prix2TTC: "",
+//   prix3TTC: "",
+//   prix4TTC: "",
 
-  prix1: "",
-  prix2: "",
-  prix3: "",
-  prix4: "",
-  nomenclature: "",
-  gestionstock: "",
-  avecconfig: "",
-  ventevrac: "",
-  usera: "",
-  userm: "",
-  datecreate: new Date().toISOString().split("T")[0],
-  datemaj: new Date().toISOString().split("T")[0],
-  libelleFamille: "",
-  Libellesousfamille: "",
-  derniereCodeArticle: "",
-  quantite: "",
-};
+//   prix1: "",
+//   prix2: "",
+//   prix3: "",
+//   prix4: "",
+//   nomenclature: "",
+//   gestionstock: "",
+//   avecconfig: "",
+//   ventevrac: "",
+//   usera: "",
+//   userm: "",
+//   datecreate: new Date().toISOString().split("T")[0],
+//   datemaj: new Date().toISOString().split("T")[0],
+//   libelleFamille: "",
+//   Libellesousfamille: "",
+//   derniereCodeArticle: "",
+//   quantite: "",
+// };
 
 export const articleSlice = createSlice({
   name: "articleSlice",
@@ -340,6 +340,8 @@ export const articleSlice = createSlice({
     ListeSousFamille: [],
     ListeCodeArticlesparLib: {},
     defaultArticleInfos,
+    defaultLigneDevisInfos,
+    ligneDevisInfos: { ...defaultLigneDevisInfos},
     articleInfos: { ...defaultArticleInfos },
   },
   reducers: {
@@ -347,8 +349,15 @@ export const articleSlice = createSlice({
       const { colonne, valeur } = action.payload;
       state.articleInfos[colonne] = valeur;
     },
+    setLigneDevisInfos: (state, action) => {
+      const { colonne, valeur } = action.payload;
+      state.ligneDevisInfos[colonne] = valeur;
+    },
     setArticleInfosEntiere: (state, action) => {
       state.articleInfos = action.payload;
+    },
+    setLigneDevisInfosEntiere: (state, action) => {
+      state.ligneDevisInfos = action.payload;
     },
     setListeArticle: (state, action) => {
       state.ListeArticle = action.payload;
@@ -490,6 +499,7 @@ export const articleSlice = createSlice({
           // ! une tableau pour populer le data table
           state.ListeArticle = action.payload;
           state.articleInfos = action.payload[0];
+          state.ligneDevisInfos = action.payload[0];
         }
         state.status = "reussi";
       })
@@ -565,8 +575,10 @@ export const articleSlice = createSlice({
 });
 export const {
   setArticleInfos,
-  setArticleInfosEntiere,
+  setLigneDevisInfos,
   viderChampsArticleInfo,
   setListeArticle,
+  setArticleInfosEntiere,
+  setLigneDevisInfosEntiere,
 } = articleSlice.actions;
 export default articleSlice.reducer;

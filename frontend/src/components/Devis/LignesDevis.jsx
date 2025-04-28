@@ -17,18 +17,14 @@ const dispatch = useDispatch()
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
   const handleClick = (e) => {
-    const tr = e.currentTarget; // Get the current <tr> element
-    const tds = tr.querySelectorAll('td'); // Select all <td> elements within the <tr>
-    
-    // Create an array to hold the values
+    const tr = e.currentTarget;
+    const tds = tr.querySelectorAll('td');
     const values = [];
-  
-    // Loop through each <td> and push its text content to the values array
     tds.forEach(td => {
-      values.push(td.textContent.trim()); // Use trim() to remove any extra whitespace
+      values.push(td.textContent.trim());
     });
   
-    console.log(values); // Log the array of values
+    console.log(values);
     dispatch(setLignedevisSelectionne(values))
   };
   
