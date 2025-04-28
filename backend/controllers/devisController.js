@@ -191,7 +191,7 @@ const ajouterDevis = async (req, res) => {
       transport,
       comm,
       RSCLI,
-      MLETTRE: mlettre,
+      mlettre,
     };
 
     console.log(dfpData);

@@ -328,6 +328,7 @@ const defaultArticleInfos = {
   libelleFamille: "",
   Libellesousfamille: "",
   derniereCodeArticle: "",
+  quantite: "",
 };
 
 export const articleSlice = createSlice({

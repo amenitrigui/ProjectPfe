@@ -244,16 +244,24 @@ function ToolBar() {
   // * vider toutes les champs
   const handleAnnulerBtnClick = () => {
     if(toolbarTable === "devis"){
+      dispatch(viderChampsDevisInfo());
       dispatch(getDerniereNumbl(utilisateurConnecte.codeuser))
-      console.log("nice");
+      console.log("annuler btn clicked, derniere numbl recuperé");
+    }
+    if(toolbarTable === "client") {
+      dispatch(viderChampsClientInfo());
+    }
+    if(toolbarTable === "article") {
+      dispatch(viderChampsArticleInfo());
+    }
+    if(toolbarTable === "cpostal") {
+      dispatch(viderChampsCPostalInfo());
+    }
+    if(toolbarTable === "region") {
+      dispatch(viderChampsRegionInfo());
     }
     dispatch(setActiverBoutonsValiderAnnuler(false));
     dispatch(setActiverChampsForm(false));
-    dispatch(viderChampsClientInfo());
-    dispatch(viderChampsDevisInfo());
-    dispatch(viderChampsArticleInfo());
-    dispatch(viderChampsCPostalInfo());
-    dispatch(viderChampsRegionInfo());
 
     dispatch(setToolbarMode("consultation"));
   };

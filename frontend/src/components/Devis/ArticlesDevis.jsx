@@ -88,6 +88,28 @@ function ArticlesDevis() {
     dispatch(setToolbarTable(nomTable));
     dispatch(setAfficherRecherchePopup(true));
   };
+
+  const getPrixArticle = () => {
+    if(articleInfos.prix1 && articleInfos.prix1 != "0"){
+      return articleInfos.prix1;
+    }
+    if(articleInfos.prix2 && articleInfos.prix2 != "0"){
+      return articleInfos.prix2;
+    }
+    if(articleInfos.prix3 && articleInfos.prix3 != "0"){
+      return articleInfos.prix3;
+    }
+    if(articleInfos.prix4 && articleInfos.prix4 != "0"){
+      return articleInfos.prix4;
+    }
+    if(lignedevisSelectionne[11]){
+      return lignedevisSelectionne[11]
+    }
+    if(!articleInfos.prix1 && !articleInfos.prix2 && !articleInfos.prix3 && !articleInfos.prix4 && !lignedevisSelectionne[11])
+    {
+      return "";
+    }
+  }
   return (
     <div className="details">
       <div className="banquedetails">
@@ -188,9 +210,7 @@ function ArticlesDevis() {
                 className="w-full input input-bordered input-sm"
                 onChange={(e) => handleChangementChamp("quantite", e)}
                 value={
-                  lignedevisSelectionne[4]
-                    ? lignedevisSelectionne[4]
-                    : ""
+                  articleInfos.quantite
                 }
               />
             </div>
@@ -315,13 +335,9 @@ function ArticlesDevis() {
                 step="0.001"
                 placeholder="prix1"
                 value={
-                  articleInfos.prix1
-                    ? articleInfos.prix1
-                    : lignedevisSelectionne[11]
-                    ? lignedevisSelectionne[11]
-                    : ""
+                  getPrixArticle()
                 }
-                readOnly
+                // onChange={(e) => {handleChangementChampPrix(e.target.value)}}
                 className="w-full input input-bordered input-sm"
               />
             </div>

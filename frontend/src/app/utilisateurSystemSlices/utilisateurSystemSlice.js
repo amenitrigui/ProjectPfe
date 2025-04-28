@@ -147,6 +147,17 @@ export const getCodeUtilisateurSuivant = createAsyncThunk(
     return response;
   }
 );
+
+export const getRepresantantUtilisateur = createAsyncThunk(
+  "utilisateurSystemSlice/getRepresantantUtilisateur",
+  async() =>{
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getCodeUtilisateurSuivant`
+    )
+
+    console.log(response);
+  }
+)
 const utilisateurSystemInfoInitiales = {
   codeuser: "",
   motpasse: "test",

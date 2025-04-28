@@ -29,7 +29,7 @@ import ArticleList from "./pages/Article/ArticleList"
 import FamilleFormTout from "./pages/Famille/FamilleFormTout"
 import Settings from "./pages/ErpPages/Settings"
 import UtilisateurList from "./pages/Utilisateurs/UtilisateurList"
-import { setActiverBoutonsValiderAnnuler, setAfficherRecherchePopup, setIsDashBoardRoute, setToolbarMode } from "./app/interface_slices/interfaceSlice";
+import { setActiverBoutonsValiderAnnuler, setAfficherRecherchePopup, setIsDashBoardRoute, setOuvrireDrawerMenu, setToolbarMode } from "./app/interface_slices/interfaceSlice";
 import ImprimerDevis from "./pages/Devis/Imprimer";
 import SecteurForm from "./pages/Clients/SecteurForm";
 import Test1 from "./test/Test1";
@@ -72,6 +72,7 @@ function App() {
     if(afficherRecherchePopup == true) {
       dispatch(setAfficherRecherchePopup(false));
     }
+    dispatch(setOuvrireDrawerMenu(false))
   }, [location.pathname])
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
