@@ -244,9 +244,6 @@ const Dashboard = () => {
           <div className="p-4 bg-white shadow rounded">
             <div className="cardHeader mb-4">
               <h2>Nombre de devis par représentant</h2>
-
-
-              
             </div>
 
             <hr className="mb-4" />
