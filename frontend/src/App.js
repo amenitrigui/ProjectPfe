@@ -72,7 +72,7 @@ function App() {
     if(afficherRecherchePopup == true) {
       dispatch(setAfficherRecherchePopup(false));
     }
-    dispatch(setOuvrireDrawerMenu(false))
+    // dispatch(setOuvrireDrawerMenu(false))
   }, [location.pathname])
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
