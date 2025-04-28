@@ -7,7 +7,7 @@ const {
   envoyerDemandeReinitialisationMp,
   reinitialiserMotPasse,
   getUtilisateurParCode,
-  deconnecterUtilisateur
+  deconnecterUtilisateur,
 } = require("../controllers/utilisateurController");
 
 // * connexion pour un utilisateur

@@ -421,6 +421,7 @@ const devisInfoInitiales = {
   MTTC: 0,
   MTVA: 0,
   comm: "",
+  CODEREP: "",
   RSREP: "",
   CODEREP: "",
   TIMBRE: 0,
@@ -657,6 +658,7 @@ export const devisSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getDerniereNumbl.fulfilled, (state, action) => {
+        console.log(action.payload)
         if (action.payload && action.payload.length > 0) {
           state.derniereNumbl = parseInt(action.payload.substring(2, 9));
           state.status = "reussi";

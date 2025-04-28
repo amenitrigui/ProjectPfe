@@ -10,6 +10,7 @@ const fs = require("fs");
 const { sequelizeConnexionDbUtilisateur, setBdConnexion, getConnexionBd } = require("../db/config");
 const {
   verifyTokenValidity,
+  getDatabaseConnection,
 } = require("../common/commonMethods");
 
 // * initialisation de client OAuth2 avec
@@ -313,11 +314,12 @@ const deconnecterUtilisateur = async(req, res) => {
   }
 }
 
+
 module.exports = {
   loginUtilisateur,
   selectDatabase,
   envoyerDemandeReinitialisationMp,
   reinitialiserMotPasse,
   getUtilisateurParCode,
-  deconnecterUtilisateur
+  deconnecterUtilisateur,
 };

@@ -1,12 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   FaFileInvoice,
   FaUser,
   FaClipboardList,
   FaUsers,
-  FaCog,
-  FaSignOutAlt,
-  FaRegUserCircle,
 } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -16,7 +13,7 @@ import {
   setClientInfos,
   setInsertionDepuisDevisForm,
 } from "../../app/client_slices/clientSlice";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import {
   getDevisParNUMBL,
@@ -30,10 +27,8 @@ import {
 } from "../../app/devis_slices/devisSlice";
 import ToolBar from "../Common/ToolBar";
 import {
-  setActiverBoutonsValiderAnnuler,
   setActiverChampsForm,
   setAfficherRecherchePopup,
-  setOuvrireDrawerMenu,
   setToolbarMode,
   setToolbarTable,
 } from "../../app/interface_slices/interfaceSlice";
@@ -52,7 +47,6 @@ function DevisForm() {
     (state) => state.devisSlice.listePointsVente
   );
 
-  const [isOpen, setIsOpen] = useState(false);
   const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
   const listesecteur = useSelector((state) => state.devisSlice.listesecteur);
 
@@ -87,7 +81,8 @@ function DevisForm() {
   //?==================================================================================================================
   // * UseEffect #1 : désactiver tous les champs
   // * et indiquer qu'on va utiliser la table de devis
-  // * récupérer la liste des codes de devis et liste de points de vente
+  // * et récupérer la liste des codes de devis et liste de points de vente
+  // * et récuperer le dernier NUMBL
   useEffect(() => {
     dispatch(setToolbarTable("devis"));
     dispatch(setToolbarMode("consultation"));
@@ -103,24 +98,11 @@ function DevisForm() {
     if (toolbarMode == "ajout") dispatch(getToutCodesClient());
   }, [toolbarMode]);
 
-  // * UseEffect #3 : récuperer les information de client
-  // * associé avec le devis selectionné
-  // useEffect(() => {
-  //   console.log("devisInfo.CODECLI changed to: ", devisInfo.CODECLI)
-  //   if (devisInfo.CODECLI && devisInfo.CODECLI != "") {
-  //     dispatch(getClientParCode(devisInfo.CODECLI));
-  //   }
-  // }, [devisInfo.CODECLI]);
-
-  // * useEffect #4 : récuperer le dernier NUMBL
-  useEffect(() => {
-    dispatch(getDerniereNumbl(utilisateurConnecte.codeuser));
-  }, []); 
-
   // * useEffect #5: remplir le champ NUMBL par le derniere NUMBL récuperé
   useEffect(() => {
     console.log("derniereNumbl changed to: ",derniereNumbl)
     if (derniereNumbl && derniereNumbl != "") {
+      console.log(derniereNumbl)
       dispatch(
         setDevisInfo({ collone: "NUMBL", valeur: "DV" + derniereNumbl })
       );
@@ -160,13 +142,7 @@ function DevisForm() {
       );
     }
   }, [clientInfos.code, clientInfos.rsoc, clientInfos.adresse]);
-
-  useEffect(() => {
-    if(devisInfo.NUMBL==="" && derniereNumbl!==""){
-      // console.log(derniereNumbl)
-      // dispatch(getDevisParNUMBL(derniereNumbl))
-    }
-  },[devisInfo.NUMBL])
+  
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
@@ -216,7 +192,6 @@ function DevisForm() {
   const afficherRecherchePopup = () => {
     dispatch(setAfficherRecherchePopup(true));
   };
-  console.log(devisInfo.mlettre)
   return (
     <>
       <div className="container">
@@ -418,7 +393,7 @@ function DevisForm() {
               <div className="space-y-0 p-6 border rounded-lg shadow-md bg-white">
                 <h3 className="text-lg font-bold flex items-center space-x-2">
                   <FaUsers className="text-red-500" />
-                  <span>Informations de l'Utilisateur</span>
+                  <span>Informations de Vendeur</span>
                 </h3>
 
                 <label className="block font-medium">Vendeur :</label>
@@ -426,19 +401,21 @@ function DevisForm() {
                   type="text"
                   className="w-full border border-gray-300 rounded-md p-2"
                   disabled={!activerChampsForm}
+                  onChange={(e) => {handleChange(e, "CODEREP")}}
                   value={
-                    utilisateurConnecte ? utilisateurConnecte.codeuser : ""
+                    devisInfo.CODEREP && devisInfo.CODEREP !="" ? devisInfo.CODEREP : ""
                   }
                 />
 
-                <label className="block font-medium">RSREP :</label>
+                <label className="block font-medium">Raison sociale de representant :</label>
                 <input
                   type="text"
                   className="w-full border border-gray-300 rounded-md p-2"
+                  onChange={(e) => {handleChange(e, "RSREP")}}
                   disabled={!activerChampsForm}
                   value={
-                    utilisateurConnecte.directeur
-                      ? utilisateurConnecte.directeur
+                    devisInfo.RSREP
+                      ? devisInfo.RSREP
                       : ""
                   }
                 />
