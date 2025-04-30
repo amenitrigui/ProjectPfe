@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import {
   getNombreTotalDevis,
   getTotalChiffres,
+  setDevisClientInfos,
 } from "../../app/devis_slices/devisSlice";
 
 import { setDevisInfo } from "../../app/devis_slices/devisSlice";
@@ -34,9 +35,19 @@ import SideBar from "../Common/SideBar";
 import DetailsBanqueClient from "./DetailsBanqueClient";
 import DateCreateMAJ from "../Common/DateCreateMAJ";
 import ParametresFacturationClient from "./ParametresFacturationClient";
+import {
+  getLibellePointVneteparPVente,
+  getListePointVente,
+  viderChampsPointVenteInfo,
+} from "../../app/pointVente_slice/pointVenteSlice";
 
 const ClientForm = () => {
   const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
+  const pointVenteInfo = useSelector(
+    (state) => state.pointVenteSlice.pointVenteInfo
+  );
+  console.log(clientInfos)
+
   const utilisateurConnecte = useSelector(
     (state) => state.utilisateurSystemSlice.utilisateurConnecte
   );
@@ -44,19 +55,19 @@ const ClientForm = () => {
   const infosUtilisateur = useSelector(
     (state) => state.utilisateurSlice.infosUtilisateur
   );
-   const handleChangeTel = (e, colonne) => {
-      if (isNumerique(e.target.value)) {
-        dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
-      }
-    };
-    const handleChangeFax = (e, colonne) => {
-      if (!isNaN(e.target.value)) {
-        dispatch(setClientInfos({ colonne: "fax", valeur: e.target.value }));
-      }
-      if (e.target.value == "") {
-        dispatch(setClientInfos({ colonne: "fax", valeur: "" }));
-      }
-    };
+  const handleChangeTel = (e, colonne) => {
+    if (isNumerique(e.target.value)) {
+      dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
+    }
+  };
+  const handleChangeFax = (e, colonne) => {
+    if (!isNaN(e.target.value)) {
+      dispatch(setClientInfos({ colonne: "fax", valeur: e.target.value }));
+    }
+    if (e.target.value == "") {
+      dispatch(setClientInfos({ colonne: "fax", valeur: "" }));
+    }
+  };
   const listeCodesRegion = useSelector(
     (state) => state.clientSlice.listeCodesRegion
   );
@@ -77,7 +88,14 @@ const ClientForm = () => {
     dispatch(getListeCodesSecteur());
     dispatch(getListeCodeRegions());
     dispatch(getDerniereCodeClient());
+    dispatch(getListePointVente());
   }, []);
+  useEffect(() => {
+    dispatch(getLibellePointVneteparPVente(clientInfos.codepv));
+    if (clientInfos.codepv == "") {
+      dispatch(viderChampsPointVenteInfo());
+    }
+  }, [clientInfos.codepv]);
 
   useEffect(() => {
     if (dernierCodeClient && dernierCodeClient !== "") {
@@ -125,6 +143,10 @@ const ClientForm = () => {
   const listeToutCodesPosteaux = useSelector(
     (state) => state.clientSlice.listeToutCodesPosteaux
   );
+  const listeCodespointVente = useSelector(
+    (state) => state.pointVenteSlice.listeCodespointVente
+  );
+  console.log(listeCodespointVente);
   const listeCodesSecteur = useSelector(
     (state) => state.clientSlice.listeCodesSecteur
   );
@@ -218,8 +240,8 @@ const ClientForm = () => {
   );
 
   const hundleClickButtonSecRegCp = (colonne) => {
-    dispatch(setToolbarTable(colonne))
-    
+    dispatch(setToolbarTable(colonne));
+
     dispatch(setAfficherSecteurPopup(true));
   };
 
@@ -243,8 +265,8 @@ const ClientForm = () => {
   }, [insertionDepuisDevisForm]);
 
   useEffect(() => {
-    console.log(toolbarTable)
-  },[toolbarTable])
+    console.log(toolbarTable);
+  }, [toolbarTable]);
   return (
     <div className="container">
       <SideBar />
@@ -352,43 +374,53 @@ const ClientForm = () => {
                     disabled={!activerChampsForm}
                   />
                 </div>
-                <div className="flex flex-wrap gap-0">
-                  <div className="flex flex-col w-1/3">
-                    <label
-                      className="font-bold mb-1"
-                      style={{ color: "rgb(48, 60, 123)" }}
-                    >
+                <div className="flex flex-wrap gap-4">
+                  {/* Champ P. Vente */}
+                  <div className="flex flex-col w-full sm:w-1/3">
+                    <label className="font-bold text-sm text-[rgb(48,60,123)] mb-1">
                       P. Vente
                     </label>
-                    <input
-                      type="text"
-                      className="border border-gray-300 rounded-md p-2"
-                      disabled={!activerChampsForm}
-                      value={clientInfos.codepv || ""}
-                      onChange={(e) => handleChange(e, "codepv")} //codpv
-                    />
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="text"
+                        className="border border-gray-300 rounded-md p-2 w-full"
+                        value={clientInfos.codepv}
+                        list="listePointVente"
+                        onChange={(e) => handleChange(e, "codepv")}
+                        disabled={!activerChampsForm}
+                      />
+                    </div>
+                    <datalist id="listePointVente">
+                      {listeCodespointVente.length > 0 ? (
+                        listeCodespointVente.map((pointvente, indice) => (
+                          <option key={indice} value={pointvente.Code}>
+                            {pointvente.Code}
+                          </option>
+                        ))
+                      ) : (
+                        <option disabled>Aucun client trouvé</option>
+                      )}
+                    </datalist>
                   </div>
-                  <div className="flex flex-col w-2/3">
-                    <label
-                      className="font-bold mb-1"
-                      style={{ color: "rgb(48, 60, 123)" }}
-                    >
-                      Libelle P. Vente
+
+                  {/* Champ Libelle P. Vente */}
+                  <div className="flex flex-col w-full sm:w-1/2">
+                    <label className="font-bold text-sm text-[rgb(48,60,123)] mb-1">
+                      Libellé P. Vente
                     </label>
                     <div className="flex items-center space-x-2">
                       <input
                         type="text"
                         className="border border-gray-300 rounded-md p-2 w-full"
                         disabled={!activerChampsForm}
-                        value={clientInfos.Libelle || ""}
+                        value={pointVenteInfo.Libelle || ""}
                         onChange={(e) => handleChange(e, "Libelle")}
                       />
-                      {(toolbarMode == "ajout" ||
-                        toolbarMode == "modification") && (
+                      {(toolbarMode === "ajout" ||
+                        toolbarMode === "modification") && (
                         <button
                           type="button"
                           className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition"
-                          // disabled={!activerChampsForm}
                           onClick={() =>
                             hundleClickButtonSecRegCp("pointvente")
                           }
@@ -399,6 +431,7 @@ const ClientForm = () => {
                     </div>
                   </div>
                 </div>
+
                 <div className="flex flex-col w-full gap-0">
                   <label
                     className="font-bold pt-3 pb-3"
@@ -445,13 +478,7 @@ const ClientForm = () => {
                         <input
                           type="text"
                           className="border border-gray-300 rounded-md p-2 w-full"
-                          value={
-                            toolbarMode === "consultation"
-                              ? clientInfos.cp
-                              : toolbarTable === "codepostale"
-                              ? CpostaleInfo.CODEp
-                              : ""
-                          }
+                          value={clientInfos.cp}
                           list="listeCodesPosteaux"
                           onChange={(e) => handleChangeCodePostal(e)}
                           disabled={!activerChampsForm}
@@ -483,14 +510,8 @@ const ClientForm = () => {
                         <input
                           type="text"
                           className="border border-gray-300 rounded-md p-2 w-full"
-                          value={
-                            toolbarMode === "consultation"
-                              ? clientInfos.desicp
-                              : toolbarTable === "codepostale"
-                              ? CpostaleInfo.desicp
-                              : ""
-                          }
-                          onChange={(e) => handleChange(e, "ville")}
+                          value={clientInfos.desicp}
+                          onChange={(e) => handleChange(e, "desicp")}
                           disabled={!activerChampsForm}
                         />
                         {(toolbarMode == "ajout" ||
@@ -522,15 +543,8 @@ const ClientForm = () => {
                       <input
                         type="text"
                         className="border border-gray-300 rounded-md p-2"
-                        valeur={clientInfos.codes !== "" ?clientInfos.codes : ""}
+                        value={clientInfos.codes}
                         disabled={!activerChampsForm}
-                        value={
-                          toolbarMode === "consultation"
-                            ? clientInfos.codesec
-                            : toolbarTable === "secteur"
-                            ? secteurInfo.codesec
-                            : ""
-                        }
                         list="listeCodesSecteur"
                         onChange={(e) => handleSecteurChange(e)}
                       />
@@ -559,14 +573,8 @@ const ClientForm = () => {
                         <input
                           type="text"
                           className="border border-gray-300 rounded-md p-2 w-full"
+                          value={clientInfos.desisec}
                           disabled={!activerChampsForm}
-                          value={
-                            toolbarMode === "consultation"
-                              ? clientInfos.desisec
-                              : toolbarTable === "secteur"
-                              ? secteurInfo.desisec
-                              : ""
-                          }
                         />
 
                         {(toolbarMode == "ajout" ||
@@ -595,17 +603,10 @@ const ClientForm = () => {
                       </label>
                       <input
                         type="text"
-                        valeur={clientInfos.coder !== "" ? clientInfos.coder : ""}
                         className="border border-gray-300 rounded-md p-2"
                         disabled={!activerChampsForm}
                         list="listeCodesRegion"
-                        value={
-                          toolbarMode === "consultation"
-                            ? clientInfos.codergg
-                            : toolbarTable === "region"
-                            ? RegionInfo.codergg
-                            : ""
-                        }
+                        value={clientInfos.coder}
                         onChange={(e) => hundleRegionChange(e)}
                       />
                       <datalist id="listeCodesRegion">
@@ -634,13 +635,7 @@ const ClientForm = () => {
                           type="text"
                           className="border border-gray-300 rounded-md p-2 w-full"
                           disabled={!activerChampsForm}
-                          value={
-                            toolbarMode === "consultation"
-                              ? clientInfos.desirgg
-                              : toolbarTable === "region"
-                              ? RegionInfo.desirgg
-                              : ""
-                          }
+                          value={RegionInfo.desirgg}
                         />
                         {(toolbarMode == "ajout" ||
                           toolbarMode == "modification") && (
@@ -686,7 +681,7 @@ const ClientForm = () => {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     value={clientInfos.tel1 || ""}
-                      onChange={(e) => handleChangeTel(e, "tel1")}
+                    onChange={(e) => handleChangeTel(e, "tel1")}
                     disabled={!activerChampsForm}
                     maxLength={8}
                   />
@@ -702,7 +697,7 @@ const ClientForm = () => {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     value={clientInfos.tel2 || ""}
-                     onChange={(e) => handleChangeTel(e, "tel2")}
+                    onChange={(e) => handleChangeTel(e, "tel2")}
                     disabled={!activerChampsForm}
                     maxLength={8}
                   />
@@ -735,7 +730,7 @@ const ClientForm = () => {
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
                     value={clientInfos.fax || ""}
-                     onChange={(e) => handleChangeFax(e, "fax")}
+                    onChange={(e) => handleChangeFax(e, "fax")}
                     disabled={!activerChampsForm}
                     minLength={6}
                     maxLength={9}
@@ -754,7 +749,7 @@ const ClientForm = () => {
 
               <div className="collapse-content text-sm">
                 <ParametresFacturationClient />
-              <DateCreateMAJ objet={clientInfos} />
+                <DateCreateMAJ objet={clientInfos} />
               </div>
             </div>
           </div>
@@ -774,8 +769,6 @@ const ClientForm = () => {
                 <DetailsBanqueClient />
               </div>
             </div>
-
-         
           </div>
         </div>
       </div>

@@ -124,7 +124,7 @@ const suprimerArticle = async (req, res) => {
         type: dbConnection.QueryTypes.DELETE,
       }
     );
-    return res.status(200).json({ message: "suprime article avec succes" });
+    return res.status(200).json({ message: "suprime article avec succes" ,article});
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

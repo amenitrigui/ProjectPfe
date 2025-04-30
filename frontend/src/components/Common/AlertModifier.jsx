@@ -98,7 +98,7 @@ function AlertModifier() {
         }
       }
       if (toolbarMode == "modification") {
-        dispatch(modifierDevis());
+        // dispatch(modifierDevis());
         dispatch(viderChampsDevisInfo());
       }
       if (toolbarMode == "suppression") {

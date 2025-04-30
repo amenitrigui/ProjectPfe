@@ -1,5 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { defaultArticleInfos, defaultLigneDevisInfos } from "../constantes/article";
+import {
+  defaultArticleInfos,
+  defaultLigneDevisInfos,
+} from "../constantes/article";
 import axios from "axios";
 
 // * récupere la liste de familles
@@ -47,11 +50,14 @@ export const suprimerArticle = createAsyncThunk(
   // ! param2 (thunkAPI) : un paramètres supplementaire qui revient de la méthode createAsyncThunk
   async (code, thunkAPI) => {
     console.log(code);
-    const response = await axios.delete(`
-      ${process.env.REACT_APP_API_URL}/api/article/${
-      thunkAPI.getState().utilisateurSystemSlice.dbName
-    }/suprimerArticle/${code}
-    `);
+    const response = await axios.delete(`${process.env.REACT_APP_API_URL}/api/article/${thunkAPI.getState().utilisateurSystemSlice.dbName}/suprimerArticle`,
+    
+      {
+        params: {
+          code: code,
+        },
+      }
+    );
     console.log(response);
     return response;
   }
@@ -345,7 +351,7 @@ export const articleSlice = createSlice({
     ListeCodeArticlesparLib: {},
     defaultArticleInfos,
     defaultLigneDevisInfos,
-    ligneDevisInfos: { ...defaultLigneDevisInfos},
+    ligneDevisInfos: { ...defaultLigneDevisInfos },
     articleInfos: { ...defaultArticleInfos },
   },
   reducers: {

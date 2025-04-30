@@ -4,8 +4,8 @@ export const isNumerique = (valeur) => {
 }
 
 export const isAlphaNumerique = (valeur) => {
-
-}
+  return /^[A-Za-z0-9\s]*$/.test(valeur);
+};
 
 export const isAlphabetique = (valeur) => {
     return /^[A-Za-z\s]*$/.test(valeur)
