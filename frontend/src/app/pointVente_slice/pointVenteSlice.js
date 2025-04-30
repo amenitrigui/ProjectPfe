@@ -4,7 +4,7 @@ import axios from "axios";
 //* url: http://localhost:5000/api/pointvente/SOLEVO/ajouterpointVente
 
 export const ajouterpointVente = createAsyncThunk(
-  "RegionSlice/ajouterpointVente",
+  "PointVenteSlice/ajouterpointVente",
   async (_, thunkAPI) => {
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/pointvente/${
@@ -16,6 +16,34 @@ export const ajouterpointVente = createAsyncThunk(
     );
     console.log(response);
     return response.data.newPointVente;
+  }
+);
+export const getListePointVente = createAsyncThunk(
+  "PointVenteSlice/getListePointVente",
+  async (_, thunkAPI) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/pointvente/${
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getListePointVente`
+    );
+    console.log(response);
+    return response.data.data;
+  }
+);
+export const getLibellePointVneteparPVente = createAsyncThunk(
+  "PointVenteSlice/getLibellePointVneteparPVente",
+  async (codepv, thunkAPI) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/pointvente/${
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getLibellePointVneteparPVente`,
+      {
+        params: {
+          Code: codepv,
+        },
+      }
+    );
+    return response.data.data[0];
   }
 );
 
@@ -64,6 +92,36 @@ export const pointVenteSlice = createSlice({
         state.status = "réussi";
       })
       .addCase(ajouterpointVente.rejected, (state, action) => {
+        state.status = "échoué";
+        state.erreur = action.payload;
+      })
+
+      .addCase(getListePointVente.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getListePointVente.fulfilled, (state, action) => {
+        console.log(action.payload);
+        state.listeCodespointVente = action.payload;
+        state.status = "réussi";
+      })
+      .addCase(getListePointVente.rejected, (state, action) => {
+        state.status = "échoué";
+        state.erreur = action.payload;
+      })
+
+      .addCase(getLibellePointVneteparPVente.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getLibellePointVneteparPVente.fulfilled, (state, action) => {
+        console.log(action.payload);
+        if (action.payload && Object.keys(action.payload).length > 0) {
+          state.pointVenteInfo.Libelle = action.payload.Libelle;
+          console.log(state.pointVenteInfo.Libelle);
+          //state.listeCodespointVente = action.payload;
+          state.status = "réussi";
+        }
+      })
+      .addCase(getLibellePointVneteparPVente.rejected, (state, action) => {
         state.status = "échoué";
         state.erreur = action.payload;
       });

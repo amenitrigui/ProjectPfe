@@ -1,6 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setArticleInfos } from "../../app/article_slices/articleSlice";
+import { isNumerique } from "../../utils/validations";
 
 function OptionsArticle() {
   const dispatch = useDispatch();
@@ -11,8 +12,16 @@ function OptionsArticle() {
   );
 
   const hundlesubmitTousLesChamp = (valeur, colonne) => {
-    dispatch(setArticleInfos({ valeur, colonne }));
+    const colNum = ["comptec", "nbrunite","unite","prixbrut","prixnet"];
+    
+        if ((colNum.includes(colonne) && isNumerique(valeur))) {
+          dispatch(setArticleInfos({ valeur, colonne }));
+        }
   };
+  const hundlesubmittypeChamp=(valeur,colonne)=>{
+    dispatch(setArticleInfos({ valeur, colonne }));
+
+  }
 
   const handleChangeRadio = (valeur, colonne) => {
     if (toolbarMode == "ajout" || toolbarMode == "modification") {
@@ -95,7 +104,7 @@ function OptionsArticle() {
         <select
           className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
           value={articleInfos.type}
-          onChange={(e) => hundlesubmitTousLesChamp(e.target.value, "type")}
+          onChange={(e) => hundlesubmittypeChamp(e.target.value, "type")}
           disabled={!activerChampsForm}
         >
           <option value="">-- Sélectionner --</option>

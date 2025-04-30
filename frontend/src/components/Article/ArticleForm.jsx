@@ -14,6 +14,7 @@ import {
   setArticleInfos,
   viderChampsArticleInfo,
 } from "../../app/article_slices/articleSlice";
+import { isAlphabetique, isAlphaNumerique, isNumerique } from "../../utils/validations";
 import {
   setAfficherFamillePopub,
   setAfficherRecherchePopup,
@@ -49,7 +50,7 @@ function ArticleForm() {
   const derniereCodeArticle = useSelector(
     (state) => state.articleSlice.derniereCodeArticle
   );
-  console.log(derniereCodeArticle)
+  console.log(derniereCodeArticle);
   const FamilleInfos = useSelector((state) => state.familleSlice.FamilleInfos);
   const SousFamilleInfos = useSelector(
     (state) => state.sousfamilleSlice.SousFamilleInfos
@@ -105,7 +106,7 @@ function ArticleForm() {
 
   useEffect(() => {
     if (derniereCodeArticle && derniereCodeArticle != "") {
-      console.log(derniereCodeArticle)
+      console.log(derniereCodeArticle);
       dispatch(getArticleParCode(derniereCodeArticle));
     }
   }, [derniereCodeArticle]);
@@ -114,7 +115,14 @@ function ArticleForm() {
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
   const hundlesubmitTousLesChamp = (valeur, colonne) => {
-    dispatch(setArticleInfos({ valeur, colonne }));
+    const colNum = ["tauxtva", "fodec", "code", "libelle"];
+    const Alphapheti = ["libelle"];
+    if (colNum.includes(colonne) && isNumerique(valeur)) {
+      dispatch(setArticleInfos({ valeur, colonne }));
+    }
+    if (Alphapheti.includes(colonne) && isAlphaNumerique(valeur)) {
+      dispatch(setArticleInfos({ valeur, colonne }));
+    }
 
     if (colonne == "code") {
       if (valeur == "") {
@@ -192,9 +200,7 @@ function ArticleForm() {
                     <input
                       type="text"
                       className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                      value={
-                        articleInfos.famille
-                      }
+                      value={articleInfos.famille}
                       onChange={(e) =>
                         hundlesubmitTousLesChamp(e.target.value, "famille")
                       }
@@ -222,10 +228,7 @@ function ArticleForm() {
                     <input
                       type="text"
                       className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                      value={
-                       
-                           articleInfos.libelleFamille
-                      }
+                      value={articleInfos.libelleFamille}
                       onChange={(e) =>
                         hundlesubmitTousLesChamp(
                           e.target.value,
@@ -256,9 +259,7 @@ function ArticleForm() {
                     <input
                       type="text"
                       className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                      value={
-                        articleInfos.codesousfam
-                      }
+                      value={articleInfos.codesousfam}
                       list="listeCodesSousFamille"
                       onChange={(e) =>
                         hundlesubmitTousLesChamp(e.target.value, "codesousfam")
@@ -286,9 +287,7 @@ function ArticleForm() {
                     <input
                       type="text"
                       className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                      value={
-                        articleInfos.Libellesousfamille
-                      }
+                      value={articleInfos.Libellesousfamille}
                       disabled={!activerChampsForm}
                       onChange={(e) =>
                         hundlesubmitTousLesChamp(
@@ -384,13 +383,12 @@ function ArticleForm() {
                           type="text"
                           className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
                           value={articleInfos.tauxtva}
-                          
                           onChange={(e) =>
                             hundlesubmitTousLesChamp(e.target.value, "tauxtva")
                           }
                           disabled={!activerChampsForm}
                         />
-                    {    console.log(articleInfos.tauxtva)}
+                        {console.log(articleInfos.tauxtva)}
                       </div>
                       <div className="space-y-1">
                         <label className="block font-semibold text-blue-900">

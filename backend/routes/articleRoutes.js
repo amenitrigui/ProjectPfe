@@ -28,7 +28,7 @@ const router = express.Router();
 router.get("/:dbName/getListeFamilles", getListeFamilles);
 // ! ddddd
 router.get("/:dbName/codes/famille", getCodesArticlesByFamille);
-router.delete("/:dbName/suprimerArticle", suprimerArticle);
+router.delete("/:dbName/suprimerArticle",suprimerArticle);
 router.get("/:dbName/getArticleParCode", getArticleParCode);
 router.post("/:dbName/ajouterArticle", ajouterArticle);
 router.put("/:dbName/modifierArticle/:code", modifierArticle);

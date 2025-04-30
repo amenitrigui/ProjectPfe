@@ -37,7 +37,10 @@ import {
   setDevisInfo,
   viderChampsDevisInfo,
 } from "../../app/devis_slices/devisSlice";
-import { deconnecterUtilisateur, getUtilisateurParCode } from "../../app/utilisateur_slices/utilisateurSlice";
+import {
+  deconnecterUtilisateur,
+  getUtilisateurParCode,
+} from "../../app/utilisateur_slices/utilisateurSlice";
 import { viderChampsArticleInfo } from "../../app/article_slices/articleSlice";
 import {
   getListeUtilisateurParCode,
@@ -135,12 +138,19 @@ function ToolBar() {
       dispatch(viderChampsDevisInfo());
       dispatch(viderChampsClientInfo());
       dispatch(getDerniereNumbl());
-      dispatch(setDevisInfo({collone: "usera",valeur: utilisateurConnecte.codeuser}))
+      dispatch(
+        setDevisInfo({ collone: "usera", valeur: utilisateurConnecte.codeuser })
+      );
     }
 
     if (toolbarTable == "client") {
       dispatch(viderChampsClientInfo());
-      dispatch(setClientInfos({ colonne: "usera", valeur: utilisateurConnecte.codeuser }));
+      dispatch(
+        setClientInfos({
+          colonne: "usera",
+          valeur: utilisateurConnecte.codeuser,
+        })
+      );
       // * dispatch une action pour récuperer le code + nom d'utilisateur courant
       // dispatch(getUtilisateurParCode());
     }
@@ -243,21 +253,21 @@ function ToolBar() {
   // * réafficher les autres bouttons
   // * vider toutes les champs
   const handleAnnulerBtnClick = () => {
-    if(toolbarTable === "devis"){
+    if (toolbarTable === "devis") {
       dispatch(viderChampsDevisInfo());
-      dispatch(getDerniereNumbl(utilisateurConnecte.codeuser))
+      dispatch(getDerniereNumbl(utilisateurConnecte.codeuser));
       console.log("annuler btn clicked, derniere numbl recuperé");
     }
-    if(toolbarTable === "client") {
+    if (toolbarTable === "client") {
       dispatch(viderChampsClientInfo());
     }
-    if(toolbarTable === "article") {
+    if (toolbarTable === "article") {
       dispatch(viderChampsArticleInfo());
     }
-    if(toolbarTable === "cpostal") {
+    if (toolbarTable === "cpostal") {
       dispatch(viderChampsCPostalInfo());
     }
-    if(toolbarTable === "region") {
+    if (toolbarTable === "region") {
       dispatch(viderChampsRegionInfo());
     }
     dispatch(setActiverBoutonsValiderAnnuler(false));
@@ -324,11 +334,11 @@ function ToolBar() {
   const handleDeconnexionBtnClick = () => {
     dispatch(setOuvrireAvatarMenu(false));
     dispatch(deconnecterUtilisateur());
-  }
+  };
   return (
     <>
       <nav className="w-full border-b border-gray-300 px-4 py-2 bg-white shadow-sm sticky top-0 z-50">
-      <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
           {/* Bouton Sidebar (always visible) */}
           <button
             type="button"
@@ -347,7 +357,14 @@ function ToolBar() {
                   {(utilisateurConnecte?.type?.toLowerCase() ===
                     "superviseur" ||
                     (utilisateurConnecte?.type?.toLowerCase() ===
-                      "utilisateur")) && (
+                      "utilisateur" &&
+                      [
+                        "client",
+                        "devis",
+                        "article",
+                        "famille",
+                        "sousfamille",
+                      ].includes(toolbarTable?.toLowerCase()))) && (
                     <button
                       type="button"
                       onClick={handleAjoutBtnClick}
@@ -379,7 +396,14 @@ function ToolBar() {
                   {(utilisateurConnecte?.type?.toLowerCase() ===
                     "superviseur" ||
                     (utilisateurConnecte?.type?.toLowerCase() ===
-                      "utilisateur")) && (
+                      "utilisateur" &&
+                      [
+                        "client",
+                        "devis",
+                        "article",
+                        "famille",
+                        "sousfamille",
+                      ].includes(toolbarTable?.toLowerCase()))) && (
                     <button
                       type="button"
                       onClick={handleSupprimerBtnClick}
@@ -399,7 +423,14 @@ function ToolBar() {
                   {(utilisateurConnecte?.type?.toLowerCase() ===
                     "superviseur" ||
                     (utilisateurConnecte?.type?.toLowerCase() ===
-                      "utilisateur" ))&&(
+                      "utilisateur" &&
+                      [
+                        "client",
+                        "devis",
+                        "article",
+                        "famille",
+                        "sousfamille",
+                      ].includes(toolbarTable?.toLowerCase()))) && (
                     <button
                       type="button"
                       onClick={handleNaviguerVersListe}
@@ -416,7 +447,14 @@ function ToolBar() {
                   {(utilisateurConnecte?.type?.toLowerCase() ===
                     "superviseur" ||
                     (utilisateurConnecte?.type?.toLowerCase() ===
-                      "utilisateur" ))&& (
+                      "utilisateur" &&
+                      [
+                        "client",
+                        "devis",
+                        "article",
+                        "famille",
+                        "sousfamille",
+                      ].includes(toolbarTable?.toLowerCase()))) && (
                     <button
                       type="button"
                       onClick={handleNaviguerVersPrecedent}
@@ -436,7 +474,14 @@ function ToolBar() {
                   {(utilisateurConnecte?.type?.toLowerCase() ===
                     "superviseur" ||
                     (utilisateurConnecte?.type?.toLowerCase() ===
-                      "utilisateur" )) && (
+                      "utilisateur" &&
+                      [
+                        "client",
+                        "devis",
+                        "article",
+                        "famille",
+                        "sousfamille",
+                      ].includes(toolbarTable?.toLowerCase()))) && (
                     <button
                       type="button"
                       onClick={handleNaviguerVersSuivant}
@@ -474,7 +519,10 @@ function ToolBar() {
                     onClick={handleQuitterClick}
                     className="flex flex-col items-center w-16 sm:w-20 p-2 bg-orange-100 hover:bg-orange-200 text-orange-700 rounded-lg transition-all duration-200"
                   >
-                    <FontAwesomeIcon icon={faSignOutAlt} className="text-xl mb-1"/>
+                    <FontAwesomeIcon
+                      icon={faSignOutAlt}
+                      className="text-xl mb-1"
+                    />
                     <span className="text-[10px] sm:text-xs">Quitter</span>
                   </button>
                 </>
@@ -496,7 +544,9 @@ function ToolBar() {
 
                   <button
                     type="button"
-                    onClick={() => {handleAnnulerBtnClick()}}
+                    onClick={() => {
+                      handleAnnulerBtnClick();
+                    }}
                     className="flex flex-col items-center w-16 sm:w-20 p-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg transition-all duration-200"
                   >
                     <FontAwesomeIcon icon={faTimes} className="text-xl mb-1" />
