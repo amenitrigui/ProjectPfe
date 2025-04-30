@@ -111,7 +111,6 @@ const Dashboard = () => {
   const nbDevisparrepresentant = useSelector(
     (state) => state.devisSlice.nbDevisparrepresentant
   );
-  console.log(nbDevisparrepresentant);
   const utilisateurConnecte = useSelector(
     (state) => state.utilisateurSystemSlice.utilisateurConnecte
   );

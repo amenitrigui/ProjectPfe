@@ -277,7 +277,7 @@ const ClientForm = () => {
                   list="listeCodesClients"
                   value={clientInfos.code !== "" ? clientInfos.code : ""}
                   onChange={(e) => handleChangeCodeClient(e, "code")}
-                  // disabled={activerChampsForm}
+                  disabled={activerChampsForm}
                   maxLength={8}
                   onClick={() => afficherRecherchePopup()}
                 />
@@ -627,7 +627,7 @@ const ClientForm = () => {
                         className="font-bold  pt-3 pb-3"
                         style={{ color: "rgb(48, 60, 123)" }}
                       >
-                        Désignation région
+                        Ville
                       </label>
                       <div className="flex items-center space-x-2">
                         <input
@@ -749,7 +749,7 @@ const ClientForm = () => {
                 className="collapse-title font-semibold "
                 style={{ color: "rgb(48, 60, 123)" }}
               >
-                Liste client A bloquer
+                Paramètres facturation
               </div>
 
               <div className="collapse-content text-sm">

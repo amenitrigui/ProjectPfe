@@ -50,7 +50,7 @@ router.get("/:dbName/getArticleParLibelle/:libelle",getArticleParLibelle);
 router.get("/:dbName/getListeArticleparFamille", getListeArticleparFamille);
 router.get("/:dbName/getListeArticleparLibelle", getListeArticleparLibelle);
 router.get("/:dbName/getListeArticleParSousFamille/:SousFamille", getListeArticleParSousFamille);
-router.get("/:dbName/getListeArticleParCodeArticle/:codeArticle", getListeArticleParCodeArticle);
+router.get("/:dbName/getListeArticleParCodeArticle", getListeArticleParCodeArticle);
 router.get("/:dbName/getDerniereCodeArticle", getDerniereCodeArticle);
 
 module.exports = router;

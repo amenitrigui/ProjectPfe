@@ -140,7 +140,7 @@ const getListeUtilisateurParCode = async (req, res) => {
     //const decoded = verifyTokenValidity(req, res);
 
     const result = await sequelizeConnexionDbUtilisateur.query(
-      `select codeuser,nom,directeur, type from utilisateur where codeuser = :codeuser `,
+      `select codeuser,nom,directeur,email,type,motpasse from utilisateur where codeuser = :codeuser `,
       {
         replacements: {
           codeuser: codeuser,

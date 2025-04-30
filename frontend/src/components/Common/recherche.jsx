@@ -30,6 +30,8 @@ import {
   getListeCodesArticles,
   setArticleInfos,
   setArticleInfosEntiere,
+  setLigneDevisInfos,
+  setLigneDevisInfosEntiere,
   setListeArticle,
 } from "../../app/article_slices/articleSlice";
 import {
@@ -315,6 +317,21 @@ const Recherche = () => {
     dispatch(setListeSousfamille([]));
   }
 
+  const remplirChampsLigneDevis = () => {
+    if(datatableElementSelection) {
+      dispatch(setLigneDevisInfos({colonne: "CodeART", valeur: datatableElementSelection.code}));
+      dispatch(setLigneDevisInfos({colonne: "DesART", valeur: datatableElementSelection.libelle}));
+      dispatch(setLigneDevisInfos({colonne: "PUART",  valeur: datatableElementSelection.prixnet}));
+      dispatch(setLigneDevisInfos({colonne: "Remise", valeur: datatableElementSelection.DREMISE}));
+      dispatch(setLigneDevisInfos({colonne: "TypeART", valeur: datatableElementSelection.type}));
+      dispatch(setLigneDevisInfos({colonne: "TauxTVA", valeur: datatableElementSelection.tauxtva}));
+      dispatch(setLigneDevisInfos({colonne: "famille", valeur: datatableElementSelection.famille}));
+      dispatch(setLigneDevisInfos({colonne: "nbun", valeur:datatableElementSelection.nbrunite }));
+      dispatch(setLigneDevisInfos({colonne:  "Unite", valeur: datatableElementSelection.unite}))
+      dispatch(setLigneDevisInfos({colonne: "Conf", valeur: datatableElementSelection.CONFIG}));
+    }
+  }
+
   const handleBtnValiderClick = () => {
     if (toolbarTable == "devis") {
       dispatch(setDevisInfoEntiere(datatableElementSelection));
@@ -328,10 +345,15 @@ const Recherche = () => {
     }
     if (toolbarTable == "article") {
       dispatch(setArticleInfosEntiere(datatableElementSelection));
+      remplirChampsLigneDevis();
       dispatch(setListeArticle([]));
       dispatch(setAfficherRecherchePopup(false));
     }
     if (toolbarTable == "famille") {
+      // * ceci est pour l'interface d'ajout d'un article pour un devis
+      dispatch(setLigneDevisInfos({colonne: "famille", valeur: datatableElementSelection.code}))
+      // dispatch(setLigneDevisInfos({colonne: ""}))
+      // * ============================================================
       dispatch(
         setArticleInfos({
           colonne: "famille",

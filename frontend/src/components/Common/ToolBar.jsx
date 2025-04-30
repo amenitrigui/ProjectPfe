@@ -41,6 +41,7 @@ import { deconnecterUtilisateur, getUtilisateurParCode } from "../../app/utilisa
 import { viderChampsArticleInfo } from "../../app/article_slices/articleSlice";
 import {
   getListeUtilisateurParCode,
+  setUtilisateurSupInfo,
   setViderChampsUtilisateur,
 } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 import { FaCog, FaRegUserCircle, FaSignOutAlt, FaUser } from "react-icons/fa";
@@ -280,8 +281,13 @@ function ToolBar() {
       dispatch(getDevisParNUMBL(NumBLCode.toString()));
     }
     if (toolbarTable == "utilisateur") {
-      const codeUser = parseInt(Utilisateur_SuperviseurInfos.codeuser) - 1;
-      dispatch(getListeUtilisateurParCode(codeUser.toString()));
+      let codeUser = parseInt(Utilisateur_SuperviseurInfos.codeuser) - 1;
+      if(codeUser > 0) {
+        if(codeUser < 10) {
+          codeUser = "0"+codeUser
+        }
+        dispatch(getListeUtilisateurParCode(codeUser.toString()));
+      }
     }
   };
   const nav = useNavigate();
@@ -305,8 +311,13 @@ function ToolBar() {
       dispatch(getDevisParNUMBL(NumBLCode.toString()));
     }
     if (toolbarTable == "utilisateur") {
-      const codeUser = parseInt(Utilisateur_SuperviseurInfos.codeuser) + 1;
-      dispatch(getListeUtilisateurParCode(codeUser.toString()));
+      let codeUser = parseInt(Utilisateur_SuperviseurInfos.codeuser) + 1;
+      if(codeUser > 0) {
+        if (codeUser < 10) {
+          codeUser = "0"+codeUser;
+        }
+        dispatch(getListeUtilisateurParCode(codeUser.toString())); 
+      }
       //  dispatch(getCodeUtilisateurSuivant())
     }
   };
@@ -540,7 +551,12 @@ function ToolBar() {
                 <ul className="py-2">
                   <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                     <Link
-                      onClick={() => dispatch(setOuvrireAvatarMenu(false))}
+                      onClick={() => {
+                        dispatch(setOuvrireAvatarMenu(false));
+                        console.log(utilisateurConnecte);
+                        dispatch(setUtilisateurSupInfo(utilisateurConnecte))
+                      }
+                      }
                       to="/UtilisateurFormTout"
                       className="flex items-center"
                     >

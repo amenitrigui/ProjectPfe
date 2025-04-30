@@ -59,7 +59,6 @@ function DevisForm() {
   // * informations d'un devis provenant des champs de cette formulaire
   const devisInfo = useSelector((state) => state.devisSlice.devisInfo);
   const listeVendeur = useSelector((state) => state.devisSlice.listeVendeur);
-  console.log(listeVendeur);
   // * boolean pour activer/désactiver champs du formulaire
   // * initialement false (champs désactivé en mode de consultation)
   const activerChampsForm = useSelector(
@@ -80,6 +79,7 @@ function DevisForm() {
     (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
   const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
+  const toolbarTable = useSelector((state) => state.interfaceSlice.toolbarTable);
   const derniereNumbl = useSelector((state) => state.devisSlice.derniereNumbl);
   //?==================================================================================================================
   //?==============================================appels UseEffect====================================================
@@ -109,6 +109,7 @@ function DevisForm() {
   // * useEffect #5: remplir le champ NUMBL par le derniere NUMBL récuperé
   useEffect(() => {
     if (derniereNumbl && derniereNumbl != "") {
+      console.log(derniereNumbl)
       dispatch(
         setDevisInfo({ collone: "NUMBL", valeur: "DV" + derniereNumbl })
       );
@@ -209,6 +210,7 @@ function DevisForm() {
   const afficherRecherchePopup = () => {
     dispatch(setAfficherRecherchePopup(true));
   };
+  console.log("working on "+toolbarTable+" in the "+toolbarMode+" mode");
   return (
     <>
       <div className="container">
@@ -456,7 +458,7 @@ function DevisForm() {
             </div>
           </div>
           {/* Table des articles */}
-          {toolbarMode === "ajout" && <ArticlesDevis />}
+          {(toolbarMode === "ajout" || toolbarMode == "modification") && <ArticlesDevis />}
           <div className="mt-6">
             <div className="p-4 sticky bottom-0 w-full overflow-x-auto">
               <LignesDevis />

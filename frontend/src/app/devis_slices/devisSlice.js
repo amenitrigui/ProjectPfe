@@ -252,7 +252,6 @@ export const getListeCodeVendeur = createAsyncThunk(
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeCodeVendeur`
     );
-    console.log(response);
     return response.data.VendeurDistincts;
   }
 );
@@ -417,7 +416,6 @@ export const getDevisparRepresentant = createAsyncThunk(
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getDevisparRepresentant`
     );
-    console.log(response);
     return response.data.nombredevisparrepresentant;
   }
 );
@@ -867,7 +865,6 @@ export const devisSlice = createSlice({
       .addCase(
         getDesignationSecteurparCodeSecteur.fulfilled,
         (state, action) => {
-          console.log(action.payload[0]);
           state.devisInfo["desisec"] = action.payload[0].desisec;
           state.status = "reussi";
         }

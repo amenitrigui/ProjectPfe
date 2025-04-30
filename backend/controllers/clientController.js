@@ -161,18 +161,20 @@ const AjouterClient = async (req, res) => {
       srisque: clientInfos.srisque,
       scredit: clientInfos.scredit,
       remise: clientInfos.remise,
-      compteb : clientInfos.compteb, // !
+      compteb : clientInfos.compteb,
       banque:clientInfos.banque,
       contrat:clientInfos.contrat,
       blockage:clientInfos.blockage,
       susptva:clientInfos.susptva,
       tarif:clientInfos.tarif,
-      desireg:clientInfos.desireg
-      
+      desireg:clientInfos.desireg,
+      datec: new Date().toISOString().split("T")[0],
+      datefidel: clientInfos.fidel === "1" ? new Date().toISOString().split("T")[0] : ""
     });
     
+    console.log(newClient);
 
-    return res.status(200).json({ message: "insertion avec succès" ,clientInfos});
+    return res.status(200).json({ message: "insertion avec succès"});
   } catch (error) {
     return res.status(500).json({ message: error });
   }

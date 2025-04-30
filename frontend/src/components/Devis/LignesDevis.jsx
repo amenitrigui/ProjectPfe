@@ -17,15 +17,17 @@ const dispatch = useDispatch()
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
   const handleClick = (e) => {
-    const tr = e.currentTarget;
-    const tds = tr.querySelectorAll('td');
-    const values = [];
-    tds.forEach(td => {
-      values.push(td.textContent.trim());
-    });
-  
-    console.log(values);
-    dispatch(setLignedevisSelectionne(values))
+    if(toolbarMode === "ajout") {
+      const tr = e.currentTarget;
+      const tds = tr.querySelectorAll('td');
+      const values = [];
+      tds.forEach(td => {
+        values.push(td.textContent.trim());
+      });
+    
+      console.log(values);
+      dispatch(setLignedevisSelectionne(values))
+    }
   };
   
   return (
@@ -76,26 +78,41 @@ const dispatch = useDispatch()
                 <td className="p-3 border border-gray-300" id="codefamille">
                   {article.famille}
                 </td>
-                <td className="p-3 border border-gray-300" id="codeart">{toolbarMode === "consultation" ? article.CodeART : article.code}</td>
-                <td className="p-3 border border-gray-300">{toolbarMode === "consultation" ? article.Unite : article.unite}</td>
-                <td className="p-3 border border-gray-300">
-                  {toolbarMode === "consultation" ? (article.QteART).toFixed(3) : article.quantite}
+                <td className="p-3 border border-gray-300" id="codeart">
+                  {/* {toolbarMode === "consultation" ? article.CodeART : article.code} */}
+                  { article.CodeART}
                 </td>
                 <td className="p-3 border border-gray-300">
-                  {toolbarMode === "consultation" ? article.Remise : article.DREMISE}%
+                  {/* {toolbarMode === "consultation" ? article.Unite : article.unite} */}
+                  {article.Unite}
+                  </td>
+                <td className="p-3 border border-gray-300">
+                  {/* {toolbarMode === "consultation" ? (article.QteART).toFixed(3) : article.quantite} */}
+                  {article.QteART}
                 </td>
                 <td className="p-3 border border-gray-300">
-                  {toolbarMode === "consultation" ? article.DesART : article.libelle}
+                  {/* {toolbarMode === "consultation" ? article.Remise : article.DREMISE}% */}
+                  {article.Remise}
                 </td>
                 <td className="p-3 border border-gray-300">
-                  {toolbarMode === "consultation" ? article.TauxTVA : article.tauxtva}%
-                </td>
-                <td className="p-3 border border-gray-300">{toolbarMode === "consultation" ? article.PUART : article.PUHTV}</td>
-                <td className="p-3 border border-gray-300">
-                  {toolbarMode === "consultation" ? (article.PUART * (1 + article.TauxTVA / 100)).toFixed(3) : article.prixbrut}
+                  {/* {toolbarMode === "consultation" ? article.DesART : article.libelle} */}
+                  {article.DesART}
                 </td>
                 <td className="p-3 border border-gray-300">
-                  {toolbarMode === "consultation" ? (article.QteART * article.PUART * (1 - article.Remise / 100)).toFixed(3) : article.prixnet}
+                  {/* {toolbarMode === "consultation" ? article.TauxTVA : article.tauxtva}% */}
+                  {article.TauxTVA}%
+                </td>
+                <td className="p-3 border border-gray-300">
+                  {/* {toolbarMode === "consultation" ? article.PUART : article.PUHTV} */}
+                  {article.PUART}
+                  </td>
+                <td className="p-3 border border-gray-300">
+                  {/* {toolbarMode === "consultation" ? (article.PUART * (1 + article.TauxTVA / 100)).toFixed(3) : article.prixbrut} */}
+                  {(article.PUART * (1 + article.TauxTVA / 100)).toFixed(3)}
+                </td>
+                <td className="p-3 border border-gray-300">
+                  {/* {toolbarMode === "consultation" ? (article.QteART * article.PUART * (1 - article.Remise / 100)).toFixed(3) : article.prixnet} */}
+                  {(article.QteART * article.PUART * (1-article.Remise / 100)).toFixed(3)}
                 </td>
               </tr>
             ))

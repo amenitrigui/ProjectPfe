@@ -51,6 +51,8 @@ const clientInfoInitiales = {
   typecli: "L",
   cin: "",
   fax: "",
+  codes: "",
+  coder: "",
   codesec: "",
   desisec: "",
   codergg: "",

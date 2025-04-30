@@ -263,7 +263,11 @@ export const getListeArticleParCodeArticle = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getListeArticleParCodeArticle/${codeArticle}`
+      }/getListeArticleParCodeArticle`, {
+        params: {
+          codeArticle: codeArticle
+        }
+      }
     );
     console.log(response);
     return response.data.ListecodeArticle;

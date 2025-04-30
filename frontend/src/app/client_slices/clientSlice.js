@@ -45,6 +45,7 @@ export const getClientParCin = createAsyncThunk(
 export const getClientParCode = createAsyncThunk(
   "Slice/getListeClient",
   async (code, thunkAPI) => {
+    console.log(code);
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName

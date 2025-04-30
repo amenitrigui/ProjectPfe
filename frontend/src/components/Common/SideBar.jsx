@@ -9,9 +9,6 @@ function SideBar() {
     (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
   const selectionnerElementSideBar = () => {
-    // ! no idea why but this state is inversed
-    // ! ie : true is CLOSED false is OPENED
-    // ! : ( )
     dispatch(setOuvrireDrawerMenu(true));
   };
   const elementsDrawer = [

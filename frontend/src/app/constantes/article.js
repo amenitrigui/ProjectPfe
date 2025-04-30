@@ -46,16 +46,17 @@ export const defaultArticleInfos = {
   derniereCodeArticle: "",
   quantite: "",
 };
-
+  
 export const defaultLigneDevisInfos = {
+  NumBL: "", // num devis
   CodeART: "", // code article
   DesART: "", // designation article
-  QteArt: 0, // Qte article
+  QteART: 0, // Qte article
   PUART: 0, // Prix Unitaire
   Remise: 0, // Remise sur la commande
-  TauxTva: 0, // tva sur l'article
-  unite: "", // unité de l'article (P : piece, Ser: service ...)
-  TypeArt: "", // De Service / Sur Stock
+  TauxTVA: 0, // tva sur l'article
+  Unite: "", // unité de l'article (P : piece, Ser: service ...)
+  TypeART: "", // De Service / Sur Stock
   Conf: "", // Configuration de la ligne de devis
   famille: "", // famille article
   nbun: "", // ????????????????????????????????????????????????????????

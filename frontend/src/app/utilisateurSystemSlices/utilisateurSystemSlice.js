@@ -255,8 +255,10 @@ export const utilisateurSystemSlices = createSlice({
       })
       .addCase(getListeUtilisateurParCode.fulfilled, (state, action) => {
         state.status = "succès";
-        state.Utilisateur_SuperviseurInfos = action.payload[0];
-        state.listeUtilisateur_Superviseur = action.payload;
+        if(action.payload && action.payload.length > 0){
+          state.Utilisateur_SuperviseurInfos = action.payload[0];
+          state.listeUtilisateur_Superviseur = action.payload;
+        }
       })
       .addCase(getListeUtilisateurParCode.rejected, (state, action) => {
         state.status = "échec";

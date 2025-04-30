@@ -148,11 +148,6 @@ const ajouterDevis = async (req, res) => {
     articles,
   } = req.body.devisInfo;
 
-  console.log("[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[", req.body.devisInfo);
-  articles.map((article) => {
-    article.NumBL = NUMBL;
-  });
-
   try {
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
 
@@ -195,11 +190,12 @@ const ajouterDevis = async (req, res) => {
     };
     const devis = await Dfp.create(dfpData);
     articles.map(async (article) => {
+      console.log(">>>>>>>>>>>>>>"+JSON.stringify(article));
+      console.log(NUMBL);
+      article.NumBL = NUMBL;
       article.NLigne = articles.length;
-      article.CodeART = article.code;
-      const ligneDevis = null; //await ldfp.create(article);
-      console.log(ligneDevis);
-    });
+      const ligneDevis = await ldfp.create(article); //ligneDevis = null;
+    })
 
     return res.status(201).json({
       message: "Devis créé avec succès.",
@@ -699,6 +695,16 @@ const getListeDevisParNUMBL = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+// const modifierDevis = async (req, res) => {
+//   const { dbName } = req.params;
+//   const { }
+//   try {
+    
+//   }catch(error) {
+//     return res.status(500).json({message: "erreur lors de la modification de devis: "+error.message})
+//   }
+// }
 const getDevisCountByMonthAndYear = async (req, res) => {
   const { dbName } = req.params;
 

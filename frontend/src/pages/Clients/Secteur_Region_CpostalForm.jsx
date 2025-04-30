@@ -212,6 +212,8 @@ const Secteur_Region_CpostalForm = () => {
     }
     if (toolbartable === "region") {
       dispatch(ajouterRegion());
+      dispatch(setClientInfos({colonne: "codergg", valeur: regionInfo.codergg}))
+      dispatch(setClientInfos({colonne: "desirgg", valeur: regionInfo.desirgg}))
     }
     if (toolbartable === "codepostale") {
       dispatch(ajouterCodePostal());

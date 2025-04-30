@@ -58,6 +58,7 @@ const UtilisateurForm = () => {
       setUtilisateur_SuperviseurInfos({ colonne: colonne, valeur: valeur })
     );
   };
+  console.log(derniereCodeUtilisateur)
   return (
     <div className="container">
       <SideBar />
@@ -84,10 +85,10 @@ const UtilisateurForm = () => {
                         className="border border-gray-300 rounded-md p-2"
                         value={
                           toolbarTable === "consultation"
-                            ? `${utilisateurConnecte.codeuser || ""}`
+                            ? `${Utilisateur_SuperviseurInfos.codeuser || ""}`
                             : toolbarMode === "ajout"
                             ? derniereCodeUtilisateur.codeuser
-                            : Utilisateur_SuperviseurInfos.codeuser
+                            : ""
                         }
                         onChange={(e) =>
                           hundlechange("codeuser", e.target.value)
@@ -108,10 +109,10 @@ const UtilisateurForm = () => {
                         className="border border-gray-300 rounded-md p-2"
                         value={
                           toolbarTable === "consultation"
-                            ? utilisateurConnecte.nom || ""
+                            ? Utilisateur_SuperviseurInfos.nom || ""
                             : toolbarMode === "ajout"
                             ? ""
-                            : Utilisateur_SuperviseurInfos.nom || ""
+                            : ""
                         }
                         onChange={(e) => hundlechange("nom", e.target.value)}
                         disabled={!activerChampsForm}
@@ -142,10 +143,7 @@ const UtilisateurForm = () => {
                       className="border border-gray-300 rounded-md p-2"
                       value={
                         toolbarTable === "consultation"
-                          ? utilisateurConnecte.directeur || ""
-                          : toolbarMode === "ajout"
-                          ? ""
-                          : Utilisateur_SuperviseurInfos.directeur || ""
+                          ? Utilisateur_SuperviseurInfos.directeur || "" : ""
                       }
                       onChange={(e) =>
                         hundlechange("directeur", e.target.value)
@@ -164,10 +162,8 @@ const UtilisateurForm = () => {
                      
                       value={
                         toolbarTable === "consultation"
-                          ? utilisateurConnecte.type || ""
-                          : toolbarMode === "ajout"
-                          ? ""
-                          : Utilisateur_SuperviseurInfos.type || ""
+                          ? Utilisateur_SuperviseurInfos.type || ""
+                          : ""
                       }
                       onChange={(e) => hundlechange("type", e.target.value)}
                       disabled={!activerChampsForm}
@@ -175,10 +171,10 @@ const UtilisateurForm = () => {
                   </div>
                   <div className="flex flex-col">
                     <label className="font-bold mb-1 text-[rgb(48,60,123)]">
-                      MotPasse
+                      Mot de passe
                     </label>
                     <input
-                      type="text"
+                      type="password"
                       className="border border-gray-300 rounded-md p-2"
                       value={Utilisateur_SuperviseurInfos.motpasse || ""}
                       onChange={(e) => hundlechange("motpasse", e.target.value)}

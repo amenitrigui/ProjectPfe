@@ -25,6 +25,7 @@ import {
 import { validerChampsForm } from "../../utils/validations";
 import {
   AjouterDevis,
+  getDerniereNumbl,
   viderChampsDevisInfo,
 } from "../../app/devis_slices/devisSlice";
 
@@ -53,6 +54,9 @@ function AlertModifier() {
     (state) => state.articleSlice.articleInfos
   ).code;
   const devisInfo = useSelector((state) => state.devisSlice.devisInfo);
+  const utilisateurConnecte = useSelector(
+      (state) => state.utilisateurSystemSlice.utilisateurConnecte
+    );
   //?==================================================================================================================
   //?=================================================appels UseEffect=================================================
   //?==================================================================================================================
@@ -94,6 +98,8 @@ function AlertModifier() {
         }
       }
       if (toolbarMode == "modification") {
+        dispatch(modifierDevis());
+        dispatch(viderChampsDevisInfo());
       }
       if (toolbarMode == "suppression") {
       }

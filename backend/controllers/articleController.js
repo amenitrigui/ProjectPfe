@@ -691,7 +691,8 @@ const getListeArticleParSousFamille = async (req, res) => {
 //* input Code : pr
 //* output plusieurs code pr "ListecodeArticle": [ {  "code": "PRZ2002",  "famille": "02-IN",  "libelle": "PROFILE EN ACIER GALVA 41X21  SIBEC",  "codesousfam": " "  ,
 const getListeArticleParCodeArticle=async(req,res)=>{
-  const { dbName, codeArticle } = req.params;
+  const { dbName } = req.params;
+  const { codeArticle } = req.query;
   try {
     const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const ListecodeArticle = await dbConnection.query(

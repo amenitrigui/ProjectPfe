@@ -12,6 +12,7 @@ import {
   viderChampsArticleInfo,
 } from "../../app/article_slices/articleSlice";
 import {
+  getLignesDevis,
   setDevisArticles,
   setDevisInfo,
 } from "../../app/devis_slices/devisSlice";
@@ -36,6 +37,8 @@ function ArticlesDevis() {
   const lignedevisSelectionne = useSelector(
     (state) => state.interfaceSlice.lignedevisSelectionne
   );
+
+  console.log(articleInfos);
   //?==================================================================================================================
   //?=================================================appels useEffect=================================================
   //?==================================================================================================================
@@ -56,7 +59,7 @@ function ArticlesDevis() {
     setPuttc(
       (ligneDevisInfos.PUART * (1 + ligneDevisInfos.TauxTVA / 100)).toFixed(3) || 0
     );
-  }, [ligneDevisInfos.PUART, ligneDevisInfos.TauxTva]);
+  }, [ligneDevisInfos]);
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
@@ -76,10 +79,11 @@ function ArticlesDevis() {
       alert("la quantité est necessaire");
       return false;
     }
+    // dispatch(setLigneDevisInfos({colonne: "NumBL", valeur: devisInfo.NUMBL}));
     // console.log(devisInfo.MREMISE);
     // console.log(articleInfos.DREMISE);
     // console.log(parseInt(devisInfo.MHT) + parseInt(netHt));
-    dispatch(setDevisArticles(ligneDevisInfos));
+      dispatch(setDevisArticles(ligneDevisInfos));
     dispatch(
       setDevisInfo({
         collone: "MHT",
@@ -120,9 +124,6 @@ function ArticlesDevis() {
   }
 
   const getValeurChampRemise = () => {
-    if(articleInfos.DREMISE) {
-      return articleInfos.DREMISE;
-    }
     if(ligneDevisInfos.Remise) {
       return ligneDevisInfos.Remise;
     }
@@ -134,10 +135,111 @@ function ArticlesDevis() {
   }
 
   const handleRemiseChange = (valeur) => {
-    dispatch(setArticleInfos({colonne: "DREMISE", valeur}))
     dispatch(setLigneDevisInfos({colonne: "Remise", valeur}))
     dispatch(setLignedevisSelectionne([]))
   }
+
+  const getValeurChampCodeArticle = () => {
+    if(ligneDevisInfos.CodeART) {
+      return ligneDevisInfos.CodeART;
+    }
+    if(lignedevisSelectionne && lignedevisSelectionne[1]) {
+      return lignedevisSelectionne[1];
+    }
+
+    return "";
+  }
+
+  const getValeurChampLibelle = () => {
+    if(ligneDevisInfos.DesART) {
+      return ligneDevisInfos.DesART;
+    }
+    if(lignedevisSelectionne && lignedevisSelectionne[2]) {
+      return lignedevisSelectionne[2];
+    }
+
+    return "";
+  }
+
+  const getValeurChampUnite = () => {
+    if(ligneDevisInfos.Unite) {
+      return ligneDevisInfos.Unite;
+    }
+    if(lignedevisSelectionne && lignedevisSelectionne[3]) {
+      return lignedevisSelectionne[3];
+    }
+    return "";
+  }
+
+  const getValeurChampQuantite = () => {
+    if(ligneDevisInfos.QteART) {
+      return ligneDevisInfos.QteART;
+    }
+
+    if(lignedevisSelectionne && lignedevisSelectionne[4]) {
+      return lignedevisSelectionne[4];
+    }
+    return "";
+  }
+
+  const getValeurChampConfig = () => {
+    if(ligneDevisInfos.Conf){
+      return ligneDevisInfos.Conf
+    }
+    if(lignedevisSelectionne && lignedevisSelectionne[5]) {
+      return lignedevisSelectionne[5]
+    }
+
+    return "";
+  }
+
+  const getValeurChampPuttc = () => {
+    if(puttc) {
+      return puttc;
+    }
+
+    if(lignedevisSelectionne && lignedevisSelectionne[8]) {
+      return lignedevisSelectionne[8]
+    }
+
+    return "";
+  }
+
+  const getValeurChampTVA = () => {
+    if(ligneDevisInfos.TauxTVA) {
+      return ligneDevisInfos.TauxTVA;
+    }
+
+    if(lignedevisSelectionne && lignedevisSelectionne[7]) {
+      return lignedevisSelectionne[7];
+    }
+
+    return "";
+  }
+
+  const getValeurChampNetHt = () => {
+    if(netHt) {
+      return netHt;
+    }
+    if(lignedevisSelectionne && lignedevisSelectionne[9]) {
+      return lignedevisSelectionne[9];
+    }
+
+    return "";
+  }
+
+  const getValeurChampNbrUnite = () => {
+    if(ligneDevisInfos.nbun) {
+      return ligneDevisInfos.nbun;
+    }
+    if(lignedevisSelectionne && lignedevisSelectionne[10]) {
+      return lignedevisSelectionne[10];
+    }
+
+    return "";
+  }
+
+  console.log(ligneDevisInfos)
   return (
     <div className="details">
       <div className="banquedetails">
@@ -147,7 +249,7 @@ function ArticlesDevis() {
             className="collapse-title font-semibold mb-1"
             style={{ color: "rgb(48, 60, 123)" }}
           >
-            Les Articles
+            Lignes devis
           </div>
           <div className="collapse-content text-sm">
             <div className="space-y-4 p-4 sm:p-6 border rounded-md mt-4">
@@ -180,13 +282,7 @@ function ArticlesDevis() {
                       <input
                         type="text"
                         className="w-full input input-bordered input-sm"
-                        value={
-                          articleInfos.code
-                            ? articleInfos.code
-                            : lignedevisSelectionne[1]
-                            ? lignedevisSelectionne[1]
-                            : ""
-                        }
+                        value={getValeurChampCodeArticle()}
                         list="listecodeArticle"
                         placeholder="Sélectionner ou taper un code d'article"
                         onChange={(e) =>
@@ -205,14 +301,8 @@ function ArticlesDevis() {
                         type="text"
                         placeholder="Sélectionner un code article"
                         className="w-full input input-bordered input-sm"
-                        value={
-                          articleInfos.libelle
-                            ? articleInfos.libelle
-                            : lignedevisSelectionne[2]
-                            ? lignedevisSelectionne[2]
-                            : ""
-                        }
-                        onChange={(e) => handleChangementChamp("libelle", e)}
+                        value={getValeurChampLibelle()}
+                        onChange={(e) => handleChangementChamp("DesART", e)}
                         readOnly
                       />
                     </div>
@@ -226,15 +316,9 @@ function ArticlesDevis() {
                         type="text"
                         placeholder="Sélectionner un code article"
                         className="w-full input input-bordered input-sm"
-                        value={
-                          articleInfos.unite
-                            ? articleInfos.unite
-                            : lignedevisSelectionne[3]
-                            ? lignedevisSelectionne[3]
-                            : ""
-                        }
+                        value={getValeurChampUnite()}
                         readOnly
-                        onChange={(e) => handleChangementChamp("unite", e)}
+                        onChange={(e) => handleChangementChamp("Unite", e)}
                       />
                     </div>
 
@@ -247,8 +331,8 @@ function ArticlesDevis() {
                         type="text"
                         placeholder="Sélectionner un code article"
                         className="w-full input input-bordered input-sm"
-                        onChange={(e) => handleChangementChamp("quantite", e)}
-                        value={articleInfos.quantite}
+                        onChange={(e) => handleChangementChamp("QteART", e)}
+                        value={getValeurChampQuantite()}
                       />
                     </div>
 
@@ -260,14 +344,8 @@ function ArticlesDevis() {
                       <textarea
                         placeholder="Sélectionner un code article"
                         className="w-full textarea textarea-bordered textarea-sm"
-                        value={
-                          articleInfos.CONFIG
-                            ? articleInfos.CONFIG
-                            : lignedevisSelectionne[5]
-                            ? lignedevisSelectionne[5]
-                            : ""
-                        }
-                        onChange={(e) => handleChangementChamp("CONFIG", e)}
+                        value={getValeurChampConfig()}
+                        onChange={(e) => handleChangementChamp("Conf", e)}
                       />
                     </div>
                   </div>
@@ -298,16 +376,10 @@ function ArticlesDevis() {
                       </label>
                       <input
                         type="text"
-                        placeholder="tauxtva"
+                        placeholder="TauxTVA"
                         className="w-full input input-bordered input-sm"
-                        value={
-                          articleInfos.tauxtva
-                            ? articleInfos.tauxtva
-                            : lignedevisSelectionne[7]
-                            ? lignedevisSelectionne[7]
-                            : ""
-                        }
-                        onChange={(e) => handleChangementChamp("tauxtva", e)}
+                        value={getValeurChampTVA()}
+                        onChange={(e) => handleChangementChamp("tauxTVA", e)}
                       />
                     </div>
 
@@ -320,13 +392,7 @@ function ArticlesDevis() {
                         type="text"
                         step="0.001"
                         placeholder="puttc"
-                        value={
-                          puttc
-                            ? puttc
-                            : lignedevisSelectionne[8]
-                            ? lignedevisSelectionne[8]
-                            : ""
-                        }
+                        value={getValeurChampPuttc()}
                         readOnly
                         className="w-full input input-bordered input-sm"
                       />
@@ -341,13 +407,7 @@ function ArticlesDevis() {
                         type="text"
                         placeholder="netHt"
                         className="w-full input input-bordered input-sm"
-                        value={
-                          netHt
-                            ? netHt
-                            : lignedevisSelectionne[9]
-                            ? lignedevisSelectionne[9]
-                            : ""
-                        }
+                        value={getValeurChampNetHt()}
                         readOnly
                       />
                     </div>
@@ -361,13 +421,7 @@ function ArticlesDevis() {
                         type="text"
                         placeholder="nbrunite"
                         className="w-full input input-bordered input-sm"
-                        value={
-                          articleInfos.nbrunite
-                            ? articleInfos.nbrunite
-                            : lignedevisSelectionne[10]
-                            ? lignedevisSelectionne[10]
-                            : ""
-                        }
+                        value={getValeurChampNbrUnite()}
                         readOnly
                       />
                     </div>
@@ -382,7 +436,7 @@ function ArticlesDevis() {
                         step="0.001"
                         placeholder="prix1"
                         value={getPrixArticle()}
-                        // onChange={(e) => {handleChangementChampPrix(e.target.value)}}
+                        onChange={(e) => {handleChangementChamp("PUART",e)}}
                         className="w-full input input-bordered input-sm"
                       />
                     </div>

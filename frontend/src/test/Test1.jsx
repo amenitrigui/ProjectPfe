@@ -1,24 +1,29 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   getVilleParCodePostal,
   setClientInfos,
-  viderChampsClientInfo
-} from '../app/client_slices/clientSlice';
-import { setDevisInfo } from '../app/devis_slices/devisSlice';
+  viderChampsClientInfo,
+} from "../app/client_slices/clientSlice";
+import { setDevisInfo } from "../app/devis_slices/devisSlice";
+import { setOuvrireDrawerMenu } from "../app/interface_slices/interfaceSlice";
 
 function Test1() {
   const dispatch = useDispatch();
   const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
   const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
-  const utilisateurConnecte = useSelector((state) => state.utilisateurSystemSlice.utilisateurConnecte);
-  const insertionDepuisDevisForm = useSelector((state) => state.devisSlice.insertionDepuisDevisForm);
+  const utilisateurConnecte = useSelector(
+    (state) => state.utilisateurSystemSlice.utilisateurConnecte
+  );
+  const insertionDepuisDevisForm = useSelector(
+    (state) => state.devisSlice.insertionDepuisDevisForm
+  );
 
   const handleChange = (e, colonne) => {
-    if (e.target.value === '') {
+    if (e.target.value === "") {
       dispatch(viderChampsClientInfo());
     }
-    if (colonne === 'cp' && e.target.value.length === 4) {
+    if (colonne === "cp" && e.target.value.length === 4) {
       dispatch(getVilleParCodePostal(e.target.value));
     }
     dispatch(setClientInfos({ colonne, valeur: e.target.value }));
@@ -26,69 +31,59 @@ function Test1() {
       dispatch(setDevisInfo({ colonne, valeur: e.target.value }));
     }
   };
-
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  
+  const ouvrireMenuDrawer = useSelector(
+    (state) => state.interfaceSlice.ouvrireMenuDrawer
+  );
   return (
     <>
       {/* Le reste de la page ici */}
-      
-      <div className="fixed bottom-0 w-full bg-white shadow-inner border-t border-gray-300 z-50">
-        <div className="max-w-6xl mx-auto px-4 py-4">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            {(toolbarMode === "ajout" || toolbarMode === "consultation") && (
-              <>
-                <div className="flex flex-1 items-center space-x-2">
-                  <label className="w-28 font-medium text-sm text-gray-700">Création</label>
-                  <input
-                    type="text"
-                    className="border border-gray-300 rounded-md p-2 flex-1"
-                    value={
-                      clientInfos.usera ||
-                      `${utilisateurConnecte.codeuser} // ${utilisateurConnecte.nom}`
-                    }
-                    onChange={(e) => handleChange(e, "usera")}
-                    disabled
-                  />
-                </div>
-                <div className="flex flex-1 items-center space-x-2">
-                  <label className="w-28 font-medium text-sm text-gray-700">Date</label>
-                  <input
-                    type="date"
-                    className="border border-gray-300 rounded-md p-2 flex-1"
-                    value={clientInfos.datec}
-                    onChange={(e) => handleChange(e, "datec")}
-                    disabled
-                  />
-                </div>
-              </>
-            )}
 
-            {toolbarMode === "modification" && (
-              <>
-                <div className="flex flex-1 items-center space-x-2">
-                  <label className="w-28 font-medium text-sm text-gray-700">Modification</label>
-                  <input
-                    type="text"
-                    className="border border-gray-300 rounded-md p-2 flex-1"
-                    value={clientInfos.userm || ''}
-                    onChange={(e) => handleChange(e, "userm")}
-                    disabled
-                  />
-                </div>
-                <div className="flex flex-1 items-center space-x-2">
-                  <label className="w-28 font-medium text-sm text-gray-700">Date Maj</label>
-                  <input
-                    type="date"
-                    className="border border-gray-300 rounded-md p-2 flex-1"
-                    value={clientInfos.datemaj || ''}
-                    onChange={(e) => handleChange(e, "datemaj")}
-                    disabled
-                  />
-                </div>
-              </>
-            )}
-          </div>
-        </div>
+      <div className="drawer">
+      <input 
+        id="my-drawer" 
+        type="checkbox" 
+        className="drawer-toggle" 
+        checked={isDrawerOpen}
+        onChange={(e) => dispatch(setOuvrireDrawerMenu(e.target.checked))}
+      />
+      <div className="drawer-content">
+        {/* Page content here */}
+        <label 
+          onClick={() => setIsDrawerOpen(true)} 
+          className="btn btn-primary drawer-button"
+        >
+          Open drawer
+        </label>
       </div>
+      <div className="drawer-side">
+        <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+          <button
+            onClick={() => dispatch(setOuvrireDrawerMenu(false))}
+            className="btn btn-circle btn-sm absolute top-2 right-2 z-50"
+          >
+            ×
+          </button>
+          {/* Sidebar content here */}
+          <li>
+            <a onClick={() => dispatch(setOuvrireDrawerMenu(false))}>Sidebar Item 1</a>
+          </li>
+          <li>
+            <a onClick={() => dispatch(setOuvrireDrawerMenu(false))}>Sidebar Item 1</a>
+          </li>
+          <li>
+            <a onClick={() => dispatch(setOuvrireDrawerMenu(false))}>Sidebar Item 1</a>
+          </li>
+          <li>
+            <a onClick={() => dispatch(setOuvrireDrawerMenu(false))}>Sidebar Item 1</a>
+          </li>
+          <li>
+            <a onClick={() => dispatch(setOuvrireDrawerMenu(false))}>Sidebar Item 1</a>
+          </li>
+        </ul>
+      </div>
+    </div>
     </>
   );
 }
