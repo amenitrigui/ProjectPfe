@@ -38,7 +38,7 @@ function SignInPage() {
   };
 
   useEffect(() => {
-    toast("Date mise à jour 28/04/2025 16:65", {
+    toast("Date mise à jour 1/05/2025 17:29", {
       position: "top-right",
       autoClose: 5000,
       hideProgressBar: false,
