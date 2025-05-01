@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   FaFileInvoice,
   FaUser,
@@ -39,6 +39,7 @@ import SideBar from "../Common/SideBar";
 import LignesDevis from "./LignesDevis";
 import ArticlesDevis from "./ArticlesDevis";
 import DateCreateMAJ from "../Common/DateCreateMAJ";
+import { isAlphabetique, isAlphaNumerique } from "../../utils/validations";
 
 function DevisForm() {
   //?==================================================================================================================
@@ -67,7 +68,14 @@ function DevisForm() {
   const toobarTable = useSelector((state) => state.interfaceSlice.toolbarTable);
   const NETHTGLOBAL = devisInfo.MHT - devisInfo.MREMISE || 0;
   const taxe = devisInfo.MTTC - NETHTGLOBAL || 0;
-  const apayer = devisInfo.MTTC + devisInfo.TIMBRE || 0;
+  const [apayer, setApayer] = useState(0);
+
+  useEffect(() => {
+    const mttc = parseFloat(devisInfo.MTTC) || 0;
+    const timbre = parseFloat(devisInfo.TIMBRE) || 0;
+    setApayer(mttc + timbre);
+  }, [devisInfo.MTTC, devisInfo.TIMBRE]);
+  
   const infosUtilisateur = useSelector(
     (state) => state.utilisateurSlice.infosUtilisateur
   );
@@ -79,7 +87,9 @@ function DevisForm() {
     (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
   const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
-  const toolbarTable = useSelector((state) => state.interfaceSlice.toolbarTable);
+  const toolbarTable = useSelector(
+    (state) => state.interfaceSlice.toolbarTable
+  );
   const derniereNumbl = useSelector((state) => state.devisSlice.derniereNumbl);
   //?==================================================================================================================
   //?==============================================appels UseEffect====================================================
@@ -108,9 +118,8 @@ function DevisForm() {
 
   // * useEffect #5: remplir le champ NUMBL par le derniere NUMBL récuperé
   useEffect(() => {
-    console.log("derniereNumbl changed to: ", derniereNumbl);
+    //console.log("derniereNumbl changed to: ", derniereNumbl);
     if (derniereNumbl && derniereNumbl != "") {
-      console.log(derniereNumbl);
       dispatch(
         setDevisInfo({ collone: "NUMBL", valeur: "DV" + derniereNumbl })
       );
@@ -120,7 +129,7 @@ function DevisForm() {
   // * useEffect #6: récuperer les informations de devis
   // * et les lignes de devis par NUMBL
   useEffect(() => {
-    console.log("devisInfo.NUMBL changed to: ", devisInfo.NUMBL);
+    //  console.log("devisInfo.NUMBL changed to: ", devisInfo.NUMBL);
     if (devisInfo.NUMBL && devisInfo.NUMBL != "" && toolbarMode != "ajout") {
       dispatch(getDevisParNUMBL(devisInfo.NUMBL));
       dispatch(getLignesDevis(devisInfo.NUMBL));
@@ -168,15 +177,27 @@ function DevisForm() {
     // * vider les champs du formulaire
     else dispatch(viderChampsDevisInfo());
   };
+  const handleChangeAlphanumerique = (colonne, valeur) => {
+    const Alph = [
+      "delailivr",
+      "REFCOMM",
+      "mlettre",
+      "comm",
+      "ADRCLI",
+      "transport",
+    ];
+    if (Alph.includes(colonne) && isAlphaNumerique(valeur)) {
+      dispatch(setDevisInfo({ collone: colonne, valeur }));
+    }
+  };
   const handleChange = (e, col) => {
     if (col == "codesecteur") {
       dispatch(getDesignationSecteurparCodeSecteur(e.target.value));
     }
-    if (col=="CODEREP")
-    {
-      console.log(e.target.value)
-      dispatch(getrepresentantparcodevendeur(e.target.value))
+    if (col == "CODEREP") {
+      dispatch(getrepresentantparcodevendeur(e.target.value));
     }
+
     dispatch(
       setDevisInfo({
         collone: col,
@@ -211,7 +232,7 @@ function DevisForm() {
   const afficherRecherchePopup = () => {
     dispatch(setAfficherRecherchePopup(true));
   };
-  console.log("working on "+toolbarTable+" in the "+toolbarMode+" mode");
+  //console.log("working on "+toolbarTable+" in the "+toolbarMode+" mode");
   return (
     <>
       <div className="container">
@@ -315,7 +336,12 @@ function DevisForm() {
                       <input
                         type="text"
                         value={devisInfo.transport}
-                        onChange={(e) => handleChange(e, "transport")}
+                        onChange={(e) =>
+                          handleChangeAlphanumerique(
+                            "transport",
+                            e.target.value
+                          )
+                        }
                         className="w-full border border-gray-300 rounded-md p-2"
                         disabled={!activerChampsForm}
                       />
@@ -338,7 +364,12 @@ function DevisForm() {
                         type="text"
                         className="w-full border border-gray-300 rounded-md p-2"
                         value={devisInfo.delailivr}
-                        onChange={(e) => handleChange(e, "delailivr")}
+                        onChange={(e) =>
+                          handleChangeAlphanumerique(
+                            "delailivr",
+                            e.target.value
+                          )
+                        }
                       />
                     </div>
                     {/* Information Client */}
@@ -416,12 +447,11 @@ function DevisForm() {
                   value={devisInfo.CODEREP}
                 >
                   {listeVendeur.map((vendeur) => (
-                    <option key={vendeur.CODEREP+vendeur.RSREP} value={vendeur.CODEREP}>
+                    <option key={vendeur.CODEREP} value={vendeur.CODEREP}>
                       {vendeur.CODEREP}
                     </option>
                   ))}
                 </select>
-               
 
                 <label className="block font-medium">
                   Raison sociale de representant :
@@ -435,23 +465,29 @@ function DevisForm() {
                   disabled={!activerChampsForm}
                   value={devisInfo.RSREP ? devisInfo.RSREP : ""}
                 />
-                <label className="block font-medium">Mlettre :</label>
-                <textarea
-                  rows={5}
-                  className="w-full border border-gray-300 rounded-md p-2"
-                  onChange={(e) => {
-                    handleChange(e, "mlettre");
-                  }}
-                  disabled={!activerChampsForm}
-                  value={devisInfo.mlettre ? devisInfo.mlettre : ""}
-                />
+                {toolbarMode != "ajout" && (
+                  <>
+                    <label className="block font-medium">Mlettre :</label>
+                    <textarea
+                      rows={5}
+                      className="w-full border border-gray-300 rounded-md p-2"
+                      onChange={(e) => {
+                        handleChange(e, "mlettre");
+                      }}
+                      disabled={!activerChampsForm}
+                      value={devisInfo.mlettre ? devisInfo.mlettre : ""}
+                    />
+                  </>
+                )}
                 <label className="block font-medium mt-4">Commentaire :</label>
                 <textarea
                   rows="10"
                   className="w-full border border-gray-300 rounded-md p-2"
                   disabled={!activerChampsForm}
                   value={devisInfo.comm}
-                  onChange={(e) => handleChange(e, "comm")}
+                  onChange={(e) =>
+                    handleChangeAlphanumerique("comm", e.target.value)
+                  }
                 ></textarea>
 
                 <DateCreateMAJ objet={devisInfo} />
@@ -459,7 +495,9 @@ function DevisForm() {
             </div>
           </div>
           {/* Table des articles */}
-          {(toolbarMode === "ajout" || toolbarMode == "modification") && <ArticlesDevis />}
+          {(toolbarMode === "ajout" || toolbarMode == "modification") && (
+            <ArticlesDevis />
+          )}
           <div className="mt-6">
             <div className="p-4 sticky bottom-0 w-full overflow-x-auto">
               <LignesDevis />
@@ -544,6 +582,7 @@ function DevisForm() {
                   type="text"
                   name="timbre"
                   value={devisInfo.TIMBRE}
+                  onChange={(e) => handleChange(e, "TIMBRE")}
                   readOnly={!(toolbarMode == "ajout" && toobarTable == "devis")}
                   className="w-full input input-bordered input-sm"
                 />

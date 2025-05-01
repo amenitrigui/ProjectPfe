@@ -38,7 +38,6 @@ function ArticlesDevis() {
     (state) => state.interfaceSlice.lignedevisSelectionne
   );
 
-  console.log(articleInfos);
   //?==================================================================================================================
   //?=================================================appels useEffect=================================================
   //?==================================================================================================================
@@ -87,10 +86,21 @@ function ArticlesDevis() {
     dispatch(
       setDevisInfo({
         collone: "MHT",
-        valeur: parseInt(devisInfo.MHT) + parseInt(netHt),
+        valeur: parseInt(devisInfo.MHT) + parseInt(ligneDevisInfos.PUART),
       })
     );
-    dispatch(setDevisInfo({ collone: "MREMISE" }));
+    dispatch(
+      setDevisInfo({
+        collone: "MREMISE",
+        valeur: parseInt(devisInfo.MREMISE) + parseInt(ligneDevisInfos.Remise),
+      })
+    );
+    dispatch(
+      setDevisInfo({
+        collone: "MTTC",
+        valeur: parseInt(devisInfo.MTTC) + parseInt(puttc),
+      })
+    );
     dispatch(viderChampsArticleInfo());
     dispatch(setLigneDevisInfosEntiere({}))
     dispatch(setLignedevisSelectionne([]));
@@ -135,6 +145,7 @@ function ArticlesDevis() {
   }
 
   const handleRemiseChange = (valeur) => {
+    
     dispatch(setLigneDevisInfos({colonne: "Remise", valeur}))
     dispatch(setLignedevisSelectionne([]))
   }
@@ -238,8 +249,6 @@ function ArticlesDevis() {
 
     return "";
   }
-
-  console.log(ligneDevisInfos)
   return (
     <div className="details">
       <div className="banquedetails">

@@ -190,12 +190,12 @@ const ajouterDevis = async (req, res) => {
     };
     const devis = await Dfp.create(dfpData);
     articles.map(async (article) => {
-      console.log(">>>>>>>>>>>>>>"+JSON.stringify(article));
+      console.log(">>>>>>>>>>>>>>" + JSON.stringify(article));
       console.log(NUMBL);
       article.NumBL = NUMBL;
       article.NLigne = articles.length;
       const ligneDevis = await ldfp.create(article); //ligneDevis = null;
-    })
+    });
 
     return res.status(201).json({
       message: "Devis créé avec succès.",
@@ -695,12 +695,74 @@ const getListeDevisParNUMBL = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+const majDevis = async (req, res) => {
+  const { dbName } = req.params;
+  const { NUMBL } = req.query;
+  const { DevisMaj } = req.body;
+
+  try {
+    const dbConnection = await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    const modelLigneDevis = defineLdfpModel(dbConnection);
+
+    const devis = await Devis.findOne({ where: { NUMBL } });
+    const lignedevisModifie = DevisMaj.articles;
+
+    if (devis) {
+      // 🟢 1. Mise à jour du devis principal
+      await Devis.update(
+        {
+          libpv: DevisMaj.libpv,
+          ADRCLI: DevisMaj.ADRCLI,
+          CODECLI: DevisMaj.CODECLI,
+          DATEBL: DevisMaj.DATEBL,
+          MREMISE: DevisMaj.MREMISE,
+          MTTC: DevisMaj.MTTC,
+          RSREP: DevisMaj.RSREP,
+          CODEREP: DevisMaj.CODEREP,
+          MHT: DevisMaj.MHT,
+          codesecteur: DevisMaj.codesecteur,
+          delailivr: DevisMaj.delailivr,
+          REFCOMM: DevisMaj.REFCOMM,
+          userm: DevisMaj.userm,
+          transport: DevisMaj.transport,
+          comm: DevisMaj.comm,
+          RSCLI: DevisMaj.RSCLI,
+          mlettre: DevisMaj.mlettre,
+        },
+        { where: { NUMBL } }
+      );
+
+      // 🟢 2. Suppression des anciennes lignes (optionnel mais conseillé pour éviter les doublons)
+      await modelLigneDevis.destroy({ where: { NumBL: NUMBL } });
+
+      // 🟢 3. Insertion des nouvelles lignes
+      if (Array.isArray(lignedevisModifie) && lignedevisModifie.length > 0) {
+        const lignesAvecNumBL = lignedevisModifie.map(article => ({
+          ...article,
+          NumBL: NUMBL,
+        }));
+        await modelLigneDevis.bulkCreate(lignesAvecNumBL);
+      }
+
+      return res.status(200).json({ message: "Devis mise à jour avec succès" });
+    } else {
+      return res.status(404).json({ message: "Le devis n'existe pas" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Une erreur est survenue lors de la mise à jour du devis",
+      error: error.message,
+    });
+  }
+};
 
 // const modifierDevis = async (req, res) => {
 //   const { dbName } = req.params;
 //   const { }
 //   try {
-    
+
 //   }catch(error) {
 //     return res.status(500).json({message: "erreur lors de la modification de devis: "+error.message})
 //   }
@@ -1201,9 +1263,10 @@ const getListeCodeVendeur = async (req, res) => {
   try {
     const dbConnection = getConnexionBd();
     const VendeurDistincts = await dbConnection.query(
-      `select DISTINCT(CODEREP) ,RSREP from dfp`,
+      `select DISTINCT(CODEREP) from dfp`,
       { type: dbConnection.QueryTypes.SELECT }
     );
+    console.log(VendeurDistincts);
     return res
       .status(200)
       .json({ message: "listede vendeur recuperes", VendeurDistincts });
@@ -1225,15 +1288,15 @@ const getrepresentantparcodevendeur = async (req, res) => {
   const { CODEREP } = req.query;
   try {
     const dbConnection = getConnexionBd();
-    
+
     // Utilisation correcte de query avec replacements
     const vendeurs = await dbConnection.query(
       `SELECT RSREP FROM dfp where CODEREP =:CODEREP`,
       {
         type: dbConnection.QueryTypes.SELECT,
         replacements: {
-          CODEREP:CODEREP
-        }, 
+          CODEREP: CODEREP,
+        },
       }
     );
 
@@ -1245,7 +1308,6 @@ const getrepresentantparcodevendeur = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
 
 module.exports = {
   getTousDevis,
@@ -1278,5 +1340,6 @@ module.exports = {
   getAnneesDistinctGenerationDevis,
   getNbDevisGeneresParAnnee,
   getListeCodeVendeur,
+  majDevis,
   getrepresentantparcodevendeur,
 };
