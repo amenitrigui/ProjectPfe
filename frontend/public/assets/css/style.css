@@ -30,7 +30,7 @@ body {
 /* =============== Navigation ================ */
 .navigation {
   position: fixed;
-  width: 300px;
+  /* width: 300px; */
   height: 100%;
   background: var(--blue);
   border-left: 10px solid var(--blue);
@@ -499,7 +499,7 @@ body {
     z-index: 1000;
   }
   .navigation.active {
-    width: 100%;
+    /* width: 100%; */
     left: 0;
   }
   .toggle {

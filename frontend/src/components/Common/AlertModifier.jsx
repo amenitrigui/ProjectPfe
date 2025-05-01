@@ -25,6 +25,7 @@ import {
 import { validerChampsForm } from "../../utils/validations";
 import {
   AjouterDevis,
+  annulerDevis,
   getDerniereNumbl,
   viderChampsDevisInfo,
 } from "../../app/devis_slices/devisSlice";
@@ -102,6 +103,7 @@ function AlertModifier() {
         dispatch(viderChampsDevisInfo());
       }
       if (toolbarMode == "suppression") {
+        dispatch(annulerDevis(devisInfo.NUMBL))
       }
     }
     // * pour l'article

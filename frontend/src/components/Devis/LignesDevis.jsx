@@ -1,6 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLignedevisSelectionne } from "../../app/interface_slices/interfaceSlice";
+import { setLigneDevisInfos } from "../../app/article_slices/articleSlice";
 
 function LignesDevis() {
   //?==================================================================================================================
@@ -24,9 +25,18 @@ const dispatch = useDispatch()
       tds.forEach(td => {
         values.push(td.textContent.trim());
       });
-    
       console.log(values);
       dispatch(setLignedevisSelectionne(values))
+      dispatch(setLigneDevisInfos({colonne: "famille", valeur: values[0]}));
+      dispatch(setLigneDevisInfos({colonne: "CodeART", valeur: values[1]}));
+      dispatch(setLigneDevisInfos({colonne:  "Unite", valeur: values[2]}));
+      dispatch(setLigneDevisInfos({colonne:  "QteART", valeur: values[3]}));
+      dispatch(setLigneDevisInfos({colonne: "Remise", valeur: values[4]}));
+      dispatch(setLigneDevisInfos({colonne: "DesART", valeur: values[5]}));
+      dispatch(setLigneDevisInfos({colonne: "TauxTVA", valeur: values[6]}));
+      dispatch(setLigneDevisInfos({colonne: "PUART",  valeur: values[7]}));
+      dispatch(setLigneDevisInfos({colonne: "PUTTC", valeur: values[8]}));
+      dispatch(setLigneDevisInfos({colonne: "PUHT", valeur: values[9]}));
     }
   };
   

@@ -190,12 +190,12 @@ const ajouterDevis = async (req, res) => {
     };
     const devis = await Dfp.create(dfpData);
     articles.map(async (article) => {
-      console.log(">>>>>>>>>>>>>>"+JSON.stringify(article));
+      console.log(">>>>>>>>>>>>>>" + JSON.stringify(article));
       console.log(NUMBL);
       article.NumBL = NUMBL;
       article.NLigne = articles.length;
       const ligneDevis = await ldfp.create(article); //ligneDevis = null;
-    })
+    });
 
     return res.status(201).json({
       message: "Devis créé avec succès.",
@@ -568,8 +568,8 @@ const getDerniereNumbl = async (req, res) => {
 // * output : Devis ayant NUMBL = DV2500155 est supprimé
 // * http://localhost:5000/api/devis/SOLEVO/annulerDevis/DV2500155
 const annulerDevis = async (req, res) => {
-  const { dbName, NUMBL } = req.params;
-  const { codeuser } = req.query;
+  const { dbName } = req.params;
+  const { codeuser,NUMBL } = req.query;
   if (!NUMBL || NUMBL.trim() === "") {
     return res
       .status(400)
@@ -579,7 +579,6 @@ const annulerDevis = async (req, res) => {
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
 
     const Dfp = defineDfpModel(dbConnection);
-    const Ldfp = defineLdfpModel(dbConnection);
 
     const existingDevis = await Dfp.findOne({ where: { NUMBL } });
     if (!existingDevis) {
@@ -588,21 +587,25 @@ const annulerDevis = async (req, res) => {
         .json({ message: `Aucun devis trouvé avec le numéro ${NUMBL}.` });
     }
 
-    const transaction = await dbConnection.transaction();
-
-    try {
-      await Ldfp.destroy({ where: { NUMBL }, transaction });
-
-      await Dfp.destroy({ where: { NUMBL }, transaction });
-
-      await transaction.commit();
-
-      return res
-        .status(200)
-        .json({ message: `Le devis ${NUMBL} a été supprimé avec succès.` });
-    } catch (error) {
-      await transaction.rollback();
-      throw error;
+    const dateCreation = new Date();
+    const dateFormatte = dateCreation.toISOString().split("T")[0];
+    const donneesMaj = {
+      executer: "A",
+      mlettre: "Annulé le : "+dateFormatte+"  / par  : "+codeuser
+    }
+    const majEffectue = await Dfp.update(
+        donneesMaj,
+      {
+        where: {
+          NUMBL: NUMBL,
+        },
+      }
+    );
+    if(majEffectue) {
+      return res.status(200).json({message: "devis annulé avec succès"})
+    }
+    else{
+      return res.status(500).json({message: "un erreur est survenu lors de la mise à jour de devis"})
     }
   } catch (error) {
     console.error("Erreur lors de la suppression du devis :", error);
@@ -700,7 +703,7 @@ const getListeDevisParNUMBL = async (req, res) => {
 //   const { dbName } = req.params;
 //   const { }
 //   try {
-    
+
 //   }catch(error) {
 //     return res.status(500).json({message: "erreur lors de la modification de devis: "+error.message})
 //   }
@@ -1225,15 +1228,15 @@ const getrepresentantparcodevendeur = async (req, res) => {
   const { CODEREP } = req.query;
   try {
     const dbConnection = getConnexionBd();
-    
+
     // Utilisation correcte de query avec replacements
     const vendeurs = await dbConnection.query(
       `SELECT RSREP FROM dfp where CODEREP =:CODEREP`,
       {
         type: dbConnection.QueryTypes.SELECT,
         replacements: {
-          CODEREP:CODEREP
-        }, 
+          CODEREP: CODEREP,
+        },
       }
     );
 
@@ -1245,7 +1248,6 @@ const getrepresentantparcodevendeur = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
 
 module.exports = {
   getTousDevis,

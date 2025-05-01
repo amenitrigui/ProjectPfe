@@ -397,15 +397,31 @@ const filtrerListeArticle = async (req, res) => {
 const getToutCodesArticle = async (req, res) => {
   try {
     const { dbName } = req.params;
+    const { codeFamille} = req.query;
+    
     const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
-
-    const listeCodesArticles = await dbConnection.query(
-      `SELECT code FROM article ORDER BY code`,
-      {
-        type: dbConnection.QueryTypes.SELECT,
-      }
-    );
-
+    let listeCodesArticles;
+    
+    if(!codeFamille) {
+      listeCodesArticles = await dbConnection.query(
+        `SELECT code FROM article ORDER BY code`,
+        {
+          type: dbConnection.QueryTypes.SELECT,
+        }
+      );
+    }
+    
+    if(codeFamille) {
+      listeCodesArticles = await dbConnection.query(
+        `SELECT code FROM article where famille = :famille ORDER BY code`,
+        {
+          type: dbConnection.QueryTypes.SELECT,
+          replacements: {
+            famille: codeFamille
+          }
+        }
+      );
+    }
     return res.status(200).json({
       message: "Codes Articles récupéré avec succès",
       listeCodesArticles: listeCodesArticles,
@@ -692,19 +708,35 @@ const getListeArticleParSousFamille = async (req, res) => {
 //* output plusieurs code pr "ListecodeArticle": [ {  "code": "PRZ2002",  "famille": "02-IN",  "libelle": "PROFILE EN ACIER GALVA 41X21  SIBEC",  "codesousfam": " "  ,
 const getListeArticleParCodeArticle=async(req,res)=>{
   const { dbName } = req.params;
-  const { codeArticle } = req.query;
+  const { codeArticle, codeFamille } = req.query;
   try {
     const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
-    const ListecodeArticle = await dbConnection.query(
-      `select * from article where code LIKE :code`,
-      {
-        replacements: {
-          code: `%${codeArticle}%`,
-        },
-
-        type: dbConnection.QueryTypes.SELECT,
-      }
-    );
+    let ListecodeArticle ;
+    if(!codeFamille) {
+      ListecodeArticle = await dbConnection.query(
+        `select * from article where code LIKE :code`,
+        {
+          replacements: {
+            code: `%${codeArticle}%`,
+          },
+  
+          type: dbConnection.QueryTypes.SELECT,
+        }
+      );
+    }
+    if(codeFamille) {
+      ListecodeArticle = await dbConnection.query(
+        `select * from article where code LIKE :code and famille LIKE :famille`,
+        {
+          replacements: {
+            code: `%${codeArticle}%`,
+            famille: `%${codeFamille}%`
+          },
+  
+          type: dbConnection.QueryTypes.SELECT,
+        }
+      );
+    }
     return res
       .status(200)
       .json({ message: "code Articlerecupere avec succes", ListecodeArticle });

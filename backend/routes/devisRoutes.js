@@ -46,7 +46,7 @@ router.get("/:dbName/getListePointVente", getListePointVente);
 router.get("/:dbName/getLignesDevis/:NumBL", getLignesDevis);
 router.get("/:dbName/getDevisCreator", getDevisCreator);
 router.get("/:dbName/getDerniereNumbl", getDerniereNumbl);
-router.delete("/:dbName/annulerDevis/:NUMBL", annulerDevis);
+router.delete("/:dbName/annulerDevis", annulerDevis);
 
 router.get("/:dbName/getListeSecteur", getListeSecteur);
 

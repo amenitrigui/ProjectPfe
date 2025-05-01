@@ -108,9 +108,9 @@ function DevisForm() {
 
   // * useEffect #5: remplir le champ NUMBL par le derniere NUMBL récuperé
   useEffect(() => {
-    console.log("derniereNumbl changed to: ", derniereNumbl);
+    // console.log("derniereNumbl changed to: ", derniereNumbl);
     if (derniereNumbl && derniereNumbl != "") {
-      console.log(derniereNumbl);
+      // console.log(derniereNumbl);
       dispatch(
         setDevisInfo({ collone: "NUMBL", valeur: "DV" + derniereNumbl })
       );
@@ -120,7 +120,7 @@ function DevisForm() {
   // * useEffect #6: récuperer les informations de devis
   // * et les lignes de devis par NUMBL
   useEffect(() => {
-    console.log("devisInfo.NUMBL changed to: ", devisInfo.NUMBL);
+    // console.log("devisInfo.NUMBL changed to: ", devisInfo.NUMBL);
     if (devisInfo.NUMBL && devisInfo.NUMBL != "" && toolbarMode != "ajout") {
       dispatch(getDevisParNUMBL(devisInfo.NUMBL));
       dispatch(getLignesDevis(devisInfo.NUMBL));
@@ -174,7 +174,7 @@ function DevisForm() {
     }
     if (col=="CODEREP")
     {
-      console.log(e.target.value)
+      // console.log(e.target.value)
       dispatch(getrepresentantparcodevendeur(e.target.value))
     }
     dispatch(
@@ -211,7 +211,7 @@ function DevisForm() {
   const afficherRecherchePopup = () => {
     dispatch(setAfficherRecherchePopup(true));
   };
-  console.log("working on "+toolbarTable+" in the "+toolbarMode+" mode");
+  // console.log("working on "+toolbarTable+" in the "+toolbarMode+" mode");
   return (
     <>
       <div className="container">
@@ -407,6 +407,7 @@ function DevisForm() {
                 </h3>
 
                 <label className="block font-medium">Vendeur :</label>
+                
                 <select
                   className="select select-bordered w-full max-w-xs"
                   disabled={!activerChampsForm}

@@ -34,7 +34,6 @@ export const getListeFamillesParCodeFamille = createAsyncThunk(
         },
       }
     );
-    console.log(response);
     return response.data.getListeFamillesParCodeFamille;
   }
 );
@@ -48,7 +47,6 @@ export const getListeFamillesParLibelleFamille = createAsyncThunk(
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeFamillesParLibelleFamille/${LibelleFamille}`
     );
-    console.log(response);
     return response.data.familles;
   }
 );
@@ -57,7 +55,6 @@ export const getListeFamillesParLibelleFamille = createAsyncThunk(
 export const ajouterFamille = createAsyncThunk(
   "FamilleSlice/ajouterFamille",
   async (_, thunkAPI) => {
-    console.log(thunkAPI.getState().familleSlice.FamilleInfos);
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/famille/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
@@ -67,7 +64,6 @@ export const ajouterFamille = createAsyncThunk(
       }
     );
 
-    console.log(response);
     return response.data.FamilleCree;
   }
 );
@@ -97,7 +93,6 @@ export const familleSlice = createSlice({
     },
     setFamilleInfo: (state, action) => {
       const { colonne, valeur } = action.payload;
-
       state.FamilleInfos[colonne] = valeur;
     },
   },

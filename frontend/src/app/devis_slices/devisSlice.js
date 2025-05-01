@@ -300,11 +300,11 @@ export const annulerDevis = createAsyncThunk(
     const response = await axios.delete(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/annulerDevis/${NUMBL}`,
+      }/annulerDevis`,
       {
         params: {
-          codeuser:
-            thunkAPI.utilisateurSystemSlice.utilisateurConnecte.codeuser,
+          NUMBL: NUMBL,
+          codeuser: thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte.codeuser,
         },
       }
     );
@@ -471,9 +471,10 @@ const devisInfoInitiales = {
   comm: "",
   CODEREP: "",
   RSREP: "",
-
+  DATEDMAJ: new Date().toISOString().split("T")[0],
   TIMBRE: 0,
   usera: "",
+  userm: "",
   RSCLI: "",
   desisec: "",
   codesecteur: "",

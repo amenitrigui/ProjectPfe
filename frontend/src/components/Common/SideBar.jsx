@@ -9,10 +9,8 @@ function SideBar() {
   const ouvrireMenuDrawer = useSelector(
     (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
-  const selectionnerElementSideBar = () => {
-    dispatch(setOuvrireDrawerMenu(true));
-  }
   const handleLinkClick = () => {
+    dispatch(setOuvrireDrawerMenu(true));
     if (window.innerWidth <= 400) {
       // Minimise the sidebar for small screens
       dispatch(setOuvrireDrawerMenu(true)); // true = CLOSED in your logic

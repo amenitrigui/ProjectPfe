@@ -38,7 +38,7 @@ function ArticlesDevis() {
     (state) => state.interfaceSlice.lignedevisSelectionne
   );
 
-  console.log(articleInfos);
+  console.log(lignedevisSelectionne);
   //?==================================================================================================================
   //?=================================================appels useEffect=================================================
   //?==================================================================================================================
@@ -79,15 +79,12 @@ function ArticlesDevis() {
       alert("la quantité est necessaire");
       return false;
     }
-    // dispatch(setLigneDevisInfos({colonne: "NumBL", valeur: devisInfo.NUMBL}));
-    // console.log(devisInfo.MREMISE);
-    // console.log(articleInfos.DREMISE);
-    // console.log(parseInt(devisInfo.MHT) + parseInt(netHt));
+
       dispatch(setDevisArticles(ligneDevisInfos));
     dispatch(
       setDevisInfo({
         collone: "MHT",
-        valeur: parseInt(devisInfo.MHT) + parseInt(netHt),
+        valeur: parseInt(devisInfo.MHT) + parseInt(ligneDevisInfos.PUART),
       })
     );
     dispatch(setDevisInfo({ collone: "MREMISE" }));
@@ -239,7 +236,6 @@ function ArticlesDevis() {
     return "";
   }
 
-  console.log(ligneDevisInfos)
   return (
     <div className="details">
       <div className="banquedetails">

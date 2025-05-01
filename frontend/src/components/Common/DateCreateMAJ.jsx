@@ -41,10 +41,10 @@ function DateCreateMAJ(props) {
                 type="text"
                 className="border border-gray-300 rounded-md p-2 w-full sm:w-auto"
                 value={
-                  props.objet.usera ||
-                  utilisateurConnecte.codeuser + ' // ' + utilisateurConnecte.nom
+                  props.objet.usera? props.objet.usera : utilisateurConnecte.codeuser? 
+                  utilisateurConnecte.codeuser + ' // ' + utilisateurConnecte.nom : ""
                 }
-                onChange={(e) => handleChange(e, 'usera')}
+                // onChange={(e) => handleChange(e, 'usera')}
                 disabled
               />
             </div>
@@ -56,8 +56,8 @@ function DateCreateMAJ(props) {
               <input
                 type="date"
                 className="border border-gray-300 rounded-md p-2 w-full sm:w-auto"
-                value={toolbarMode === "ajout"? new Date().toISOString().split("T")[0] : clientInfos.datcreat? clientInfos.datcreat: ""}
-                onChange={(e) => handleChange(e, 'datcreat')}
+                value={toolbarMode === "ajout"? new Date().toISOString().split("T")[0] : props.objet.datcreat? props.objet.datcreat: props.objet.datecreate? props.objet.datecreate: props.objet.DATEBL? props.objet.DATEBL : ""}
+                // onChange={(e) => handleChange(e, 'datcreat
                 disabled
               />
             </div>
@@ -74,8 +74,8 @@ function DateCreateMAJ(props) {
               <input
                 type="text"
                 className="border border-gray-300 rounded-md p-2 w-full sm:w-auto"
-                value={clientInfos.userm || ''}
-                onChange={(e) => handleChange(e, 'userm')}
+                value={props.objet.userm? props.objet.userm : (toolbarMode == "modification" && utilisateurConnecte.codeuser)? utilisateurConnecte.codeuser : ""}
+                // onChange={(e) => handleChange(e, 'userm')}
                 disabled
               />
             </div>
@@ -87,8 +87,8 @@ function DateCreateMAJ(props) {
               <input
                 type="date"
                 className="border border-gray-300 rounded-md p-2 w-full sm:w-auto"
-                value={clientInfos.datemaj || ''}
-                onChange={(e) => handleChange(e, 'datemaj')}
+                value={props.objet.datemaj? props.objet.datemaj : props.objet.DATEDMAJ? props.objet.DATEDMAJ : (toolbarMode == "modification" && utilisateurConnecte.codeuser)?new Date().toISOString().split("T")[0] : "" }
+                // onChange={(e) => handleChange(e, 'datemaj')}
                 disabled
               />
             </div>

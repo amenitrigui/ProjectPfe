@@ -37,6 +37,7 @@ import {
 import {
   getListeFamillesParCodeFamille,
   getListeFamillesParLibelleFamille,
+  setFamilleInfosEntiere,
   setListeFamilles,
 } from "../../app/famille_slices/familleSlice";
 import {
@@ -76,6 +77,7 @@ const Recherche = () => {
   const devisList = useSelector((state) => state.devisSlice.devisList);
   const listeClients = useSelector((state) => state.clientSlice.listeClients);
   const ListeArticle = useSelector((state) => state.articleSlice.ListeArticle);
+  const FamilleInfos = useSelector((state) => state.familleSlice.FamilleInfos);
   const listeFamilles = useSelector(
     (state) => state.familleSlice.listeFamilles
   );
@@ -176,15 +178,17 @@ const Recherche = () => {
     if (toolbarTable == "client") {
       dispatch(getToutCodesClient());
     }
-
-    if (toolbarTable == "article") {
-      dispatch(getListeCodesArticles());
-    }
-
+    dispatch(getListeCodesArticles());
     if (toolbarTable == "devis") {
       dispatch(getListeNumbl());
     }
   }, [toolbarTable]);
+
+  useEffect(() => {
+    if(FamilleInfos.code) {
+      dispatch(getListeCodesArticles(FamilleInfos.code));
+    }
+  }, [FamilleInfos.code])
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
@@ -260,9 +264,16 @@ const Recherche = () => {
     }
 
     if (toolbarTable == "article") {
+      console.log("filtrerPar: ",filtrerPar," valeur: ",valeur)
+      
       switch (filtrerPar) {
         case "code":
-          dispatch(getListeArticleParCodeArticle(valeur));
+          if(FamilleInfos.code) {
+            dispatch(getListeArticleParCodeArticle({"codeArticle": valeur, "codeFamille": FamilleInfos.code}));
+          }
+          if(!FamilleInfos.code) {
+            dispatch(getListeArticleParCodeArticle({"codeArticle": valeur}));
+          }
           break;
         case "libelle":
           dispatch(getListeArticleparLibelle(valeur));
@@ -352,6 +363,7 @@ const Recherche = () => {
     if (toolbarTable == "famille") {
       // * ceci est pour l'interface d'ajout d'un article pour un devis
       dispatch(setLigneDevisInfos({colonne: "famille", valeur: datatableElementSelection.code}))
+      dispatch(setFamilleInfosEntiere(datatableElementSelection));
       // dispatch(setLigneDevisInfos({colonne: ""}))
       // * ============================================================
       dispatch(

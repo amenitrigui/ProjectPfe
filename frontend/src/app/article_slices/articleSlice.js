@@ -28,13 +28,28 @@ export const getArticleFamiles = createAsyncThunk(
 
 export const getListeCodesArticles = createAsyncThunk(
   "Slice/getListeCodesArticles",
-  async (_, thunkAPI) => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getToutCodesArticle`
-      // $paramettre de la requette
-    );
+  async (codeFamille, thunkAPI) => {
+    let response;
+    if(!codeFamille) {
+      response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/article/${
+          thunkAPI.getState().utilisateurSystemSlice.dbName
+        }/getToutCodesArticle`
+        // $paramettre de la requette
+      );
+    }
+    
+    if(codeFamille) {
+      response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/article/${
+          thunkAPI.getState().utilisateurSystemSlice.dbName
+        }/getToutCodesArticle`, {
+          params: {
+            codeFamille: codeFamille
+          }
+        }
+      );
+    }
     return response.data.listeCodesArticles;
   }
 );
@@ -50,8 +65,11 @@ export const suprimerArticle = createAsyncThunk(
   // ! param2 (thunkAPI) : un paramètres supplementaire qui revient de la méthode createAsyncThunk
   async (code, thunkAPI) => {
     console.log(code);
-    const response = await axios.delete(`${process.env.REACT_APP_API_URL}/api/article/${thunkAPI.getState().utilisateurSystemSlice.dbName}/suprimerArticle`,
-    
+    const response = await axios.delete(
+      `${process.env.REACT_APP_API_URL}/api/article/${
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/suprimerArticle`,
+
       {
         params: {
           code: code,
@@ -264,17 +282,33 @@ export const getListeArticleParSousFamille = createAsyncThunk(
 
 export const getListeArticleParCodeArticle = createAsyncThunk(
   "article/getListeArticleParCodeArticle",
-  async (codeArticle, thunkAPI) => {
-    console.log(codeArticle);
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getListeArticleParCodeArticle`, {
-        params: {
-          codeArticle: codeArticle
+  async (parametres, thunkAPI) => {
+    let response;
+    if (parametres.codeArticle) {
+      response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/article/${
+          thunkAPI.getState().utilisateurSystemSlice.dbName
+        }/getListeArticleParCodeArticle`,
+        {
+          params: {
+            codeArticle: parametres.codeArticle,
+          },
         }
-      }
-    );
+      );
+    }
+    if(parametres.codeArticle && parametres.codeFamille) {
+      response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/article/${
+          thunkAPI.getState().utilisateurSystemSlice.dbName
+        }/getListeArticleParCodeArticle`,
+        {
+          params: {
+            codeArticle: parametres.codeArticle,
+            codeFamille: parametres.codeFamille
+          },
+        }
+      );
+    }
     console.log(response);
     return response.data.ListecodeArticle;
   }

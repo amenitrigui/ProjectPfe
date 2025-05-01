@@ -6,7 +6,6 @@ import {
   setArticleInfos,
   viderChampsArticleInfo,
 } from "../../app/article_slices/articleSlice";
-import UtilisateurCreaModif from "../Utilisateur/UtilisateurCreaModif";
 
 function UtilitaireTab() {
   const dispatch = useDispatch();
