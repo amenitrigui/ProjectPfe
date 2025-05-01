@@ -27,6 +27,7 @@ import {
   AjouterDevis,
   annulerDevis,
   getDerniereNumbl,
+  majDevis,
   viderChampsDevisInfo,
 } from "../../app/devis_slices/devisSlice";
 
@@ -100,6 +101,7 @@ function AlertModifier() {
       }
       if (toolbarMode == "modification") {
         // dispatch(modifierDevis());
+        dispatch(majDevis(devisInfo.NUMBL))
         dispatch(viderChampsDevisInfo());
       }
       if (toolbarMode == "suppression") {

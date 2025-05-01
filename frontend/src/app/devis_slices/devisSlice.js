@@ -437,6 +437,25 @@ export const getNbDevisGeneresParAnnee = createAsyncThunk(
     return response.data.nbDevisParAnne;
   }
 );
+export const majDevis = createAsyncThunk(
+  "devisSlice/majDevis",
+  async (NUMBL, thunkAPI) => {
+    console.log(NUMBL);
+    const devismaj = thunkAPI.getState().devisSlice.devisInfo;
+    const response = await axios.put(
+      `${process.env.REACT_APP_API_URL}/api/devis/${
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/majDevis`,
+      { DevisMaj: devismaj },
+      {
+        params: { NUMBL },
+      }
+    );
+    console.log(response);
+    return response;
+  }
+);
+
 export const getrepresentantparcodevendeur = createAsyncThunk(
   "devisSlice/getrepresentantparcodevendeur",
   async (CODEREP, thunkAPI) => {
@@ -481,7 +500,7 @@ const devisInfoInitiales = {
   MHT: 0,
   email: "",
   REFCOMM: "",
-  desisec: "",
+
   articles: [],
 };
 export const devisSlice = createSlice({
@@ -525,6 +544,7 @@ export const devisSlice = createSlice({
   reducers: {
     setDevisInfo: (state, action) => {
       const { collone, valeur } = action.payload;
+      console.log(action.payload);
       state.devisInfo[collone] = valeur;
     },
     setDevisList: (state, action) => {
@@ -883,7 +903,7 @@ export const devisSlice = createSlice({
       .addCase(getrepresentantparcodevendeur.fulfilled, (state, action) => {
         state.devisInfo = action.payload;
         console.log(action.payload);
-          state.devisInfo["RSREP"]= action.payload[0].RSREP;
+        state.devisInfo["RSREP"] = action.payload[0].RSREP;
         state.status = "reussi";
       })
       .addCase(getrepresentantparcodevendeur.rejected, (state, action) => {

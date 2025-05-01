@@ -38,7 +38,6 @@ function ArticlesDevis() {
     (state) => state.interfaceSlice.lignedevisSelectionne
   );
 
-  console.log(lignedevisSelectionne);
   //?==================================================================================================================
   //?=================================================appels useEffect=================================================
   //?==================================================================================================================
@@ -87,7 +86,18 @@ function ArticlesDevis() {
         valeur: parseInt(devisInfo.MHT) + parseInt(ligneDevisInfos.PUART),
       })
     );
-    dispatch(setDevisInfo({ collone: "MREMISE" }));
+    dispatch(
+      setDevisInfo({
+        collone: "MREMISE",
+        valeur: parseInt(devisInfo.MREMISE) + parseInt(ligneDevisInfos.Remise),
+      })
+    );
+    dispatch(
+      setDevisInfo({
+        collone: "MTTC",
+        valeur: parseInt(devisInfo.MTTC) + parseInt(puttc),
+      })
+    );
     dispatch(viderChampsArticleInfo());
     dispatch(setLigneDevisInfosEntiere({}))
     dispatch(setLignedevisSelectionne([]));
@@ -132,6 +142,7 @@ function ArticlesDevis() {
   }
 
   const handleRemiseChange = (valeur) => {
+    
     dispatch(setLigneDevisInfos({colonne: "Remise", valeur}))
     dispatch(setLignedevisSelectionne([]))
   }
@@ -235,7 +246,6 @@ function ArticlesDevis() {
 
     return "";
   }
-
   return (
     <div className="details">
       <div className="banquedetails">

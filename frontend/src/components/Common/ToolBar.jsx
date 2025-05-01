@@ -183,7 +183,9 @@ function ToolBar() {
         alert("aucun article est selectionne pour la modification");
       }
     }
-
+    if (toolbarTable == "devis") {
+      dispatch(setAlertMessage("Êtes-vous sûr de vouloir modifier ce devis ?"));
+    }
     if (
       (toolbarTable == "client" && clientInfos.code) ||
       (toolbarTable == "devis" && devisInfo.NUMBL) ||
@@ -292,9 +294,9 @@ function ToolBar() {
     }
     if (toolbarTable == "utilisateur") {
       let codeUser = parseInt(Utilisateur_SuperviseurInfos.codeuser) - 1;
-      if(codeUser > 0) {
-        if(codeUser < 10) {
-          codeUser = "0"+codeUser
+      if (codeUser > 0) {
+        if (codeUser < 10) {
+          codeUser = "0" + codeUser;
         }
         dispatch(getListeUtilisateurParCode(codeUser.toString()));
       }
@@ -322,11 +324,11 @@ function ToolBar() {
     }
     if (toolbarTable == "utilisateur") {
       let codeUser = parseInt(Utilisateur_SuperviseurInfos.codeuser) + 1;
-      if(codeUser > 0) {
+      if (codeUser > 0) {
         if (codeUser < 10) {
-          codeUser = "0"+codeUser;
+          codeUser = "0" + codeUser;
         }
-        dispatch(getListeUtilisateurParCode(codeUser.toString())); 
+        dispatch(getListeUtilisateurParCode(codeUser.toString()));
       }
       //  dispatch(getCodeUtilisateurSuivant())
     }
@@ -604,9 +606,8 @@ function ToolBar() {
                       onClick={() => {
                         dispatch(setOuvrireAvatarMenu(false));
                         console.log(utilisateurConnecte);
-                        dispatch(setUtilisateurSupInfo(utilisateurConnecte))
-                      }
-                      }
+                        dispatch(setUtilisateurSupInfo(utilisateurConnecte));
+                      }}
                       to="/UtilisateurFormTout"
                       className="flex items-center"
                     >
