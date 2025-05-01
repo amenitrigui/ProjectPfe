@@ -145,6 +145,7 @@ const ajouterDevis = async (req, res) => {
     transport,
     codesecteur,
     MHT,
+    TIMBRE,
     articles,
   } = req.body.devisInfo;
 
@@ -187,6 +188,7 @@ const ajouterDevis = async (req, res) => {
       comm,
       RSCLI,
       mlettre,
+      TIMBRE
     };
     const devis = await Dfp.create(dfpData);
     articles.map(async (article) => {
