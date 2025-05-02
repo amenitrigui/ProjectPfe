@@ -191,6 +191,7 @@ function DevisForm() {
     }
   };
   const handleChange = (e, col) => {
+    
     if (col == "codesecteur") {
       dispatch(getDesignationSecteurparCodeSecteur(e.target.value));
     }
@@ -443,6 +444,7 @@ function DevisForm() {
                   className="select select-bordered w-full max-w-xs"
                   disabled={!activerChampsForm}
                   onChange={(e) => {
+                    
                     handleChange(e, "CODEREP");
                   }}
                   value={devisInfo.CODEREP}

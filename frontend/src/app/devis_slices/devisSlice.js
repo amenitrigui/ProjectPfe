@@ -903,7 +903,7 @@ export const devisSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getrepresentantparcodevendeur.fulfilled, (state, action) => {
-        state.devisInfo = action.payload;
+       
         console.log(action.payload);
         state.devisInfo["RSREP"] = action.payload[0].RSREP;
         state.status = "reussi";
