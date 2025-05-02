@@ -260,7 +260,7 @@ const filterListeUtilisateur = async (req, res) => {
   let whereClauses = [];
 
   let replacements = {};
-
+ 
   if (filters.codeuser) {
     whereClauses.push("codeuser like :codeuser");
     replacements.codeuser = `%${filters.codeuser}%`;
@@ -294,7 +294,7 @@ const filterListeUtilisateur = async (req, res) => {
     replacements: replacements,
     type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
   });
-
+console.log("sdsd",result)
   return res.status(200).json({
     message: "Filtrage réussi",
     data: result,

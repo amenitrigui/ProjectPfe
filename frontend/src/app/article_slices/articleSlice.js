@@ -30,7 +30,7 @@ export const getListeCodesArticles = createAsyncThunk(
   "Slice/getListeCodesArticles",
   async (codeFamille, thunkAPI) => {
     let response;
-    if(!codeFamille) {
+    if (!codeFamille) {
       response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/article/${
           thunkAPI.getState().utilisateurSystemSlice.dbName
@@ -38,15 +38,16 @@ export const getListeCodesArticles = createAsyncThunk(
         // $paramettre de la requette
       );
     }
-    
-    if(codeFamille) {
+
+    if (codeFamille) {
       response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/article/${
           thunkAPI.getState().utilisateurSystemSlice.dbName
-        }/getToutCodesArticle`, {
+        }/getToutCodesArticle`,
+        {
           params: {
-            codeFamille: codeFamille
-          }
+            codeFamille: codeFamille,
+          },
         }
       );
     }
@@ -119,18 +120,18 @@ export const getListeArticles = createAsyncThunk(
 // * output: listeArticles = [{"code": "testCode", "libelle": "testLibelle", ... ""}]
 export const filtrerListeArticle = createAsyncThunk(
   "Slice/filtrerListeArticle",
-  async (filters, thunkAPI) => {
+  async (_, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/filtrerListeArticle`,
       {
         params: {
-          filters: filters,
+          filters: thunkAPI.getState().articleSlice.filters,
         },
       }
     );
-
+    console.log(response);
     return response.data.data;
   }
 );
@@ -296,7 +297,7 @@ export const getListeArticleParCodeArticle = createAsyncThunk(
         }
       );
     }
-    if(parametres.codeArticle && parametres.codeFamille) {
+    if (parametres.codeArticle && parametres.codeFamille) {
       response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/article/${
           thunkAPI.getState().utilisateurSystemSlice.dbName
@@ -304,7 +305,7 @@ export const getListeArticleParCodeArticle = createAsyncThunk(
         {
           params: {
             codeArticle: parametres.codeArticle,
-            codeFamille: parametres.codeFamille
+            codeFamille: parametres.codeFamille,
           },
         }
       );
@@ -384,6 +385,14 @@ export const articleSlice = createSlice({
     ListeSousFamille: [],
     ListeCodeArticlesparLib: {},
     derniereCodeArticle: "",
+    filters: {
+      code: "",
+      libelle: "",
+      famille: "",
+      type: "",
+      typeart: "",
+      codesousfam: "",
+    },
     defaultArticleInfos,
     defaultLigneDevisInfos,
     ligneDevisInfos: { ...defaultLigneDevisInfos },
@@ -393,6 +402,10 @@ export const articleSlice = createSlice({
     setArticleInfos: (state, action) => {
       const { colonne, valeur } = action.payload;
       state.articleInfos[colonne] = valeur;
+    },
+    setFiltresSaisient: (state, action) => {
+      const { valeur, collonne } = action.payload;
+      state.filters[collonne] = valeur; // Correction ici
     },
     setLigneDevisInfos: (state, action) => {
       const { colonne, valeur } = action.payload;
@@ -414,12 +427,12 @@ export const articleSlice = createSlice({
     },
     viderChampsLigneDevisInfos: (state) => {
       state.ligneDevisInfos = {
-        ...state.defaultLigneDevisInfos
-      }
+        ...state.defaultLigneDevisInfos,
+      };
     },
     setDerniereCodeArticle: (state, action) => {
       state.derniereCodeArticle = action.payload;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -634,6 +647,7 @@ export const {
   setArticleInfosEntiere,
   setLigneDevisInfosEntiere,
   viderChampsLigneDevisInfos,
-  setDerniereCodeArticle
+  setDerniereCodeArticle,
+  setFiltresSaisient,
 } = articleSlice.actions;
 export default articleSlice.reducer;
