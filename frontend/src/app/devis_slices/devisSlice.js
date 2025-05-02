@@ -304,7 +304,9 @@ export const annulerDevis = createAsyncThunk(
       {
         params: {
           NUMBL: NUMBL,
-          codeuser: thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte.codeuser,
+          codeuser:
+            thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte
+              .codeuser,
         },
       }
     );
@@ -455,6 +457,24 @@ export const majDevis = createAsyncThunk(
     return response;
   }
 );
+export const filtrerListeDevis = createAsyncThunk(
+  "devisSlice/filtrerListeDevis",
+  async (_, thunkAPI) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/devis/${
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/filtrerListeDevis`,
+      {
+        params: {
+          filters: thunkAPI.getState().devisSlice.filterDevis, // Utiliser filters ici
+        },
+      }
+    );
+    console.log(response);
+
+    return response.data.data;
+  }
+);
 
 export const getrepresentantparcodevendeur = createAsyncThunk(
   "devisSlice/getrepresentantparcodevendeur",
@@ -526,7 +546,15 @@ export const devisSlice = createSlice({
     nbTotalDevisGeneres: 0,
     nbTotalDevisGeneresParUtilisateur: 0,
     nbTotalDevisNonGeneresParUtilisateur: 0,
-
+    filterDevis: {
+      NUMBL: "",
+      DATEBL: "",
+      CODEFACTURE: "",
+      CODECLI: "",
+      ADRCLI: "",
+      RSCLI: "",
+      MTTC: "",
+    },
     totalchifre: 0,
     nombreDeDevis: 0,
     status: null,
@@ -573,6 +601,10 @@ export const devisSlice = createSlice({
     },
     setDevisArticles: (state, action) => {
       state.devisInfo.articles = [...state.devisInfo.articles, action.payload];
+    },
+    setFiltresSaisient: (state, action) => {
+      const { valeur, collonne } = action.payload;
+      state.filterDevis[collonne] = valeur; // Correction ici
     },
   },
 
@@ -907,7 +939,6 @@ export const devisSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getrepresentantparcodevendeur.fulfilled, (state, action) => {
-       
         console.log(action.payload);
         state.devisInfo["RSREP"] = action.payload[0].RSREP;
         state.status = "reussi";
@@ -925,12 +956,24 @@ export const devisSlice = createSlice({
       })
       .addCase(getListeCodeVendeur.rejected, (state, action) => {
         state.status = "echoue";
+      })
+
+      .addCase(filtrerListeDevis.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(filtrerListeDevis.fulfilled, (state, action) => {
+        state.devisList = action.payload;
+        state.status = "reussi";
+      })
+      .addCase(filtrerListeDevis.rejected, (state, action) => {
+        state.status = "echoue";
       });
   },
 });
 export const {
   setDevisInfo,
   setDevisList,
+  setFiltresSaisient,
   setDevisInfoEntiere,
   viderChampsDevisInfo,
   setDevisClientInfos,

@@ -188,7 +188,7 @@ const ajouterDevis = async (req, res) => {
       comm,
       RSCLI,
       mlettre,
-      TIMBRE
+      TIMBRE,
     };
     const devis = await Dfp.create(dfpData);
     articles.map(async (article) => {
@@ -571,7 +571,7 @@ const getDerniereNumbl = async (req, res) => {
 // * http://localhost:5000/api/devis/SOLEVO/annulerDevis/DV2500155
 const annulerDevis = async (req, res) => {
   const { dbName } = req.params;
-  const { codeuser,NUMBL } = req.query;
+  const { codeuser, NUMBL } = req.query;
   if (!NUMBL || NUMBL.trim() === "") {
     return res
       .status(400)
@@ -593,21 +593,19 @@ const annulerDevis = async (req, res) => {
     const dateFormatte = dateCreation.toISOString().split("T")[0];
     const donneesMaj = {
       executer: "A",
-      mlettre: "Annulé le : "+dateFormatte+"  / par  : "+codeuser
-    }
-    const majEffectue = await Dfp.update(
-        donneesMaj,
-      {
-        where: {
-          NUMBL: NUMBL,
-        },
-      }
-    );
-    if(majEffectue) {
-      return res.status(200).json({message: "devis annulé avec succès"})
-    }
-    else{
-      return res.status(500).json({message: "un erreur est survenu lors de la mise à jour de devis"})
+      mlettre: "Annulé le : " + dateFormatte + "  / par  : " + codeuser,
+    };
+    const majEffectue = await Dfp.update(donneesMaj, {
+      where: {
+        NUMBL: NUMBL,
+      },
+    });
+    if (majEffectue) {
+      return res.status(200).json({ message: "devis annulé avec succès" });
+    } else {
+      return res.status(500).json({
+        message: "un erreur est survenu lors de la mise à jour de devis",
+      });
     }
   } catch (error) {
     console.error("Erreur lors de la suppression du devis :", error);
@@ -738,7 +736,7 @@ const majDevis = async (req, res) => {
       );
       await modelLigneDevis.destroy({ where: { NumBL: NUMBL } });
       if (Array.isArray(lignedevisModifie) && lignedevisModifie.length > 0) {
-        const lignesAvecNumBL = lignedevisModifie.map(article => ({
+        const lignesAvecNumBL = lignedevisModifie.map((article) => ({
           ...article,
           NLigne: DevisMaj.articles.length,
           NumBL: NUMBL,
@@ -1309,7 +1307,73 @@ const getrepresentantparcodevendeur = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+const filtrerListeDevis = async (req, res) => {
+  const { dbName } = req.params;
+  // const  filters  = JSON.parse(req.query.filters);
+  const { filters } = req.query;
+  console.log(typeof filters);
+  console.log(filters, "ddd");
 
+  const dbConnection = await getDatabaseConnection(dbName);
+  // ? liste des conditions
+  // ? exemple : ["NUML like :numbl, "libpv like :libpv"...]
+  let whereClauses = [];
+  // ? object contenant les noms des paramètres de requete sql avec leurs remplacements
+  // ? exemple : {{numbl: %dv2401%}, {libpv: %kasserine% }}
+  let replacements = {};
+
+  // ? ajout de chaque condition quand la valeur n'est pas vide
+  if (filters.NUMBL) {
+    whereClauses.push("NUMBL like :NUMBL");
+    replacements.NUMBL = `%${filters.NUMBL}%`;
+    console.log("ameni", filters.NUMBL);
+  }
+
+  if (filters.DATEBL) {
+    whereClauses.push("DATEBL like :DATEBL");
+    replacements.DATEBL = `%${filters.DATEBL}%`;
+  }
+  if (filters.CODEFACTURE) {
+    whereClauses.push("CODEFACTURE like :CODEFACTURE");
+    replacements.CODEFACTURE = `%${filters.CODEFACTURE}%`;
+  }
+  if (filters.CODECLI) {
+    whereClauses.push("CODECLI like :CODECLI");
+    replacements.CODECLI = `%${filters.CODECLI}%`;
+  }
+  if (filters.ADRCLI) {
+    whereClauses.push("ADRCLI like :ADRCLI");
+    replacements.ADRCLI = `%${filters.ADRCLI}%`;
+  }
+  if (filters.RSCLI) {
+    whereClauses.push("RSCLI like :RSCLI");
+    replacements.RSCLI = `%${filters.RSCLI}%`;
+  }
+  if (filters.MTTC) {
+    whereClauses.push("MTTC like :MTTC");
+    replacements.MTTC = `%${filters.MTTC}%`;
+  }
+
+  // ? concatenation de l'opérateur logique après chaque ajout d'un nouvelle condition
+  let whereCondition = whereClauses.join(" AND ");
+
+  // ? Si on on a aucune condition on effectue une requete de select * from dfp
+  console.log("zz", whereCondition);
+  let query = `SELECT NUMBL, DATEBL, CODEFACTURE, CODECLI, ADRCLI, RSCLI,MTTC
+     FROM dfp 
+      ${whereCondition ? "WHERE " + whereCondition : ""}`;
+  console.log("dss", query);
+
+  const result = await dbConnection.query(query, {
+    replacements: replacements,
+    type: dbConnection.QueryTypes.SELECT,
+  });
+
+  return res.status(200).json({
+    message: "Filtrage réussi",
+    data: result,
+  });
+};
 module.exports = {
   getTousDevis,
   getNombreDevis,
@@ -1343,4 +1407,5 @@ module.exports = {
   getListeCodeVendeur,
   majDevis,
   getrepresentantparcodevendeur,
+  filtrerListeDevis,
 };
