@@ -153,7 +153,6 @@ const Secteur_Region_CpostalForm = () => {
   };
 
   const handleChange = (colonne, valeur) => {
-    console.log(colonne, " ", valeur)
     if (toolbartable == "pointvente") {
       dispatch(setPointVenteInfos({ colonne, valeur }));
       
@@ -208,7 +207,6 @@ const Secteur_Region_CpostalForm = () => {
   const hundleAjout = () => {
     if (toolbartable === "secteur") {
       dispatch(ajouterSecteur());
-      console.log(secteurInfo);
     }
     if (toolbartable === "region") {
       dispatch(ajouterRegion());

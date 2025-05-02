@@ -41,7 +41,6 @@ function ArticleForm() {
     (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
   const articleInfos = useSelector((state) => state.articleSlice.articleInfos);
-  console.log(articleInfos);
   const ListeFamille = useSelector((state) => state.articleSlice.ListeFamille);
   const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
   const ListeSousFamille = useSelector(
@@ -111,7 +110,6 @@ function ArticleForm() {
 
   useEffect(() => {
     if (derniereCodeArticle && derniereCodeArticle != "") {
-      console.log(derniereCodeArticle);
       dispatch(getArticleParCode(derniereCodeArticle));
     }
   }, [derniereCodeArticle]);
@@ -393,7 +391,6 @@ function ArticleForm() {
                           }
                           disabled={!activerChampsForm}
                         />
-                        {console.log(articleInfos.tauxtva)}
                       </div>
                       <div className="space-y-1">
                         <label className="block font-semibold text-blue-900">

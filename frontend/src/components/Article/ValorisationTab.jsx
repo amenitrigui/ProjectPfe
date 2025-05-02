@@ -8,7 +8,6 @@ function ValorisationTab() {
     (state) => state.valorisation_Slice.listePrixVente
   );
   const articleInfos = useSelector((state) => state.articleSlice.articleInfos);
-  console.log(articleInfos);
   const dispatch = useDispatch();
   const colNum = [
     "prix1",
@@ -30,7 +29,6 @@ function ValorisationTab() {
   };
 
   const handleChangePrixUnitaireArticle = (colonne, valeur) => {
-    console.log(colonne, valeur);
     if (
       colonne === "prix1" &&
       colNum.includes(colonne) &&

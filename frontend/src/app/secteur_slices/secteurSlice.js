@@ -9,7 +9,6 @@ export const getListeSousFamillesParCodeSousFamille = createAsyncThunk(
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeSousFamillesParCodeSousFamille/${codeSousFamille}`
     );
-    console.log(response);
     return response.data.sousFamilles;
   }
 );
@@ -22,7 +21,6 @@ export const getListeSousFamillesParLibelleSousFamille = createAsyncThunk(
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeSousFamillesParLibelleSousFamille/${LibelleSousFamille}`
     );
-    console.log(response);
     return response.data.LibellesousFamilles;
   }
 );
@@ -39,7 +37,6 @@ export const ajouterSecteur = createAsyncThunk(
         secteurInfo: thunkAPI.getState().secteurSlice.secteurInfo,
       }
     );
-    console.log(response);
     return response.data.newSecteur;
   }
 );

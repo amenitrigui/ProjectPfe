@@ -42,13 +42,6 @@ const loginUtilisateur = async (req, res) => {
   const { nom, motpasse } = req.body;
 
   try {
-    console.log("login utilisateur entry point")
-    console.log("DB_USER: ",process.env.DB_USER," ",
-      "DB_HOST: ",process.env.DB_HOST," ",
-      "DB_PORT: ",process.env.DB_PORT," ",
-      "DB_PASSWORD: ",process.env.DB_PASSWORD," ",
-      "DB_USERS_NAME: ", process.env.DB_USERS_NAME)
-
     const User = defineUserModel(sequelizeConnexionDbUtilisateur);
     // Vérification que tous les champs sont remplis
     if (!nom || !motpasse) {
@@ -171,7 +164,6 @@ const envoyerDemandeReinitialisationMp = async (req, res) => {
     );
 
     const accessToken = await oAuth2Client.getAccessToken();
-    console.log("Access Token:", accessToken);
 
     const transporter = nodeMailer.createTransport({
       service: "gmail",
@@ -301,11 +293,9 @@ const deconnecterUtilisateur = async(req, res) => {
     const connexionBd = getConnexionBd();
     if(sequelizeConnexionDbUtilisateur){
       sequelizeConnexionDbUtilisateur.close();
-      console.log("deconnecté de base de données utilisateurs");
     }
     if(connexionBd) {
       connexionBd.close();
-      console.log("deconnecté de base de données société");
     }
 
     return res.status(200).json({message: "déconnexion effectuée avec succès"})

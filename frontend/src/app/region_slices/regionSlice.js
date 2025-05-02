@@ -23,13 +23,11 @@ export const getListeCodeRegions = createAsyncThunk(
 export const getVilleParRegion = createAsyncThunk(
   "clientSlice/getVilleParRegion",
   async (codeRegion, thunkAPI) => {
-    console.log("ok");
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/region/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getVilleParRegion/${codeRegion}`
     );
-    console.log("response");
 
     return response.data.ListRegion[0];
   }
@@ -48,7 +46,6 @@ export const ajouterRegion = createAsyncThunk(
         RegionInfo: thunkAPI.getState().regionSlice.RegionInfo,
       }
     );
-    console.log(response);
     return response.data.newRegion;
   }
 );
@@ -104,7 +101,6 @@ export const regionSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getVilleParRegion.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.RegionInfo.desirgg = action.payload.desirgg;
         state.status = "réussi";
       })

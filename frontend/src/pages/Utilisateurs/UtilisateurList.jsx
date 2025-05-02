@@ -12,7 +12,6 @@ import { setToolbarTable } from "../../app/interface_slices/interfaceSlice";
 function UtilisateurList() {
   const dispatch = useDispatch();
   const listeUtilisateur_Superviseur = useSelector((store) => store.utilisateurSystemSlice.listeUtilisateur_Superviseur);
-console.log(listeUtilisateur_Superviseur)
   useEffect(() => {
     dispatch(getListeUtilisateur());
   // dispatch(setToolbarTable("utilisateur"));
@@ -22,7 +21,6 @@ console.log(listeUtilisateur_Superviseur)
 
   const handleFilterChange = (e, column) => {
     dispatch(setFiltresSaisient({ valeur: e.target.value, colonne: column }));
-    console.log(e.target.value, column)
     dispatch(filterListeUtilisateur());
   };
 
@@ -74,10 +72,6 @@ console.log(listeUtilisateur_Superviseur)
       dispatch(setClientsASupprimer([]));
     }
   };
-
-  // {Object.keys(filtersUtilisateur).map((column, index) => (
-  //   console.log(columns[index])
-  // ))}
   return (
     <div className="flex min-h-screen bg-gray-100">
       <div className="flex-1 p-6">

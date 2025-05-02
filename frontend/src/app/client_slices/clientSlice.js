@@ -18,13 +18,11 @@ export const getListeClient = createAsyncThunk(
 export const getClientParRaisonSociale = createAsyncThunk(
   "Slice/getClientParRaisonSociale",
   async (rsoc, thunkAPI) => {
-    console.log(rsoc);
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getClientParRaisonSociale/${rsoc}`
     );
-    console.log(response);
     return response.data.clients;
   }
 );
@@ -45,7 +43,6 @@ export const getClientParCin = createAsyncThunk(
 export const getClientParCode = createAsyncThunk(
   "Slice/getListeClient",
   async (code, thunkAPI) => {
-    console.log(code);
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
@@ -59,7 +56,6 @@ export const ajouterClient = createAsyncThunk(
   "slice/ajouterClient",
   async (_, thunkAPI) => {
     const clientInfos = thunkAPI.getState().clientSlice.clientInfos;
-    console.log(clientInfos);
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
@@ -68,7 +64,6 @@ export const ajouterClient = createAsyncThunk(
         clientInfos,
       }
     );
-    console.log(response);
     thunkAPI.getState().interfaceSlice.setAlertMessage(response.data.message);
     return response.data.clientInfos;
   }
@@ -128,7 +123,6 @@ export const getToutCodesClient = createAsyncThunk(
 export const supprimerClient = createAsyncThunk(
   "slice/supprimerClient",
   async (code, thunkAPI) => {
-    console.log("code= ", code);
     const response = await axios.delete(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
@@ -237,13 +231,11 @@ export const getListeCodeRegions = createAsyncThunk(
 export const getVilleParRegion = createAsyncThunk(
   "clientSlice/getVilleParRegion",
   async (codeRegion, thunkAPI) => {
-    console.log("ok");
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/region/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getVilleParRegion/${codeRegion}`
     );
-    console.log("response");
 
     return response.data.ListRegion[0];
   }
@@ -443,7 +435,6 @@ export const clientSlice = createSlice({
       })
       .addCase(majClient.rejected, (state, action) => {
         state.status = "échoué";
-        console.log(action.payload);
         state.erreur = action.payload;
       })
 
@@ -591,7 +582,6 @@ export const clientSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getVilleParRegion.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.clientInfos.desirgg = action.payload.desirgg;
         state.status = "réussi";
       })

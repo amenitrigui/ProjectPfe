@@ -142,7 +142,6 @@ const FamilleForm = () => {
   const toolbartable = useSelector((state) => state.interfaceSlice.toolbarTable);
   const FamilleInfos = useSelector((state) => state.familleSlice.FamilleInfos);
   const SousFamilleInfos=useSelector((state)=>state.sousfamilleSlice.SousFamilleInfos)
-console.log(toolbartable)
   const hundleAjout = () => {
     if (toolbartable == "famille") {
 

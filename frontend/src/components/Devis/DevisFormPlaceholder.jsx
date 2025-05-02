@@ -233,11 +233,9 @@ const DevisFormPlaceholder = () => {
           `${process.env.REACT_APP_API_URL}/api/devis/${selectedDatabase}/clients`
         );
 
-        console.log("Clients récupérés:", response.data);
         if (response.data.clients && response.data.clients.length > 0) {
           setClients(response.data.clients);
         } else {
-          console.log("Aucun client trouvé");
         }
       } catch (error) {
         console.error("Erreur lors de la récupération des clients", error);
@@ -259,12 +257,10 @@ const DevisFormPlaceholder = () => {
           `${process.env.REACT_APP_API_URL}/api/devis/${selectedDatabase}/familles`
         );
 
-        console.log("Familles récupérées :", response.data);
 
         if (response.data.familles && response.data.familles.length > 0) {
           setFamilles(response.data.familles);
         } else {
-          console.log("Aucune famille trouvée");
         }
       } catch (error) {
         console.error("Erreur lors de la récupération des familles", error);
@@ -294,8 +290,6 @@ const DevisFormPlaceholder = () => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/devis/${selectedDatabase}/codes/famille/${famille}`
       );
-
-      console.log("Réponse de l'API :", response.data);
 
       if (response.data.articles && response.data.articles.length > 0) {
         setFilteredArticles(response.data.articles);
@@ -448,8 +442,6 @@ const DevisFormPlaceholder = () => {
             `${process.env.REACT_APP_API_URL}/api/devis/${dbName}/clients/code/${selectedCode}`
           );
 
-          console.log("Clients récupérés:", response.data);
-
           const client = response.data.client;
           if (client) {
             setFormData((prevData) => ({
@@ -490,7 +482,6 @@ const DevisFormPlaceholder = () => {
             `${process.env.REACT_APP_API_URL}/api/devis/${dbName}/clients/rsoc/${selectedRsoc}`
           );
 
-          console.log("Client récupéré par raison sociale:", response.data);
           const client = response.data.client;
 
           if (client) {
@@ -516,7 +507,6 @@ const DevisFormPlaceholder = () => {
   };
 
   useEffect(() => {
-    console.log("selectedDevis avant requête:", selectedDevis);
     const fetchLibpv = async () => {
       try {
         const dbName = localStorage.getItem("selectedDatabase");
@@ -529,12 +519,8 @@ const DevisFormPlaceholder = () => {
           `${process.env.REACT_APP_API_URL}/api/devis/${dbName}/devis/libpv/${selectedDevis}`
         );
 
-        console.log("Réponse API:", response.data);
         if (response.data && response.data.libpv) {
           setLibpvList([response.data.libpv]);
-          console.log("Libpv list mise à jour:", [response.data.libpv]);
-        } else {
-          console.log("Aucun libpv trouvé dans la réponse", response.data);
         }
       } catch (error) {
         console.error("Erreur lors de la récupération du libpv", error);

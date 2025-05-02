@@ -122,7 +122,6 @@ function DevisForm() {
   }, [devisInfo.codesecteur]);
   // * useEffect #5: remplir le champ NUMBL par le derniere NUMBL récuperé
   useEffect(() => {
-    // console.log("derniereNumbl changed to: ", derniereNumbl);
     if (derniereNumbl && derniereNumbl != "") {
       dispatch(
         setDevisInfo({ collone: "NUMBL", valeur: "DV" + derniereNumbl })
@@ -133,7 +132,6 @@ function DevisForm() {
   // * useEffect #6: récuperer les informations de devis
   // * et les lignes de devis par NUMBL
   useEffect(() => {
-     console.log("devisInfo.NUMBL changed to: ", devisInfo.NUMBL);
     if (devisInfo.NUMBL && devisInfo.NUMBL != "" && toolbarMode != "ajout") {
       dispatch(getDevisParNUMBL(devisInfo.NUMBL));
       dispatch(getLignesDevis(devisInfo.NUMBL));
@@ -236,7 +234,6 @@ function DevisForm() {
   const afficherRecherchePopup = () => {
     dispatch(setAfficherRecherchePopup(true));
   };
-  //console.log("working on "+toolbarTable+" in the "+toolbarMode+" mode");
   return (
     <>
       <div className="container">

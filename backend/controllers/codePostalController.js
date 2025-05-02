@@ -9,7 +9,6 @@ const defineCodePostalemodels= require("../models/societe/cpostal")
 const getVilleParCodePostale = async (req, res) => {
   const { dbName, cp } = req.params;
   try {
-    console.log(dbName, " ", cp);
     const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const ville = await dbConnection.query(
       `SELECT desicp from cpostal where CODEp = :cp`,
@@ -92,7 +91,6 @@ const getCodePostalParVille = async (req, res) => {
 const ajouterCodePostal = async (req, res) => {
   const { dbName } = req.params;
   const { CodePostalInfo } = req.body;
-  console.log("ajouter Code postal :", CodePostalInfo);
 
   try {
     const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
@@ -102,7 +100,6 @@ const ajouterCodePostal = async (req, res) => {
       CODEp: CodePostalInfo.CODEp,
       desicp: CodePostalInfo.desicp,
     });
-    console.log("sssss",newCodePostal)
 
     return res
       .status(200)

@@ -124,7 +124,6 @@ const getQteTotalArticlParPointVente = async(req, res) => {
       codepv: codePointVente,
       codeart: codeArticle  
     }})
-    console.log(qteTotArt);
 
     if(qteTotArt) {
       return res.status(200).json({message: `qte totale d'article dans la point de vente ${codePointVente} recuperé avec succès`, qteTotArt})

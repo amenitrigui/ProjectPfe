@@ -58,7 +58,6 @@ const UtilisateurForm = () => {
       setUtilisateur_SuperviseurInfos({ colonne: colonne, valeur: valeur })
     );
   };
-  console.log(derniereCodeUtilisateur)
   return (
     <div className="container">
       <SideBar />

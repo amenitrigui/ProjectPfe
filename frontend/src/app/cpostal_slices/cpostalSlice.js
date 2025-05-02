@@ -12,7 +12,6 @@ export const ajouterCodePostal = createAsyncThunk(
         CodePostalInfo: thunkAPI.getState().codePostaleSlice.CpostaleInfo,
       }
     );
-    console.log(response);
     return response.data.newCodePostal;
   }
 );

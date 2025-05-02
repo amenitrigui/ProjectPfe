@@ -17,19 +17,15 @@ function ResetPassword() {
       return;
     }
 
-    console.log(trimmedEmail);
-
     axios
       .post(`${process.env.REACT_APP_API_URL}/api/utilisateurs/envoyerDemandeReinitialisationMp`, {
         email: trimmedEmail,
       })
       .then((response) => {
-        console.log(response);
         setError("");
         setEmailSent(true);
       })
       .catch((error) => {
-        console.log(error);
         setError(error.response.data.message);
       });
   };

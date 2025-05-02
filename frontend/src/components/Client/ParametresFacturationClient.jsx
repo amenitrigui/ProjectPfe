@@ -34,7 +34,6 @@ function ParametresFacturationClient() {
       dispatch(setClientInfos({ colonne: "decision", valeur: e.target.value }));
   };
   const hundleSelectTous = (e, champ) => {
-    console.log("champ: ",champ," valeur: ",e.target.value)
     dispatch(setClientInfos({ colonne: champ, valeur: e.target.value }));
   };
   const handleChangeAlphaphetique = (e, colonne) => {

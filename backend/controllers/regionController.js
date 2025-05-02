@@ -33,7 +33,6 @@ const getListeCodeRegions = async (req, res) => {
 // * http://localhost:5000/api/region/SOLEVO/getVilleParRegion/Ariana
 const getVilleParRegion = async (req, res) => {
   const { dbName, codeRegion } = req.params;
-  console.log(dbName, " ", codeRegion);
   try {
     const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const ListRegion = await dbConnection.query(
@@ -56,7 +55,6 @@ const getVilleParRegion = async (req, res) => {
 const ajouterRegion = async (req, res) => {
   const { dbName } = req.params;
   const { RegionInfo } = req.body;
-  console.log("ajouter Region infos :", RegionInfo);
 
   try {
     const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
@@ -66,7 +64,6 @@ const ajouterRegion = async (req, res) => {
       codergg: RegionInfo.codergg,
       desirgg: RegionInfo.desirgg,
     });
-    console.log(newRegion)
 
     return res
       .status(200)

@@ -239,7 +239,6 @@ function Test2() {
 
   const handleNaviguerVersPrecedent = () => {
     if (toolbarTable == "client") {
-      console.log(dernierCodeClient);
       const clientCode = parseInt(clientInfos.code) - 1;
       dispatch(getClientParCode(clientCode.toString()));
     }
@@ -253,13 +252,11 @@ function Test2() {
     }
     if (toolbarTable == "utilisateur") {
       const codeUser = parseInt(Utilisateur_SuperviseurInfos.codeuser) - 1;
-      console.log(codeUser);
       dispatch(getListeUtilisateurParCode(codeUser.toString()));
     }
   };
 
   const handleNaviguerVersSuivant = () => {
-    console.log("ttt: ", toolbarTable);
     if (toolbarTable == "client") {
       const clientCode = parseInt(clientInfos.code) + 1;
       dispatch(getClientParCode(clientCode.toString()));
@@ -274,7 +271,6 @@ function Test2() {
     }
     if (toolbarTable == "utilisateur") {
       const codeUser = parseInt(Utilisateur_SuperviseurInfos.codeuser) + 1;
-      console.log(codeUser);
       dispatch(getListeUtilisateurParCode(codeUser.toString()));
       //  dispatch(getCodeUtilisateurSuivant())
     }

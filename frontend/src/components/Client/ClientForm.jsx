@@ -268,11 +268,6 @@ const ClientForm = () => {
       dispatch(setActiverBoutonsValiderAnnuler(true));
     }
   }, [insertionDepuisDevisForm]);
-
-  useEffect(() => {
-    console.log(toolbarTable);
-  }, [toolbarTable]);
-  console.log(clientInfos.code);
   return (
     <div className="container">
       <SideBar />

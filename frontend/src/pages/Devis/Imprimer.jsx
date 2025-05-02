@@ -6,11 +6,8 @@ import { useReactToPrint } from "react-to-print";
 function Imprimer() {
   const devisInfo = useSelector((state) => state.devisSlice.devisInfo);
   const derniereNumbl = useSelector((state) => state.devisSlice.derniereNumbl);
-  console.log(derniereNumbl);
   const totalPages = Math.ceil(devisInfo.articles.length / 10);
-  console.log(totalPages);
   const dbName = useSelector((state) => state.utilisateurSystemSlice.dbName);
-  console.log(devisInfo.articles);
 
   const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
   const contentRef = useRef(null);

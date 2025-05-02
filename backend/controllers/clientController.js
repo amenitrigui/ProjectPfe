@@ -103,7 +103,6 @@ const filtrerListeClients = async (req, res) => {
 const AjouterClient = async (req, res) => {
   const { dbName } = req.params;
   const { clientInfos } = req.body;
-  console.log("ajouterClient infos :",clientInfos)
   
   try {
     const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
@@ -171,8 +170,6 @@ const AjouterClient = async (req, res) => {
       datec: new Date().toISOString().split("T")[0],
       datefidel: clientInfos.fidel === "1" ? new Date().toISOString().split("T")[0] : ""
     });
-    
-    console.log(newClient);
 
     return res.status(200).json({ message: "insertion avec succès"});
   } catch (error) {
@@ -228,7 +225,6 @@ const getClientParCode = async (req, res) => {
         },
       }
     );
-    console.log(client);
     if (client) return res.status(200).json({ client });
 
     return res.status(404).json({ message: "Client introuvable" });
@@ -248,7 +244,6 @@ const getClientParCode = async (req, res) => {
 const majClient = async (req, res) => {
   const { dbName } = req.params;
   const { clientMaj } = req.body;
-  console.log("majClient: ", clientMaj);
   try {
     const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const Client = defineClientModel(dbConnection);
@@ -261,6 +256,7 @@ const majClient = async (req, res) => {
           typecli: clientMaj.typecli, 
           cin: clientMaj.cin,
           rsoc: clientMaj.rsoc,
+          codepv: clientMaj.codepv,
           adresse: clientMaj.adresse,
           activite: clientMaj.activite,
           cp: clientMaj.cp,
@@ -373,7 +369,6 @@ const getClientParRaisonSociale = async (req, res) => {
         type: dbConnection.QueryTypes.SELECT,
       }
     );
-    console.log(rsoc);
 
     return res
       .status(200)

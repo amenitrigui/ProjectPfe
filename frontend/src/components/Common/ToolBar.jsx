@@ -204,7 +204,6 @@ function ToolBar() {
 
   // * méthode pour valider l'ajout d'un client/devis
   const handleValiderBtnClick = () => {
-    console.log(toolbarTable, " ", toolbarMode);
     if (toolbarTable == "client") {
       if (toolbarMode == "ajout") {
         dispatch(setAlertMessage("Confirmez-vous ajouter de ce client ?"));
@@ -305,7 +304,6 @@ function ToolBar() {
     nav("/ImprimerDevis");
   };
   const handleQuitterClick = () => {
-    console.log(location.pathname)
     if(location.pathname.toLowerCase() == "/devislist") {
       nav("/DevisFormTout");
       return "";
@@ -631,7 +629,6 @@ function ToolBar() {
                     <Link
                       onClick={() => {
                         dispatch(setOuvrireAvatarMenu(false));
-                        console.log(utilisateurConnecte);
                         dispatch(setUtilisateurSupInfo(utilisateurConnecte));
                       }}
                       to="/UtilisateurFormTout"

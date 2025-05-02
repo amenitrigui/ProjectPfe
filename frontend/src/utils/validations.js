@@ -1,5 +1,4 @@
 export const isNumerique = (valeur) => {
-  console.log(valeur);
   return (!isNaN(valeur))
 }
 
@@ -19,7 +18,6 @@ export const validerChampsForm = (table, formInfos) => {
     case "client":
       break;
     case "devis" :
-      
       break;
     case "famille":
       break;
@@ -30,4 +28,4 @@ export const validerChampsForm = (table, formInfos) => {
   return estValide;
 }
 
-export const listeTables = ["utilisateur", "devis", ""] 
+export const listeTables = ["utilisateur", "devis", "article", "famille", "sousfamille", "region", "cpostal", "pointvente"] 

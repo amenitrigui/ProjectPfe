@@ -13,7 +13,6 @@ const { sequelizeConnexionDbUtilisateur } = require("../db/config");
 // * url :http://localhost:5000/api/utilisateurSystem/AjouterUtilisateur
 const AjouterUtilisateur = async (req, res) => {
   const { User } = req.body;
-  console.log(User);
   try {
     if(!User) {
       return res.status(400).json({message: "l'utilisateur n'est pas définit"})
@@ -30,9 +29,6 @@ const AjouterUtilisateur = async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ message: "Cet email est déjà utilisé." });
     }
-
-    // const hashedPassword = await bcrypt.hash(User.motpasse, 10);
-   // console.log(hashedPassword.length);
 
     const newUser = await user.create({
       email: User.email,
@@ -134,8 +130,7 @@ const supprimerUtilisateur = async (req, res) => {
 };
 /* cette methode elle fait 2 onas elle fais la liste de utilisateur en interface de recherche 3.jsx et aussi pou les bouton suivant eet derniers  */
 const getListeUtilisateurParCode = async (req, res) => {
-  const { codeuser } = req.query;
-  console.log(codeuser);
+  const { codeuser } = req.query;;
   try {
     //const decoded = verifyTokenValidity(req, res);
 
@@ -160,7 +155,6 @@ const getListeUtilisateurParCode = async (req, res) => {
 //* url :http://localhost:5000/api/utilisateurSystem/getListeUtilisateurParNom?nom=mariam
 const getListeUtilisateurParNom = async (req, res) => {
   const { nom } = req.query;
-  console.log(nom);
   try {
     //const decoded = verifyTokenValidity(req, res);
 
@@ -255,7 +249,6 @@ const getListeUtilisateur = async (req, res) => {
 //* url :http://localhost:5000/api/utilisateurSystem/filterListeUtilisateur?filters=1
 const filterListeUtilisateur = async (req, res) => {
   const { filters } = req.query;
-  console.log(filters);
 
   let whereClauses = [];
 
@@ -294,7 +287,6 @@ const filterListeUtilisateur = async (req, res) => {
     replacements: replacements,
     type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
   });
-console.log("sdsd",result)
   return res.status(200).json({
     message: "Filtrage réussi",
     data: result,

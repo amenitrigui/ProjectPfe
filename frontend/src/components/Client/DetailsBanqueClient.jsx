@@ -64,8 +64,6 @@ function DetailsBanqueClient() {
   };
 
   const handleChangeCheckbox = (e, colonne) => {
-    console.log(e.target.checked, " ", colonne);
-    console.log(toolbarMode);
     if (toolbarMode == "ajout" || toolbarMode == "modification") {
       dispatch(
         setClientInfos({

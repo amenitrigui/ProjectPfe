@@ -18,7 +18,6 @@ function DevisList() {
   const dispatch = useDispatch();
   const ListeDevis = useSelector((state) => state.devisSlice.devisList);
   const filterDevis = useSelector((state) => state.devisSlice.filterDevis);
-  console.log(filterDevis);
   useEffect(() => {
     dispatch(getDevisList());
   }, [dispatch]);

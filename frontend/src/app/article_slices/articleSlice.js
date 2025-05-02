@@ -65,7 +65,6 @@ export const suprimerArticle = createAsyncThunk(
   // ! param1 (code) : à passer au moment de l'appel de la méthode
   // ! param2 (thunkAPI) : un paramètres supplementaire qui revient de la méthode createAsyncThunk
   async (code, thunkAPI) => {
-    console.log(code);
     const response = await axios.delete(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
@@ -77,7 +76,6 @@ export const suprimerArticle = createAsyncThunk(
         },
       }
     );
-    console.log(response);
     return response;
   }
 );
@@ -131,7 +129,6 @@ export const filtrerListeArticle = createAsyncThunk(
         },
       }
     );
-    console.log(response);
     return response.data.data;
   }
 );
@@ -171,13 +168,11 @@ export const getListecodesousFamille = createAsyncThunk(
 export const getdesignationSousFamillebycodeSousFamille = createAsyncThunk(
   "article/getdesignationSousFamillebycodeSousFamille",
   async (codeSousFamille, thunkAPI) => {
-    console.log(codeSousFamille);
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getdesignationSousFamillebycodeSousFamille/${codeSousFamille}`
     );
-    console.log(response.data.libelle[0].libelle);
     return response.data.libelle[0].libelle;
   }
 );
@@ -211,14 +206,12 @@ export const ajouterArticle = createAsyncThunk(
       }
     );
 
-    console.log(response);
     //return response.data
   }
 );
 export const modifierarticle = createAsyncThunk(
   "articleSlice/ModifierArticle",
   async (code, thunkAPI) => {
-    console.log(code);
     const response = await axios.put(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
@@ -227,7 +220,6 @@ export const modifierarticle = createAsyncThunk(
         article: thunkAPI.getState().articleSlice.articleInfos,
       }
     );
-    console.log(response.data);
     return response;
   }
 );
@@ -245,7 +237,6 @@ export const getListeArticleparFamille = createAsyncThunk(
         },
       }
     );
-    console.log(response);
     return response.data.ListecodeFamille;
   }
 );
@@ -263,7 +254,6 @@ export const getListeArticleparLibelle = createAsyncThunk(
         },
       }
     );
-    console.log(response);
     return response.data.ListelibelleArticle;
   }
 );
@@ -276,7 +266,6 @@ export const getListeArticleParSousFamille = createAsyncThunk(
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeArticleParSousFamille/${SousFamille}`
     );
-    console.log(response);
     return response.data.ListeArticleSousFamille;
   }
 );
@@ -310,7 +299,6 @@ export const getListeArticleParCodeArticle = createAsyncThunk(
         }
       );
     }
-    console.log(response);
     return response.data.ListecodeArticle;
   }
 );
@@ -629,7 +617,6 @@ export const articleSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getDerniereCodeArticle.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.derniereCodeArticle = action.payload;
         state.status = "reussi";
       })

@@ -38,7 +38,6 @@ export const AjouterDevis = createAsyncThunk(
       }/ajouterDevis`,
       { devisInfo }
     );
-    console.log(response.data.devis);
     return response.data.devis;
   }
 );
@@ -442,7 +441,6 @@ export const getNbDevisGeneresParAnnee = createAsyncThunk(
 export const majDevis = createAsyncThunk(
   "devisSlice/majDevis",
   async (NUMBL, thunkAPI) => {
-    console.log(NUMBL);
     const devismaj = thunkAPI.getState().devisSlice.devisInfo;
     const response = await axios.put(
       `${process.env.REACT_APP_API_URL}/api/devis/${
@@ -453,7 +451,6 @@ export const majDevis = createAsyncThunk(
         params: { NUMBL },
       }
     );
-    console.log(response);
     return response;
   }
 );
@@ -470,7 +467,6 @@ export const filtrerListeDevis = createAsyncThunk(
         },
       }
     );
-    console.log(response);
 
     return response.data.data;
   }
@@ -489,7 +485,6 @@ export const getrepresentantparcodevendeur = createAsyncThunk(
         },
       }
     );
-    console.log(response);
     return response.data.data;
   }
 );
@@ -770,7 +765,6 @@ export const devisSlice = createSlice({
       })
       .addCase(getDerniereNumbl.fulfilled, (state, action) => {
         if (action.payload && action.payload.length > 0) {
-          console.log("derniereNumbl: "+action.payload)
           state.derniereNumbl = parseInt(action.payload.substring(2, 9));
           state.status = "reussi";
         }
@@ -939,7 +933,6 @@ export const devisSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getrepresentantparcodevendeur.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.devisInfo["RSREP"] = action.payload[0].RSREP;
         state.status = "reussi";
       })

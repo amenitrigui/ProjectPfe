@@ -7,7 +7,6 @@ const definePointVentemodels=require("../models/societe/pointvente");
 const ajouterpointVente = async (req, res) => {
   const { dbName } = req.params;
   const { PointVenteInfo } = req.body;
-  console.log("ajouter PointVenteInfo infos :", PointVenteInfo);
 
   try {
     const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
@@ -17,7 +16,6 @@ const ajouterpointVente = async (req, res) => {
       Code: PointVenteInfo.Code,
       Libelle: PointVenteInfo.Libelle,
     });
-    console.log(newPointVente)
 
     return res
       .status(200)

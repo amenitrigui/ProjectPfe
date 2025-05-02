@@ -95,7 +95,6 @@ const getNombreDevis = async (req, res) => {
   try {
     // const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const dbConnection = getConnexionBd();
-    console.log("database: ", dbConnection);
 
     const Devis = defineDfpModel(dbConnection);
     const devisCount = await Devis.count({
@@ -192,8 +191,6 @@ const ajouterDevis = async (req, res) => {
     };
     const devis = await Dfp.create(dfpData);
     articles.map(async (article) => {
-      console.log(">>>>>>>>>>>>>>" + JSON.stringify(article));
-      console.log(NUMBL);
       article.NumBL = NUMBL;
       article.NLigne = articles.length;
       const ligneDevis = await ldfp.create(article); //ligneDevis = null;
@@ -222,7 +219,6 @@ const getLignesDevis = async (req, res) => {
   try {
     const { dbName } = req.params;
     const { NumBL } = req.params;
-    console.log(NumBL);
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const listeArticle = await dbConnection.query(
       `Select CodeART,Remise,Unite,QteART,DesART,TauxTVA,famille,PUART from ldfp where NumBL = :NumBL`,
@@ -237,7 +233,6 @@ const getLignesDevis = async (req, res) => {
       listeArticle: listeArticle,
     });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ message: error.message });
   }
 };
@@ -288,8 +283,6 @@ const GetDevisListParClient = async (req, res) => {
   try {
     const { dbName } = req.params;
     const { CODECLI, codeuser } = req.query;
-
-    console.log(dbName, " ", CODECLI, " ", codeuser);
 
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
 
@@ -359,7 +352,6 @@ const getDevisParNUMBL = async (req, res) => {
     const { codeuser } = req.query;
 
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
-    console.log(NUMBL, " ", codeuser);
 
     if (NUMBL && codeuser) {
       const devis = await dbConnection.query(
@@ -409,7 +401,6 @@ const getDevisCreator = async (req, res) => {
     );
 
     if (resultat) {
-      console.log(resultat);
       return res.status(200).json({ resultat: resultat });
     }
   } catch (error) {
@@ -421,7 +412,6 @@ const getInfoUtilisateur = async (req, res) => {
   try {
     const { dbName } = req.params;
     const { usera } = req.query;
-    console.log(usera);
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     if (usera) {
       const utilisateur = await dbConnection.query(
@@ -518,7 +508,6 @@ const getDerniereNumbl = async (req, res) => {
   try {
     const { dbName } = req.params;
     const { codeuser } = req.query;
-    console.log("codeuser: ", codeuser);
     let derniereNumbl;
 
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
@@ -541,8 +530,6 @@ const getDerniereNumbl = async (req, res) => {
         }
       );
     }
-
-    console.log(derniereNumbl);
 
     // ? derniereNumbl: derniereNumbl[0] || {}
     // ? pour que le backend ne plantera pas si derniereNumbl retourne aucune résultat
@@ -636,8 +623,6 @@ const getListeDevisParCodeClient = async (req, res) => {
       },
       order: [["NUMBL", "ASC"]],
     });
-
-    console.log(listeDevis);
     if (!listeDevis || listeDevis.length == 0) {
       return res
         .status(404)
@@ -853,7 +838,6 @@ const getNbTotalDevisGeneres = async (req, res) => {
         ],
       },
     });
-    console.log(nbDevisGeneresTotal);
     return res.status(200).json({
       message: "Nombre total de devis générés récupéré",
       nbDevisGeneresTotal: nbDevisGeneresTotal,
@@ -915,7 +899,6 @@ const getNbTotalDevisGeneresParUtilisateur = async (req, res) => {
         ],
       },
     });
-    console.log(nbDevisGeneresTotal);
     return res.status(200).json({
       message: `Nombre total de devis générés par l'utilisateur ${codeuser} récupéré`,
       nbDevisGeneresTotal: nbDevisGeneresTotal,
@@ -1265,7 +1248,6 @@ const getListeCodeVendeur = async (req, res) => {
       `select DISTINCT(CODEREP) from dfp`,
       { type: dbConnection.QueryTypes.SELECT }
     );
-    console.log(VendeurDistincts);
     return res
       .status(200)
       .json({ message: "listede vendeur recuperes", VendeurDistincts });
@@ -1310,9 +1292,6 @@ const getrepresentantparcodevendeur = async (req, res) => {
 const filtrerListeDevis = async (req, res) => {
   const { dbName } = req.params;
   // const  filters  = JSON.parse(req.query.filters);
-  const { filters } = req.query;
-  console.log(typeof filters);
-  console.log(filters, "ddd");
 
   const dbConnection = await getDatabaseConnection(dbName);
   // ? liste des conditions
@@ -1326,7 +1305,6 @@ const filtrerListeDevis = async (req, res) => {
   if (filters.NUMBL) {
     whereClauses.push("NUMBL like :NUMBL");
     replacements.NUMBL = `%${filters.NUMBL}%`;
-    console.log("ameni", filters.NUMBL);
   }
 
   if (filters.DATEBL) {
@@ -1358,11 +1336,9 @@ const filtrerListeDevis = async (req, res) => {
   let whereCondition = whereClauses.join(" AND ");
 
   // ? Si on on a aucune condition on effectue une requete de select * from dfp
-  console.log("zz", whereCondition);
   let query = `SELECT NUMBL, DATEBL, CODEFACTURE, CODECLI, ADRCLI, RSCLI,MTTC
      FROM dfp 
       ${whereCondition ? "WHERE " + whereCondition : ""}`;
-  console.log("dss", query);
 
   const result = await dbConnection.query(query, {
     replacements: replacements,

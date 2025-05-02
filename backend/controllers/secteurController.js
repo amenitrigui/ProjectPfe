@@ -37,7 +37,6 @@ const getListeCodesSecteur = async (req, res) => {
   // * http://localhost:5000/api/secteur/SOLEVO/getDesignationSecteurparCodeSecteur/002
   const getDesignationSecteurparCodeSecteur = async (req, res) => {
     const { dbName, codesecteur } = req.params;
-    console.log(dbName, " ", codesecteur);
     try {
       const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
       const secteurInfo = await dbConnection.query(
@@ -49,8 +48,6 @@ const getListeCodesSecteur = async (req, res) => {
           },
         }
       );
-  
-      console.log(secteurInfo);
   
       return res
         .status(200)
@@ -65,7 +62,6 @@ const getListeCodesSecteur = async (req, res) => {
 const ajouterSecteur=async (req,res)=>{
 const { dbName } = req.params;
   const { secteurInfo } = req.body;
-  console.log("ajouterSecteur infos :",secteurInfo)
   
   try {
     const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);

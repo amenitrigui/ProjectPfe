@@ -27,11 +27,7 @@ const GestionCommerciale = () => {
 
       if (selectedSociety) {
         setSelectedRsoc(selectedSociety.rsoc);
-      } else {
-        console.log("Société non trouvée.");
       }
-    } else {
-      console.log("Aucune société ou base de données sélectionnée.");
     }
   }, []);
 

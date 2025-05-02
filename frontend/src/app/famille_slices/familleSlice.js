@@ -2,25 +2,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // * thunk pour récuperer la liste de familles par code
-// export const getListeFamillesParCodeFamille = createAsyncThunk(
-//   "familleSlice/getListeFamillesParCodeFamille",
-//   async (codeFamille, thunkAPI) => {
-//     console.log(codeFamille);
-//     const response = await axios.get(
-//       `${process.env.REACT_APP_API_URL}/api/famille/${
-//         thunkAPI.getState().utilisateurSystemSlice.dbName
-//       }/getListeFamillesParCodeFamille`,
-//       {
-//         params: {
-//           codeFamille: codeFamille,
-//         },
-//       }
-//     );
-
-//     console.log(response);
-//    // return response.data.listeFamilles;
-//   }
-// );
 export const getListeFamillesParCodeFamille = createAsyncThunk(
   "articleSlice/getListeFamillesParCodeFamille",
   async (codeFamille, thunkAPI) => {

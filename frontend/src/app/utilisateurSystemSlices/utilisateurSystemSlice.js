@@ -41,14 +41,12 @@ export const ModifierUtilisateur = createAsyncThunk(
 export const supprimerUtilisateur = createAsyncThunk(
   "utilisateurSystemSlices/supprimerUtilisateur",
   async (codeuser) => {
-    console.log(codeuser);
     const response = await axios.delete(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/supprimerUtilisateur`,
       {
         params: { codeuser: codeuser },
       }
     );
-    console.log(response);
   }
 );
 export const getListeUtilisateurParCode = createAsyncThunk(
@@ -62,7 +60,6 @@ export const getListeUtilisateurParCode = createAsyncThunk(
         },
       }
     );
-    console.log(response);
     return response.data.result;
   }
 );
@@ -77,7 +74,6 @@ export const getListeUtilisateurParNom = createAsyncThunk(
         },
       }
     );
-    console.log(response);
     return response.data.result;
   }
 );
@@ -92,7 +88,6 @@ export const getListeUtilisateurParDirecteur = createAsyncThunk(
         },
       }
     );
-    console.log(response);
     return response.data.result;
   }
 );
@@ -107,7 +102,6 @@ export const getListeUtilisateurParType = createAsyncThunk(
         },
       }
     );
-    console.log(response);
     return response.data.result;
   }
 );
@@ -117,7 +111,6 @@ export const getListeUtilisateur = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeUtilisateur`
     );
-    console.log(response);
     return response.data.result;
   }
 );
@@ -126,8 +119,6 @@ export const filterListeUtilisateur = createAsyncThunk(
   async (_, thunkAPI) => {
     // Passer `filters` en paramètre
     const filterutilisateur =thunkAPI.getState().utilisateurSystemSlice.filtersUtilisateur
-    console.log("ameni")
-    console.log("ddd",filterutilisateur)
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/filterListeUtilisateur`,
       {
@@ -137,7 +128,6 @@ export const filterListeUtilisateur = createAsyncThunk(
         },
       }
     );
-    console.log(response);
    
    return response.data.data; // Retourner la réponse
   }
@@ -158,8 +148,6 @@ export const getRepresantantUtilisateur = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getCodeUtilisateurSuivant`
     )
-
-    console.log(response);
   }
 )
 const utilisateurSystemInfoInitiales = {
@@ -317,7 +305,6 @@ export const utilisateurSystemSlices = createSlice({
       })
       .addCase(filterListeUtilisateur.fulfilled, (state, action) => {
         state.status = "succès";
-        console.log(action.payload)
         state.listeUtilisateur_Superviseur = action.payload;
       })
       .addCase(filterListeUtilisateur.rejected, (state, action) => {

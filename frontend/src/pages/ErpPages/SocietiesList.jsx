@@ -17,8 +17,6 @@ const SocietiesList = () => {
     const societiesFromStorage = JSON.parse(localStorage.getItem("societies"));
     if (societiesFromStorage) {
       setSocieties(societiesFromStorage);
-    } else {
-      console.log("Aucune société trouvée dans le localStorage.");
     }
   }, [navigate]);
 

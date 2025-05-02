@@ -31,7 +31,6 @@ function UtilitaireTab() {
   };
 
   const hundlesubmitTousLesChamp = (valeur, colonne) => {
-    // console.log(colonne, " ", valeur);
     dispatch(setArticleInfos({ valeur, colonne }));
 
     if (colonne == "code") {

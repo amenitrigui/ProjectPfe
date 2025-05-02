@@ -178,7 +178,6 @@ const ajouterArticle = async (req, res) => {
         .status(500)
         .json({ message: "article deja existant on ne peut pas le reajoute" });
     } else {
-      console.log("avantajout")
       const articleCree = await Article.create({
         code: articleAjoute.code,
         libelle: articleAjoute.libelle,
@@ -219,7 +218,6 @@ const ajouterArticle = async (req, res) => {
         prix4:articleAjoute.prix4,
         datecreate: new Date().toISOString().split("T")[0],
       });
-      console.log("apresajout")
 
       return res
         .status(200)
@@ -766,7 +764,6 @@ const getDerniereCodeArticle = async(req, res) => {
     }
     if(derniereCodeArticle && derniereCodeArticle.length > 0){
       // ?? ?????? ? ?? ? ??? ??? ?? ?? ? ?? ???
-      console.log(derniereCodeArticle[(derniereCodeArticle.length)-1])
       return res.status(200).json({message: "succès", derniereCodeArticle: derniereCodeArticle[(derniereCodeArticle.length)-1]})
 
     }

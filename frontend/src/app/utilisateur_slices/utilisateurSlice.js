@@ -29,19 +29,14 @@ export const deconnecterUtilisateur = createAsyncThunk(
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/utilisateurs/deconnecterUtilisateur`
     )
-
-    console.log(response)
   }
 )
 
 export const getUtilisateurParCode = createAsyncThunk(
   "utilisateurSlice/getUtilisateurParCode",
   async (codeuser, thunkAPI) => {
-    console.log(codeuser);
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/utilisateurs/getUtilisateurParCode/${codeuser}`);
-
-      console.log(response);
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || error.message

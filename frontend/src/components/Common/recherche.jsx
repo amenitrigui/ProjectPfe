@@ -186,7 +186,6 @@ const Recherche = () => {
 
   useEffect(() => {
     if(FamilleInfos.code) {
-      console.log("FamilleInfos.code :",FamilleInfos.code)
       dispatch(getListeCodesArticles(FamilleInfos.code));
     }
   }, [FamilleInfos.code])
@@ -215,7 +214,6 @@ const Recherche = () => {
           dispatch(getListeDevisParNUMBL(valeur));
           break;
         case "client":
-          console.log(filtrerPar, valeur);
           dispatch(getDevisParCodeClient(valeur));
 
           break;
@@ -227,7 +225,7 @@ const Recherche = () => {
           break;
 
         default:
-          console.log("Valeur de filtre non définie");
+          alert("Valeur de filtre non définie");
       }
     }
     if (toolbarTable == "utilisateur") {
@@ -244,11 +242,10 @@ const Recherche = () => {
           dispatch(getListeUtilisateurParType(valeur));
 
         default:
-          console.log("Valeur de filtre non définie");
+          alert("Valeur de filtre non définie");
       }
     }
     if (toolbarTable == "client") {
-      console.log(filtrerPar, valeur);
       switch (filtrerPar) {
         case "code":
           dispatch(getClientParCode(valeur));
@@ -260,12 +257,11 @@ const Recherche = () => {
           dispatch(getClientParCin(valeur));
           break;
         default:
-          console.log("Valeur de filtre non définie");
+          alert("Valeur de filtre non définie");
       }
     }
 
     if (toolbarTable == "article") {
-      console.log("filtrerPar: ",filtrerPar," valeur: ",valeur)
       
       switch (filtrerPar) {
         case "code":
@@ -286,7 +282,7 @@ const Recherche = () => {
           dispatch(getListeArticleParSousFamille(valeur));
           break;
         default:
-          console.log("Valeur de filtre non définie");
+          alert("Valeur de filtre non définie");
       }
     }
 
@@ -297,10 +293,9 @@ const Recherche = () => {
           break;
         case "libelle":
           dispatch(getListeFamillesParLibelleFamille(valeur));
-          console.log("filtere table famille par libelle");
           break;
         default:
-          console.log("Valeur de filtre non définie");
+          alert("Valeur de filtre non définie");
       }
     }
 
@@ -308,14 +303,12 @@ const Recherche = () => {
       switch (filtrerPar) {
         case "code":
           dispatch(getListeSousFamillesParCodeSousFamille(valeur));
-          console.log("filtere table sous famille par code");
           break;
         case "libelle":
           dispatch(getListeSousFamillesParLibelleSousFamille(valeur));
-          console.log("filtere table sous famille par libelle");
           break;
         default:
-          console.log("Valeur de filtre non définie");
+          alert("Valeur de filtre non définie");
       }
     }
   };
