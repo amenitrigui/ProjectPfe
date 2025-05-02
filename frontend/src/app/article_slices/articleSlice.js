@@ -383,6 +383,7 @@ export const articleSlice = createSlice({
     ListeFamille: [],
     ListeSousFamille: [],
     ListeCodeArticlesparLib: {},
+    derniereCodeArticle: "",
     defaultArticleInfos,
     defaultLigneDevisInfos,
     ligneDevisInfos: { ...defaultLigneDevisInfos },
@@ -415,6 +416,9 @@ export const articleSlice = createSlice({
       state.ligneDevisInfos = {
         ...state.defaultLigneDevisInfos
       }
+    },
+    setDerniereCodeArticle: (state, action) => {
+      state.derniereCodeArticle = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -629,6 +633,7 @@ export const {
   setListeArticle,
   setArticleInfosEntiere,
   setLigneDevisInfosEntiere,
-  viderChampsLigneDevisInfos
+  viderChampsLigneDevisInfos,
+  setDerniereCodeArticle
 } = articleSlice.actions;
 export default articleSlice.reducer;

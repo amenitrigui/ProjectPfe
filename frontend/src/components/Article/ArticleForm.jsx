@@ -50,7 +50,6 @@ function ArticleForm() {
   const derniereCodeArticle = useSelector(
     (state) => state.articleSlice.derniereCodeArticle
   );
-  console.log(derniereCodeArticle);
   const FamilleInfos = useSelector((state) => state.familleSlice.FamilleInfos);
   const SousFamilleInfos = useSelector(
     (state) => state.sousfamilleSlice.SousFamilleInfos
@@ -103,6 +102,12 @@ function ArticleForm() {
   useEffect(() => {
     dispatch(getDerniereCodeArticle());
   }, []);
+
+  useEffect(() => {
+    if(!articleInfos.code){
+      dispatch(getDerniereCodeArticle());
+    }
+  }, [articleInfos.code])
 
   useEffect(() => {
     if (derniereCodeArticle && derniereCodeArticle != "") {

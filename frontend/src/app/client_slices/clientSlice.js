@@ -373,7 +373,7 @@ export const clientSlice = createSlice({
       };
     },
     setDerniereCodeClient: (state, action) => {
-      state.setDerniereNumbl = action.payload;
+      state.dernierCodeClient = action.payload;
     },
     setClientsASupprimer: (state, action) => {
       state.clientsASupprimer.push(action.payload);

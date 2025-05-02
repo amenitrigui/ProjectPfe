@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -41,7 +41,7 @@ import {
   viderChampsDevisInfo,
 } from "../../app/devis_slices/devisSlice";
 import { deconnecterUtilisateur } from "../../app/utilisateur_slices/utilisateurSlice";
-import { viderChampsArticleInfo } from "../../app/article_slices/articleSlice";
+import { getDerniereCodeArticle, setDerniereCodeArticle, viderChampsArticleInfo } from "../../app/article_slices/articleSlice";
 import {
   getListeUtilisateurParCode,
   setViderChampsUtilisateur,
@@ -56,6 +56,7 @@ function ToolBar() {
   //?==================================================================================================================
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const devisInfo = useSelector((state) => state.devisSlice.devisInfo);
   const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
   // * state pour controller quelle table on utilise
@@ -255,20 +256,14 @@ function ToolBar() {
     if (toolbarTable === "devis") {
       dispatch(viderChampsDevisInfo());
       dispatch(getDerniereNumbl(utilisateurConnecte.codeuser));
-      // * on vide le champ number pour que le useEffect peut exectuer
-      // * pour changer la valeur de champ devisInfo.NUMBL
-      // * ce qui va en tourne déclancher la deuxième useEffecjt
-      // * qui récupère les informations devis par devisInfo.NUMBL
-      dispatch(setDerniereNumbl(""))
-      console.log("annuler btn clicked, derniere numbl recuperé");
     }
     if (toolbarTable === "client") {
       dispatch(viderChampsClientInfo());
       dispatch(getDerniereCodeClient());
-      dispatch(setDerniereCodeClient(""));
     }
     if (toolbarTable === "article") {
       dispatch(viderChampsArticleInfo());
+      dispatch(getDerniereCodeArticle());
     }
     if (toolbarTable === "cpostal") {
       dispatch(viderChampsCPostalInfo());
@@ -310,7 +305,20 @@ function ToolBar() {
     nav("/ImprimerDevis");
   };
   const handleQuitterClick = () => {
-    nav("/dashboard");
+    console.log(location.pathname)
+    if(location.pathname.toLowerCase() == "/devislist") {
+      nav("/DevisFormTout");
+      return "";
+    }
+    if(location.pathname.toLowerCase() == "/clientlist") {
+      nav("/ClientFormTout");
+      return "";
+    }
+    if(location.pathname.toLowerCase() == "/articlelist") {
+      nav("/ArticleFormTout");
+      return "";
+    }
+    nav("/dashboard"); 
   };
   const handleNaviguerVersSuivant = () => {
     if (toolbarTable == "client") {
@@ -351,6 +359,22 @@ function ToolBar() {
     dispatch(setOuvrireAvatarMenu(false));
     dispatch(deconnecterUtilisateur());
   };
+
+  // * on vide le derniere code pour que le useEffect
+  // * qui change la valeur du champ code peut s'executer
+  // * ce qui va en tourne déclancher la deuxième useEffect
+  // * qui récupère les informations d'entité par son code
+  const viderValeursDernieresCodes = () => {
+    if(toolbarTable == "client"){
+      dispatch(setDerniereCodeClient(""))
+    }
+    if(toolbarTable == "devis") {
+      dispatch(setDerniereNumbl(""))
+    }
+    if(toolbarTable == "article") {
+      dispatch(setDerniereCodeArticle(""));
+    }
+  }
   return (
     <>
       <nav className="w-full border-b border-gray-300 px-4 py-2 bg-white shadow-sm sticky top-0 z-50">
@@ -467,7 +491,6 @@ function ToolBar() {
                       [
                         "client",
                         "devis",
-                        "article",
                         "famille",
                         "sousfamille",
                       ].includes(toolbarTable?.toLowerCase()))) && (
@@ -494,7 +517,6 @@ function ToolBar() {
                       [
                         "client",
                         "devis",
-                        "article",
                         "famille",
                         "sousfamille",
                       ].includes(toolbarTable?.toLowerCase()))) && (
@@ -563,6 +585,7 @@ function ToolBar() {
                     onClick={() => {
                       handleAnnulerBtnClick();
                     }}
+                    onMouseEnter={() => {viderValeursDernieresCodes()}}
                     className="flex flex-col items-center w-16 sm:w-20 p-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg transition-all duration-200"
                   >
                     <FontAwesomeIcon icon={faTimes} className="text-xl mb-1" />

@@ -264,7 +264,7 @@ function DevisForm() {
                             ? "DV" + derniereNumbl
                             : devisInfo.NUMBL
                         }
-                        disabled={activerChampsForm}
+                        readOnly={true}
                         onClick={() => {
                           dispatch(setToolbarTable("devis"));
                           afficherRecherchePopup();

@@ -10,6 +10,7 @@ import {
 } from "../../app/interface_slices/interfaceSlice";
 import {
   ajouterClient,
+  getDerniereCodeClient,
   majClient,
   supprimerClient,
   viderChampsClientInfo,

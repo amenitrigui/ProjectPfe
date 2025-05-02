@@ -89,6 +89,12 @@ const ClientForm = () => {
     dispatch(getDerniereCodeClient());
     dispatch(getListePointVente());
   }, []);
+
+  useEffect(() => {
+    if(!clientInfos.code) {
+      dispatch(getDerniereCodeClient());
+    }
+  }, [clientInfos.code])
   useEffect(() => {
     dispatch(getLibellePointVneteparPVente(clientInfos.codepv));
     if (clientInfos.codepv == "") {
@@ -100,23 +106,24 @@ const ClientForm = () => {
     if (dernierCodeClient && dernierCodeClient !== "") {
       dispatch(setClientInfos({ colonne: "code", valeur: dernierCodeClient }));
     }
+    
   }, [dernierCodeClient]);
 
   useEffect(() => {
-    console.log(clientInfos.code)
     if (
       clientInfos.code &&
       clientInfos.code != "" &&
-      clientInfos.code != (parseInt(dernierCodeClient) + 1).toString()
+      toolbarMode != "ajout"
     ) {
       dispatch(getClientParCode(clientInfos.code));
     }
   }, [clientInfos.code]);
 
   useEffect(() => {
-    if (toolbarMode === "consultation") {
-      dispatch(getClientParCode(parseInt(dernierCodeClient) + 1));
-    }
+    // ! ?????????????
+    // if (toolbarMode === "consultation") {
+    //   dispatch(getClientParCode(parseInt(dernierCodeClient) + 1));
+    // }
     if (toolbarMode === "ajout") {
       dispatch(
         setClientInfos({
@@ -265,6 +272,7 @@ const ClientForm = () => {
   useEffect(() => {
     console.log(toolbarTable);
   }, [toolbarTable]);
+  console.log(clientInfos.code);
   return (
     <div className="container">
       <SideBar />
@@ -297,7 +305,7 @@ const ClientForm = () => {
                   list="listeCodesClients"
                   value={clientInfos.code !== "" ? clientInfos.code : ""}
                   onChange={(e) => handleChangeCodeClient(e, "code")}
-                  disabled={activerChampsForm}
+                  readOnly={true}
                   maxLength={8}
                   onClick={() => afficherRecherchePopup()}
                 />
