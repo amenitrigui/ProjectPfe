@@ -5,24 +5,19 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   filtrerListeArticle,
   getListeArticles,
+  setFiltresSaisient,
 } from "../../app/article_slices/articleSlice";
 import SideBar from "../../components/Common/SideBar";
 import ToolBar from "../../components/Common/ToolBar";
 function ArticleList() {
   const dispatch = useDispatch();
   const listeArticle = useSelector((state) => state.articleSlice.ListeArticle);
-  const filters = {
-    code: "",
-    libelle: "",
-    famille: "",
-    type: "",
-    typeart: "",
-    codesousfam: "",
-  };
+  const filters = useSelector((state) => state.articleSlice.filters);
 
-  const handleFilterChange = (e, colonne) => {
-    const updatedFilters = { ...filters, [colonne]: e.target.value };
-    dispatch(filtrerListeArticle(updatedFilters));
+  const handleFilterChange = (e, column) => {
+    dispatch(setFiltresSaisient({ valeur: e.target.value, collonne: column }));
+
+    dispatch(filtrerListeArticle(filters));
   };
 
   useEffect(() => {
@@ -75,9 +70,8 @@ function ArticleList() {
     <div className="container">
       <SideBar></SideBar>
 
-      
       <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
-       <ToolBar></ToolBar>
+        <ToolBar></ToolBar>
 
         {/* Filtres */}
         <div className="grid grid-cols-3 gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
@@ -107,7 +101,6 @@ function ArticleList() {
           />
         </div>
       </div>
-    
     </div>
   );
 }

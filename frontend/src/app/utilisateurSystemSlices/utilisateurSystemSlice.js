@@ -125,17 +125,21 @@ export const filterListeUtilisateur = createAsyncThunk(
   "utilisateurSystemSlices/filterListeUtilisateur",
   async (_, thunkAPI) => {
     // Passer `filters` en paramètre
+    const filterutilisateur =thunkAPI.getState().utilisateurSystemSlice.filtersUtilisateur
+    console.log("ameni")
+    console.log("ddd",filterutilisateur)
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/filterListeUtilisateur`,
       {
         params: {
           filters:
-            thunkAPI.getState().utilisateurSystemSlices.filtersUtilisateur, // Utiliser filters ici
+          filterutilisateur, // Utiliser filters ici
         },
       }
     );
     console.log(response);
-    return response.data.data; // Retourner la réponse
+   
+   return response.data.data; // Retourner la réponse
   }
 );
 export const getCodeUtilisateurSuivant = createAsyncThunk(
@@ -184,7 +188,7 @@ export const utilisateurSystemSlices = createSlice({
       type: "",
       email: "",
       directeur: "",
-      nom: "",
+      nom: ""
     },
 
     derniereCodeUtilisateur: "",
@@ -305,6 +309,18 @@ export const utilisateurSystemSlices = createSlice({
         state.listeUtilisateur_Superviseur = action.payload;
       })
       .addCase(getListeUtilisateur.rejected, (state, action) => {
+        state.status = "échec";
+      })
+
+      .addCase(filterListeUtilisateur.pending, (state, action) => {
+        state.status = "chagement";
+      })
+      .addCase(filterListeUtilisateur.fulfilled, (state, action) => {
+        state.status = "succès";
+        console.log(action.payload)
+        state.listeUtilisateur_Superviseur = action.payload;
+      })
+      .addCase(filterListeUtilisateur.rejected, (state, action) => {
         state.status = "échec";
       });
   },
