@@ -372,7 +372,9 @@ export const clientSlice = createSlice({
         ...clientInfoInitiales,
       };
     },
-
+    setDerniereCodeClient: (state, action) => {
+      state.setDerniereNumbl = action.payload;
+    },
     setClientsASupprimer: (state, action) => {
       state.clientsASupprimer.push(action.payload);
     },
@@ -608,5 +610,6 @@ export const {
   viderChampsClientInfo,
   setInsertionDepuisDevisForm,
   setListeClients,
+  setDerniereCodeClient,
 } = clientSlice.actions;
 export default clientSlice.reducer;

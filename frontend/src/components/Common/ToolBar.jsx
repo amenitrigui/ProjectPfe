@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,15 +11,17 @@ import {
   faFolderPlus,
   faEdit,
   faTrashAlt,
-  faTimes,
-  faWrench,
   faBars,
-  faMobileScreenButton,
+  faWrench,
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons";
+
+import { FaSignOutAlt, FaCog, FaUser, FaRegUserCircle } from "react-icons/fa";
 import {
   getClientParCode,
   getDerniereCodeClient,
   setClientInfos,
+  setDerniereCodeClient,
   viderChampsClientInfo,
 } from "../../app/client_slices/clientSlice";
 import {
@@ -34,22 +36,17 @@ import {
 import {
   getDerniereNumbl,
   getDevisParNUMBL,
+  setDerniereNumbl,
   setDevisInfo,
   viderChampsDevisInfo,
 } from "../../app/devis_slices/devisSlice";
-import {
-  deconnecterUtilisateur,
-  getUtilisateurParCode,
-} from "../../app/utilisateur_slices/utilisateurSlice";
+import { deconnecterUtilisateur } from "../../app/utilisateur_slices/utilisateurSlice";
 import { viderChampsArticleInfo } from "../../app/article_slices/articleSlice";
 import {
   getListeUtilisateurParCode,
-  setUtilisateurSupInfo,
   setViderChampsUtilisateur,
+  setUtilisateurSupInfo,
 } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
-import { FaCog, FaRegUserCircle, FaSignOutAlt, FaUser } from "react-icons/fa";
-import { useReactToPrint } from "react-to-print";
-import { InboxStackIcon } from "@heroicons/react/20/solid";
 import { viderChampsCPostalInfo } from "../../app/cpostal_slices/cpostalSlice";
 import { viderChampsRegionInfo } from "../../app/region_slices/regionSlice";
 
@@ -183,9 +180,6 @@ function ToolBar() {
         alert("aucun article est selectionne pour la modification");
       }
     }
-    if (toolbarTable == "devis") {
-      dispatch(setAlertMessage("Êtes-vous sûr de vouloir modifier ce devis ?"));
-    }
     if (
       (toolbarTable == "client" && clientInfos.code) ||
       (toolbarTable == "devis" && devisInfo.NUMBL) ||
@@ -209,6 +203,7 @@ function ToolBar() {
 
   // * méthode pour valider l'ajout d'un client/devis
   const handleValiderBtnClick = () => {
+    console.log(toolbarTable, " ", toolbarMode);
     if (toolbarTable == "client") {
       if (toolbarMode == "ajout") {
         dispatch(setAlertMessage("Confirmez-vous ajouter de ce client ?"));
@@ -223,11 +218,12 @@ function ToolBar() {
     if (toolbarTable == "devis") {
       if (toolbarMode == "ajout") {
         dispatch(setAlertMessage("Confirmez-vous l'ajout de ce devis ?"));
-        dispatch(setAfficherAlert(true));
       }
 
       if (toolbarMode == "modification") {
-        // dispatch(majDevis())
+        dispatch(
+          setAlertMessage("Êtes-vous sûr de vouloir modifier ce devis ?")
+        );
       }
     }
     //* pour l'article
@@ -259,10 +255,17 @@ function ToolBar() {
     if (toolbarTable === "devis") {
       dispatch(viderChampsDevisInfo());
       dispatch(getDerniereNumbl(utilisateurConnecte.codeuser));
+      // * on vide le champ number pour que le useEffect peut exectuer
+      // * pour changer la valeur de champ devisInfo.NUMBL
+      // * ce qui va en tourne déclancher la deuxième useEffecjt
+      // * qui récupère les informations devis par devisInfo.NUMBL
+      dispatch(setDerniereNumbl(""))
       console.log("annuler btn clicked, derniere numbl recuperé");
     }
     if (toolbarTable === "client") {
       dispatch(viderChampsClientInfo());
+      dispatch(getDerniereCodeClient());
+      dispatch(setDerniereCodeClient(""));
     }
     if (toolbarTable === "article") {
       dispatch(viderChampsArticleInfo());

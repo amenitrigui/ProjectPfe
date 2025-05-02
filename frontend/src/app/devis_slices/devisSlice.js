@@ -561,6 +561,9 @@ export const devisSlice = createSlice({
         ...devisInfoInitiales,
       };
     },
+    setDerniereNumbl: (state, action) => {
+      state.derniereNumbl = action.payload;
+    },
     setDevisClientInfos: (state, action) => {
       const { ADRCLI, CODECLI, cp, RSCLI } = action.payload;
       state.devisInfo.CODECLI = CODECLI;
@@ -735,6 +738,7 @@ export const devisSlice = createSlice({
       })
       .addCase(getDerniereNumbl.fulfilled, (state, action) => {
         if (action.payload && action.payload.length > 0) {
+          console.log("derniereNumbl: "+action.payload)
           state.derniereNumbl = parseInt(action.payload.substring(2, 9));
           state.status = "reussi";
         }
@@ -931,7 +935,8 @@ export const {
   viderChampsDevisInfo,
   setDevisClientInfos,
   setDevisArticles,
-  setDevisInfoArticleParIndice
+  setDevisInfoArticleParIndice,
+  setDerniereNumbl
 } = devisSlice.actions;
 
 export default devisSlice.reducer;

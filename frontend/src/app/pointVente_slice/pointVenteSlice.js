@@ -14,7 +14,6 @@ export const ajouterpointVente = createAsyncThunk(
         PointVenteInfo: thunkAPI.getState().pointVenteSlice.pointVenteInfo,
       }
     );
-    console.log(response);
     return response.data.newPointVente;
   }
 );
@@ -26,7 +25,6 @@ export const getListePointVente = createAsyncThunk(
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListePointVente`
     );
-    console.log(response);
     return response.data.data;
   }
 );
@@ -87,7 +85,6 @@ export const pointVenteSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(ajouterpointVente.fulfilled, (state, action) => {
-        console.log(action.payload);
         /// state.RegionInfo.desirgg = action.payload.desirgg;
         state.status = "réussi";
       })
@@ -100,7 +97,6 @@ export const pointVenteSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getListePointVente.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.listeCodespointVente = action.payload;
         state.status = "réussi";
       })
@@ -113,10 +109,8 @@ export const pointVenteSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getLibellePointVneteparPVente.fulfilled, (state, action) => {
-        console.log(action.payload);
         if (action.payload && Object.keys(action.payload).length > 0) {
           state.pointVenteInfo.Libelle = action.payload.Libelle;
-          console.log(state.pointVenteInfo.Libelle);
           //state.listeCodespointVente = action.payload;
           state.status = "réussi";
         }

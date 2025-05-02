@@ -75,7 +75,7 @@ function DevisForm() {
     const timbre = parseFloat(devisInfo.TIMBRE) || 0;
     setApayer(mttc + timbre);
   }, [devisInfo.MTTC, devisInfo.TIMBRE]);
-  
+
   const infosUtilisateur = useSelector(
     (state) => state.utilisateurSlice.infosUtilisateur
   );
@@ -105,7 +105,6 @@ function DevisForm() {
     dispatch(getListeNumbl());
     dispatch(getListePointsVente());
     dispatch(getListeSecteur());
-    dispatch(getDesignationSecteurparCodeSecteur("002"));
     dispatch(getDerniereNumbl(utilisateurConnecte.codeuser));
     dispatch(getListeCodeVendeur());
   }, []);
@@ -116,9 +115,14 @@ function DevisForm() {
     if (toolbarMode == "ajout") dispatch(getToutCodesClient());
   }, [toolbarMode]);
 
+  useEffect(() => {
+    if (devisInfo.codesecteur && devisInfo.codesecteur != "") {
+      dispatch(getDesignationSecteurparCodeSecteur(devisInfo.codesecteur));
+    }
+  }, [devisInfo.codesecteur]);
   // * useEffect #5: remplir le champ NUMBL par le derniere NUMBL récuperé
   useEffect(() => {
-    //console.log("derniereNumbl changed to: ", derniereNumbl);
+    // console.log("derniereNumbl changed to: ", derniereNumbl);
     if (derniereNumbl && derniereNumbl != "") {
       dispatch(
         setDevisInfo({ collone: "NUMBL", valeur: "DV" + derniereNumbl })
@@ -129,7 +133,7 @@ function DevisForm() {
   // * useEffect #6: récuperer les informations de devis
   // * et les lignes de devis par NUMBL
   useEffect(() => {
-    //  console.log("devisInfo.NUMBL changed to: ", devisInfo.NUMBL);
+     console.log("devisInfo.NUMBL changed to: ", devisInfo.NUMBL);
     if (devisInfo.NUMBL && devisInfo.NUMBL != "" && toolbarMode != "ajout") {
       dispatch(getDevisParNUMBL(devisInfo.NUMBL));
       dispatch(getLignesDevis(devisInfo.NUMBL));
@@ -191,7 +195,6 @@ function DevisForm() {
     }
   };
   const handleChange = (e, col) => {
-    
     if (col == "codesecteur") {
       dispatch(getDesignationSecteurparCodeSecteur(e.target.value));
     }
@@ -439,12 +442,11 @@ function DevisForm() {
                 </h3>
 
                 <label className="block font-medium">Vendeur :</label>
-                
+
                 <select
                   className="select select-bordered w-full max-w-xs"
                   disabled={!activerChampsForm}
                   onChange={(e) => {
-                    
                     handleChange(e, "CODEREP");
                   }}
                   value={devisInfo.CODEREP}

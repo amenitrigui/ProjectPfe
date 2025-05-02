@@ -46,7 +46,6 @@ const ClientForm = () => {
   const pointVenteInfo = useSelector(
     (state) => state.pointVenteSlice.pointVenteInfo
   );
-  console.log(clientInfos)
 
   const utilisateurConnecte = useSelector(
     (state) => state.utilisateurSystemSlice.utilisateurConnecte
@@ -104,8 +103,8 @@ const ClientForm = () => {
   }, [dernierCodeClient]);
 
   useEffect(() => {
+    console.log(clientInfos.code)
     if (
-      clientInfos &&
       clientInfos.code &&
       clientInfos.code != "" &&
       clientInfos.code != (parseInt(dernierCodeClient) + 1).toString()
@@ -146,7 +145,6 @@ const ClientForm = () => {
   const listeCodespointVente = useSelector(
     (state) => state.pointVenteSlice.listeCodespointVente
   );
-  console.log(listeCodespointVente);
   const listeCodesSecteur = useSelector(
     (state) => state.clientSlice.listeCodesSecteur
   );

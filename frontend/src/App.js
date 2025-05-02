@@ -24,20 +24,26 @@ import Deconnexion from "./pages/authentication/Deconnexion";
 import ClientFormTout from "./pages/Clients/ClientFormTout";
 import { useDispatch, useSelector } from "react-redux";
 import UtilisateurFormTout from "./pages/Utilisateurs/UtilisateurFormTout";
-import ArticleFormTout from "./pages/Article/ArticleFormTout"
-import ArticleList from "./pages/Article/ArticleList"
-import FamilleFormTout from "./pages/Famille/FamilleFormTout"
-import Settings from "./pages/ErpPages/Settings"
-import UtilisateurList from "./pages/Utilisateurs/UtilisateurList"
-import { setActiverBoutonsValiderAnnuler, setAfficherRecherchePopup, setIsDashBoardRoute, setOuvrireDrawerMenu, setToolbarMode } from "./app/interface_slices/interfaceSlice";
+import ArticleFormTout from "./pages/Article/ArticleFormTout";
+import ArticleList from "./pages/Article/ArticleList";
+import FamilleFormTout from "./pages/Famille/FamilleFormTout";
+import Settings from "./pages/ErpPages/Settings";
+import UtilisateurList from "./pages/Utilisateurs/UtilisateurList";
+import {
+  setActiverBoutonsValiderAnnuler,
+  setAfficherRecherchePopup,
+  setIsDashBoardRoute,
+  setOuvrireDrawerMenu,
+  setToolbarMode,
+} from "./app/interface_slices/interfaceSlice";
 import ImprimerDevis from "./pages/Devis/Imprimer";
 import SecteurForm from "./pages/Clients/SecteurForm";
 import Test1 from "./test/Test1";
-import Secteur_Region_CpostalForm  from "./pages/Clients/Secteur_Region_CpostalForm";
+import Secteur_Region_CpostalForm from "./pages/Clients/Secteur_Region_CpostalForm";
 import { viderChampsArticleInfo } from "./app/article_slices/articleSlice";
 import { viderChampsCPostalInfo } from "./app/cpostal_slices/cpostalSlice";
 import { viderChampsClientInfo } from "./app/client_slices/clientSlice";
-import { viderChampsDevisInfo } from "./app/devis_slices/devisSlice";
+import { getDerniereNumbl, viderChampsDevisInfo } from "./app/devis_slices/devisSlice";
 import { viderChampsRegionInfo } from "./app/region_slices/regionSlice";
 
 function App() {
@@ -47,33 +53,43 @@ function App() {
   const dispatch = useDispatch();
   const usera = useSelector((state) => state.utilisateurSlice.codeuser);
   const location = useLocation();
-  const toolbarTable = useSelector((state) => state.interfaceSlice.toolbarTable);
+  const toolbarTable = useSelector(
+    (state) => state.interfaceSlice.toolbarTable
+  );
   const utilisateurConnecte = useSelector(
     (state) => state.utilisateurSystemSlice.utilisateurConnecte
   );
-  const infosUtilisateur = useSelector((state) => state.utilisateurSlice.infosUtilisateur);
-  const afficherRecherchePopup = useSelector((state) => state.interfaceSlice.afficherRecherchePopup);
+  const infosUtilisateur = useSelector(
+    (state) => state.utilisateurSlice.infosUtilisateur
+  );
+  const afficherRecherchePopup = useSelector(
+    (state) => state.interfaceSlice.afficherRecherchePopup
+  );
   //?==================================================================================================================
   //?==================================================appels UseEffect================================================
   //?==================================================================================================================
   useEffect(() => {
-    dispatch(setToolbarMode("consultation"))
-    dispatch(setActiverBoutonsValiderAnnuler(false))
+    dispatch(setToolbarMode("consultation"));
+    dispatch(setActiverBoutonsValiderAnnuler(false));
     // dispatch(viderChampsArticleInfo());
     // dispatch(viderChampsCPostalInfo());
     // dispatch(viderChampsClientInfo());
     // dispatch(viderChampsDevisInfo());
     // dispatch(viderChampsRegionInfo());
-    if(location.pathname.toLowerCase() == "/dashboard") {
+    if (location.pathname.toLowerCase() == "/dashboard") {
       dispatch(setIsDashBoardRoute(true));
-    }if(location.pathname.toLowerCase() != "/dashboard") {
+    }
+    if (location.pathname.toLowerCase() != "/dashboard") {
       dispatch(setIsDashBoardRoute(false));
     }
-    if(afficherRecherchePopup == true) {
+    // if (location.pathname.toLowerCase() == "/devisformtout") {
+    //   dispatch(getDerniereNumbl(utilisateurConnecte.codeuser));
+    // }
+    if (afficherRecherchePopup == true) {
       dispatch(setAfficherRecherchePopup(false));
     }
     // dispatch(setOuvrireDrawerMenu(false))
-  }, [location.pathname])
+  }, [location.pathname]);
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
@@ -104,14 +120,17 @@ function App() {
       <Route path="/ImprimerDevis" element={<ImprimerDevis />}></Route>
       <Route path="/SecteurForm" element={<SecteurForm />}></Route>
       <Route path="/test" element={<Test1 />}></Route>
-      <Route path="/Secteur_Region_CpostalForm" element={<Secteur_Region_CpostalForm />}></Route>
+      <Route
+        path="/Secteur_Region_CpostalForm"
+        element={<Secteur_Region_CpostalForm />}
+      ></Route>
 
       <Route
         path="/DevisFormPlaceholder"
         element={<DevisFormPlaceholder></DevisFormPlaceholder>}
       ></Route>
       <Route path="/UtilisateurFormTout" element={<UtilisateurFormTout />} />
-      <Route path="/UtilisateurList" element={<UtilisateurList/>}></Route>
+      <Route path="/UtilisateurList" element={<UtilisateurList />}></Route>
     </Routes>
   );
 }
