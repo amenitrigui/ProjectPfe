@@ -186,6 +186,7 @@ const Recherche = () => {
 
   useEffect(() => {
     if(FamilleInfos.code) {
+      console.log("FamilleInfos.code :",FamilleInfos.code)
       dispatch(getListeCodesArticles(FamilleInfos.code));
     }
   }, [FamilleInfos.code])
@@ -338,7 +339,7 @@ const Recherche = () => {
       dispatch(setLigneDevisInfos({colonne: "TauxTVA", valeur: datatableElementSelection.tauxtva}));
       dispatch(setLigneDevisInfos({colonne: "famille", valeur: datatableElementSelection.famille}));
       dispatch(setLigneDevisInfos({colonne: "nbun", valeur:datatableElementSelection.nbrunite }));
-      dispatch(setLigneDevisInfos({colonne:  "Unite", valeur: datatableElementSelection.unite}))
+      dispatch(setLigneDevisInfos({colonne: "Unite", valeur: datatableElementSelection.unite}))
       dispatch(setLigneDevisInfos({colonne: "Conf", valeur: datatableElementSelection.CONFIG}));
     }
   }
@@ -361,11 +362,11 @@ const Recherche = () => {
       dispatch(setAfficherRecherchePopup(false));
     }
     if (toolbarTable == "famille") {
-      // * ceci est pour l'interface d'ajout d'un article pour un devis
+      // * ceci est pour l'interface d'ajout d'une ligne devis
       dispatch(setLigneDevisInfos({colonne: "famille", valeur: datatableElementSelection.code}))
       dispatch(setFamilleInfosEntiere(datatableElementSelection));
-      // dispatch(setLigneDevisInfos({colonne: ""}))
       // * ============================================================
+      // * ceci est pour l'interface d'articles
       dispatch(
         setArticleInfos({
           colonne: "famille",
@@ -378,6 +379,7 @@ const Recherche = () => {
           valeur: datatableElementSelection.libelle,
         })
       );
+      // * ============================================================
       dispatch(setListeFamilles([]));
       dispatch(setAfficherRecherchePopup(false));
     }

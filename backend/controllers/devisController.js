@@ -714,7 +714,6 @@ const majDevis = async (req, res) => {
     const lignedevisModifie = DevisMaj.articles;
 
     if (devis) {
-      // 🟢 1. Mise à jour du devis principal
       await Devis.update(
         {
           libpv: DevisMaj.libpv,
@@ -737,14 +736,11 @@ const majDevis = async (req, res) => {
         },
         { where: { NUMBL } }
       );
-
-      // 🟢 2. Suppression des anciennes lignes (optionnel mais conseillé pour éviter les doublons)
       await modelLigneDevis.destroy({ where: { NumBL: NUMBL } });
-
-      // 🟢 3. Insertion des nouvelles lignes
       if (Array.isArray(lignedevisModifie) && lignedevisModifie.length > 0) {
         const lignesAvecNumBL = lignedevisModifie.map(article => ({
           ...article,
+          NLigne: DevisMaj.articles.length,
           NumBL: NUMBL,
         }));
         await modelLigneDevis.bulkCreate(lignesAvecNumBL);

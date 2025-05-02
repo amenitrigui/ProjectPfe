@@ -411,6 +411,11 @@ export const articleSlice = createSlice({
         ...state.defaultArticleInfos,
       };
     },
+    viderChampsLigneDevisInfos: (state) => {
+      state.ligneDevisInfos = {
+        ...state.defaultLigneDevisInfos
+      }
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -624,5 +629,6 @@ export const {
   setListeArticle,
   setArticleInfosEntiere,
   setLigneDevisInfosEntiere,
+  viderChampsLigneDevisInfos
 } = articleSlice.actions;
 export default articleSlice.reducer;

@@ -1,4 +1,4 @@
-import { CheckIcon, PencilIcon, TrashIcon } from "@heroicons/react/20/solid";
+import { CheckIcon, PencilIcon, TrashIcon, ArrowPathIcon } from "@heroicons/react/20/solid";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 
@@ -10,11 +10,14 @@ import {
   setLigneDevisInfos,
   setLigneDevisInfosEntiere,
   viderChampsArticleInfo,
+  viderChampsLigneDevisInfos,
 } from "../../app/article_slices/articleSlice";
 import {
   getLignesDevis,
   setDevisArticles,
   setDevisInfo,
+  setDevisInfoArticleParIndice,
+  setDevisInfoEntiere,
 } from "../../app/devis_slices/devisSlice";
 import {
   setAfficherRecherchePopup,
@@ -58,7 +61,7 @@ function ArticlesDevis() {
     setPuttc(
       (ligneDevisInfos.PUART * (1 + ligneDevisInfos.TauxTVA / 100)).toFixed(3) || 0
     );
-  }, [ligneDevisInfos]);
+  }, [ligneDevisInfos.PUART, ligneDevisInfos.TauxTVA]);
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
@@ -112,10 +115,6 @@ function ArticlesDevis() {
     if (ligneDevisInfos.PUART) {
       return ligneDevisInfos.PUART;
     }
-    if (lignedevisSelectionne[11]) {
-      return lignedevisSelectionne[11];
-    }
-    
     return "";
   };
 
@@ -123,10 +122,6 @@ function ArticlesDevis() {
     if(ligneDevisInfos?.famille) {
       return ligneDevisInfos.famille;
     }
-    if(lignedevisSelectionne && lignedevisSelectionne[0]) {
-      return lignedevisSelectionne[0];
-    };
-
     return "";
   }
 
@@ -134,10 +129,6 @@ function ArticlesDevis() {
     if(ligneDevisInfos.Remise) {
       return ligneDevisInfos.Remise;
     }
-    if(lignedevisSelectionne && lignedevisSelectionne[6]){
-      return lignedevisSelectionne[6]
-    }
-
     return "";
   }
 
@@ -151,10 +142,6 @@ function ArticlesDevis() {
     if(ligneDevisInfos.CodeART) {
       return ligneDevisInfos.CodeART;
     }
-    if(lignedevisSelectionne && lignedevisSelectionne[1]) {
-      return lignedevisSelectionne[1];
-    }
-
     return "";
   }
 
@@ -162,19 +149,12 @@ function ArticlesDevis() {
     if(ligneDevisInfos.DesART) {
       return ligneDevisInfos.DesART;
     }
-    if(lignedevisSelectionne && lignedevisSelectionne[2]) {
-      return lignedevisSelectionne[2];
-    }
-
     return "";
   }
 
   const getValeurChampUnite = () => {
     if(ligneDevisInfos.Unite) {
       return ligneDevisInfos.Unite;
-    }
-    if(lignedevisSelectionne && lignedevisSelectionne[3]) {
-      return lignedevisSelectionne[3];
     }
     return "";
   }
@@ -183,19 +163,12 @@ function ArticlesDevis() {
     if(ligneDevisInfos.QteART) {
       return ligneDevisInfos.QteART;
     }
-
-    if(lignedevisSelectionne && lignedevisSelectionne[4]) {
-      return lignedevisSelectionne[4];
-    }
     return "";
   }
 
   const getValeurChampConfig = () => {
     if(ligneDevisInfos.Conf){
       return ligneDevisInfos.Conf
-    }
-    if(lignedevisSelectionne && lignedevisSelectionne[5]) {
-      return lignedevisSelectionne[5]
     }
 
     return "";
@@ -206,20 +179,12 @@ function ArticlesDevis() {
       return puttc;
     }
 
-    if(lignedevisSelectionne && lignedevisSelectionne[8]) {
-      return lignedevisSelectionne[8]
-    }
-
     return "";
   }
 
   const getValeurChampTVA = () => {
     if(ligneDevisInfos.TauxTVA) {
       return ligneDevisInfos.TauxTVA;
-    }
-
-    if(lignedevisSelectionne && lignedevisSelectionne[7]) {
-      return lignedevisSelectionne[7];
     }
 
     return "";
@@ -229,9 +194,6 @@ function ArticlesDevis() {
     if(netHt) {
       return netHt;
     }
-    if(lignedevisSelectionne && lignedevisSelectionne[9]) {
-      return lignedevisSelectionne[9];
-    }
 
     return "";
   }
@@ -240,11 +202,25 @@ function ArticlesDevis() {
     if(ligneDevisInfos.nbun) {
       return ligneDevisInfos.nbun;
     }
-    if(lignedevisSelectionne && lignedevisSelectionne[10]) {
-      return lignedevisSelectionne[10];
-    }
 
     return "";
+  }
+
+  const handleSupprimerLDFPBtnClick = () => {
+    const devisInfosFiltres = devisInfo.articles.filter((article) => {
+      return !((article.CodeART == ligneDevisInfos.CodeART) && (article.DesART == ligneDevisInfos.DesART))
+    });
+    dispatch(setDevisInfo({collone: "articles", valeur: devisInfosFiltres}))
+    dispatch(viderChampsLigneDevisInfos());
+  }
+
+  const handleModifierLDFPBtnClick = () => {
+    devisInfo.articles.map((article,indice) => {
+      if(article.CodeART == ligneDevisInfos.CodeART) {
+        dispatch(setDevisInfoArticleParIndice({indice: indice, ligneDevis: ligneDevisInfos}))
+      }
+    })
+    dispatch(viderChampsLigneDevisInfos());
   }
   return (
     <div className="details">
@@ -463,6 +439,7 @@ function ArticlesDevis() {
                   <button
                     className="btn btn-sm btn-ghost text-blue-500"
                     title="Modifier"
+                    onClick={handleModifierLDFPBtnClick}
                   >
                     <PencilIcon className="h-5 w-5" />
                     <span className="sr-only">Modifier</span>
@@ -471,9 +448,18 @@ function ArticlesDevis() {
                   <button
                     className="btn btn-sm btn-ghost text-red-500"
                     title="Supprimer"
+                    onClick={handleSupprimerLDFPBtnClick}
                   >
                     <TrashIcon className="h-5 w-5" />
                     <span className="sr-only">Supprimer</span>
+                  </button>
+                  <button
+                    className="btn btn-sm btn-ghost text-black-500"
+                    title="Vider Champs"
+                    onClick={() => {dispatch(viderChampsLigneDevisInfos())}}
+                  >
+                    <ArrowPathIcon className="h-5 w-5" />
+                    <span className="sr-only">Vider champs</span>
                   </button>
                 </div>
               </div>

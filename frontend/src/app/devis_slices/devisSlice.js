@@ -544,7 +544,6 @@ export const devisSlice = createSlice({
   reducers: {
     setDevisInfo: (state, action) => {
       const { collone, valeur } = action.payload;
-      console.log(action.payload);
       state.devisInfo[collone] = valeur;
     },
     setDevisList: (state, action) => {
@@ -553,7 +552,10 @@ export const devisSlice = createSlice({
     setDevisInfoEntiere: (state, action) => {
       state.devisInfo = action.payload;
     },
-
+    setDevisInfoArticleParIndice: (state, action) => {
+      const { indice, ligneDevis } = action.payload;
+      state.devisInfo.articles[indice] = ligneDevis;
+    },
     viderChampsDevisInfo: (state) => {
       state.devisInfo = {
         ...devisInfoInitiales,
@@ -929,6 +931,7 @@ export const {
   viderChampsDevisInfo,
   setDevisClientInfos,
   setDevisArticles,
+  setDevisInfoArticleParIndice
 } = devisSlice.actions;
 
 export default devisSlice.reducer;
