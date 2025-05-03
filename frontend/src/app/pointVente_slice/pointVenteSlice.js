@@ -6,12 +6,13 @@ import axios from "axios";
 export const ajouterpointVente = createAsyncThunk(
   "PointVenteSlice/ajouterpointVente",
   async (_, thunkAPI) => {
+    const pointVenteInfo = thunkAPI.getState().pointVenteSlice.pointVenteInfo;
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/pointvente/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/ajouterpointVente`,
       {
-        PointVenteInfo: thunkAPI.getState().pointVenteSlice.pointVenteInfo,
+        PointVenteInfo: pointVenteInfo,
       }
     );
     return response.data.newPointVente;

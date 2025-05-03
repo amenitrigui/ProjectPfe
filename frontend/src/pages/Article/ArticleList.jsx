@@ -92,7 +92,6 @@ function ArticleList() {
             columns={columns}
             data={listeArticle}
             customStyles={customStyles}
-            selectableRows
             fixedHeader
             pagination
             highlightOnHover

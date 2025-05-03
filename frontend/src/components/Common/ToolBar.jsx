@@ -40,10 +40,17 @@ import {
   setDevisInfo,
   viderChampsDevisInfo,
 } from "../../app/devis_slices/devisSlice";
-import { deconnecterUtilisateur } from "../../app/utilisateur_slices/utilisateurSlice";
-import { getDerniereCodeArticle, setDerniereCodeArticle, viderChampsArticleInfo } from "../../app/article_slices/articleSlice";
 import {
+  deconnecterUtilisateur,
   getListeUtilisateurParCode,
+  setInfosUtilisateur,
+} from "../../app/utilisateur_slices/utilisateurSlice";
+import {
+  getDerniereCodeArticle,
+  setDerniereCodeArticle,
+  viderChampsArticleInfo,
+} from "../../app/article_slices/articleSlice";
+import {
   setViderChampsUtilisateur,
   setUtilisateurSupInfo,
 } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
@@ -63,6 +70,9 @@ function ToolBar() {
   // * puisque ce composant est partagé
   const toolbarTable = useSelector(
     (state) => state.interfaceSlice.toolbarTable
+  );
+  const listeCodesUtilisateur = useSelector(
+    (state) => state.utilisateurSlice.listeCodesUtilisateur
   );
   // * boolean pour afficher / cacher les bouton valider et supprimer
   const activerBoutonsValiderAnnuler = useSelector(
@@ -85,6 +95,8 @@ function ToolBar() {
   const isDashBoardRoute = useSelector(
     (state) => state.interfaceSlice.isDashBoardRoute
   );
+  const listeToutCodesClients = useSelector((state) => state.clientSlice.listeToutCodesClients);
+  const listeNUMBL = useSelector((state) => state.devisSlice.listeNUMBL);
   const menuRef = useRef();
   const buttonRef = useRef();
   const useClickOutside = (refs, callback) => {
@@ -198,7 +210,24 @@ function ToolBar() {
   const handleSupprimerBtnClick = async () => {
     dispatch(setActiverChampsForm(false));
     dispatch(setToolbarMode("suppression"));
-    dispatch(setAlertMessage("Êtes-vous sûr de vouloir supprimer ce client ?"));
+    if (toolbarTable === "article") {
+      dispatch(
+        setAlertMessage("Êtes-vous sûr de vouloir supprimer cet article ?")
+      );
+    }
+
+    if (toolbarTable === "client") {
+      dispatch(
+        setAlertMessage("Êtes-vous sûr de vouloir supprimer ce client ?")
+      );
+    }
+
+    if (toolbarTable === "devis") {
+      dispatch(
+        setAlertMessage("Êtes-vous sûr de vouloir supprimer ce devis ?")
+      );
+    }
+
     dispatch(setAfficherAlert(true));
   };
 
@@ -278,24 +307,34 @@ function ToolBar() {
 
   const handleNaviguerVersPrecedent = () => {
     if (toolbarTable == "client") {
-      const clientCode = parseInt(clientInfos.code) - 1;
-      dispatch(getClientParCode(clientCode.toString()));
+      const indiceClientCourant = getIndiceClientCourant();
+      if(indiceClientCourant > 0) {
+        dispatch(setClientInfos({colonne: "code", valeur: listeToutCodesClients[indiceClientCourant-1].code}))
+      }
     }
 
     if (toolbarTable == "devis") {
-      const Numerobl = devisInfo.NUMBL.substring(2, 9);
-
-      const NumBLCode = "DV" + (parseInt(Numerobl) - 1);
-
-      dispatch(getDevisParNUMBL(NumBLCode.toString()));
+      const indiceNUMBL = getIndiceNUMBLSelectionne();
+      if(indiceNUMBL > 0){
+        dispatch(
+          setDevisInfo({
+            collone: "NUMBL",
+            valeur:
+              listeNUMBL[indiceNUMBL-1].NUMBL,
+          })
+        );
+      }
     }
     if (toolbarTable == "utilisateur") {
-      let codeUser = parseInt(Utilisateur_SuperviseurInfos.codeuser) - 1;
-      if (codeUser > 0) {
-        if (codeUser < 10) {
-          codeUser = "0" + codeUser;
-        }
-        dispatch(getListeUtilisateurParCode(codeUser.toString()));
+      const indiceutilisateurCourant = getIndiceUtilisateurSelectionne();
+      if(indiceutilisateurCourant > 0){
+        dispatch(
+          setInfosUtilisateur({
+            colonne: "codeuser",
+            valeur:
+              listeCodesUtilisateur[indiceutilisateurCourant-1].codeuser,
+          })
+        );
       }
     }
   };
@@ -304,42 +343,83 @@ function ToolBar() {
     nav("/ImprimerDevis");
   };
   const handleQuitterClick = () => {
-    if(location.pathname.toLowerCase() == "/devislist") {
+    if (location.pathname.toLowerCase() == "/devislist") {
       nav("/DevisFormTout");
       return "";
     }
-    if(location.pathname.toLowerCase() == "/clientlist") {
+    if (location.pathname.toLowerCase() == "/clientlist") {
       nav("/ClientFormTout");
       return "";
     }
-    if(location.pathname.toLowerCase() == "/articlelist") {
+    if (location.pathname.toLowerCase() == "/articlelist") {
       nav("/ArticleFormTout");
       return "";
     }
-    nav("/dashboard"); 
+    nav("/dashboard");
   };
+  // * fonction pour récuperer l'indice de l'utilisateur selectionné depuis le formulaire
+  // * pour qu'on peut l'incrementer par 1 ou décrementer par 1 lors de la naviguation
+  const getIndiceUtilisateurSelectionne = () => {
+    let indiceutilisateurCourant = 0;
+    listeCodesUtilisateur.map((codeUtilisateur, indice) => {
+      if (codeUtilisateur.codeuser == infosUtilisateur.codeuser) {
+        indiceutilisateurCourant = indice;
+      }
+    });
+
+    return indiceutilisateurCourant;
+  };
+
+  const getIndiceClientCourant = () => {
+    let indiceClientCourant = 0;
+    listeToutCodesClients.map((codeClient, indice) => {
+      if(clientInfos.code == codeClient.code) {
+        indiceClientCourant = indice;
+      }
+    })
+    return indiceClientCourant;
+  }
+
+  const getIndiceNUMBLSelectionne = () => {
+    let indiceNumblCourant = 0;
+    listeNUMBL.map((numbl, indice) => {
+      if(devisInfo.NUMBL == numbl.NUMBL) {
+        indiceNumblCourant = indice;
+      }
+    })
+    return indiceNumblCourant;
+  }
   const handleNaviguerVersSuivant = () => {
     if (toolbarTable == "client") {
-      const clientCode = parseInt(clientInfos.code) + 1;
-      dispatch(getClientParCode(clientCode.toString()));
+      const indiceClientCourant = getIndiceClientCourant();
+      if(indiceClientCourant != listeToutCodesClients.length-1) {
+        dispatch(setClientInfos({colonne: "code", valeur: listeToutCodesClients[indiceClientCourant+1].code}))
+      }
     }
 
     if (toolbarTable == "devis") {
-      const Numerobl = devisInfo.NUMBL.substring(2, 9);
-
-      const NumBLCode = "DV" + (parseInt(Numerobl) + 1);
-
-      dispatch(getDevisParNUMBL(NumBLCode.toString()));
+      const indiceNUMBL = getIndiceNUMBLSelectionne();
+      if(indiceNUMBL <= listeNUMBL.length-1){
+        dispatch(
+          setDevisInfo({
+            collone: "NUMBL",
+            valeur:
+              listeNUMBL[indiceNUMBL+1].NUMBL,
+          })
+        );
+      }
     }
     if (toolbarTable == "utilisateur") {
-      let codeUser = parseInt(Utilisateur_SuperviseurInfos.codeuser) + 1;
-      if (codeUser > 0) {
-        if (codeUser < 10) {
-          codeUser = "0" + codeUser;
-        }
-        dispatch(getListeUtilisateurParCode(codeUser.toString()));
+      const indiceutilisateurCourant = getIndiceUtilisateurSelectionne();
+      if(indiceutilisateurCourant != listeCodesUtilisateur.length-1){
+        dispatch(
+          setInfosUtilisateur({
+            colonne: "codeuser",
+            valeur:
+              listeCodesUtilisateur[indiceutilisateurCourant+1].codeuser,
+          })
+        );
       }
-      //  dispatch(getCodeUtilisateurSuivant())
     }
   };
   const utilisateurConnecte = useSelector(
@@ -355,6 +435,7 @@ function ToolBar() {
 
   const handleDeconnexionBtnClick = () => {
     dispatch(setOuvrireAvatarMenu(false));
+    localStorage.clear();
     dispatch(deconnecterUtilisateur());
   };
 
@@ -363,16 +444,16 @@ function ToolBar() {
   // * ce qui va en tourne déclancher la deuxième useEffect
   // * qui récupère les informations d'entité par son code
   const viderValeursDernieresCodes = () => {
-    if(toolbarTable == "client"){
-      dispatch(setDerniereCodeClient(""))
+    if (toolbarTable == "client") {
+      dispatch(setDerniereCodeClient(""));
     }
-    if(toolbarTable == "devis") {
-      dispatch(setDerniereNumbl(""))
+    if (toolbarTable == "devis") {
+      dispatch(setDerniereNumbl(""));
     }
-    if(toolbarTable == "article") {
+    if (toolbarTable == "article") {
       dispatch(setDerniereCodeArticle(""));
     }
-  }
+  };
   return (
     <>
       <nav className="w-full border-b border-gray-300 px-4 py-2 bg-white shadow-sm sticky top-0 z-50">
@@ -402,6 +483,7 @@ function ToolBar() {
                         "article",
                         "famille",
                         "sousfamille",
+                        "utilisateur",
                       ].includes(toolbarTable?.toLowerCase()))) && (
                     <button
                       type="button"
@@ -441,6 +523,7 @@ function ToolBar() {
                         "article",
                         "famille",
                         "sousfamille",
+                        "utilisateur",
                       ].includes(toolbarTable?.toLowerCase()))) && (
                     <button
                       type="button"
@@ -467,6 +550,7 @@ function ToolBar() {
                         "devis",
                         "article",
                         "famille",
+                        "utilisateur",
                         "sousfamille",
                       ].includes(toolbarTable?.toLowerCase()))) && (
                     <button
@@ -484,54 +568,56 @@ function ToolBar() {
                   {/* Précédent */}
                   {(utilisateurConnecte?.type?.toLowerCase() ===
                     "superviseur" ||
-                    (utilisateurConnecte?.type?.toLowerCase() ===
-                      "utilisateur" &&
-                      [
-                        "client",
-                        "devis",
-                        "famille",
-                        "sousfamille",
-                      ].includes(toolbarTable?.toLowerCase()))) && (
-                    <button
-                      type="button"
-                      onClick={handleNaviguerVersPrecedent}
-                      className="flex flex-col items-center w-16 sm:w-20 p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-all duration-200"
-                    >
-                      <FontAwesomeIcon
-                        icon={faArrowLeft}
-                        className="text-xl mb-1"
-                      />
-                      <span className="text-[10px] sm:text-xs font-semibold">
-                        Précédent
-                      </span>
-                    </button>
-                  )}
+                    utilisateurConnecte?.type?.toLowerCase() ===
+                      "utilisateur") &&
+                    [
+                      "client",
+                      "devis",
+                      "famille",
+                      "sousfamille",
+                      "utilisateur",
+                    ].includes(toolbarTable?.toLowerCase()) && (
+                      <button
+                        type="button"
+                        onClick={handleNaviguerVersPrecedent}
+                        className="flex flex-col items-center w-16 sm:w-20 p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-all duration-200"
+                      >
+                        <FontAwesomeIcon
+                          icon={faArrowLeft}
+                          className="text-xl mb-1"
+                        />
+                        <span className="text-[10px] sm:text-xs font-semibold">
+                          Précédent
+                        </span>
+                      </button>
+                    )}
 
                   {/* Suivant */}
                   {(utilisateurConnecte?.type?.toLowerCase() ===
                     "superviseur" ||
-                    (utilisateurConnecte?.type?.toLowerCase() ===
-                      "utilisateur" &&
-                      [
-                        "client",
-                        "devis",
-                        "famille",
-                        "sousfamille",
-                      ].includes(toolbarTable?.toLowerCase()))) && (
-                    <button
-                      type="button"
-                      onClick={handleNaviguerVersSuivant}
-                      className="flex flex-col items-center w-16 sm:w-20 p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-all duration-200"
-                    >
-                      <FontAwesomeIcon
-                        icon={faArrowRight}
-                        className="text-xl mb-1"
-                      />
-                      <span className="text-[10px] sm:text-xs font-semibold">
-                        Suivant
-                      </span>
-                    </button>
-                  )}
+                    utilisateurConnecte?.type?.toLowerCase() ===
+                      "utilisateur") &&
+                    [
+                      "client",
+                      "devis",
+                      "famille",
+                      "sousfamille",
+                      "utilisateur",
+                    ].includes(toolbarTable?.toLowerCase()) && (
+                      <button
+                        type="button"
+                        onClick={handleNaviguerVersSuivant}
+                        className="flex flex-col items-center w-16 sm:w-20 p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-all duration-200"
+                      >
+                        <FontAwesomeIcon
+                          icon={faArrowRight}
+                          className="text-xl mb-1"
+                        />
+                        <span className="text-[10px] sm:text-xs font-semibold">
+                          Suivant
+                        </span>
+                      </button>
+                    )}
 
                   {/* Édition */}
                   {toolbarTable === "devis" && (
@@ -583,7 +669,9 @@ function ToolBar() {
                     onClick={() => {
                       handleAnnulerBtnClick();
                     }}
-                    onMouseEnter={() => {viderValeursDernieresCodes()}}
+                    onMouseEnter={() => {
+                      viderValeursDernieresCodes();
+                    }}
                     className="flex flex-col items-center w-16 sm:w-20 p-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg transition-all duration-200"
                   >
                     <FontAwesomeIcon icon={faTimes} className="text-xl mb-1" />

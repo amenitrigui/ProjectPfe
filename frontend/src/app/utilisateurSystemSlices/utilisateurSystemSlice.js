@@ -15,15 +15,7 @@ export const AjouterUtilisateur = createAsyncThunk(
     return response.data.user;
   }
 );
-export const getDerniereCodeUtilisateur = createAsyncThunk(
-  "utilisateurSystemSlices/getDerniereCodeUtilisateur",
-  async () => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getDerniereCodeUtilisateur`
-    );
-    return response.data.derniereCodeUtilisateur;
-  }
-);
+
 export const ModifierUtilisateur = createAsyncThunk(
   "utilisateurSystemSlices/ModifierUtilisateur",
   async (_, thunkAPI) => {
@@ -49,89 +41,7 @@ export const supprimerUtilisateur = createAsyncThunk(
     );
   }
 );
-export const getListeUtilisateurParCode = createAsyncThunk(
-  "utilisateurSystemSlices/getListeUtilisateurParCode",
-  async (codeuser) => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeUtilisateurParCode`,
-      {
-        params: {
-          codeuser: codeuser,
-        },
-      }
-    );
-    return response.data.result;
-  }
-);
-export const getListeUtilisateurParNom = createAsyncThunk(
-  "utilisateurSystemSlices/getListeUtilisateurParNom",
-  async (nom) => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeUtilisateurParNom`,
-      {
-        params: {
-          nom: nom,
-        },
-      }
-    );
-    return response.data.result;
-  }
-);
-export const getListeUtilisateurParDirecteur = createAsyncThunk(
-  "utilisateurSystemSlices/getListeUtilisateurParDirecteur",
-  async (directeur) => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeUtilisateurParDirecteur`,
-      {
-        params: {
-          directeur: directeur,
-        },
-      }
-    );
-    return response.data.result;
-  }
-);
-export const getListeUtilisateurParType = createAsyncThunk(
-  "utilisateurSystemSlices/getListeUtilisateurParType",
-  async (type) => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeUtilisateurParType`,
-      {
-        params: {
-          type: type,
-        },
-      }
-    );
-    return response.data.result;
-  }
-);
-export const getListeUtilisateur = createAsyncThunk(
-  "utilisateurSystemSlices/getListeUtilisateur",
-  async () => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeUtilisateur`
-    );
-    return response.data.result;
-  }
-);
-export const filterListeUtilisateur = createAsyncThunk(
-  "utilisateurSystemSlices/filterListeUtilisateur",
-  async (_, thunkAPI) => {
-    // Passer `filters` en paramètre
-    const filterutilisateur =thunkAPI.getState().utilisateurSystemSlice.filtersUtilisateur
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/filterListeUtilisateur`,
-      {
-        params: {
-          filters:
-          filterutilisateur, // Utiliser filters ici
-        },
-      }
-    );
-   
-   return response.data.data; // Retourner la réponse
-  }
-);
+
 export const getCodeUtilisateurSuivant = createAsyncThunk(
   "utilisateurSystemSlices/getCodeUtilisateurSuivant",
   async () => {
@@ -162,7 +72,6 @@ export const utilisateurSystemSlices = createSlice({
   name: "utilisateurSystemSlices",
   initialState: {
     utilisateurSystemInfoInitiales,
-    listeUtilisateur_Superviseur: [],
     Utilisateur_SuperviseurInfos: {
       ...utilisateurSystemInfoInitiales
     },
@@ -171,22 +80,10 @@ export const utilisateurSystemSlices = createSlice({
       nom: "",
       type: "",
     },
-    filtersUtilisateur: {
-      codeuser: "",
-      type: "",
-      email: "",
-      directeur: "",
-      nom: ""
-    },
-
-    derniereCodeUtilisateur: "",
     dbName: "",
     token: "",
   },
   reducers: {
-    setListeUtilisateur_Superviseur: (state, action) => {
-      state.listeUtilisateur_Superviseur = action.payload;
-    },
     setUtilisateurSupInfo: (state, action) => {
       state.Utilisateur_SuperviseurInfos = action.payload;
     },
@@ -200,10 +97,6 @@ export const utilisateurSystemSlices = createSlice({
     setutilisateurConnecte: (state, action) => {
       const { colonne, valeur } = action.payload;
       state.utilisateurConnecte[colonne] = valeur;
-    },
-    setFiltresSaisient: (state, action) => {
-      const { colonne, valeur } = action.payload;
-      state.filtersUtilisateur[colonne] = valeur;
     },
     setViderChampsUtilisateur: (state, action) => {
       state.Utilisateur_SuperviseurInfos = {
@@ -230,96 +123,14 @@ export const utilisateurSystemSlices = createSlice({
       .addCase(AjouterUtilisateur.rejected, (state, action) => {
         state.status = "échec";
       })
-
-      .addCase(getDerniereCodeUtilisateur.pending, (state, action) => {
-        state.status = "chagement";
-      })
-      .addCase(getDerniereCodeUtilisateur.fulfilled, (state, action) => {
-        state.status = "succès";
-        state.derniereCodeUtilisateur = action.payload;
-      })
-      .addCase(getDerniereCodeUtilisateur.rejected, (state, action) => {
-        state.status = "échec";
-      })
-
-      .addCase(getListeUtilisateurParCode.pending, (state, action) => {
-        state.status = "chagement";
-      })
-      .addCase(getListeUtilisateurParCode.fulfilled, (state, action) => {
-        state.status = "succès";
-        if(action.payload && action.payload.length > 0){
-          state.Utilisateur_SuperviseurInfos = action.payload[0];
-          state.listeUtilisateur_Superviseur = action.payload;
-        }
-      })
-      .addCase(getListeUtilisateurParCode.rejected, (state, action) => {
-        state.status = "échec";
-      })
-
-      .addCase(getListeUtilisateurParNom.pending, (state, action) => {
-        state.status = "chagement";
-      })
-      .addCase(getListeUtilisateurParNom.fulfilled, (state, action) => {
-        state.status = "succès";
-        state.listeUtilisateur_Superviseur = action.payload;
-      })
-      .addCase(getListeUtilisateurParNom.rejected, (state, action) => {
-        state.status = "échec";
-      })
-
-      .addCase(getListeUtilisateurParDirecteur.pending, (state, action) => {
-        state.status = "chagement";
-      })
-      .addCase(getListeUtilisateurParDirecteur.fulfilled, (state, action) => {
-        state.status = "succès";
-        state.listeUtilisateur_Superviseur = action.payload;
-      })
-      .addCase(getListeUtilisateurParDirecteur.rejected, (state, action) => {
-        state.status = "échec";
-      })
-
-      .addCase(getListeUtilisateurParType.pending, (state, action) => {
-        state.status = "chagement";
-      })
-      .addCase(getListeUtilisateurParType.fulfilled, (state, action) => {
-        state.status = "succès";
-        state.listeUtilisateur_Superviseur = action.payload;
-      })
-      .addCase(getListeUtilisateurParType.rejected, (state, action) => {
-        state.status = "échec";
-      })
-
-      .addCase(getListeUtilisateur.pending, (state, action) => {
-        state.status = "chagement";
-      })
-      .addCase(getListeUtilisateur.fulfilled, (state, action) => {
-        state.status = "succès";
-        state.listeUtilisateur_Superviseur = action.payload;
-      })
-      .addCase(getListeUtilisateur.rejected, (state, action) => {
-        state.status = "échec";
-      })
-
-      .addCase(filterListeUtilisateur.pending, (state, action) => {
-        state.status = "chagement";
-      })
-      .addCase(filterListeUtilisateur.fulfilled, (state, action) => {
-        state.status = "succès";
-        state.listeUtilisateur_Superviseur = action.payload;
-      })
-      .addCase(filterListeUtilisateur.rejected, (state, action) => {
-        state.status = "échec";
-      });
   },
 });
 export const {
-  setListeUtilisateur_Superviseur,
   setUtilisateur_SuperviseurInfos,
   setutilisateurConnecte,
   setutilisateurConnecteEntiere,
   setViderChampsUtilisateur,
   setUtilisateurSupInfo,
-  setFiltresSaisient,
   setDbName,
   setToken,
 } = utilisateurSystemSlices.actions;

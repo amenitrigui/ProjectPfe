@@ -6,21 +6,21 @@ import {
   setClientsASupprimer,
   setClientInfosEntiere,
 } from "../../app/client_slices/clientSlice";
-import { filterListeUtilisateur, getListeUtilisateur, setFiltresSaisient } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
+import { filterListeUtilisateur, getListeUtilisateur, setFiltresSaisient } from "../../app/utilisateur_slices/utilisateurSlice";
 import { setToolbarTable } from "../../app/interface_slices/interfaceSlice";
 
 function UtilisateurList() {
   const dispatch = useDispatch();
-  const listeUtilisateur_Superviseur = useSelector((store) => store.utilisateurSystemSlice.listeUtilisateur_Superviseur);
+  const listeUtilisateur_Superviseur = useSelector((store) => store.utilisateurSlice.listeUtilisateur_Superviseur);
   useEffect(() => {
     dispatch(getListeUtilisateur());
   // dispatch(setToolbarTable("utilisateur"));
   }, []);
 
-  const filtersUtilisateur = useSelector((store) => store.utilisateurSystemSlice.filtersUtilisateur);
+  const filtersUtilisateur = useSelector((store) => store.utilisateurSlice.filtersUtilisateur);
 
   const handleFilterChange = (e, column) => {
-    dispatch(setFiltresSaisient({ valeur: e.target.value, colonne: column }));
+    dispatch(setFiltresSaisient({ colonne: column, valeur: e.target.value }));
     dispatch(filterListeUtilisateur());
   };
 
@@ -112,7 +112,6 @@ function UtilisateurList() {
             columns={columns}
             data={listeUtilisateur_Superviseur}
             customStyles={customStyles}
-            selectableRows
             fixedHeader
             pagination
             highlightOnHover

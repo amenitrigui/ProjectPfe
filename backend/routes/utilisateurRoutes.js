@@ -22,7 +22,7 @@ router.put("/reinitialiserMotPasse", reinitialiserMotPasse);
 // * selectionner la base de données (societé) à gèrer
 router.post("/select-database", selectDatabase);
 // * récuperer un utilisateur par son code
-router.get("getUtilisateurParCode/:codeuser", getUtilisateurParCode);
-router.post("/deconnecter", deconnecterUtilisateur)
+router.get("/getUtilisateurParCode/:codeuser", getUtilisateurParCode);
+router.post("/deconnecterUtilisateur", deconnecterUtilisateur)
 
 module.exports = router;

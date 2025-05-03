@@ -4,7 +4,6 @@ import { useNavigate, Link } from "react-router-dom";
 import { toast, ToastContainer, Bounce } from "react-toastify";
 import {
   setToken,
-  setutilisateurSliceEntire,
   setutilisateurConnecteEntiere,
 } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 import { loginUtilisateur } from "../../app/utilisateur_slices/utilisateurSlice";

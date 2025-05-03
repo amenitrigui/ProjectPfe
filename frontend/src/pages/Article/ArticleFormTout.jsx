@@ -10,7 +10,6 @@ function ArticleFormTout() {
   const dispatch = useDispatch()
   const afficherRecherchePopup = useSelector((state) => state.interfaceSlice.afficherRecherchePopup);
   const afficherFamillePopub = useSelector((state) => state.interfaceSlice.afficherFamillePopub);
-
   useEffect(()=>{
     dispatch(setToolbarTable("article"))
   },[])

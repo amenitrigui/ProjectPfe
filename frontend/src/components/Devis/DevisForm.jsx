@@ -105,7 +105,6 @@ function DevisForm() {
     dispatch(getListeNumbl());
     dispatch(getListePointsVente());
     dispatch(getListeSecteur());
-    dispatch(getDerniereNumbl(utilisateurConnecte.codeuser));
     dispatch(getListeCodeVendeur());
   }, []);
 
@@ -127,6 +126,9 @@ function DevisForm() {
         setDevisInfo({ collone: "NUMBL", valeur: "DV" + derniereNumbl })
       );
     }
+    if(derniereNumbl == "") {
+      dispatch(getDerniereNumbl(utilisateurConnecte.codeuser));
+    }
   }, [derniereNumbl]);
 
   // * useEffect #6: récuperer les informations de devis
@@ -136,6 +138,10 @@ function DevisForm() {
       dispatch(getDevisParNUMBL(devisInfo.NUMBL));
       dispatch(getLignesDevis(devisInfo.NUMBL));
     }
+
+    // if(!devisInfo.NUMBL) {
+    //   dispatch(getDerniereNumbl(utilisateurConnecte.codeuser));
+    // }
   }, [devisInfo.NUMBL]);
 
   // * useEffect #7 : remplacer la valeur de champ NUMBL
@@ -143,8 +149,8 @@ function DevisForm() {
   useEffect(() => {
     if (
       toolbarMode &&
-      toolbarMode === "ajout" &&
-      derniereNumbl != devisInfo.NUMBL
+      toolbarMode === "ajout"
+      // derniereNumbl != devisInfo.NUMBL
     ) {
       dispatch(
         setDevisInfo({

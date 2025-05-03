@@ -240,11 +240,6 @@ export const getVilleParRegion = createAsyncThunk(
     return response.data.ListRegion[0];
   }
 );
-
-// export const getRIBParBanque = createAsyncThunk(
-//   "clientSlice/getRIBParBanque",
-//   async(banque,thunkAPI)
-// )
 const clientInfoInitiales = {
   code: "",
   rsoc: "",
@@ -255,7 +250,7 @@ const clientInfoInitiales = {
   telephone: "",
   tel1: "",
   tel2: "",
-  codepv:"",
+  codepv: "",
   datcreat: new Date().toISOString().split("T")[0],
   telex: "",
   desrep: "",
@@ -296,8 +291,8 @@ const clientInfoInitiales = {
   delregFC: "",
   remise: "",
   activite: "",
-  codes:"",
-  coder:"",
+  codes: "",
+  coder: "",
   typecli: "L",
   cin: "",
   fax: "",

@@ -31,6 +31,7 @@ import Settings from "./pages/ErpPages/Settings";
 import UtilisateurList from "./pages/Utilisateurs/UtilisateurList";
 import {
   setActiverBoutonsValiderAnnuler,
+  setAfficherAlert,
   setAfficherRecherchePopup,
   setIsDashBoardRoute,
   setOuvrireDrawerMenu,
@@ -71,6 +72,7 @@ function App() {
   useEffect(() => {
     dispatch(setToolbarMode("consultation"));
     dispatch(setActiverBoutonsValiderAnnuler(false));
+    dispatch(setAfficherAlert(false));
     // dispatch(viderChampsArticleInfo());
     // dispatch(viderChampsCPostalInfo());
     // dispatch(viderChampsClientInfo());

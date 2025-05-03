@@ -109,7 +109,6 @@ function ClientList() {
             columns={columns}
             data={listeClients}
             customStyles={customStyles}
-            selectableRows
             fixedHeader
             pagination
             highlightOnHover

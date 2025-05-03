@@ -12,6 +12,7 @@ import {
   ajouterClient,
   getDerniereCodeClient,
   majClient,
+  setDerniereCodeClient,
   supprimerClient,
   viderChampsClientInfo,
 } from "../../app/client_slices/clientSlice";
@@ -19,6 +20,7 @@ import {
 import {
   ajouterArticle,
   modifierarticle,
+  setDerniereCodeArticle,
   suprimerArticle,
   viderChampsArticleInfo,
 } from "../../app/article_slices/articleSlice";
@@ -29,6 +31,7 @@ import {
   annulerDevis,
   getDerniereNumbl,
   majDevis,
+  setDerniereNumbl,
   viderChampsDevisInfo,
 } from "../../app/devis_slices/devisSlice";
 
@@ -73,6 +76,7 @@ function AlertModifier() {
     if (toolbarTable == "client") {
       if (toolbarMode == "ajout") {
         dispatch(ajouterClient());
+        dispatch(setDerniereCodeClient(""))
       }
       if (toolbarMode == "modification") {
         dispatch(majClient());
@@ -93,12 +97,12 @@ function AlertModifier() {
         if (validerChampsForm("devis", devisInfo)) {
           dispatch(AjouterDevis());
           dispatch(viderChampsDevisInfo());
+          dispatch(setDerniereNumbl(""));
         } else {
           alert("veuillez vérifier les données de formulaire");
         }
       }
       if (toolbarMode == "modification") {
-        // dispatch(modifierDevis());
         dispatch(majDevis(devisInfo.NUMBL))
         dispatch(viderChampsDevisInfo());
       }
@@ -111,6 +115,7 @@ function AlertModifier() {
       if (toolbarMode == "ajout") {
         dispatch(ajouterArticle());
         dispatch(viderChampsArticleInfo());
+        dispatch(setDerniereCodeArticle(""));
       }
       if (toolbarMode == "modification") {
         dispatch(modifierarticle(articleCode));
@@ -140,12 +145,9 @@ function AlertModifier() {
       }
     }
     dispatch(setAfficherAlert(false));
-    dispatch(setViderChampsUtilisateur());
-
     dispatch(setActiverBoutonsValiderAnnuler(false));
-    closeToast();
-
     dispatch(setToolbarMode("consultation"));
+    dispatch(setActiverChampsForm(false))
     closeToast();
   };
 

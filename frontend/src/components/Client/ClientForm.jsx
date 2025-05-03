@@ -19,6 +19,7 @@ import {
   getListeCodeRegions,
   getVilleParRegion,
   getDerniereCodeClient,
+  getToutCodesClient,
 } from "../../app/client_slices/clientSlice";
 
 import ToolBar from "../Common/ToolBar";
@@ -88,6 +89,7 @@ const ClientForm = () => {
     dispatch(getListeCodeRegions());
     dispatch(getDerniereCodeClient());
     dispatch(getListePointVente());
+    dispatch(getToutCodesClient());
   }, []);
 
   useEffect(() => {
@@ -111,9 +113,10 @@ const ClientForm = () => {
 
   useEffect(() => {
     if (
-      clientInfos.code &&
+      ((clientInfos.code &&
       clientInfos.code != "" &&
-      toolbarMode != "ajout"
+      toolbarMode != "ajout") ||
+      (clientInfos.code == "" && dernierCodeClient !== ""))
     ) {
       dispatch(getClientParCode(clientInfos.code));
     }
@@ -155,7 +158,6 @@ const ClientForm = () => {
   const listeCodesSecteur = useSelector(
     (state) => state.clientSlice.listeCodesSecteur
   );
-
   // Fonction pour gérer les changements dans les champs du formulaire
   const handleChange = (e, colonne) => {
     // * si aucun code client est selectionné
@@ -414,7 +416,7 @@ const ClientForm = () => {
                         type="text"
                         className="border border-gray-300 rounded-md p-2 w-full"
                         disabled={!activerChampsForm}
-                        value={pointVenteInfo.Libelle || ""}
+                        value={clientInfos.codepv || ""}
                         onChange={(e) => handleChange(e, "Libelle")}
                       />
                       {(toolbarMode === "ajout" ||
@@ -636,7 +638,7 @@ const ClientForm = () => {
                           type="text"
                           className="border border-gray-300 rounded-md p-2 w-full"
                           disabled={!activerChampsForm}
-                          value={RegionInfo.desirgg}
+                          value={clientInfos.desirgg}
                         />
                         {(toolbarMode == "ajout" ||
                           toolbarMode == "modification") && (

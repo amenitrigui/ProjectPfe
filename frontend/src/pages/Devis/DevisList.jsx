@@ -94,7 +94,6 @@ function DevisList() {
             columns={columns}
             data={ListeDevis}
             customStyles={customStyles}
-            selectableRows
             fixedHeader
             pagination
             highlightOnHover

@@ -439,5 +439,5 @@ module.exports = {
   getClientParRaisonSociale,
   getDerniereCodeClient,
   getClientParCin,
-  getToutCodesClient
+  getToutCodesClient,
 };

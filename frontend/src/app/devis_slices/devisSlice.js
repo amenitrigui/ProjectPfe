@@ -205,14 +205,17 @@ export const getDevisParPeriode = createAsyncThunk(
 // * Action asynchrone pour récupérer la liste des codes des devis
 export const getListeNumbl = createAsyncThunk(
   "devisSlice/getListeNUMBL",
-  async (_, thunkAPI) => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/devis/${
-        thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getCodesDevis/${
-        thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte.codeuser
-      }`
-    );
+  async (codeuser, thunkAPI) => {
+    let response;
+    if(!codeuser) {
+      response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/devis/${
+          thunkAPI.getState().utilisateurSystemSlice.dbName
+        }/getCodesDevis/${
+          thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte.codeuser
+        }`
+      );
+    }
     return response.data.listeNUMBL;
   }
 );

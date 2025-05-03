@@ -8,10 +8,12 @@ import {
 import {
   ajouterSecteur,
   setSecteurInfos,
+  viderChampsSecteurInfos,
 } from "../../app/secteur_slices/secteurSlice";
 import {
   ajouterRegion,
   setRegionInfos,
+  viderChampsRegionInfo,
 } from "../../app/region_slices/regionSlice";
 import {
   ajouterCodePostal,
@@ -22,6 +24,7 @@ import { useLocation } from "react-router-dom";
 import {
   ajouterpointVente,
   setPointVenteInfos,
+  viderChampsPointVenteInfo,
 } from "../../app/pointVente_slice/pointVenteSlice";
 import { setClientInfos } from "../../app/client_slices/clientSlice";
 
@@ -147,6 +150,7 @@ const Secteur_Region_CpostalForm = () => {
 
   const togglePopup = () => {
     dispatch(setAfficherSecteurPopup(false));
+    // ????
     if (location.pathname.toLowerCase() === "/clientformtout") {
       dispatch(setToolbarTable("client"));
     }
@@ -155,45 +159,16 @@ const Secteur_Region_CpostalForm = () => {
   const handleChange = (colonne, valeur) => {
     if (toolbartable == "pointvente") {
       dispatch(setPointVenteInfos({ colonne, valeur }));
-      
-      if(colonne == "Code") {
-        dispatch(setClientInfos({colonne: "codepv", valeur}))
-      }
-      if(colonne == "Libelle") {
-        dispatch(setClientInfos({colonne: "Libelle", valeur}))
-      }
     }
     if (toolbartable == "codepostale") {
       dispatch(setCodePostaleInfos({ colonne, valeur }));
-      
-      if(colonne == "CODEp") {
-        dispatch(setClientInfos({colonne: "CODEp", valeur}))
-      }
-      if(colonne == "desicp") {
-        dispatch(setClientInfos({colonne: "desicp", valeur}))
-      }
     }
     
     if (toolbartable == "secteur") {
       dispatch(setSecteurInfos({ colonne, valeur }));
-      if(colonne == "codesec") {
-        dispatch(setClientInfos({colonne: "codes", valeur}))
-      }
-      if(colonne == "desisec") {
-        dispatch(setClientInfos({colonne: "desisec", valeur}))
-      }
     }
     if (toolbartable == "region") {
       dispatch(setRegionInfos({ colonne, valeur }));
-    }
-    if(colonne == "codesec") {
-      dispatch(setClientInfos({colonne: "codes", valeur}))
-    }
-    if(colonne == "codergg") {
-      dispatch(setClientInfos({colonne: "codergg", valeur}))
-    }
-    if(colonne == "desirgg") {
-      dispatch(setClientInfos({colonne: "desirgg", valeur}))
     }
   };
   const pointVenteInfo = useSelector(
@@ -207,17 +182,27 @@ const Secteur_Region_CpostalForm = () => {
   const hundleAjout = () => {
     if (toolbartable === "secteur") {
       dispatch(ajouterSecteur());
+      dispatch(setClientInfos({colonne: "codes", valeur: secteurInfo.codesec}))
+      dispatch(setClientInfos({colonne: "desisec", valeur: secteurInfo.desisec}))
+      dispatch(viderChampsSecteurInfos());
     }
     if (toolbartable === "region") {
       dispatch(ajouterRegion());
-      dispatch(setClientInfos({colonne: "codergg", valeur: regionInfo.codergg}))
+      dispatch(setClientInfos({colonne: "coder", valeur: regionInfo.codergg}))
       dispatch(setClientInfos({colonne: "desirgg", valeur: regionInfo.desirgg}))
+      dispatch(viderChampsRegionInfo());
     }
     if (toolbartable === "codepostale") {
       dispatch(ajouterCodePostal());
+      dispatch(setClientInfos({colonne: "cp", valeur: cpostaleInfo.CODEp}))
+      dispatch(setClientInfos({colonne: "desicp", valeur: cpostaleInfo.desicp}))
+      dispatch(viderChampsCPostalInfo())
     }
     if (toolbartable === "pointvente") {
       dispatch(ajouterpointVente());
+      dispatch(setClientInfos({colonne: "codepv", valeur: pointVenteInfo.Code}))
+      dispatch(setClientInfos({colonne: "Libelle", valeur: pointVenteInfo.Libelle}))
+      dispatch(viderChampsPointVenteInfo());
     }
     togglePopup();
   };
@@ -321,7 +306,7 @@ const Secteur_Region_CpostalForm = () => {
                 <CancelButton type="button" onClick={togglePopup}>
                   Annuler
                 </CancelButton>
-                <SubmitButton type="submit" onClick={hundleAjout}>
+                <SubmitButton type="button" onClick={hundleAjout}>
                   Valider
                 </SubmitButton>
               </ButtonsContainer>

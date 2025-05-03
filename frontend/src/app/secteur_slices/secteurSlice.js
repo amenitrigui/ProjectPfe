@@ -62,6 +62,11 @@ export const secteurSlice = createSlice({
       const { colonne, valeur } = action.payload;
       state.secteurInfo[colonne] = valeur;
     },
+    viderChampsSecteurInfos: (state, action) => {
+      state.secteurInfo = {
+        ...state.secteurInfoInitiales
+      }
+    }
   },
 
   //   extraReducers: (builder) => {
@@ -69,6 +74,6 @@ export const secteurSlice = createSlice({
 
   //   },
 });
-export const { setListeSecteur, setSecteurInfos } = secteurSlice.actions;
+export const { setListeSecteur, setSecteurInfos, viderChampsSecteurInfos } = secteurSlice.actions;
 
 export default secteurSlice.reducer;

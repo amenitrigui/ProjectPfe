@@ -47,13 +47,9 @@ import {
 } from "../../app/sousfamille_slices/sousfamilleSlice";
 import { useLocation } from "react-router-dom";
 import {
-  getListeUtilisateurParCode,
-  getListeUtilisateurParDirecteur,
-  getListeUtilisateurParNom,
-  getListeUtilisateurParType,
-  setListeUtilisateur_Superviseur,
   setUtilisateurSupInfo,
 } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
+import { getListeUtilisateurParCode, getListeUtilisateurParDirecteur, getListeUtilisateurParNom, getListeUtilisateurParType, setListeUtilisateur_Superviseur } from "../../app/utilisateur_slices/utilisateurSlice";
 
 const Recherche = () => {
   //?==================================================================================================================

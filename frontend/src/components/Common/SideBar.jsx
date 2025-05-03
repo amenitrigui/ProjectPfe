@@ -25,7 +25,6 @@ function SideBar() {
     { name: "Gestion Utilisateurs", icon: "person-circle-outline", path: "/UtilisateurFormTout" },
     { name: "Liste de société", icon: "business-outline", path: "/SocietiesList" },
     { name: "Settings", icon: "settings-outline", path: "/Parametres" },
-    { name: "Déconnexion", icon: "log-out-outline", path: "/deconnexion" },
   ];
 
   return (

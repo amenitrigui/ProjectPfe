@@ -1,5 +1,19 @@
 const express = require("express");
-const { AjouterUtilisateur, getDerniereCodeUtilisateur, ModifierUtilisateur, supprimerUtilisateur,getListeUtilisateurParCode,getListeUtilisateurParDirecteur,getListeUtilisateurParType ,getListeUtilisateurParNom, getListeUtilisateur,filterListeUtilisateur,getCodeUtilisateurSuivant} = require("../controllers/utilisateurSystemController");
+const {
+  AjouterUtilisateur,
+  getDerniereCodeUtilisateur,
+  ModifierUtilisateur,
+  supprimerUtilisateur,
+  getListeUtilisateurParCode,
+  getListeUtilisateurParDirecteur,
+  getListeUtilisateurParType,
+  getListeUtilisateurParNom,
+  getListeUtilisateur,
+  filterListeUtilisateur,
+  getCodeUtilisateurSuivant,
+  getListeCodesUtilisateur,
+  getUtilisateurParCode
+} = require("../controllers/utilisateurSystemController");
 
 const router = express.Router();
 // * inscription pour un utilisateur
@@ -14,4 +28,6 @@ router.get("/getListeUtilisateurParType", getListeUtilisateurParType);
 router.get("/getListeUtilisateur", getListeUtilisateur);
 router.get("/filterListeUtilisateur", filterListeUtilisateur);
 router.get("/getCodeUtilisateurSuivant", getCodeUtilisateurSuivant);
+router.get("/getListeCodesUtilisateur", getListeCodesUtilisateur);
+router.get("/getUtilisateurParCode", getUtilisateurParCode);
 module.exports = router;

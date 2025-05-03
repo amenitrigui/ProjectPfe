@@ -227,6 +227,8 @@ const getListeUtilisateurParType = async (req, res) => {
   }
 };
 
+// * url: http://localhost:5000/api/utilisateurSystem/getListeUtilisateur
+// * verb : get
 const getListeUtilisateur = async (req, res) => {
   try {
     //const decoded = verifyTokenValidity(req, res);
@@ -314,6 +316,46 @@ const getCodeUtilisateurSuivant = async (req, res) => {
   }
 };
 
+// * url : http://localhost:5000/api/utilisateurSystem/getListeCodesUtilisateur
+const getListeCodesUtilisateur = async(req, res) => {
+  try {
+    const Utilisateur = defineUserModel(sequelizeConnexionDbUtilisateur);
+    const listeCodesUtilisateur = await Utilisateur.findAll({
+      order: [["codeuser", "ASC"]],
+      attributes: ["codeuser"],
+    })
+    if(listeCodesUtilisateur.length == 0) {
+      return res.status(400).json({message: "aucun utilisateur n'est trouvé dans la base des données"})
+    }
+    if(listeCodesUtilisateur.length > 0){
+      return res.status(200).json({message: "liste codes utilisateurs récupéré avec succès", listeCodesUtilisateur});
+    }
+  }catch(error) {
+    return res.status(500).json({message: error.message})
+  }
+}
+// * url: http://localhost:5000/api/utilisateurSystem/getUtilisateurParCode?codeuser=01
+const getUtilisateurParCode = async(req, res) => {
+  const { codeuser } = req.query;
+
+  try{
+    const Utilisateur = defineUserModel(sequelizeConnexionDbUtilisateur);
+    const utilisateur = await Utilisateur.findOne({
+      attributes: ["codeuser", "nom", "email", "type", "directeur", "motpasse"],
+      where: {
+        codeuser: codeuser
+      }
+    })
+
+    console.log(utilisateur)
+
+    if(utilisateur) {
+      return res.status(200).json({message: "utilisateur recuperé avec succès", utilisateur})
+    }
+  }catch(error) {
+    return res.status(500).json({message: error.message})
+  }
+}
 
 module.exports = {
   AjouterUtilisateur,
@@ -326,5 +368,7 @@ module.exports = {
   getListeUtilisateurParType,
   getListeUtilisateur,
   filterListeUtilisateur,
-  getCodeUtilisateurSuivant
+  getCodeUtilisateurSuivant,
+  getListeCodesUtilisateur,
+  getUtilisateurParCode
 };

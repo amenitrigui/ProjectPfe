@@ -1,17 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import ToolBar from "../Common/ToolBar";
-import { getUtilisateurParCode } from "../../app/utilisateur_slices/utilisateurSlice";
+import { getDerniereCodeUtilisateur, getListeCodesUtilisateur, getUtilisateurParCode, setInfosUtilisateur, setInfosUtilisateurEntiere } from "../../app/utilisateur_slices/utilisateurSlice";
 import SideBar from "../Common/SideBar";
-import {
- 
-  setOuvrireDrawerMenu,
 
-} from "../../app/interface_slices/interfaceSlice";
 import {  setAfficherRecherchePopup } from "../../app/interface_slices/interfaceSlice";
 import {
-  getDerniereCodeUtilisateur,
   setUtilisateur_SuperviseurInfos,
 } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 
@@ -22,29 +17,43 @@ const UtilisateurForm = () => {
     (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
   const dispatch = useDispatch();
-  const toolbarTable = useSelector((state) => state.interfaceSlice.toolbarMode);
   const utilisateurConnecte = useSelector(
     (state) => state.utilisateurSystemSlice.utilisateurConnecte
   );
-  const Utilisateur_SuperviseurInfos = useSelector(
-    (state) => state.utilisateurSystemSlice.Utilisateur_SuperviseurInfos
-  );
   const derniereCodeUtilisateur = useSelector(
-    (state) => state.utilisateurSystemSlice.derniereCodeUtilisateur
+    (state) => state.utilisateurSlice.derniereCodeUtilisateur
   );
-  const listeUtilisateur = useSelector(
-    (state) => state.utilisateurSlice.listeUtilisateur
-  );
+  const infosUtilisateur = useSelector((state) => state.utilisateurSlice.infosUtilisateur);
 
   // state pour désactiver/activer les champs lors de changement de modes editables (ajout/modification)
   // vers le mode de consultation respectivement
   const activerChampsForm = useSelector(
     (state) => state.interfaceSlice.activerChampsForm
   );
+  const listeCodesUtilisateur = useSelector((state) => state.utilisateurSlice.listeCodesUtilisateur);
+  useEffect(() => {
+    if(utilisateurConnecte.type.toLowerCase() === "utilisateur") {
+      dispatch(setInfosUtilisateurEntiere(utilisateurConnecte));
+    }
+    if(utilisateurConnecte.type.toLowerCase() === "superviseur") {
+      dispatch(getDerniereCodeUtilisateur());
+      dispatch(getListeCodesUtilisateur());
+    }
+  },[])
 
   useEffect(() => {
-    dispatch(getDerniereCodeUtilisateur());
-  }, []);
+    // * le deuxième test, infosUtilisateur.codeuser === "" est pour éviter 
+    // * une cercle infini d'appèls de cet effet
+    if(derniereCodeUtilisateur.codeuser && infosUtilisateur.codeuser === "") {
+      dispatch(setInfosUtilisateur({colonne: "codeuser", valeur: derniereCodeUtilisateur.codeuser}))
+    }
+  },[derniereCodeUtilisateur.codeuser])
+
+  useEffect(() => {
+    if(infosUtilisateur.codeuser && infosUtilisateur.codeuser != "") {
+      dispatch(getUtilisateurParCode(infosUtilisateur.codeuser))
+    }
+  },[infosUtilisateur.codeuser])
   const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
   const handleCodeUtilisateur = (codeuser) => {
     dispatch(getUtilisateurParCode(codeuser));
@@ -83,11 +92,7 @@ const UtilisateurForm = () => {
                         type="text"
                         className="border border-gray-300 rounded-md p-2"
                         value={
-                          toolbarTable === "consultation"
-                            ? `${Utilisateur_SuperviseurInfos.codeuser || ""}`
-                            : toolbarMode === "ajout"
-                            ? derniereCodeUtilisateur.codeuser
-                            : ""
+                          infosUtilisateur.codeuser? infosUtilisateur.codeuser : ""
                         }
                         onChange={(e) =>
                           hundlechange("codeuser", e.target.value)
@@ -107,11 +112,7 @@ const UtilisateurForm = () => {
                         type="text"
                         className="border border-gray-300 rounded-md p-2"
                         value={
-                          toolbarTable === "consultation"
-                            ? Utilisateur_SuperviseurInfos.nom || ""
-                            : toolbarMode === "ajout"
-                            ? ""
-                            : ""
+                          infosUtilisateur.nom? infosUtilisateur.nom: "" 
                         }
                         onChange={(e) => hundlechange("nom", e.target.value)}
                         disabled={!activerChampsForm}
@@ -127,7 +128,7 @@ const UtilisateurForm = () => {
                     <input
                       type="email"
                       className="border border-gray-300 rounded-md p-2"
-                      value={Utilisateur_SuperviseurInfos.email || ""}
+                      value={infosUtilisateur.email? infosUtilisateur.email: ""}
                       onChange={(e) => hundlechange("email", e.target.value)}
                       disabled={!activerChampsForm}
                     />
@@ -141,8 +142,7 @@ const UtilisateurForm = () => {
                       type="text"
                       className="border border-gray-300 rounded-md p-2"
                       value={
-                        toolbarTable === "consultation"
-                          ? Utilisateur_SuperviseurInfos.directeur || "" : ""
+                        infosUtilisateur.directeur? infosUtilisateur.directeur : ""
                       }
                       onChange={(e) =>
                         hundlechange("directeur", e.target.value)
@@ -160,9 +160,7 @@ const UtilisateurForm = () => {
                       className="border border-gray-300 rounded-md p-2"
                      
                       value={
-                        toolbarTable === "consultation"
-                          ? Utilisateur_SuperviseurInfos.type || ""
-                          : ""
+                        infosUtilisateur.type?infosUtilisateur.type: ""
                       }
                       onChange={(e) => hundlechange("type", e.target.value)}
                       disabled={!activerChampsForm}
@@ -175,7 +173,7 @@ const UtilisateurForm = () => {
                     <input
                       type="password"
                       className="border border-gray-300 rounded-md p-2"
-                      value={Utilisateur_SuperviseurInfos.motpasse || ""}
+                      value={infosUtilisateur.motpasse?infosUtilisateur.motpasse : ""}
                       onChange={(e) => hundlechange("motpasse", e.target.value)}
                       disabled={!activerChampsForm}
                     />
