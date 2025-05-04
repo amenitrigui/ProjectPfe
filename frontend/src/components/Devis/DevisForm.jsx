@@ -121,13 +121,15 @@ function DevisForm() {
   }, [devisInfo.codesecteur]);
   // * useEffect #5: remplir le champ NUMBL par le derniere NUMBL récuperé
   useEffect(() => {
-    if (derniereNumbl && derniereNumbl != "") {
-      dispatch(
-        setDevisInfo({ collone: "NUMBL", valeur: "DV" + derniereNumbl })
-      );
-    }
-    if(derniereNumbl == "") {
-      dispatch(getDerniereNumbl(utilisateurConnecte.codeuser));
+    if(!devisInfo.NUMBL) {
+      if (derniereNumbl && derniereNumbl != "") {
+        dispatch(
+          setDevisInfo({ collone: "NUMBL", valeur: "DV" + derniereNumbl })
+        );
+      }
+      if(derniereNumbl == "") {
+        dispatch(getDerniereNumbl(utilisateurConnecte.codeuser));
+      }
     }
   }, [derniereNumbl]);
 

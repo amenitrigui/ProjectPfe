@@ -203,6 +203,11 @@ export const utilisateurSlice = createSlice({
       const { colonne, valeur } = action.payload;
       state.filtersUtilisateur[colonne] = valeur;
     },
+    viderChampsInfosUtilisateur: (state, action) => {
+      state.infosUtilisateur = {
+        ...infoUtilisateurInitiales
+      }
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -332,5 +337,6 @@ export const {
   setInfosUtilisateur,
   setInfosUtilisateurEntiere,
   setListeUtilisateur_Superviseur,
+  viderChampsInfosUtilisateur
 } = utilisateurSlice.actions;
 export default utilisateurSlice.reducer;

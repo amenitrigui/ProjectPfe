@@ -8,6 +8,7 @@ import {
   setDevisList,
   getListeNumbl,
   getListeDevisParNUMBL,
+  viderChampsDevisInfo,
 } from "../../app/devis_slices/devisSlice";
 import DataTable from "react-data-table-component";
 import {
@@ -17,6 +18,7 @@ import {
   getToutCodesClient,
   setClientInfosEntiere,
   setListeClients,
+  viderChampsClientInfo,
 } from "../../app/client_slices/clientSlice";
 import {
   setAfficherRecherchePopup,
@@ -33,6 +35,7 @@ import {
   setLigneDevisInfos,
   setLigneDevisInfosEntiere,
   setListeArticle,
+  viderChampsArticleInfo,
 } from "../../app/article_slices/articleSlice";
 import {
   getListeFamillesParCodeFamille,
@@ -49,7 +52,7 @@ import { useLocation } from "react-router-dom";
 import {
   setUtilisateurSupInfo,
 } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
-import { getListeUtilisateurParCode, getListeUtilisateurParDirecteur, getListeUtilisateurParNom, getListeUtilisateurParType, setListeUtilisateur_Superviseur } from "../../app/utilisateur_slices/utilisateurSlice";
+import { getListeUtilisateurParCode, getListeUtilisateurParDirecteur, getListeUtilisateurParNom, getListeUtilisateurParType, setListeUtilisateur_Superviseur, viderChampsInfosUtilisateur } from "../../app/utilisateur_slices/utilisateurSlice";
 
 const Recherche = () => {
   //?==================================================================================================================
@@ -309,6 +312,7 @@ const Recherche = () => {
     }
   };
 
+  // ??????????????
   const viderListes = () => {
     dispatch(setListeUtilisateur_Superviseur([]));
     dispatch(setDevisList([]));
@@ -394,10 +398,29 @@ const Recherche = () => {
       dispatch(setAfficherRecherchePopup(false));
     }
     viderListes();
+    viderChamps();
     revenirToolbarTablePrecedent();
   };
 
+  const viderChamps = () => {
+    switch(toolbarTable) {
+      case "article":
+        dispatch(viderChampsArticleInfo());
+        break;
+      case "client":
+        dispatch(viderChampsClientInfo());
+        break;
+      case "devis":
+        dispatch(viderChampsDevisInfo());
+        break;
+      case "utilisateur":
+        dispatch(viderChampsInfosUtilisateur());
+        break
+    }
+  }
+
   const fermerPopupRecherche = () => {
+    viderChamps();
     revenirToolbarTablePrecedent();
     dispatch(setAfficherRecherchePopup(false));
   };
@@ -456,7 +479,7 @@ const Recherche = () => {
 
             <div className="space-y-2">
               {toolbarTable === "devis" &&
-                ["numbl", "client", "montant", "periode", "article"].map(
+                ["numbl", "client", "montant", "periode"].map(
                   (filtre) => (
                     <label key={filtre} className="flex items-center">
                       <input
