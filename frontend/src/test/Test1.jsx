@@ -1,48 +1,13 @@
 
 import React, { useRef } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
+import { getVilleParCodePostal, setClientInfos, viderChampsClientInfo } from "../app/client_slices/clientSlice";
+import { setDevisInfo } from "../app/devis_slices/devisSlice";
 
 function Test1() {
-  const devisInfo = useSelector((state) => state.devisSlice.devisInfo);
-  const derniereNumbl = useSelector((state) => state.devisSlice.derniereNumbl);
-  const dbName = useSelector((state) => state.utilisateurSystemSlice.dbName);
-  const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
-  const contentRef = useRef(null);
-  const reactToPrintFn = useReactToPrint({ content: () => contentRef.current });
-
-  // Calculs
-  const lignes = devisInfo.articles || [];
-
-  const lignesAvecNetHT = lignes.map(ligne => {
-    const netHt = ligne.QteART * ligne.PUART * (1 - (ligne.Remise || 0) / 100);
-    const tva = netHt * (ligne.TauxTVA || 0) / 100;
-    const ttc = netHt + tva;
-    return { ...ligne, netHt, tva, ttc };
-  });
-
-  const totalHT = lignesAvecNetHT.reduce((sum, l) => sum + l.netHt, 0).toFixed(3);
-  const totalTVA = lignesAvecNetHT.reduce((sum, l) => sum + l.tva, 0).toFixed(3);
-  const totalTTC = lignesAvecNetHT.reduce((sum, l) => sum + l.ttc, 0).toFixed(3);
-
-  const handleChange = (e, colonne) => {
-    if (e.target.value === "") {
-      dispatch(viderChampsClientInfo());
-    }
-    if (colonne === "cp" && e.target.value.length === 4) {
-      dispatch(getVilleParCodePostal(e.target.value));
-    }
-    dispatch(setClientInfos({ colonne, valeur: e.target.value }));
-    if (insertionDepuisDevisForm) {
-      dispatch(setDevisInfo({ colonne, valeur: e.target.value }));
-    }
-  };
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  const ouvrireMenuDrawer = useSelector(
-    (state) => state.interfaceSlice.ouvrireMenuDrawer
-  );
+  
   const convertir = () => {
     let valeur = document.getElementById("valeurAConvertir").value;
     const champResultat = document.getElementById("resultat");
