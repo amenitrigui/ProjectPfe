@@ -1156,7 +1156,8 @@ const DevisFormPlaceholder = () => {
         taxe: taxe.toFixed(3),
       };
 
-      let lignesValidees =
+      let 
+      lignesValidees =
         JSON.parse(localStorage.getItem("lignesValidees")) || [];
       lignesValidees.push(ligneValidee);
 

@@ -238,6 +238,7 @@ const getListeUtilisateur = async (req, res) => {
       {
         type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
       }
+      
     );
 
     return res.status(200).json({

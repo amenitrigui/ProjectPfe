@@ -22,6 +22,11 @@ function ParametresFacturationClient() {
       dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
     }
   };
+  const handleChangeNumerique = (e, colonne) => {
+    if (isNumerique(e.target.value)) {
+      dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
+    }
+  };
   
 
   const handleChangeNumeriqueDouble = (e, colonne) => {
@@ -42,9 +47,9 @@ function ParametresFacturationClient() {
     }
   };
   const handleChangeAlphaNumerique = (e, colonne) => {
-    if (isNaN(e.target.value)) {
+  
       dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
-    }
+    
   };
   const handleChange = (e, colonne) => {
     // * si aucun code client est selectionné
@@ -296,7 +301,7 @@ function ParametresFacturationClient() {
             type="text"
             className="border border-gray-300 rounded-md p-2"
             value={clientInfos.reference || ""}
-            onChange={(e) => handleChangeAlphaNumerique(e, "reference")}
+            onChange={(e) => handleChangeNumerique(e, "reference")}
             disabled={!activerChampsForm}
             maxLength={11}
           />

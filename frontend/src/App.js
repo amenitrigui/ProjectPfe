@@ -66,6 +66,7 @@ function App() {
   const afficherRecherchePopup = useSelector(
     (state) => state.interfaceSlice.afficherRecherchePopup
   );
+  const theme = useSelector((state) => state.interfaceSlice.theme);
   //?==================================================================================================================
   //?==================================================appels UseEffect================================================
   //?==================================================================================================================
@@ -97,6 +98,7 @@ function App() {
   //?==================================================================================================================
   // dispatch(setDevisInfo("usera", usera));
   return (
+    <div className={theme === 'dark' ? 'dark' : ''}>
     <Routes>
       <Route path="/" element={<SignInPage />} />
       <Route path="/deconnexion" element={<Deconnexion />} />
@@ -127,6 +129,7 @@ function App() {
         element={<Secteur_Region_CpostalForm />}
       ></Route>
 
+
       <Route
         path="/DevisFormPlaceholder"
         element={<DevisFormPlaceholder></DevisFormPlaceholder>}
@@ -134,6 +137,7 @@ function App() {
       <Route path="/UtilisateurFormTout" element={<UtilisateurFormTout />} />
       <Route path="/UtilisateurList" element={<UtilisateurList />}></Route>
     </Routes>
+    </div>
   );
 }
 

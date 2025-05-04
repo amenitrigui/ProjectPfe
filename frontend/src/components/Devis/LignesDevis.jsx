@@ -8,7 +8,7 @@ function LignesDevis() {
   //?=====================================================Variables====================================================
   //?==================================================================================================================
   const devisInfo = useSelector((state) => state.devisSlice.devisInfo);
-  const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
+  const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);// 
   const dispatch = useDispatch();
   //?==================================================================================================================
   //?===================================================appels UseEffect===============================================

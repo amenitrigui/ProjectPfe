@@ -30,6 +30,7 @@ export const interfaceSlice = createSlice({
     afficherSecteurPopup: false,
     ouvrireAvatarMenu: false,
     isDashBoardRoute: true,
+    theme: 'light',
     lignedevisSelectionne: [],
   },
 
@@ -39,6 +40,9 @@ export const interfaceSlice = createSlice({
     },
     setOuvrireAvatarMenu: (state, action) => {
       state.ouvrireAvatarMenu = action.payload;
+    },
+    setTheme: (state, action) => {
+      state.theme = action.payload;
     },
     setAfficherRecherchePopup: (state, action) => {
       state.afficherRecherchePopup = action.payload;
@@ -107,6 +111,7 @@ export const {
   setOuvrireDrawerMenu,
   setAfficherFamillePopub,
   setAfficherSecteurPopup,
+  setTheme,
   setOuvrireAvatarMenu,
   setIsDashBoardRoute,
 } = interfaceSlice.actions;
