@@ -18,12 +18,101 @@ function Imprimer() {
     const ttc = netHt + tva;
     return { ...ligne, netHt, tva, ttc };
   });
-  const totalTVA = lignesAvecNetHT.reduce((sum, l) => sum + l.tva, 0).toFixed(3);
+  const totalTVA = lignesAvecNetHT
+    .reduce((sum, l) => sum + l.tva, 0)
+    .toFixed(3);
   const totalHT = lignesAvecNetHT
     .reduce((sum, l) => sum + l.netHt, 0)
     .toFixed(3);
 
   const reactToPrintFn = useReactToPrint({ contentRef });
+
+  const convertir = (valeur) => {
+    if (valeur === 0) return "Zéro Dinars";
+    valeur = parseFloat(valeur)
+    // Split into integer and decimal parts
+    const parts = valeur.toFixed(3).split('.');
+    const dinars = Math.abs(parseInt(parts[0]));
+    const millimes = parseInt(parts[1].substring(0, 3)); // Take exactly 3 digits
+
+    // Words for numbers 0 to 19
+    const units = [
+        "", "Un", "Deux", "Trois", "Quatre", "Cinq", "Six", "Sept", "Huit", "Neuf",
+        "Dix", "Onze", "Douze", "Treize", "Quatorze", "Quinze", "Seize", 
+        "Dix-Sept", "Dix-Huit", "Dix-Neuf"
+    ];
+
+    // Words for tens
+    const tens = [
+        "", "", "Vingt", "Trente", "Quarante", "Cinquante", 
+        "Soixante", "Soixante-Dix", "Quatre-Vingt", "Quatre-Vingt-Dix"
+    ];
+
+    // Convert integer part to words
+    const convertInteger = (num) => {
+        if (num === 0) return "";
+        let result = "";
+        
+        // Hundreds
+        if (num >= 100) {
+            const hundreds = Math.floor(num / 100);
+            result = (hundreds === 1 ? "Cent" : units[hundreds] + " Cent") + " ";
+            num %= 100;
+        }
+        
+        // Special French numbers (70-99)
+        if (num >= 80 && num < 100) {
+            result += (num === 80 ? "Quatre-Vingts" : "Quatre-Vingt-" + units[num - 80]);
+        } 
+        else if (num >= 60 && num < 80) {
+            result += "Soixante" + (num === 60 ? "" : num === 61 ? " et Un" : "-" + units[num - 60]);
+        }
+        // 20-59
+        else if (num >= 20) {
+            result += tens[Math.floor(num / 10)] + 
+                      (num % 10 === 0 ? "" : 
+                       num % 10 === 1 ? " et Un" : "-" + units[num % 10]);
+        } 
+        // 1-19
+        else if (num > 0) {
+            result += units[num];
+        }
+
+        return result.trim();
+    };
+
+    // Build the Dinars part
+    let dinarsText = "";
+    if (dinars > 0) {
+        dinarsText = convertInteger(dinars);
+        // Special cases for "Un"
+        dinarsText = dinarsText.replace(/^Un Cent/, "Cent");
+        dinarsText += " Dinars" + (dinars > 1 ? "" : "");
+    }
+
+    // Build the Millimes part
+    let millimesText = "";
+    if (millimes > 0) {
+        const fullMillimes = millimes < 10 ? millimes * 100 : millimes < 100 ? millimes * 10 : millimes;
+        millimesText = convertInteger(fullMillimes);
+        millimesText += " Millimes";
+    }
+
+    // Combine parts
+    let result = "";
+    if (valeur < 0) result = "Moins ";
+    result += dinarsText;
+    if (dinarsText && millimesText) result += " Et ";
+    result += millimesText;
+
+    // Handle zero dinars case
+    if (!dinarsText && millimesText) {
+        result = millimesText;
+    }
+
+    return result || "Zéro Dinars";
+};
+  const MTVA = lignesAvecNetHT.reduce((sum, l) => sum + l.tva, 0).toFixed(3);
   return (
     <div>
       <style>
@@ -547,7 +636,7 @@ px-2 py-1"ea  {devisInf.articles.tauxv}
                       {ligne.TauxTVA}
                     </td>
                     <td className="border border-gray-300 px-2 py-1 text-sm">
-                      {ligne.QteART * ligne.PUART * (1 - ligne.Remise / 100)}
+                      {(ligne.QteART * ligne.PUART * (1 - ligne.Remise / 100)).toFixed(3)}
                     </td>
                   </tr>
                 ))}
@@ -558,57 +647,62 @@ px-2 py-1"ea  {devisInf.articles.tauxv}
           {/* Totaux et conditions */}
           <div className="flex flex-col lg:flex-row justify-between gap-6">
             {/* Bloc TVA */}
-           {/* Bloc TVA */}
-<div className="w-full lg:w-1/3 p-4 rounded-lg border-[#2a2185]">
-  <table className="table-auto w-full border-collapse">
-    <tbody>
-      <tr>
-        <td className="border px-2 py-1">Taux TVA</td>
-        <td className="border px-2 py-1">
-          {/* Afficher tous les taux TVA distincts */}
-          {[...new Set(devisInfo.articles.map(item => item.TauxTVA))].join(', ')}%
-        </td>
-      </tr>
-      <tr>
-        <td className="border px-2 py-1">Base HT</td>
-        <td className="border px-2 py-1">
-          {lignesAvecNetHT
-            .reduce((sum, l) => sum + l.netHt, 0)
-            .toFixed(3)} DT
-        </td>
-      </tr>
-      <tr>
-        <td className="border px-2 py-1">Montant TVA</td>
-        <td className="border px-2 py-1">
-          {lignesAvecNetHT
-            .reduce((sum, l) => sum + l.tva, 0)
-            .toFixed(3)} DT
-        </td>
-      </tr>
-      <tr>
-        <td className="border px-2 py-1 font-bold text-right">
-          Total Taxe
-        </td>
-        <td className="border px-2 py-1 font-bold">
-          {lignesAvecNetHT
-            .reduce((sum, l) => sum + l.tva, 0)
-            .toFixed(3)} DT
-        </td>
-      </tr>
-     
-    </tbody>
-    
-  </table>
-  <div className="mt-4 p-2 border border-[#2a2185] rounded-lg inline-block">
+            {/* Bloc TVA */}
+            <div className="w-full lg:w-1/3 p-4 rounded-lg border-[#2a2185]">
+              <table className="table-auto w-full border-collapse">
+                <tbody>
+                  <tr>
+                    <td className="border px-2 py-1">Taux TVA</td>
+                    <td className="border px-2 py-1">
+                      {/* Afficher tous les taux TVA distincts */}
+                      {[
+                        ...new Set(
+                          devisInfo.articles.map((item) => item.TauxTVA)
+                        ),
+                      ].join(", ")}
+                      %
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border px-2 py-1">Base HT</td>
+                    <td className="border px-2 py-1">
+                      {lignesAvecNetHT
+                        .reduce((sum, l) => sum + l.netHt, 0)
+                        .toFixed(3)}{" "}
+                      DT
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border px-2 py-1">Montant TVA</td>
+                    <td className="border px-2 py-1">
+                      {lignesAvecNetHT
+                        .reduce((sum, l) => sum + l.tva, 0)
+                        .toFixed(3)}{" "}
+                      DT
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border px-2 py-1 font-bold text-right">
+                      Total Taxe
+                    </td>
+                    <td className="border px-2 py-1 font-bold">
+                      {lignesAvecNetHT
+                        .reduce((sum, l) => sum + l.tva, 0)
+                        .toFixed(3)}{" "}
+                      DT
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              {console.log(devisInfo)}
+              <div className="mt-4 p-2 border border-[#2a2185] rounded-lg inline-block">
                 <p className="text-right text-sm font-medium">
-                  Arrêter la présentation de devise à la somme :{" "}
-                  <span className="text-[#2a2185] font-semibold">
-                    Zéro dinar
-                  </span>
+                  Arrêter la présentation de devise à la somme :
+                  {convertir(MTVA)}
                 </p>
               </div>
-  {/* ... reste du code ... */}
-</div>
+              {/* ... reste du code ... */}
+            </div>
             {/* Bloc Conditions */}
             <div className="w-full lg:w-1/3 p-4">
               <table className="table-auto w-full mt-4 border-collapse border border-[#2a2185]">
@@ -672,7 +766,6 @@ px-2 py-1"ea  {devisInf.articles.tauxv}
                 </tbody>
               </table>
             </div>
-          
           </div>
 
           <div>
