@@ -293,8 +293,8 @@ export const utilisateurSystemSlices = createSlice({
         state.status = "chagement";
       })
       .addCase(getListeUtilisateur.fulfilled, (state, action) => {
-        state.status = "succès";
         state.listeUtilisateur_Superviseur = action.payload;
+        state.status = "succès";
       })
       .addCase(getListeUtilisateur.rejected, (state, action) => {
         state.status = "échec";

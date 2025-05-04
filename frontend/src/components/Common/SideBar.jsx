@@ -24,7 +24,7 @@ function SideBar() {
     { name: "Gestion Devis", icon: "document-text-outline", path: "/DevisFormTout" },
     { name: "Gestion Utilisateurs", icon: "person-circle-outline", path: "/UtilisateurFormTout" },
     { name: "Liste de société", icon: "business-outline", path: "/SocietiesList" },
-    { name: "Settings", icon: "settings-outline", path: "/Parametres" },
+    { name: "Settings", icon: "settings-outline", path: "/Settings" },
     { name: "Déconnexion", icon: "log-out-outline", path: "/deconnexion" },
   ];
 
