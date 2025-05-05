@@ -1291,7 +1291,7 @@ const getrepresentantparcodevendeur = async (req, res) => {
 };
 const filtrerListeDevis = async (req, res) => {
   const { dbName } = req.params;
-  // const  filters  = JSON.parse(req.query.filters);
+   const  filters  = JSON.parse(req.query.filters);
 
   const dbConnection = await getDatabaseConnection(dbName);
   // ? liste des conditions

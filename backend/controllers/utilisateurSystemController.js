@@ -4,6 +4,7 @@ const defineUserModel = require("../models/utilisateur/utilisateur");
 const { sequelizeConnexionDbUtilisateur } = require("../db/config");
 // const bcrypt = require("bcryptjs");
 
+
 // * enregistrer une nouvelle utilisateur
 // * dans la base des données ErpSole
 // * exemple
@@ -11,48 +12,88 @@ const { sequelizeConnexionDbUtilisateur } = require("../db/config");
 // * output : aucune, l'utilisateur sera enregistré dans la base de données
 // * verb : post
 // * url :http://localhost:5000/api/utilisateurSystem/AjouterUtilisateur
-const AjouterUtilisateur = async (req, res) => {
-  const { User } = req.body;
-  try {
-    if(!User) {
-      return res.status(400).json({message: "l'utilisateur n'est pas définit"})
-    }
-    if (!User.email || !User.motpasse || !User.nom) {
-      return res
-      .status(400)
-      .json({ message: "Tous les champs doivent être remplis." });
-    }
+// const AjouterUtilisateur = async (req, res) => {
+//   const { User } = req.body;
+//   try {
+//     if(!User) {
+//       return res.status(400).json({message: "l'utilisateur n'est pas définit"})
+//     }
+//     if (!User.email || !User.motpasse || !User.nom) {
+//       return res
+//       .status(400)
+//       .json({ message: "Tous les champs doivent être remplis." });
+//     }
     
-    const user = defineUserModel(sequelizeConnexionDbUtilisateur);
-    const existingUser = await user.findOne({ where: { email: User.email } });
+//     const user = defineUserModel(sequelizeConnexionDbUtilisateur);
+//     const existingUser = await user.findOne({ where: { email: User.email } });
 
-    if (existingUser) {
-      return res.status(400).json({ message: "Cet email est déjà utilisé." });
-    }
+//     if (existingUser) {
+//       return res.status(400).json({ message: "Cet email est déjà utilisé." });
+//     }
 
-    const newUser = await user.create({
-      email: User.email,
-      motpasse: User.motpasse,
-      nom: User.nom,
-      type: User.type,
-      directeur: User.directeur,
+//     const newUser = await user.create({
+//       email: User.email,
+//       motpasse: User.motpasse,
+//       nom: User.nom,
+//       type: User.type,
+//       directeur: User.directeur,
+//     });
+
+//     return res.status(201).json({
+//       message: "Utilisateur créé avec succès.",
+//       user: newUser,
+//     });
+//   } catch (error) {
+//     console.error(
+//       "Erreur lors de la création de l'utilisateur:",
+//       error.message || error
+//     );
+//     return res.status(500).json({
+//       message: "Une erreur est survenue lors de la création de l'utilisateur.",
+//       error: error.message,
+//     });
+//   }
+// };
+
+const AjouterUtilisateur = async (req, res) => {
+  const { utilisateurInfo } = req.body;
+  
+  try {
+    // 1. Obtenir la connexion à la base de données AVEC le nom de la base spécifié
+    const dbConnection = await getDatabaseConnection(process.env.DB_USERS_NAME); // Remplacez par votre variable d'environnement
+    
+    // 2. Définir le modèle avec la connexion active
+    const Utilisateur = defineUserModel(dbConnection);
+    
+    // 3. Créer l'utilisateur avec les valeurs par défaut pour les champs non fournis
+    const newUser = await Utilisateur.create({
+      codeuser: utilisateurInfo.codeuser,
+      type: utilisateurInfo.type,
+      email: utilisateurInfo.email,
+      directeur: utilisateurInfo.directeur,
+      nom: utilisateurInfo.nom,
+      motpasse: utilisateurInfo.motpasse,
+      image: utilisateurInfo.image,
+      
+      // Valeurs par défaut pour les autres champs requis
+      etatbcf: 0,
+      etatbcc: 0,
+      etatcl: 0,
+      // ... autres champs avec leurs valeurs par défaut
     });
 
-    return res.status(201).json({
-      message: "Utilisateur créé avec succès.",
-      user: newUser,
+    return res.status(201).json({ 
+      success: true,
+      message: "Insertion réussie",
+      data: newUser
     });
+    
   } catch (error) {
-    console.error(
-      "Erreur lors de la création de l'utilisateur:",
-      error.message || error
-    );
-    return res.status(500).json({
-      message: "Une erreur est survenue lors de la création de l'utilisateur.",
-      error: error.message,
-    });
+    console.error("Erreur lors de l'ajout d'utilisateur:", error);
+    return res.status(500).json({message:error.message });
   }
 };
+
 //* récuperer le dernièr code de client dans la base
 // * example: le dernier code client dans la base est 2000
 // * input :
@@ -117,11 +158,11 @@ const supprimerUtilisateur = async (req, res) => {
   try {
     const Utilisateur = defineUtilisateurModel(sequelizeConnexionDbUtilisateur);
 
-    await Utilisateur.destroy({ where: { codeuser: codeuser } });
+  const utilisateur=  await Utilisateur.destroy({ where: { codeuser: codeuser } });
 
     return res
       .status(200)
-      .json({ message: "Utilisateur supprimé(s) avec succès" });
+      .json({ message: "Utilisateur supprimé(s) avec succès" ,utilisateur});
   } catch (error) {
     return res.status(500).json({
       message: "un erreur est survenu lors de suppression de utilisateur",

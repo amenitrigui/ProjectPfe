@@ -1,4 +1,6 @@
 const jwt = require("jsonwebtoken");
+const path = require('path');
+
 // const bcrypt = require("bcryptjs");
 
 // const Representant = require("../models/representant");
@@ -7,7 +9,11 @@ const nodeMailer = require("nodemailer");
 const { google } = require("googleapis");
 const handlebars = require("handlebars");
 const fs = require("fs");
-const { sequelizeConnexionDbUtilisateur, setBdConnexion, getConnexionBd } = require("../db/config");
+const {
+  sequelizeConnexionDbUtilisateur,
+  setBdConnexion,
+  getConnexionBd,
+} = require("../db/config");
 const {
   verifyTokenValidity,
   getDatabaseConnection,
@@ -51,15 +57,15 @@ const loginUtilisateur = async (req, res) => {
     }
 
     // Recherche de l'utilisateur
-    const user = await User.findOne({ 
-      attributes: ["codeuser","nom","motpasse","email","directeur","type"],
-      where: { nom } 
+    const user = await User.findOne({
+      attributes: ["codeuser", "nom", "motpasse", "email", "directeur", "type"],
+      where: { nom },
     });
     if (!user) {
       return res.status(400).json({ message: "Utilisateur non trouvé." });
     }
 
-    if (motpasse !== user.motpasse){
+    if (motpasse !== user.motpasse) {
       return res.status(401).json({ message: "Mot de passe incorrect." });
     }
 
@@ -87,7 +93,7 @@ const loginUtilisateur = async (req, res) => {
     return res.status(200).json({
       message: "Connexion réussie.",
       token,
-      user: user ,
+      user: user,
       societies: societies.map((s) => ({
         societe: s.societe, // Code de la société
         rsoc: s.rsoc, // Nom de la société
@@ -117,12 +123,15 @@ const selectDatabase = async (req, res) => {
     const decoded = verifyTokenValidity(req);
     const codeuser = decoded.codeuser;
     setBdConnexion(databaseName);
-    const Utilisateur = defineUserModel(sequelizeConnexionDbUtilisateur)
-    await Utilisateur.update({socutil: databaseName},{
-      where: {
-        codeuser: codeuser
+    const Utilisateur = defineUserModel(sequelizeConnexionDbUtilisateur);
+    await Utilisateur.update(
+      { socutil: databaseName },
+      {
+        where: {
+          codeuser: codeuser,
+        },
       }
-    })
+    );
     return res.status(200).json({
       message: `Connecté à la base ${databaseName}`,
       databaseName,
@@ -255,6 +264,38 @@ const reinitialiserMotPasse = async (req, res) => {
     });
   }
 };
+const uploadImageUtilisateur = async (req, res) => {
+  const { codeuser } = req.params;
+
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "Aucun fichier uploadé" });
+    }
+
+    const imagePath = req.file.filename; // Le nom du fichier sauvegardé
+
+    // Mise à jour de l'utilisateur dans la base de données
+    await sequelizeConnexionDbUtilisateur.query(
+      "UPDATE utilisateur SET image = :image WHERE codeuser = :codeuser",
+      {
+        replacements: { image: imagePath, codeuser: codeuser },
+        type: sequelizeConnexionDbUtilisateur.QueryTypes.UPDATE,
+      }
+    );
+
+    // Construire l'URL complète de l'image
+    const imageUrl = `${req.protocol}://${req.get(
+      "host"
+    )}/uploads/${imagePath}`;
+
+    return res.status(200).json({
+      message: "Image uploadée avec succès",
+      imageUrl: imageUrl,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 
 // * récuperer les informations d'un utilisateur par son code
 // * verb : get
@@ -272,9 +313,17 @@ const getUtilisateurParCode = async (req, res) => {
     );
 
     if (utilisateur.length > 0) {
+      // On ajoute le chemin complet de l'image si elle existe
+      const user = utilisateur[0];
+      if (user.image) {
+        user.imageUrl = `${req.protocol}://${req.get("host")}/uploads/${
+          user.image
+        }`;
+      }
+
       return res.status(200).json({
         message: "Utilisateur récupéré avec succès",
-        utilisateur,
+        utilisateur: [user],
       });
     } else {
       return res.status(404).json({ message: "Utilisateur non trouvé" });
@@ -288,23 +337,61 @@ const getUtilisateurParCode = async (req, res) => {
 // * et avec le base de données sélectionnée de connexion
 // * verb : post
 // * url: http://localhost:5000/api/utilisateurs/deconnecterUtilisateur
-const deconnecterUtilisateur = async(req, res) => {
+const deconnecterUtilisateur = async (req, res) => {
   try {
     const connexionBd = getConnexionBd();
-    if(sequelizeConnexionDbUtilisateur){
+    if (sequelizeConnexionDbUtilisateur) {
       sequelizeConnexionDbUtilisateur.close();
     }
-    if(connexionBd) {
+    if (connexionBd) {
       connexionBd.close();
     }
 
-    return res.status(200).json({message: "déconnexion effectuée avec succès"})
-  }catch(error){
-    return res.status(500).json({message: error.message})
+    return res
+      .status(200)
+      .json({ message: "déconnexion effectuée avec succès" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
-}
+};
+const AjouterUtilisateur = async (req, res) => {
+  const { utilisateurInfo } = req.body;
+  
+  try {
+    // 1. Obtenir la connexion à la base de données AVEC le nom de la base spécifié
+    const dbConnection = await getDatabaseConnection(process.env.DB_USERS_NAME); // Remplacez par votre variable d'environnement
+    
+    // 2. Définir le modèle avec la connexion active
+    const Utilisateur = defineUserModel(dbConnection);
+    
+    // 3. Créer l'utilisateur avec les valeurs par défaut pour les champs non fournis
+    const newUser = await Utilisateur.create({
+      codeuser: utilisateurInfo.codeuser,
+      type: utilisateurInfo.type,
+      email: utilisateurInfo.email,
+      directeur: utilisateurInfo.directeur,
+      nom: utilisateurInfo.nom,
+      motpasse: utilisateurInfo.motpasse,
+      image: utilisateurInfo.image,
+      
+      // Valeurs par défaut pour les autres champs requis
+      etatbcf: 0,
+      etatbcc: 0,
+      etatcl: 0,
+      // ... autres champs avec leurs valeurs par défaut
+    });
 
-
+    return res.status(201).json({ 
+      success: true,
+      message: "Insertion réussie",
+      data: newUser
+    });
+    
+  } catch (error) {
+    console.error("Erreur lors de l'ajout d'utilisateur:", error);
+    return res.status(500).json({message:error.message });
+  }
+};
 
 module.exports = {
   loginUtilisateur,
@@ -313,4 +400,6 @@ module.exports = {
   reinitialiserMotPasse,
   getUtilisateurParCode,
   deconnecterUtilisateur,
+  uploadImageUtilisateur,
+  AjouterUtilisateur,
 };

@@ -53,6 +53,7 @@ import {
 import {
   setViderChampsUtilisateur,
   setUtilisateurSupInfo,
+  SetUtilisateurSystemremplir,
 } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 import { viderChampsCPostalInfo } from "../../app/cpostal_slices/cpostalSlice";
 import { viderChampsRegionInfo } from "../../app/region_slices/regionSlice";
@@ -170,6 +171,7 @@ function ToolBar() {
       dispatch(viderChampsArticleInfo());
     }
     if (toolbarTable == "utilisateur") {
+      
       dispatch(setViderChampsUtilisateur());
     }
   };
@@ -227,7 +229,11 @@ function ToolBar() {
         setAlertMessage("Êtes-vous sûr de vouloir supprimer ce devis ?")
       );
     }
-
+    if (toolbarTable === "utilisateur") {
+      dispatch(
+        setAlertMessage("Êtes-vous sûr de vouloir supprimer ce utilisateur ?")
+      );
+    }
     dispatch(setAfficherAlert(true));
   };
 
@@ -268,6 +274,7 @@ function ToolBar() {
     if (toolbarTable == "utilisateur") {
       if (toolbarMode == "ajout") {
         dispatch(setAlertMessage("Confirmez-vous ajouter de ce utilisateur ?"));
+        dispatch(SetUtilisateurSystemremplir(infosUtilisateur))
       }
       if (toolbarMode == "modification") {
         dispatch(setAlertMessage("confirmer vous de modifier de utilisateur?"));

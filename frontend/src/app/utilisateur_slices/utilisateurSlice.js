@@ -141,6 +141,21 @@ export const getListeUtilisateur = createAsyncThunk(
     return response.data.result;
   }
 );
+export const AjouterUtilisateur = createAsyncThunk(
+  "slice/AjouterUtilisateur",
+  async (_, thunkAPI) => {
+    const UtilisateurInfos = thunkAPI.getState().clientSlice.clientInfos;
+   console.log("dssdss",thunkAPI.getState().interfaceSlice.setAlertMessage(response.data.message));
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/api/utilisateurs/AjouterUtilisateur`,
+      {
+        UtilisateurInfos,
+      }
+    );
+    console.log(response)
+    return response
+  }
+);
 export const getListeCodesUtilisateur = createAsyncThunk(
   "utilisateurSlice/getListeCodesUtilisateur",
   async (_, thunkAPI) => {
@@ -151,11 +166,37 @@ export const getListeCodesUtilisateur = createAsyncThunk(
     return response.data.listeCodesUtilisateur;
   }
 );
+export const uploadImageUtilisateur = createAsyncThunk(
+  "utilisateurSlice/uploadImageUtilisateur",
+  async ({ codeuser, imageFile }, thunkAPI) => {
+    try {
+      const formData = new FormData();
+      formData.append('image', imageFile);
+      
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/utilisateurs/uploadImage/${codeuser}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      );
+      
+      return { imageUrl: response.data.imageUrl };
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message
+      );
+    }
+  }
+);
 const infoUtilisateurInitiales = {
   codeuser: "",
   nom: "",
   type: "",
   directeur: "",
+  image:""
 };
 export const utilisateurSlice = createSlice({
   name: "utilisateurSlice",
@@ -235,6 +276,10 @@ export const utilisateurSlice = createSlice({
       .addCase(loginUtilisateur.rejected, (state, action) => {
         state.erreur = action.payload;
         state.status = "échec";
+      })
+
+      .addCase(uploadImageUtilisateur.fulfilled, (state, action) => {
+        state.infosUtilisateur.imageUrl = action.payload.imageUrl;
       })
 
       .addCase(filterListeUtilisateur.pending, (state, action) => {
