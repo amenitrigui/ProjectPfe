@@ -40,7 +40,6 @@ const UtilisateurForm = () => {
       dispatch(getListeCodesUtilisateur());
     }
   },[])
-
   useEffect(() => {
     // * le deuxième test, infosUtilisateur.codeuser === "" est pour éviter 
     // * une cercle infini d'appèls de cet effet
@@ -153,7 +152,7 @@ const UtilisateurForm = () => {
 
                   <div className="flex flex-col">
                     <label className="font-bold mb-1 text-[rgb(48,60,123)]">
-                      Nom Directeur
+                      Type
                     </label>
                     <input
                       type="text"

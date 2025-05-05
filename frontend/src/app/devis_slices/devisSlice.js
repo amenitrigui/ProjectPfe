@@ -591,11 +591,10 @@ export const devisSlice = createSlice({
       state.derniereNumbl = action.payload;
     },
     setDevisClientInfos: (state, action) => {
-      const { ADRCLI, CODECLI, cp, RSCLI } = action.payload;
+      const { ADRCLI, CODECLI, RSCLI } = action.payload;
       state.devisInfo.CODECLI = CODECLI;
       state.devisInfo.ADRCLI = ADRCLI;
-      state.devisInfo.cp = cp;
-      state.devisInfo = RSCLI;
+      state.devisInfo.RSCLI = RSCLI;
     },
     setDevisArticles: (state, action) => {
       state.devisInfo.articles = [...state.devisInfo.articles, action.payload];

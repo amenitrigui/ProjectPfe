@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setDbName } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
+import { viderResponseLogin } from "../../app/utilisateur_slices/utilisateurSlice";
 
 const SocietiesList = () => {
   const [societies, setSocieties] = useState([]);
@@ -12,6 +13,11 @@ const SocietiesList = () => {
   if (token == "") {
     navigate("/");
   }
+
+  useEffect(() => {
+    // * pour éviter la rédirection vers /SocietiesList
+    dispatch(viderResponseLogin());
+  },[])
 
   useEffect(() => {
     const societiesFromStorage = JSON.parse(localStorage.getItem("societies"));

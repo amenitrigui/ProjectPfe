@@ -2,6 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLignedevisSelectionne } from "../../app/interface_slices/interfaceSlice";
 import { setLigneDevisInfos } from "../../app/article_slices/articleSlice";
+import { setDevisInfo } from "../../app/devis_slices/devisSlice";
 
 function LignesDevis() {
   //?==================================================================================================================
@@ -32,6 +33,11 @@ function LignesDevis() {
       dispatch(setLigneDevisInfos({ colonne: "QteART", valeur: values[3] }));
       dispatch(setLigneDevisInfos({ colonne: "Remise", valeur: values[4] }));
       dispatch(setLigneDevisInfos({ colonne: "DesART", valeur: values[5] }));
+
+      // * pour supprimer un ligne de la liste d'article de devis
+      // * pour effectuer l'opération de modification/suppression
+      // dispatch(setDevisInfo({collone: "articles", valeur: devisInfo.articles.filter((article) => article.CodeART != values[1])}))
+
       // * on remplace le "%" par "" pour éviter plusieurs "%"
       // * qui sont ajouté chaque fois au tableau manuellement
       dispatch(
@@ -88,9 +94,9 @@ function LignesDevis() {
           {(devisInfo.articles && devisInfo.articles.length) > 0 ? (
             devisInfo.articles.map((article) => (
               <tr
-                key={`${article.famille}-${article.CodeART}`}
-                className="transition-all duration-150 ease-in-out hover:bg-[#2A2185] "
-                onDoubleClick={(e) => handleClick(e)}
+              key={`${article.famille}-${article.CodeART}`}
+              className="transition-all duration-150 ease-in-out hover:bg-[#2A2185] "
+              onDoubleClick={(e) => handleClick(e)}
               >
                 <td className="p-3 border border-gray-300" id="codefamille">
                   {article.famille}
@@ -121,19 +127,20 @@ function LignesDevis() {
                 </td>
                 <td className="p-3 border border-gray-300">
                   {/* {toolbarMode === "consultation" ? article.PUART : article.PUHTV} */}
-                  {article.PUART}
+                  {article.PUART ? parseFloat(article.PUART).toFixed(3) : "0"}
                 </td>
                 <td className="p-3 border border-gray-300">
                   {/* {toolbarMode === "consultation" ? (article.PUART * (1 + article.TauxTVA / 100)).toFixed(3) : article.prixbrut} */}
-                  {(article.PUART * (1 + article.TauxTVA / 100)).toFixed(3)}
+                  {(article.PUART && article.TauxTVA) ? (article.PUART * (1 + article.TauxTVA / 100)).toFixed(3) : "0"}
                 </td>
                 <td className="p-3 border border-gray-300">
                   {/* {toolbarMode === "consultation" ? (article.QteART * article.PUART * (1 - article.Remise / 100)).toFixed(3) : article.prixnet} */}
-                  {(
+                  {(article.QteART && article.QteART && article.PUART)? (
                     article.QteART *
                     article.PUART *
                     (1 - article.Remise / 100)
-                  ).toFixed(3)}
+                  ).toFixed(3)
+                 : "0"}
                 </td>
               </tr>
             ))

@@ -1,4 +1,9 @@
-import { CheckIcon, PencilIcon, TrashIcon, ArrowPathIcon } from "@heroicons/react/20/solid";
+import {
+  CheckIcon,
+  PencilIcon,
+  TrashIcon,
+  ArrowPathIcon,
+} from "@heroicons/react/20/solid";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 
@@ -48,25 +53,40 @@ function ArticlesDevis() {
     dispatch(getArticleFamiles());
   }, []);
   useEffect(() => {
-    setNetHt(
-      (
-        ligneDevisInfos.QteART *
-        ligneDevisInfos.PUART *
-        (1 - ligneDevisInfos.Remise / 100)
-      ).toFixed(3) || 0
-    );
+    if (
+      ligneDevisInfos.QteART &&
+      ligneDevisInfos.PUART &&
+      ligneDevisInfos.Remise && 
+      parseInt(ligneDevisInfos.QteART) > 0 &&
+      parseFloat(ligneDevisInfos.PUART) > 0 &&
+      parseFloat(ligneDevisInfos.Remise) >= 0
+    ) {
+      setNetHt(
+        (
+          ligneDevisInfos.QteART *
+          ligneDevisInfos.PUART *
+          (1 - ligneDevisInfos.Remise / 100)
+        ).toFixed(3)
+      );
+    } else {
+      setNetHt(0);
+    }
   }, [ligneDevisInfos.QteART, ligneDevisInfos.PUART, ligneDevisInfos.Remise]);
 
   useEffect(() => {
-    setPuttc(
-      (ligneDevisInfos.PUART * (1 + ligneDevisInfos.TauxTVA / 100)).toFixed(3) || 0
-    );
+    if (ligneDevisInfos.PUART && ligneDevisInfos.TauxTVA && parseFloat(ligneDevisInfos.PUART) > 0 && parseFloat(ligneDevisInfos.TauxTVA) >= 0) {
+      setPuttc(
+        (ligneDevisInfos.PUART * (1 + ligneDevisInfos.TauxTVA / 100)).toFixed(3)
+      );
+    } else {
+      setPuttc(0);
+    }
   }, [ligneDevisInfos.PUART, ligneDevisInfos.TauxTVA]);
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
   const handlecodeFamilleChange = (codeFamille) => {
-    dispatch(setLigneDevisInfos({ colonne: "famille", valeur: codeFamille}))
+    dispatch(setLigneDevisInfos({ colonne: "famille", valeur: codeFamille }));
     dispatch(getListeCodesArticles(codeFamille));
   };
   const handleCodeArticleChange = (codeArticle) => {
@@ -82,17 +102,17 @@ function ArticlesDevis() {
       return false;
     }
 
-      dispatch(setDevisArticles(ligneDevisInfos));
+    dispatch(setDevisArticles(ligneDevisInfos));
     dispatch(
       setDevisInfo({
         collone: "MHT",
-        valeur: parseInt(devisInfo.MHT) + parseInt(ligneDevisInfos.PUART),
+        valeur: parseInt(devisInfo.MHT) + parseInt(netHt),
       })
     );
     dispatch(
       setDevisInfo({
         collone: "MREMISE",
-        valeur: parseInt(devisInfo.MREMISE) + parseInt(ligneDevisInfos.Remise),
+        valeur: (parseInt(devisInfo.MREMISE) + (parseFloat(ligneDevisInfos.PUART) * parseFloat(ligneDevisInfos.Remise/100)).toFixed(3)).toFixed(3),
       })
     );
     dispatch(
@@ -101,8 +121,9 @@ function ArticlesDevis() {
         valeur: parseInt(devisInfo.MTTC) + parseInt(puttc),
       })
     );
+    
     dispatch(viderChampsArticleInfo());
-    dispatch(setLigneDevisInfosEntiere({}))
+    dispatch(setLigneDevisInfosEntiere({}));
     dispatch(setLignedevisSelectionne([]));
   };
 
@@ -119,109 +140,116 @@ function ArticlesDevis() {
   };
 
   const getValeurChampFamille = () => {
-    if(ligneDevisInfos?.famille) {
+    if (ligneDevisInfos?.famille) {
       return ligneDevisInfos.famille;
     }
     return "";
-  }
+  };
 
   const getValeurChampRemise = () => {
-    if(ligneDevisInfos.Remise) {
+    if (ligneDevisInfos.Remise) {
       return ligneDevisInfos.Remise;
     }
     return "";
-  }
+  };
 
   const handleRemiseChange = (valeur) => {
-    
-    dispatch(setLigneDevisInfos({colonne: "Remise", valeur}))
-    dispatch(setLignedevisSelectionne([]))
-  }
+    dispatch(setLigneDevisInfos({ colonne: "Remise", valeur }));
+    dispatch(setLignedevisSelectionne([]));
+  };
 
   const getValeurChampCodeArticle = () => {
-    if(ligneDevisInfos.CodeART) {
+    if (ligneDevisInfos.CodeART) {
       return ligneDevisInfos.CodeART;
     }
     return "";
-  }
+  };
 
   const getValeurChampLibelle = () => {
-    if(ligneDevisInfos.DesART) {
+    if (ligneDevisInfos.DesART) {
       return ligneDevisInfos.DesART;
     }
     return "";
-  }
+  };
 
   const getValeurChampUnite = () => {
-    if(ligneDevisInfos.Unite) {
+    if (ligneDevisInfos.Unite) {
       return ligneDevisInfos.Unite;
     }
     return "";
-  }
+  };
 
   const getValeurChampQuantite = () => {
-    if(ligneDevisInfos.QteART) {
+    if (ligneDevisInfos.QteART) {
       return ligneDevisInfos.QteART;
     }
     return "";
-  }
+  };
 
   const getValeurChampConfig = () => {
-    if(ligneDevisInfos.Conf){
-      return ligneDevisInfos.Conf
+    if (ligneDevisInfos.Conf) {
+      return ligneDevisInfos.Conf;
     }
 
     return "";
-  }
+  };
 
   const getValeurChampPuttc = () => {
-    if(puttc) {
+    if (puttc) {
       return puttc;
     }
 
     return "";
-  }
+  };
 
   const getValeurChampTVA = () => {
-    if(ligneDevisInfos.TauxTVA) {
+    if (ligneDevisInfos.TauxTVA) {
       return ligneDevisInfos.TauxTVA;
     }
 
     return "";
-  }
+  };
 
   const getValeurChampNetHt = () => {
-    if(netHt) {
+    if (netHt) {
       return netHt;
     }
 
     return "";
-  }
+  };
 
   const getValeurChampNbrUnite = () => {
-    if(ligneDevisInfos.nbun) {
+    if (ligneDevisInfos.nbun) {
       return ligneDevisInfos.nbun;
     }
 
     return "";
-  }
+  };
 
   const handleSupprimerLDFPBtnClick = () => {
     const devisInfosFiltres = devisInfo.articles.filter((article) => {
-      return !((article.CodeART == ligneDevisInfos.CodeART) && (article.DesART == ligneDevisInfos.DesART))
+      return !(
+        article.CodeART == ligneDevisInfos.CodeART &&
+        article.DesART == ligneDevisInfos.DesART
+      );
     });
-    dispatch(setDevisInfo({collone: "articles", valeur: devisInfosFiltres}))
+    dispatch(setDevisInfo({ collone: "articles", valeur: devisInfosFiltres }));
     dispatch(viderChampsLigneDevisInfos());
-  }
+  };
 
   const handleModifierLDFPBtnClick = () => {
-    devisInfo.articles.map((article,indice) => {
-      if(article.CodeART == ligneDevisInfos.CodeART) {
-        dispatch(setDevisInfoArticleParIndice({indice: indice, ligneDevis: ligneDevisInfos}))
+    devisInfo.articles.map((article, indice) => {
+      if (article.CodeART == ligneDevisInfos.CodeART) {
+        dispatch(
+          setDevisInfoArticleParIndice({
+            indice: indice,
+            ligneDevis: ligneDevisInfos,
+          })
+        );
       }
-    })
+    });
     dispatch(viderChampsLigneDevisInfos());
-  }
+  };
   return (
     <div className="details">
       <div className="banquedetails">
@@ -356,13 +384,17 @@ function ArticlesDevis() {
                       <label className="block font-medium text-sm mb-1">
                         T.V.A
                       </label>
-                      <input
-                        type="text"
-                        placeholder="TauxTVA"
-                        className="w-full input input-bordered input-sm"
+                      <select
+                        className="select select-bordered select-sm w-full max-w-xs"
                         value={getValeurChampTVA()}
-                        onChange={(e) => handleChangementChamp("tauxTVA", e)}
-                      />
+                        onChange={(e) => handleChangementChamp("TauxTVA", e)}
+                      >
+                        <option value="0">0</option>
+                        <option value="7">7</option>
+                        <option value="13">13</option>
+                        <option value="19">19</option>
+                        <option value="29">29</option>
+                      </select>
                     </div>
 
                     {/* P.U.T.T.C */}
@@ -418,7 +450,9 @@ function ArticlesDevis() {
                         step="0.001"
                         placeholder="prix1"
                         value={getPrixArticle()}
-                        onChange={(e) => {handleChangementChamp("PUART",e)}}
+                        onChange={(e) => {
+                          handleChangementChamp("PUART", e);
+                        }}
                         className="w-full input input-bordered input-sm"
                       />
                     </div>
@@ -456,7 +490,9 @@ function ArticlesDevis() {
                   <button
                     className="btn btn-sm btn-ghost text-black-500"
                     title="Vider Champs"
-                    onClick={() => {dispatch(viderChampsLigneDevisInfos())}}
+                    onClick={() => {
+                      dispatch(viderChampsLigneDevisInfos());
+                    }}
                   >
                     <ArrowPathIcon className="h-5 w-5" />
                     <span className="sr-only">Vider champs</span>

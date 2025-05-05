@@ -1,6 +1,17 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { PURGE } from "redux-persist";
 
+export const deconnexionUtilisateur = createAsyncThunk(
+  'auth/deconnexionUtilisateur',
+  async (navigate, thunkAPI) => {
+    await axios.post(`${process.env.REACT_APP_API_URL}/api/utilisateurs/deconnecterUtilisateur`);
+    thunkAPI.dispatch(thunkAPI.getState().utilisateurSlice.viderResponseLogin());
+    thunkAPI.dispatch({ type: PURGE, key: 'root', result: () => null });
+    localStorage.clear();
+    navigate('/'); // Now works!
+  }
+);
 export const loginUtilisateur = createAsyncThunk(
   "utilisateurSlice/loginUtilisateur",
   async (infosConnexion, thunkAPI) => {
@@ -207,6 +218,9 @@ export const utilisateurSlice = createSlice({
       state.infosUtilisateur = {
         ...infoUtilisateurInitiales
       }
+    },
+    viderResponseLogin: (state, action) => {
+      state.responseLogin = {};
     }
   },
   extraReducers: (builder) => {
@@ -337,6 +351,7 @@ export const {
   setInfosUtilisateur,
   setInfosUtilisateurEntiere,
   setListeUtilisateur_Superviseur,
-  viderChampsInfosUtilisateur
+  viderChampsInfosUtilisateur,
+  viderResponseLogin  
 } = utilisateurSlice.actions;
 export default utilisateurSlice.reducer;

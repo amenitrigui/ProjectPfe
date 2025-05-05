@@ -90,6 +90,7 @@ function DevisForm() {
   const toolbarTable = useSelector(
     (state) => state.interfaceSlice.toolbarTable
   );
+  const listeNUMBL = useSelector((state) => state.devisSlice.listeNUMBL);
   const derniereNumbl = useSelector((state) => state.devisSlice.derniereNumbl);
   //?==================================================================================================================
   //?==============================================appels UseEffect====================================================
@@ -164,15 +165,15 @@ function DevisForm() {
   }, [toolbarMode]);
 
   // * useEffect #8: remplir les informations client pour un devis
-  useEffect(() => {
-    if (clientInfos) {
-      dispatch(setDevisInfo({ collone: "CODECLI", valeur: clientInfos.code }));
-      dispatch(setDevisInfo({ collone: "RSCLI", valeur: clientInfos.rsoc }));
-      dispatch(
-        setDevisInfo({ collone: "ADRCLI", valeur: clientInfos.adresse })
-      );
-    }
-  }, [clientInfos.code, clientInfos.rsoc, clientInfos.adresse]);
+  // useEffect(() => {
+  //   if (clientInfos) {
+  //     dispatch(setDevisInfo({ collone: "CODECLI", valeur: clientInfos.code }));
+  //     dispatch(setDevisInfo({ collone: "RSCLI", valeur: clientInfos.rsoc }));
+  //     dispatch(
+  //       setDevisInfo({ collone: "ADRCLI", valeur: clientInfos.adresse })
+  //     );
+  //   }
+  // }, [clientInfos.code, clientInfos.rsoc, clientInfos.adresse]);
 
   //?==================================================================================================================
   //?=====================================================fonctions====================================================

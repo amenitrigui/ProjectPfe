@@ -9,6 +9,8 @@ import {
   getListeNumbl,
   getListeDevisParNUMBL,
   viderChampsDevisInfo,
+  setDevisInfo,
+  setDevisClientInfos
 } from "../../app/devis_slices/devisSlice";
 import DataTable from "react-data-table-component";
 import {
@@ -214,7 +216,6 @@ const Recherche = () => {
           break;
         case "client":
           dispatch(getDevisParCodeClient(valeur));
-
           break;
         case "montant":
           dispatch(getDevisParMontant(valeur));
@@ -345,6 +346,7 @@ const Recherche = () => {
     }
     if (toolbarTable == "client") {
       dispatch(setClientInfosEntiere(datatableElementSelection));
+      dispatch(setDevisClientInfos({"CODECLI": datatableElementSelection.code, "RSCLI": datatableElementSelection.rsoc, "ADRCLI": datatableElementSelection.adresse }))
       dispatch(setListeClients([]));
       dispatch(setAfficherRecherchePopup(false));
     }

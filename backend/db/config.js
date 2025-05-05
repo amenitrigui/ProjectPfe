@@ -44,6 +44,7 @@ const connecterAuBaseDonnees = (nomDb = "") => {
 
 // * Connexion avec le serveur MYSQL (sans base de données spécifique)
 let dbConnection = connecterAuBaseDonnees(); //conxexion avexc serveur mysql
+let sequelizeConnexionDbUtilisateur = connecterAuBaseDonnees();
 const setBdConnexion = (nomDb) => {
   dbConnection = connecterAuBaseDonnees(nomDb);
 };
@@ -51,10 +52,15 @@ const getConnexionBd = () => {
   return dbConnection;
 }
 
-// * Connexion avec la base des données "usererpsole"
-const sequelizeConnexionDbUtilisateur = connecterAuBaseDonnees(
-  process.env.DB_USERS_NAME
-); ///connexion specifiquenmrnt le non de la base de donnnes
+const setConnexionAuBdUtilisateurs = () => {
+  // * Connexion avec la base des données "usererpsole"
+   sequelizeConnexionDbUtilisateur= connecterAuBaseDonnees(process.env.DB_USERS_NAME); ///connexion specifiquenmrnt le non de la base de donnnes
+}
+
+const getConnexionAuBdUtilisateurs = () => {
+  return sequelizeConnexionDbUtilisateur;
+}
+
 
 // * Teste la connexion avec le serveur MySQL et la base "usererpsole"
 const testerConnexionUtilisateurSocieteBd = async () => {
@@ -80,5 +86,6 @@ testerConnexionUtilisateurSocieteBd();
 module.exports = {
   getConnexionBd,
   setBdConnexion,
-  sequelizeConnexionDbUtilisateur
+  setConnexionAuBdUtilisateurs,
+  getConnexionAuBdUtilisateurs
 };

@@ -399,7 +399,7 @@ function ToolBar() {
 
     if (toolbarTable == "devis") {
       const indiceNUMBL = getIndiceNUMBLSelectionne();
-      if(indiceNUMBL <= listeNUMBL.length-1){
+      if(indiceNUMBL != listeNUMBL.length-1){
         dispatch(
           setDevisInfo({
             collone: "NUMBL",
@@ -435,8 +435,8 @@ function ToolBar() {
 
   const handleDeconnexionBtnClick = () => {
     dispatch(setOuvrireAvatarMenu(false));
-    localStorage.clear();
-    dispatch(deconnecterUtilisateur());
+    console.log("ok bro")
+    // navigate("/deconnexion")
   };
 
   // * on vide le derniere code pour que le useEffect
@@ -454,6 +454,21 @@ function ToolBar() {
       dispatch(setDerniereCodeArticle(""));
     }
   };
+  const estVisible = () => {
+    const userType = utilisateurConnecte?.type?.toLowerCase();
+    const currentTable = toolbarTable?.toLowerCase();
+    
+    if (userType === "superviseur") {
+      return true;
+    }
+    
+    if (userType === "utilisateur" && currentTable !== "utilisateur") {
+      return true;
+    }
+    
+    return false;
+  };
+  
   return (
     <>
       <nav className="w-full border-b border-gray-300 px-4 py-2 bg-white shadow-sm sticky top-0 z-50">
@@ -473,18 +488,7 @@ function ToolBar() {
               {!activerBoutonsValiderAnnuler && (
                 <>
                   {/* Bouton Nouveau */}
-                  {(utilisateurConnecte?.type?.toLowerCase() ===
-                    "superviseur" ||
-                    (utilisateurConnecte?.type?.toLowerCase() ===
-                      "utilisateur" &&
-                      [
-                        "client",
-                        "devis",
-                        "article",
-                        "famille",
-                        "sousfamille",
-                        "utilisateur",
-                      ].includes(toolbarTable?.toLowerCase()))) && (
+                  {estVisible() && (
                     <button
                       type="button"
                       onClick={handleAjoutBtnClick}
@@ -513,18 +517,7 @@ function ToolBar() {
                   </button>
 
                   {/* Bouton Supprimer */}
-                  {(utilisateurConnecte?.type?.toLowerCase() ===
-                    "superviseur" ||
-                    (utilisateurConnecte?.type?.toLowerCase() ===
-                      "utilisateur" &&
-                      [
-                        "client",
-                        "devis",
-                        "article",
-                        "famille",
-                        "sousfamille",
-                        "utilisateur",
-                      ].includes(toolbarTable?.toLowerCase()))) && (
+                  {estVisible() && (
                     <button
                       type="button"
                       onClick={handleSupprimerBtnClick}
@@ -541,18 +534,7 @@ function ToolBar() {
                   )}
 
                   {/* Liste */}
-                  {(utilisateurConnecte?.type?.toLowerCase() ===
-                    "superviseur" ||
-                    (utilisateurConnecte?.type?.toLowerCase() ===
-                      "utilisateur" &&
-                      [
-                        "client",
-                        "devis",
-                        "article",
-                        "famille",
-                        "utilisateur",
-                        "sousfamille",
-                      ].includes(toolbarTable?.toLowerCase()))) && (
+                  {estVisible() && (
                     <button
                       type="button"
                       onClick={handleNaviguerVersListe}
@@ -566,10 +548,7 @@ function ToolBar() {
                   )}
 
                   {/* Précédent */}
-                  {(utilisateurConnecte?.type?.toLowerCase() ===
-                    "superviseur" ||
-                    utilisateurConnecte?.type?.toLowerCase() ===
-                      "utilisateur") &&
+                  {estVisible() &&
                     [
                       "client",
                       "devis",
@@ -593,10 +572,7 @@ function ToolBar() {
                     )}
 
                   {/* Suivant */}
-                  {(utilisateurConnecte?.type?.toLowerCase() ===
-                    "superviseur" ||
-                    utilisateurConnecte?.type?.toLowerCase() ===
-                      "utilisateur") &&
+                  {estVisible() &&
                     [
                       "client",
                       "devis",

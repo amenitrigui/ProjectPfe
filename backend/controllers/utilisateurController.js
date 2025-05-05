@@ -7,7 +7,7 @@ const nodeMailer = require("nodemailer");
 const { google } = require("googleapis");
 const handlebars = require("handlebars");
 const fs = require("fs");
-const { sequelizeConnexionDbUtilisateur, setBdConnexion, getConnexionBd } = require("../db/config");
+const { getConnexionAuBdUtilisateurs, setConnexionAuBdUtilisateurs, setBdConnexion, getConnexionBd } = require("../db/config");
 const {
   verifyTokenValidity,
   getDatabaseConnection,
@@ -40,8 +40,9 @@ oAuth2Client.setCredentials({
 // * http://localhost:5000/api/utilisateurs/loginUtilisateur
 const loginUtilisateur = async (req, res) => {
   const { nom, motpasse } = req.body;
-
   try {
+    setConnexionAuBdUtilisateurs(process.env.DB_USERS_NAME);
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     const User = defineUserModel(sequelizeConnexionDbUtilisateur);
     // Vérification que tous les champs sont remplis
     if (!nom || !motpasse) {
@@ -114,9 +115,11 @@ const selectDatabase = async (req, res) => {
   }
 
   try {
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     const decoded = verifyTokenValidity(req);
     const codeuser = decoded.codeuser;
     setBdConnexion(databaseName);
+    console.log(sequelizeConnexionDbUtilisateur)
     const Utilisateur = defineUserModel(sequelizeConnexionDbUtilisateur)
     await Utilisateur.update({socutil: databaseName},{
       where: {
@@ -146,6 +149,7 @@ const envoyerDemandeReinitialisationMp = async (req, res) => {
   }
 
   try {
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     const User = defineUserModel(sequelizeConnexionDbUtilisateur);
     const user = await User.findOne({ where: { email } });
 
@@ -230,6 +234,7 @@ const reinitialiserMotPasse = async (req, res) => {
   }
 
   try {
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     const decodedJWT = verifyTokenValidity(req, res);
     const User = defineUserModel(sequelizeConnexionDbUtilisateur);
 
@@ -263,6 +268,7 @@ const getUtilisateurParCode = async (req, res) => {
   const { codeuser } = req.params;
 
   try {
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     const utilisateur = await sequelizeConnexionDbUtilisateur.query(
       "SELECT * FROM utilisateur WHERE codeuser = :codeuser",
       {
@@ -291,6 +297,7 @@ const getUtilisateurParCode = async (req, res) => {
 const deconnecterUtilisateur = async(req, res) => {
   try {
     const connexionBd = getConnexionBd();
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     if(sequelizeConnexionDbUtilisateur){
       sequelizeConnexionDbUtilisateur.close();
     }

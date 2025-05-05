@@ -24,17 +24,16 @@ function SignInPage() {
     e.preventDefault();
 
     dispatch(loginUtilisateur({ nom, motpasse }));
-    if (responseLogin && Object.values(responseLogin).length != 0) {
+  };
+
+  useEffect(() => {
+    if (responseLogin && Object.keys(responseLogin).length !== 0) {
       dispatch(setutilisateurConnecteEntiere(responseLogin.user));
       dispatch(setToken(responseLogin.token));
-      localStorage.setItem(
-        "societies",
-        JSON.stringify(responseLogin.societies)
-      );
-      // localStorage.setItem("codeuser", JSON.stringify(data.codeuser));
+      localStorage.setItem("societies", JSON.stringify(responseLogin.societies));
       navigate("/SocietiesList");
     }
-  };
+  }, [responseLogin, dispatch, navigate]);
 
   useEffect(() => {
     toast("Date mise à jour 1/05/2025 17:29", {

@@ -190,12 +190,13 @@ const ajouterDevis = async (req, res) => {
       TIMBRE,
     };
     const devis = await Dfp.create(dfpData);
-    articles.map(async (article) => {
+    // * map tout seul n'attend pas que les promis sont resolus
+    await Promise.all(articles.map(async (article) => {
       article.NumBL = NUMBL;
       article.NLigne = articles.length;
-      const ligneDevis = await ldfp.create(article); //ligneDevis = null;
-    });
-
+      await ldfp.create(article);
+    }));
+    
     return res.status(201).json({
       message: "Devis créé avec succès.",
       devis,
@@ -1291,7 +1292,7 @@ const getrepresentantparcodevendeur = async (req, res) => {
 };
 const filtrerListeDevis = async (req, res) => {
   const { dbName } = req.params;
-  // const  filters  = JSON.parse(req.query.filters);
+  const  filters  = req.query.filters;
 
   const dbConnection = await getDatabaseConnection(dbName);
   // ? liste des conditions
