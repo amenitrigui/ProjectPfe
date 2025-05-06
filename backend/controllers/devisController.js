@@ -316,14 +316,23 @@ const GetDevisListParClient = async (req, res) => {
 // * example:
 // * input : 4
 // * output : la liste de codes devis généré par l'utilisateur 4
-// * http://localhost:5000/api/devis/SOLEVO/getCodesDevis/4
+// * http://localhost:5000/api/devis/SOLEVO/getCodesDevis/05
 const getCodesDevis = async (req, res) => {
   try {
     const { dbName } = req.params;
     const { usera } = req.params;
+    const query = `
+      SELECT NUMBL 
+      FROM dfp 
+      WHERE usera = :usera 
+      ORDER BY 
+        REGEXP_REPLACE(NUMBL, '^[A-Za-z]+', ''),  -- Remove alphabetic prefixes
+        LENGTH(NUMBL),                            -- Sort by length
+        NUMBL                                     -- Final sort
+    `;
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const listeNUMBL = await dbConnection.query(
-      `SELECT NUMBL from dfp where usera = :usera order by CAST(NUMBL AS UNSIGNED) ASC`,
+      query,
       {
         type: dbConnection.QueryTypes.SELECT,
         replacements: {

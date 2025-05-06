@@ -53,6 +53,7 @@ import {
 import {
   setViderChampsUtilisateur,
   setUtilisateurSupInfo,
+  SetUtilisateurSystemremplir,
 } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 import { viderChampsCPostalInfo } from "../../app/cpostal_slices/cpostalSlice";
 import { viderChampsRegionInfo } from "../../app/region_slices/regionSlice";
@@ -114,6 +115,7 @@ function ToolBar() {
       return () => document.removeEventListener("mousedown", handleClick);
     }, [refs, callback]);
   };
+  const isListeRoute = useSelector((state) => state.interfaceSlice.isListeRoute);
   //?==================================================================================================================
   //?==================================================appels UseEffect================================================
   //?==================================================================================================================
@@ -148,10 +150,10 @@ function ToolBar() {
     if (toolbarTable == "devis") {
       dispatch(viderChampsDevisInfo());
       dispatch(viderChampsClientInfo());
-      dispatch(getDerniereNumbl());
       dispatch(
         setDevisInfo({ collone: "usera", valeur: utilisateurConnecte.codeuser })
       );
+      dispatch(getDerniereNumbl());
     }
 
     if (toolbarTable == "client") {
@@ -170,6 +172,7 @@ function ToolBar() {
       dispatch(viderChampsArticleInfo());
     }
     if (toolbarTable == "utilisateur") {
+      
       dispatch(setViderChampsUtilisateur());
     }
   };
@@ -227,7 +230,11 @@ function ToolBar() {
         setAlertMessage("Êtes-vous sûr de vouloir supprimer ce devis ?")
       );
     }
-
+    if (toolbarTable === "utilisateur") {
+      dispatch(
+        setAlertMessage("Êtes-vous sûr de vouloir supprimer ce utilisateur ?")
+      );
+    }
     dispatch(setAfficherAlert(true));
   };
 
@@ -268,6 +275,7 @@ function ToolBar() {
     if (toolbarTable == "utilisateur") {
       if (toolbarMode == "ajout") {
         dispatch(setAlertMessage("Confirmez-vous ajouter de ce utilisateur ?"));
+        dispatch(SetUtilisateurSystemremplir(infosUtilisateur))
       }
       if (toolbarMode == "modification") {
         dispatch(setAlertMessage("confirmer vous de modifier de utilisateur?"));
@@ -283,7 +291,11 @@ function ToolBar() {
   const handleAnnulerBtnClick = () => {
     if (toolbarTable === "devis") {
       dispatch(viderChampsDevisInfo());
-      dispatch(getDerniereNumbl(utilisateurConnecte.codeuser));
+      // * récuperer la dernière numbl  
+      // dispatch(getDerniereNumbl(utilisateurConnecte.codeuser));
+      if(listeNUMBL.length > 0) {
+        dispatch(setDevisInfo({collone: "NUMBL", valeur: listeNUMBL[listeNUMBL.length-1].NUMBL}))
+      }
     }
     if (toolbarTable === "client") {
       dispatch(viderChampsClientInfo());
@@ -327,6 +339,7 @@ function ToolBar() {
     }
     if (toolbarTable == "utilisateur") {
       const indiceutilisateurCourant = getIndiceUtilisateurSelectionne();
+      console.log(listeCodesUtilisateur)
       if(indiceutilisateurCourant > 0){
         dispatch(
           setInfosUtilisateur({
@@ -435,7 +448,6 @@ function ToolBar() {
 
   const handleDeconnexionBtnClick = () => {
     dispatch(setOuvrireAvatarMenu(false));
-    console.log("ok bro")
     // navigate("/deconnexion")
   };
 
@@ -488,7 +500,7 @@ function ToolBar() {
               {!activerBoutonsValiderAnnuler && (
                 <>
                   {/* Bouton Nouveau */}
-                  {estVisible() && (
+                  {estVisible() && !isListeRoute &&(
                     <button
                       type="button"
                       onClick={handleAjoutBtnClick}
@@ -505,7 +517,7 @@ function ToolBar() {
                   )}
 
                   {/* Bouton Modifier */}
-                  <button
+                  {(!isListeRoute && <button
                     type="button"
                     onClick={handleModifierBtnClick}
                     className="flex flex-col items-center w-16 sm:w-20 p-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-lg transition-all duration-200"
@@ -515,9 +527,10 @@ function ToolBar() {
                       Modifier
                     </span>
                   </button>
+                  )}
 
                   {/* Bouton Supprimer */}
-                  {estVisible() && (
+                  {estVisible() && !isListeRoute &&(
                     <button
                       type="button"
                       onClick={handleSupprimerBtnClick}
@@ -534,7 +547,7 @@ function ToolBar() {
                   )}
 
                   {/* Liste */}
-                  {estVisible() && (
+                  {estVisible() && !isListeRoute &&(
                     <button
                       type="button"
                       onClick={handleNaviguerVersListe}
@@ -548,7 +561,7 @@ function ToolBar() {
                   )}
 
                   {/* Précédent */}
-                  {estVisible() &&
+                  {estVisible() && !isListeRoute &&
                     [
                       "client",
                       "devis",
@@ -572,7 +585,7 @@ function ToolBar() {
                     )}
 
                   {/* Suivant */}
-                  {estVisible() &&
+                  {estVisible() && !isListeRoute &&
                     [
                       "client",
                       "devis",

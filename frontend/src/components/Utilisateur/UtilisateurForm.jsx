@@ -2,13 +2,18 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import ToolBar from "../Common/ToolBar";
-import { getDerniereCodeUtilisateur, getListeCodesUtilisateur, getUtilisateurParCode, setInfosUtilisateur, setInfosUtilisateurEntiere } from "../../app/utilisateur_slices/utilisateurSlice";
+import {
+  getDerniereCodeUtilisateur,
+  getListeCodesUtilisateur,
+  getUtilisateurParCode,
+  setInfosUtilisateur,
+  setInfosUtilisateurEntiere,
+  uploadImageUtilisateur,
+} from "../../app/utilisateur_slices/utilisateurSlice";
 import SideBar from "../Common/SideBar";
 
-import {  setAfficherRecherchePopup } from "../../app/interface_slices/interfaceSlice";
-import {
-  setUtilisateur_SuperviseurInfos,
-} from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
+import { setAfficherRecherchePopup } from "../../app/interface_slices/interfaceSlice";
+import { setUtilisateur_SuperviseurInfos } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 
 const UtilisateurForm = () => {
   const location = useLocation();
@@ -23,36 +28,56 @@ const UtilisateurForm = () => {
   const derniereCodeUtilisateur = useSelector(
     (state) => state.utilisateurSlice.derniereCodeUtilisateur
   );
-  const infosUtilisateur = useSelector((state) => state.utilisateurSlice.infosUtilisateur);
-
-  // state pour désactiver/activer les champs lors de changement de modes editables (ajout/modification)
-  // vers le mode de consultation respectivement
+  const infosUtilisateur = useSelector(
+    (state) => state.utilisateurSlice.infosUtilisateur
+  );
+  const infosUtilisateursup =useSelector((state)=> state.utilisateurSystemSlice.infosUtilisateursup)
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file && infosUtilisateur.codeuser) {
+      dispatch(
+        uploadImageUtilisateur({
+          codeuser: infosUtilisateur.codeuser,
+          imageFile: file,
+        })
+      );
+    }
+  };
+  // * state pour désactiver/activer les champs lors de changement de modes editables (ajout/modification)
+  // * vers le mode de consultation respectivement
   const activerChampsForm = useSelector(
     (state) => state.interfaceSlice.activerChampsForm
   );
-  const listeCodesUtilisateur = useSelector((state) => state.utilisateurSlice.listeCodesUtilisateur);
+  const listeCodesUtilisateur = useSelector(
+    (state) => state.utilisateurSlice.listeCodesUtilisateur
+  );
   useEffect(() => {
-    if(utilisateurConnecte.type.toLowerCase() === "utilisateur") {
+    if (utilisateurConnecte.type.toLowerCase() === "utilisateur") {
       dispatch(setInfosUtilisateurEntiere(utilisateurConnecte));
     }
-    if(utilisateurConnecte.type.toLowerCase() === "superviseur") {
+    if (utilisateurConnecte.type.toLowerCase() === "superviseur") {
       dispatch(getDerniereCodeUtilisateur());
       dispatch(getListeCodesUtilisateur());
     }
   },[])
   useEffect(() => {
-    // * le deuxième test, infosUtilisateur.codeuser === "" est pour éviter 
+    // * le deuxième test, infosUtilisateur.codeuser === "" est pour éviter
     // * une cercle infini d'appèls de cet effet
-    if(derniereCodeUtilisateur.codeuser && infosUtilisateur.codeuser === "") {
-      dispatch(setInfosUtilisateur({colonne: "codeuser", valeur: derniereCodeUtilisateur.codeuser}))
+    if (derniereCodeUtilisateur.codeuser && infosUtilisateur.codeuser === "") {
+      dispatch(
+        setInfosUtilisateur({
+          colonne: "codeuser",
+          valeur: derniereCodeUtilisateur.codeuser,
+        })
+      );
     }
-  },[derniereCodeUtilisateur.codeuser])
+  }, [derniereCodeUtilisateur.codeuser]);
 
   useEffect(() => {
-    if(infosUtilisateur.codeuser && infosUtilisateur.codeuser != "") {
-      dispatch(getUtilisateurParCode(infosUtilisateur.codeuser))
+    if (infosUtilisateur.codeuser && infosUtilisateur.codeuser != "") {
+      dispatch(getUtilisateurParCode(infosUtilisateur.codeuser));
     }
-  },[infosUtilisateur.codeuser])
+  }, [infosUtilisateur.codeuser]);
   const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
   const handleCodeUtilisateur = (codeuser) => {
     dispatch(getUtilisateurParCode(codeuser));
@@ -65,12 +90,12 @@ const UtilisateurForm = () => {
     dispatch(
       setUtilisateur_SuperviseurInfos({ colonne: colonne, valeur: valeur })
     );
+    dispatch(setInfosUtilisateur({colonne,valeur}))
   };
   return (
     <div className="container">
       <SideBar />
       <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
-
         <ToolBar />
         <div className="details">
           <div className="recentCustomers" style={{ width: "90vw" }}>
@@ -91,14 +116,18 @@ const UtilisateurForm = () => {
                         type="text"
                         className="border border-gray-300 rounded-md p-2"
                         value={
-                          infosUtilisateur.codeuser? infosUtilisateur.codeuser : ""
+                          infosUtilisateur.codeuser
+                            ? infosUtilisateur.codeuser
+                            : ""
                         }
                         onChange={(e) =>
                           hundlechange("codeuser", e.target.value)
                         }
-                        onClick = {() => afficherRecherchePopup()}
-
-                        disabled={utilisateurConnecte.type.toLowerCase() !== "superviseur"}
+                        onClick={() => afficherRecherchePopup()}
+                        disabled={
+                          utilisateurConnecte.type.toLowerCase() !==
+                          "superviseur"
+                        }
                         maxLength={8}
                       />
                     </div>
@@ -110,9 +139,7 @@ const UtilisateurForm = () => {
                       <input
                         type="text"
                         className="border border-gray-300 rounded-md p-2"
-                        value={
-                          infosUtilisateur.nom? infosUtilisateur.nom: "" 
-                        }
+                        value={infosUtilisateur.nom ? infosUtilisateur.nom : ""}
                         onChange={(e) => hundlechange("nom", e.target.value)}
                         disabled={!activerChampsForm}
                         maxLength={8}
@@ -127,7 +154,9 @@ const UtilisateurForm = () => {
                     <input
                       type="email"
                       className="border border-gray-300 rounded-md p-2"
-                      value={infosUtilisateur.email? infosUtilisateur.email: ""}
+                      value={
+                        infosUtilisateur.email ? infosUtilisateur.email : ""
+                      }
                       onChange={(e) => hundlechange("email", e.target.value)}
                       disabled={!activerChampsForm}
                     />
@@ -141,7 +170,9 @@ const UtilisateurForm = () => {
                       type="text"
                       className="border border-gray-300 rounded-md p-2"
                       value={
-                        infosUtilisateur.directeur? infosUtilisateur.directeur : ""
+                        infosUtilisateur.directeur
+                          ? infosUtilisateur.directeur
+                          : ""
                       }
                       onChange={(e) =>
                         hundlechange("directeur", e.target.value)
@@ -157,10 +188,7 @@ const UtilisateurForm = () => {
                     <input
                       type="text"
                       className="border border-gray-300 rounded-md p-2"
-                     
-                      value={
-                        infosUtilisateur.type?infosUtilisateur.type: ""
-                      }
+                      value={infosUtilisateur.type ? infosUtilisateur.type : ""}
                       onChange={(e) => hundlechange("type", e.target.value)}
                       disabled={!activerChampsForm}
                     />
@@ -172,9 +200,35 @@ const UtilisateurForm = () => {
                     <input
                       type="password"
                       className="border border-gray-300 rounded-md p-2"
-                      value={infosUtilisateur.motpasse?infosUtilisateur.motpasse : ""}
+                      value={
+                        infosUtilisateur.motpasse
+                          ? infosUtilisateur.motpasse
+                          : ""
+                      }
                       onChange={(e) => hundlechange("motpasse", e.target.value)}
                       disabled={!activerChampsForm}
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label className="font-bold mb-1 text-[rgb(48,60,123)]">
+                      Image
+                    </label>
+                    {infosUtilisateur.imageUrl ? (
+                      <img
+                        src={infosUtilisateur.imageUrl}
+                        alt="Utilisateur"
+                        className="border border-gray-300 rounded-md p-2 mb-2"
+                        style={{ maxWidth: "150px" }} // Ajuste la taille de l'image si nécessaire
+                      />
+                    ) : (
+                      <p>Aucune image disponible</p> // Si aucune image n'est disponible
+                    )}
+                    <input
+                      type="file"
+                      className="border border-gray-300 rounded-md p-2"
+                     // disabled={!activerChampsForm}
+                      onChange={handleImageUpload}
+                      accept="image/*" // Pour n'accepter que les images
                     />
                   </div>
                 </div>

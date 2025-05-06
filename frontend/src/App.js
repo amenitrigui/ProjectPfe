@@ -34,6 +34,7 @@ import {
   setAfficherAlert,
   setAfficherRecherchePopup,
   setIsDashBoardRoute,
+  setIsListeRoute,
   setOuvrireDrawerMenu,
   setToolbarMode,
 } from "./app/interface_slices/interfaceSlice";
@@ -91,6 +92,15 @@ function App() {
     if (afficherRecherchePopup == true) {
       dispatch(setAfficherRecherchePopup(false));
     }
+    // * pour cacher les bouton du navbar is on est dans l'un
+    // * de l'interfaces de listes
+    if(location.pathname.toLowerCase().includes("list")){
+      dispatch(setIsListeRoute(true))
+    }
+    if(!location.pathname.toLowerCase().includes("list")){
+      dispatch(setIsListeRoute(false));
+    }
+    // * =====================================================
     // dispatch(setOuvrireDrawerMenu(false))
   }, [location.pathname]);
   //?==================================================================================================================

@@ -1,7 +1,6 @@
 const { getDatabaseConnection } = require("../common/commonMethods");
 const defineUtilisateurModel = require("../models/utilisateur/utilisateur");
 const defineUserModel = require("../models/utilisateur/utilisateur");
-const { sequelizeConnexionDbUtilisateur } = require("../db/config");
 // const bcrypt = require("bcryptjs");
 
 // * enregistrer une nouvelle utilisateur
@@ -11,48 +10,88 @@ const { sequelizeConnexionDbUtilisateur } = require("../db/config");
 // * output : aucune, l'utilisateur sera enregistré dans la base de données
 // * verb : post
 // * url :http://localhost:5000/api/utilisateurSystem/AjouterUtilisateur
+// const AjouterUtilisateur = async (req, res) => {
+//   const { User } = req.body;
+//   try {
+//     if(!User) {
+//       return res.status(400).json({message: "l'utilisateur n'est pas définit"})
+//     }
+//     if (!User.email || !User.motpasse || !User.nom) {
+//       return res
+//       .status(400)
+//       .json({ message: "Tous les champs doivent être remplis." });
+//     }
+
+//     const user = defineUserModel(sequelizeConnexionDbUtilisateur);
+//     const existingUser = await user.findOne({ where: { email: User.email } });
+
+//     if (existingUser) {
+//       return res.status(400).json({ message: "Cet email est déjà utilisé." });
+//     }
+
+//     const newUser = await user.create({
+//       email: User.email,
+//       motpasse: User.motpasse,
+//       nom: User.nom,
+//       type: User.type,
+//       directeur: User.directeur,
+//     });
+
+//     return res.status(201).json({
+//       message: "Utilisateur créé avec succès.",
+//       user: newUser,
+//     });
+//   } catch (error) {
+//     console.error(
+//       "Erreur lors de la création de l'utilisateur:",
+//       error.message || error
+//     );
+//     return res.status(500).json({
+//       message: "Une erreur est survenue lors de la création de l'utilisateur.",
+//       error: error.message,
+//     });
+//   }
+// };
+
 const AjouterUtilisateur = async (req, res) => {
-  const { User } = req.body;
+  const { utilisateurInfo } = req.body;
+
   try {
-    if(!User) {
-      return res.status(400).json({message: "l'utilisateur n'est pas définit"})
-    }
-    if (!User.email || !User.motpasse || !User.nom) {
-      return res
-      .status(400)
-      .json({ message: "Tous les champs doivent être remplis." });
-    }
-    
-    const user = defineUserModel(sequelizeConnexionDbUtilisateur);
-    const existingUser = await user.findOne({ where: { email: User.email } });
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
+    // 1. Obtenir la connexion à la base de données AVEC le nom de la base spécifié
+    const dbConnection = await getDatabaseConnection(process.env.DB_USERS_NAME); // Remplacez par votre variable d'environnement
 
-    if (existingUser) {
-      return res.status(400).json({ message: "Cet email est déjà utilisé." });
-    }
+    // 2. Définir le modèle avec la connexion active
+    const Utilisateur = defineUserModel(dbConnection);
 
-    const newUser = await user.create({
-      email: User.email,
-      motpasse: User.motpasse,
-      nom: User.nom,
-      type: User.type,
-      directeur: User.directeur,
+    // 3. Créer l'utilisateur avec les valeurs par défaut pour les champs non fournis
+    const newUser = await Utilisateur.create({
+      codeuser: utilisateurInfo.codeuser,
+      type: utilisateurInfo.type,
+      email: utilisateurInfo.email,
+      directeur: utilisateurInfo.directeur,
+      nom: utilisateurInfo.nom,
+      motpasse: utilisateurInfo.motpasse,
+      image: utilisateurInfo.image,
+
+      // Valeurs par défaut pour les autres champs requis
+      etatbcf: 0,
+      etatbcc: 0,
+      etatcl: 0,
+      // ... autres champs avec leurs valeurs par défaut
     });
 
     return res.status(201).json({
-      message: "Utilisateur créé avec succès.",
-      user: newUser,
+      success: true,
+      message: "Insertion réussie",
+      data: newUser,
     });
   } catch (error) {
-    console.error(
-      "Erreur lors de la création de l'utilisateur:",
-      error.message || error
-    );
-    return res.status(500).json({
-      message: "Une erreur est survenue lors de la création de l'utilisateur.",
-      error: error.message,
-    });
+    console.error("Erreur lors de l'ajout d'utilisateur:", error);
+    return res.status(500).json({ message: error.message });
   }
 };
+
 //* récuperer le dernièr code de client dans la base
 // * example: le dernier code client dans la base est 2000
 // * input :
@@ -60,6 +99,7 @@ const AjouterUtilisateur = async (req, res) => {
 // * http://localhost:5000/api/utilisateurSystem/getDerniereCodeUtilisateur
 const getDerniereCodeUtilisateur = async (req, res) => {
   try {
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     const derniereCodeUtilisateur = await sequelizeConnexionDbUtilisateur.query(
       `SELECT codeuser FROM utilisateur ORDER BY CAST(codeuser AS UNSIGNED) DESC LIMIT 1`,
       {
@@ -81,6 +121,7 @@ const ModifierUtilisateur = async (req, res) => {
   const { MajUtilisateur } = req.body;
 
   try {
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     const Utilisateur = defineUtilisateurModel(sequelizeConnexionDbUtilisateur);
     const user = await Utilisateur.findOne({
       where: { codeuser: MajUtilisateur.codeuser },
@@ -112,16 +153,20 @@ const ModifierUtilisateur = async (req, res) => {
     });
   }
 };
+//*url: http://localhost:5000/api/utilisateurSystem/supprimerUtilisateur?codeuser=01
 const supprimerUtilisateur = async (req, res) => {
   const { codeuser } = req.query;
   try {
+    console.log("nice")
+    const sequelizeConnexionDbUtilisateur = await getDatabaseConnection(process.env.DB_USERS_NAME)//getConnexionAuBdUtilisateurs();
     const Utilisateur = defineUtilisateurModel(sequelizeConnexionDbUtilisateur);
-
-    await Utilisateur.destroy({ where: { codeuser: codeuser } });
+    const utilisateur = await Utilisateur.destroy({
+      where: { codeuser: codeuser },
+    });
 
     return res
       .status(200)
-      .json({ message: "Utilisateur supprimé(s) avec succès" });
+      .json({ message: "Utilisateur supprimé(s) avec succès", utilisateur });
   } catch (error) {
     return res.status(500).json({
       message: "un erreur est survenu lors de suppression de utilisateur",
@@ -130,10 +175,10 @@ const supprimerUtilisateur = async (req, res) => {
 };
 /* cette methode elle fait 2 onas elle fais la liste de utilisateur en interface de recherche 3.jsx et aussi pou les bouton suivant eet derniers  */
 const getListeUtilisateurParCode = async (req, res) => {
-  const { codeuser } = req.query;;
+  const { codeuser } = req.query;
   try {
     //const decoded = verifyTokenValidity(req, res);
-
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     const result = await sequelizeConnexionDbUtilisateur.query(
       `select codeuser,nom,directeur,email,type,motpasse from utilisateur where codeuser = :codeuser `,
       {
@@ -156,6 +201,7 @@ const getListeUtilisateurParCode = async (req, res) => {
 const getListeUtilisateurParNom = async (req, res) => {
   const { nom } = req.query;
   try {
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     //const decoded = verifyTokenValidity(req, res);
 
     const result = await sequelizeConnexionDbUtilisateur.query(
@@ -181,6 +227,7 @@ const getListeUtilisateurParDirecteur = async (req, res) => {
   const { directeur } = req.query;
 
   try {
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     //const decoded = verifyTokenValidity(req, res);
 
     const result = await sequelizeConnexionDbUtilisateur.query(
@@ -207,7 +254,7 @@ const getListeUtilisateurParType = async (req, res) => {
 
   try {
     //const decoded = verifyTokenValidity(req, res);
-
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     const result = await sequelizeConnexionDbUtilisateur.query(
       `select codeuser,nom,directeur,type from utilisateur where type LIKE :type `,
       {
@@ -232,13 +279,12 @@ const getListeUtilisateurParType = async (req, res) => {
 const getListeUtilisateur = async (req, res) => {
   try {
     //const decoded = verifyTokenValidity(req, res);
-
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     const result = await sequelizeConnexionDbUtilisateur.query(
       `select codeuser,nom,directeur, email ,type from utilisateur `,
       {
         type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
       }
-      
     );
 
     return res.status(200).json({
@@ -256,7 +302,7 @@ const filterListeUtilisateur = async (req, res) => {
   let whereClauses = [];
 
   let replacements = {};
- 
+
   if (filters.codeuser) {
     whereClauses.push("codeuser like :codeuser");
     replacements.codeuser = `%${filters.codeuser}%`;
@@ -285,7 +331,7 @@ const filterListeUtilisateur = async (req, res) => {
   let query = `SELECT codeuser, email, type, directeur, nom
      FROM utilisateur 
       ${whereCondition ? "WHERE " + whereCondition : ""}`;
-
+  const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
   const result = await sequelizeConnexionDbUtilisateur.query(query, {
     replacements: replacements,
     type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
@@ -297,20 +343,21 @@ const filterListeUtilisateur = async (req, res) => {
 };
 //* url :http://localhost:5000/api/utilisateurSystem/getCodeUtilisateurSuivant
 const getCodeUtilisateurSuivant = async (req, res) => {
- 
   try {
-
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     // On récupère le code max existant
-    const [rows] = await sequelizeConnexionDbUtilisateur.query(`SELECT MAX(codeuser) AS maxCode FROM utilisateur`);
+    const [rows] = await sequelizeConnexionDbUtilisateur.query(
+      `SELECT MAX(codeuser) AS maxCode FROM utilisateur`
+    );
 
     let codeSuivant = 1; // Valeur par défaut si aucun utilisateur
 
     if (rows.length > 0 && rows[0].maxCode !== null) {
       codeSuivant = parseInt(rows[0].maxCode) + 1;
     }
-    return res.status(200).json({ 
+    return res.status(200).json({
       message: "Code utilisateur suivant récupéré",
-      codeSuivant: codeSuivant 
+      codeSuivant: codeSuivant,
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -318,45 +365,59 @@ const getCodeUtilisateurSuivant = async (req, res) => {
 };
 
 // * url : http://localhost:5000/api/utilisateurSystem/getListeCodesUtilisateur
-const getListeCodesUtilisateur = async(req, res) => {
+const getListeCodesUtilisateur = async (req, res) => {
   try {
+    console.log(sequelizeConnexionDbUtilisateur)
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     const Utilisateur = defineUserModel(sequelizeConnexionDbUtilisateur);
     const listeCodesUtilisateur = await Utilisateur.findAll({
       order: [["codeuser", "ASC"]],
       attributes: ["codeuser"],
-    })
-    if(listeCodesUtilisateur.length == 0) {
-      return res.status(400).json({message: "aucun utilisateur n'est trouvé dans la base des données"})
+    });
+    if (listeCodesUtilisateur.length == 0) {
+      return res
+        .status(400)
+        .json({
+          message: "aucun utilisateur n'est trouvé dans la base des données",
+        });
     }
-    if(listeCodesUtilisateur.length > 0){
-      return res.status(200).json({message: "liste codes utilisateurs récupéré avec succès", listeCodesUtilisateur});
+    if (listeCodesUtilisateur.length > 0) {
+      return res
+        .status(200)
+        .json({
+          message: "liste codes utilisateurs récupéré avec succès",
+          listeCodesUtilisateur,
+        });
     }
-  }catch(error) {
-    return res.status(500).json({message: error.message})
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
-}
+};
 // * url: http://localhost:5000/api/utilisateurSystem/getUtilisateurParCode?codeuser=01
-const getUtilisateurParCode = async(req, res) => {
+const getUtilisateurParCode = async (req, res) => {
   const { codeuser } = req.query;
 
-  try{
+  try {
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     const Utilisateur = defineUserModel(sequelizeConnexionDbUtilisateur);
     const utilisateur = await Utilisateur.findOne({
       attributes: ["codeuser", "nom", "email", "type", "directeur", "motpasse"],
       where: {
-        codeuser: codeuser
-      }
-    })
+        codeuser: codeuser,
+      },
+    });
 
-    console.log(utilisateur)
+    console.log(utilisateur);
 
-    if(utilisateur) {
-      return res.status(200).json({message: "utilisateur recuperé avec succès", utilisateur})
+    if (utilisateur) {
+      return res
+        .status(200)
+        .json({ message: "utilisateur recuperé avec succès", utilisateur });
     }
-  }catch(error) {
-    return res.status(500).json({message: error.message})
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
-}
+};
 
 module.exports = {
   AjouterUtilisateur,
@@ -371,5 +432,5 @@ module.exports = {
   filterListeUtilisateur,
   getCodeUtilisateurSuivant,
   getListeCodesUtilisateur,
-  getUtilisateurParCode
+  getUtilisateurParCode,
 };

@@ -32,6 +32,7 @@ export const interfaceSlice = createSlice({
     isDashBoardRoute: true,
     theme: 'light',
     lignedevisSelectionne: [],
+    isListeRoute: false
   },
 
   reducers: {
@@ -93,6 +94,9 @@ export const interfaceSlice = createSlice({
     setOuvrireDrawerMenu: (state, action) => {
       state.ouvrireMenuDrawer = action.payload;
     },
+    setIsListeRoute: (state, action) => {
+      state.isListeRoute = action.payload;
+    }
   },
 });
 export const {
@@ -114,5 +118,6 @@ export const {
   setTheme,
   setOuvrireAvatarMenu,
   setIsDashBoardRoute,
+  setIsListeRoute
 } = interfaceSlice.actions;
 export default interfaceSlice.reducer;

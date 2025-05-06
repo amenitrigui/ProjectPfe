@@ -122,17 +122,30 @@ function DevisForm() {
   }, [devisInfo.codesecteur]);
   // * useEffect #5: remplir le champ NUMBL par le derniere NUMBL récuperé
   useEffect(() => {
-    if(!devisInfo.NUMBL) {
-      if (derniereNumbl && derniereNumbl != "") {
-        dispatch(
-          setDevisInfo({ collone: "NUMBL", valeur: "DV" + derniereNumbl })
-        );
-      }
-      if(derniereNumbl == "") {
-        dispatch(getDerniereNumbl(utilisateurConnecte.codeuser));
-      }
+    console.log(devisInfo);
+    if (!devisInfo.NUMBL && listeNUMBL.length > 0) {
+      console.log(listeNUMBL);
+      dispatch(
+        // setDevisInfo({ collone: "NUMBL", valeur: "DV" + derniereNumbl })
+        setDevisInfo({
+          collone: "NUMBL",
+          valeur: listeNUMBL[listeNUMBL.length - 1].NUMBL,
+        })
+      );
     }
-  }, [derniereNumbl]);
+    // if(derniereNumbl == "") {
+    //   dispatch(getDerniereNumbl(utilisateurConnecte.codeuser));
+    // }
+  }, [devisInfo.NUMBL,listeNUMBL]);
+
+  useEffect(() => {
+    console.log(devisInfo.NUMBL)
+    if(derniereNumbl && toolbarMode == "ajout"){
+      const nouvNumbl = parseInt(derniereNumbl) + 1;
+      console.log(nouvNumbl)
+      dispatch(setDevisInfo({collone: "NUMBL", valeur: "DV"+nouvNumbl}))
+    }
+  },[derniereNumbl])
 
   // * useEffect #6: récuperer les informations de devis
   // * et les lignes de devis par NUMBL
@@ -398,7 +411,8 @@ function DevisForm() {
                       <input
                         type="text"
                         className="w-full border border-gray-300 rounded-md p-2"
-                        disabled={!activerChampsForm}
+                        // disabled={!activerChampsForm}
+                        readOnly
                         value={devisInfo.CODECLI || ""}
                         onChange={(e) => handleChangeCodeClient(e.target.value)}
                         onClick={() => {

@@ -112,7 +112,7 @@ function ArticlesDevis() {
     dispatch(
       setDevisInfo({
         collone: "MREMISE",
-        valeur: (parseInt(devisInfo.MREMISE) + (parseFloat(ligneDevisInfos.PUART) * parseFloat(ligneDevisInfos.Remise/100)).toFixed(3)).toFixed(3),
+        valeur: (parseInt(devisInfo.MREMISE) + (parseFloat(ligneDevisInfos.PUART) * parseFloat(ligneDevisInfos.Remise/100))).toFixed(3),
       })
     );
     dispatch(

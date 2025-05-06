@@ -5,14 +5,19 @@ import axios from "axios";
 export const AjouterUtilisateur = createAsyncThunk(
   "utilisateurSystemSlices/AjouterUtilisateur",
   async (_, thunkAPI) => {
+    console.log(
+      thunkAPI.getState().utilisateurSystemSlice.Utilisateur_SuperviseurInfos
+    );
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/AjouterUtilisateur`,
       {
-        User: thunkAPI.getState().utilisateurSystemSlices
-          .Utilisateur_SuperviseurInfos,
+        utilisateurInfo:
+          thunkAPI.getState().utilisateurSystemSlice
+            .Utilisateur_SuperviseurInfos,
       }
     );
-    return response.data.user;
+    console.log(response);
+    return response.data.data;
   }
 );
 
@@ -32,13 +37,15 @@ export const ModifierUtilisateur = createAsyncThunk(
 );
 export const supprimerUtilisateur = createAsyncThunk(
   "utilisateurSystemSlices/supprimerUtilisateur",
-  async (codeuser) => {
+    async (codeuser) => {
     const response = await axios.delete(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/supprimerUtilisateur`,
       {
         params: { codeuser: codeuser },
       }
     );
+    console.log(response);
+    return response.data.utilisateur;
   }
 );
 
@@ -54,12 +61,12 @@ export const getCodeUtilisateurSuivant = createAsyncThunk(
 
 export const getRepresantantUtilisateur = createAsyncThunk(
   "utilisateurSystemSlice/getRepresantantUtilisateur",
-  async() =>{
+  async () => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getCodeUtilisateurSuivant`
-    )
+    );
   }
-)
+);
 const utilisateurSystemInfoInitiales = {
   codeuser: "",
   motpasse: "test",
@@ -73,7 +80,15 @@ export const utilisateurSystemSlices = createSlice({
   initialState: {
     utilisateurSystemInfoInitiales,
     Utilisateur_SuperviseurInfos: {
-      ...utilisateurSystemInfoInitiales
+      ...utilisateurSystemInfoInitiales,
+    },
+    infosUtilisateursup: {
+      codeuser: "",
+      nom: "",
+      type: "",
+      directeur: "",
+      motpasse: "",
+      image: "",
     },
     utilisateurConnecte: {
       codeuser: "",
@@ -100,7 +115,7 @@ export const utilisateurSystemSlices = createSlice({
     },
     setViderChampsUtilisateur: (state, action) => {
       state.Utilisateur_SuperviseurInfos = {
-        ...utilisateurSystemInfoInitiales
+        ...utilisateurSystemInfoInitiales,
       };
     },
     setDbName: (state, action) => {
@@ -108,6 +123,9 @@ export const utilisateurSystemSlices = createSlice({
     },
     setToken: (state, action) => {
       state.token = action.payload;
+    },
+    SetUtilisateurSystemremplir: (state, action) => {
+      state.Utilisateur_SuperviseurInfos = action.payload;
     },
   },
 
@@ -123,6 +141,17 @@ export const utilisateurSystemSlices = createSlice({
       .addCase(AjouterUtilisateur.rejected, (state, action) => {
         state.status = "échec";
       })
+
+      .addCase(supprimerUtilisateur.pending, (state, action) => {
+        state.status = "chagement";
+      })
+      .addCase(supprimerUtilisateur.fulfilled, (state, action) => {
+        state.status = "succès";
+        state.infosUtilisateursup = action.payload;
+      })
+      .addCase(supprimerUtilisateur.rejected, (state, action) => {
+        state.status = "échec";
+      });
   },
 });
 export const {
@@ -132,6 +161,7 @@ export const {
   setViderChampsUtilisateur,
   setUtilisateurSupInfo,
   setDbName,
+  SetUtilisateurSystemremplir,
   setToken,
 } = utilisateurSystemSlices.actions;
 

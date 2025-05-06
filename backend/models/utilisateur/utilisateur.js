@@ -225,6 +225,10 @@ module.exports = function(sequelize) {
       type: DataTypes.STRING(16),
       allowNull: true
     },
+    image: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
     mp4: {
       type: DataTypes.STRING(16),
       allowNull: true

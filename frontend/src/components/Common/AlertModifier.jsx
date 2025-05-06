@@ -29,7 +29,7 @@ import { validerChampsForm } from "../../utils/validations";
 import {
   AjouterDevis,
   annulerDevis,
-  getDerniereNumbl,
+  getListeNumbl,
   majDevis,
   setDerniereNumbl,
   viderChampsDevisInfo,
@@ -98,6 +98,8 @@ function AlertModifier() {
           dispatch(AjouterDevis());
           dispatch(viderChampsDevisInfo());
           dispatch(setDerniereNumbl(""));
+          // * pour obtenir la nouvelle liste de codes contenant le devis inseré
+          dispatch(getListeNumbl());
         } else {
           alert("veuillez vérifier les données de formulaire");
         }

@@ -77,7 +77,7 @@ function UtilisateurList() {
       <div className="flex-1 p-6">
         <div className="mt-2 flex items-center relative">
           <Link
-            to="/ClientFormTout"
+            to="/UtilisateurFormTout"
             className="text-lg font-semibold text-[primaryColor] underline hover:text-blue-500 absolute left-0"
           >
             ← Retour

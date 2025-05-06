@@ -44,7 +44,7 @@ const connecterAuBaseDonnees = (nomDb = "") => {
 
 // * Connexion avec le serveur MYSQL (sans base de données spécifique)
 let dbConnection = connecterAuBaseDonnees(); //conxexion avexc serveur mysql
-let sequelizeConnexionDbUtilisateur = connecterAuBaseDonnees();
+let sequelizeConnexionDbUtilisateur = connecterAuBaseDonnees(process.env.DB_USERS_NAME);
 const setBdConnexion = (nomDb) => {
   dbConnection = connecterAuBaseDonnees(nomDb);
 };
