@@ -212,7 +212,6 @@ const UtilisateurForm = () => {
                   <div className="flex flex-col">
                     <label className="font-bold mb-1 text-[rgb(48,60,123)]">
                       Image
-                      {console.log(utilisateurConnecte)}
                     </label>
                     {infosUtilisateur.imageUrl ? (
                       <img
