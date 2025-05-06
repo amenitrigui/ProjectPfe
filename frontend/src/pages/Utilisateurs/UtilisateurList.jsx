@@ -6,23 +6,36 @@ import {
   setClientsASupprimer,
   setClientInfosEntiere,
 } from "../../app/client_slices/clientSlice";
-import { filterListeUtilisateur, getListeUtilisateur, setFiltresSaisient } from "../../app/utilisateur_slices/utilisateurSlice";
+import {
+  filterListeUtilisateur,
+  getListeUtilisateur,
+  setFiltresSaisient,
+} from "../../app/utilisateur_slices/utilisateurSlice";
 import { setToolbarTable } from "../../app/interface_slices/interfaceSlice";
+import ToolBar from "../../components/Common/ToolBar";
+import SideBar from "../../components/Common/SideBar";
 
 function UtilisateurList() {
   const dispatch = useDispatch();
-  const listeUtilisateur_Superviseur = useSelector((store) => store.utilisateurSlice.listeUtilisateur_Superviseur);
+  const listeUtilisateur_Superviseur = useSelector(
+    (store) => store.utilisateurSlice.listeUtilisateur_Superviseur
+  );
   useEffect(() => {
     dispatch(getListeUtilisateur());
-  // dispatch(setToolbarTable("utilisateur"));
+    // dispatch(setToolbarTable("utilisateur"));
   }, []);
 
-  const filtersUtilisateur = useSelector((store) => store.utilisateurSlice.filtersUtilisateur);
+  const filtersUtilisateur = useSelector(
+    (store) => store.utilisateurSlice.filtersUtilisateur
+  );
 
   const handleFilterChange = (e, column) => {
     dispatch(setFiltresSaisient({ colonne: column, valeur: e.target.value }));
     dispatch(filterListeUtilisateur());
   };
+  const ouvrireMenuDrawer = useSelector(
+    (state) => state.interfaceSlice.ouvrireMenuDrawer
+  );
 
   const columns = [
     { name: "codeuser", selector: (row) => row.codeuser, sortable: true },
@@ -30,7 +43,6 @@ function UtilisateurList() {
     { name: "email", selector: (row) => row.email, sortable: true },
     { name: "directeur", selector: (row) => row.directeur, sortable: true },
     { name: "nom", selector: (row) => row.nom, sortable: true },
-  
   ];
 
   // Définition de la couleur principale
@@ -73,38 +85,27 @@ function UtilisateurList() {
     }
   };
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      <div className="flex-1 p-6">
-        <div className="mt-2 flex items-center relative">
-          <Link
-            to="/UtilisateurFormTout"
-            className="text-lg font-semibold text-[primaryColor] underline hover:text-blue-500 absolute left-0"
-          >
-            ← Retour
-          </Link>
+    <div className="container">
+      <SideBar />
+      <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
+        <ToolBar />
 
-          <h1
-            className="text-2xl font-bold text-center flex-1"
-            style={{ color: primaryColor }}
-          >
-            Liste Utilisateur
-          </h1>
-        </div>
         {/* Filtres */}
         <div className="grid grid-cols-3 gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
-          {Object.keys(filtersUtilisateur).map((column, index) => (
-            columns[index] ?
-            <input
-            key={index}
-            type="text"
-            onChange={(e) => handleFilterChange(e, column)}
-            placeholder={`🔍 ${columns[index].name}`}
-
-              className="border p-2 rounded-md shadow-sm focus:ring focus:ring-blue-300"
-            /> :<></>
-          ))}
+          {Object.keys(filtersUtilisateur).map((column, index) =>
+            columns[index] ? (
+              <input
+                key={index}
+                type="text"
+                onChange={(e) => handleFilterChange(e, column)}
+                placeholder={`🔍 ${columns[index].name}`}
+                className="border p-2 rounded-md shadow-sm focus:ring focus:ring-blue-300"
+              />
+            ) : (
+              <></>
+            )
+          )}
         </div>
-
 
         {/* Tableau DataTable */}
         <div className="bg-white p-4 rounded-lg shadow-lg mt-4">

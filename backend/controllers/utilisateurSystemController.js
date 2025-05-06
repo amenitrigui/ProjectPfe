@@ -369,9 +369,11 @@ const getCodeUtilisateurSuivant = async (req, res) => {
 // * url : http://localhost:5000/api/utilisateurSystem/getListeCodesUtilisateur
 const getListeCodesUtilisateur = async (req, res) => {
   try {
-    console.log(sequelizeConnexionDbUtilisateur)
     const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
+    console.log(sequelizeConnexionDbUtilisateur)
+    console.log("thy end is now")
     const Utilisateur = defineUserModel(sequelizeConnexionDbUtilisateur);
+    console.log("I shall splay the gore of your profane form across the stars")
     const listeCodesUtilisateur = await Utilisateur.findAll({
       order: [["codeuser", "ASC"]],
       attributes: ["codeuser"],

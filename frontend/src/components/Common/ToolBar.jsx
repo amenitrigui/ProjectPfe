@@ -367,6 +367,10 @@ function ToolBar() {
       nav("/ArticleFormTout");
       return "";
     }
+    if (location.pathname.toLowerCase() == "/utilisateurlist") {
+      nav("/UtilisateurFormTout");
+      return "";
+    }
     nav("/dashboard");
   };
   // * fonction pour récuperer l'indice de l'utilisateur selectionné depuis le formulaire

@@ -239,29 +239,30 @@ const Dashboard = () => {
 
         <div className="details grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           {/* Bar Chart */}
-          <div className="p-4 bg-white shadow rounded">
-            <div className="cardHeader mb-4">
-              <h2>Nombre de devis par représentant</h2>
-            </div>
+          {utilisateurConnecte.type.toLowerCase() === "superviseur" && (
+            <div className="p-4 bg-white shadow rounded">
+              <div className="cardHeader mb-4">
+                <h2>Nombre de devis par représentant</h2>
+              </div>
 
-            <hr className="mb-4" />
-
-            {/* Ajout d'une div avec overflow-x-auto */}
-            <div className="overflow-x-auto">
-              <div style={{ minWidth: "1000px", height: "260px" }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={nbDevisparrepresentant}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="rep" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="nombreTotalDevis" fill="#8884d8" />
-                  </BarChart>
-                </ResponsiveContainer>
+              <hr className="mb-4" />
+              {/* Ajout d'une div avec overflow-x-auto */}
+              <div className="overflow-x-auto">
+                <div style={{ minWidth: "1000px", height: "260px" }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={nbDevisparrepresentant}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="rep" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="nombreTotalDevis" fill="#8884d8" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Pie Chart */}
           <div className="p-4 bg-white shadow rounded">

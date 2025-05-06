@@ -285,7 +285,7 @@ const ClientForm = () => {
         <ToolBar />
         <div className="details">
           <div className="recentOrders">
-            <div className="cardHeader">
+            {/* <div className="cardHeader">
               <h2
                 style={{
                   color: "rgb(8, 9, 14)",
@@ -293,7 +293,12 @@ const ClientForm = () => {
                 }}
                 className="text-3xl"
               >
-                Fiche client
+                t
+              </h2>Fiche clien
+            </div> */}
+            <div className="cardHeader ">
+              <h2 className="text-3xl font-bold text-blue-900 italic">
+                Fiche Client
               </h2>
             </div>
             <div className="flex flex-wrap">
