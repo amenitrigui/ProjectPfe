@@ -400,7 +400,8 @@ const Recherche = () => {
       dispatch(setAfficherRecherchePopup(false));
     }
     viderListes();
-    viderChamps();
+    // ! ?????? 
+    // viderChamps();
     revenirToolbarTablePrecedent();
   };
 

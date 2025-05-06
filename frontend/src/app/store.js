@@ -7,20 +7,20 @@ import articleSlice from "./article_slices/articleSlice";
 import { combineReducers } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import localStorage from "redux-persist/es/storage";
-import  familleSlice  from "./famille_slices/familleSlice";
-import  sousfamilleSlice  from "./sousfamille_slices/sousfamilleSlice";
-import Stock_Slice from "./Stock_valorisation_utilitaires/Stock_Slice"
-import valorisation_Slice from "./Stock_valorisation_utilitaires/valorisation_Slice"
+import familleSlice from "./famille_slices/familleSlice";
+import sousfamilleSlice from "./sousfamille_slices/sousfamilleSlice";
+import Stock_Slice from "./Stock_valorisation_utilitaires/Stock_Slice";
+import valorisation_Slice from "./Stock_valorisation_utilitaires/valorisation_Slice";
 import utilisateurSystemSlices from "./utilisateurSystemSlices/utilisateurSystemSlice";
-import codePostaleSlice from "./cpostal_slices/cpostalSlice"
-import regionSlice from "./region_slices/regionSlice"
-import pointVenteSlice from "./pointVente_slice/pointVenteSlice"
-import  secteurSlice  from "./secteur_slices/secteurSlice";
+import codePostaleSlice from "./cpostal_slices/cpostalSlice";
+import regionSlice from "./region_slices/regionSlice";
+import pointVenteSlice from "./pointVente_slice/pointVenteSlice";
+import secteurSlice from "./secteur_slices/secteurSlice";
 
 const persistConfig = {
   key: "root",
   storage: localStorage,
-  whitelist: ["utilisateurSystemSlice"]
+  whitelist: ["utilisateurSystemSlice"],
 };
 
 const rootReducer = combineReducers({
@@ -32,13 +32,12 @@ const rootReducer = combineReducers({
   familleSlice: familleSlice,
   sousfamilleSlice: sousfamilleSlice,
   Stock_Slice: Stock_Slice,
-  valorisation_Slice:valorisation_Slice,
-  secteurSlice:secteurSlice,
-  regionSlice:regionSlice,
-  codePostaleSlice:codePostaleSlice,
-  utilisateurSystemSlice:utilisateurSystemSlices,
-  pointVenteSlice :pointVenteSlice,
-
+  valorisation_Slice: valorisation_Slice,
+  secteurSlice: secteurSlice,
+  regionSlice: regionSlice,
+  codePostaleSlice: codePostaleSlice,
+  utilisateurSystemSlice: utilisateurSystemSlices,
+  pointVenteSlice: pointVenteSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

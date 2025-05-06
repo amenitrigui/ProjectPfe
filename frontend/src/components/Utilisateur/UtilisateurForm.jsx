@@ -177,11 +177,11 @@ const UtilisateurForm = () => {
                       onChange={(e) =>
                         hundlechange("directeur", e.target.value)
                       }
-                      disabled={!activerChampsForm}
+                      disabled={!activerChampsForm || utilisateurConnecte.type.toLowerCase() === "utilisateur"}
                     />
                   </div>
 
-                  <div className="flex flex-col">
+                  <div className="flex flex-col flex-nowrap">
                     <label className="font-bold mb-1 text-[rgb(48,60,123)]">
                       Type
                     </label>
@@ -190,7 +190,7 @@ const UtilisateurForm = () => {
                       className="border border-gray-300 rounded-md p-2"
                       value={infosUtilisateur.type ? infosUtilisateur.type : ""}
                       onChange={(e) => hundlechange("type", e.target.value)}
-                      disabled={!activerChampsForm}
+                      disabled={!activerChampsForm || utilisateurConnecte.type.toLowerCase() === "utilisateur"}
                     />
                   </div>
                   <div className="flex flex-col">
@@ -212,6 +212,7 @@ const UtilisateurForm = () => {
                   <div className="flex flex-col">
                     <label className="font-bold mb-1 text-[rgb(48,60,123)]">
                       Image
+                      {console.log(utilisateurConnecte)}
                     </label>
                     {infosUtilisateur.imageUrl ? (
                       <img

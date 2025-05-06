@@ -1,6 +1,7 @@
 const { getDatabaseConnection } = require("../common/commonMethods");
 const defineUtilisateurModel = require("../models/utilisateur/utilisateur");
 const defineUserModel = require("../models/utilisateur/utilisateur");
+const { getConnexionAuBdUtilisateurs } = require("../db/config")
 // const bcrypt = require("bcryptjs");
 
 // * enregistrer une nouvelle utilisateur
@@ -121,6 +122,7 @@ const ModifierUtilisateur = async (req, res) => {
   const { MajUtilisateur } = req.body;
 
   try {
+    
     const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     const Utilisateur = defineUtilisateurModel(sequelizeConnexionDbUtilisateur);
     const user = await Utilisateur.findOne({

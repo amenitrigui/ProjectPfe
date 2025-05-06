@@ -4,12 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { deconnecterUtilisateur } from "../../app/utilisateur_slices/utilisateurSlice";
 
 function Deconnexion() {
+  console.log("interface deconnexion")
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  useEffect(() => {
-    console.log("nice bro")
-    dispatch(deconnecterUtilisateur(navigate));
-  },[]);
+  // useEffect(() => {
+  //   console.log("nice bro")
+  //   dispatch(deconnecterUtilisateur(navigate));
+  // },[]);
   return <>...</>;
 }
 

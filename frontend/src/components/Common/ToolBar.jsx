@@ -299,11 +299,11 @@ function ToolBar() {
     }
     if (toolbarTable === "client") {
       dispatch(viderChampsClientInfo());
-      dispatch(getDerniereCodeClient());
+      // dispatch(getDerniereCodeClient());
     }
     if (toolbarTable === "article") {
       dispatch(viderChampsArticleInfo());
-      dispatch(getDerniereCodeArticle());
+      // dispatch(getDerniereCodeArticle());
     }
     if (toolbarTable === "cpostal") {
       dispatch(viderChampsCPostalInfo());
@@ -339,7 +339,6 @@ function ToolBar() {
     }
     if (toolbarTable == "utilisateur") {
       const indiceutilisateurCourant = getIndiceUtilisateurSelectionne();
-      console.log(listeCodesUtilisateur)
       if(indiceutilisateurCourant > 0){
         dispatch(
           setInfosUtilisateur({
@@ -425,6 +424,7 @@ function ToolBar() {
     if (toolbarTable == "utilisateur") {
       const indiceutilisateurCourant = getIndiceUtilisateurSelectionne();
       if(indiceutilisateurCourant != listeCodesUtilisateur.length-1){
+        console.log(listeCodesUtilisateur)
         dispatch(
           setInfosUtilisateur({
             colonne: "codeuser",
@@ -448,7 +448,7 @@ function ToolBar() {
 
   const handleDeconnexionBtnClick = () => {
     dispatch(setOuvrireAvatarMenu(false));
-    // navigate("/deconnexion")
+    navigate("/deconnexion")
   };
 
   // * on vide le derniere code pour que le useEffect
@@ -456,15 +456,15 @@ function ToolBar() {
   // * ce qui va en tourne déclancher la deuxième useEffect
   // * qui récupère les informations d'entité par son code
   const viderValeursDernieresCodes = () => {
-    if (toolbarTable == "client") {
-      dispatch(setDerniereCodeClient(""));
-    }
-    if (toolbarTable == "devis") {
-      dispatch(setDerniereNumbl(""));
-    }
-    if (toolbarTable == "article") {
-      dispatch(setDerniereCodeArticle(""));
-    }
+    // if (toolbarTable == "client") {
+    //   dispatch(setDerniereCodeClient(""));
+    // }
+    // if (toolbarTable == "devis") {
+    //   dispatch(setDerniereNumbl(""));
+    // }
+    // if (toolbarTable == "article") {
+    //   dispatch(setDerniereCodeArticle(""));
+    // }
   };
   const estVisible = () => {
     const userType = utilisateurConnecte?.type?.toLowerCase();

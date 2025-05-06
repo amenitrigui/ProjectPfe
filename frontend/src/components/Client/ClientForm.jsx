@@ -44,10 +44,6 @@ import {
 
 const ClientForm = () => {
   const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
-  const pointVenteInfo = useSelector(
-    (state) => state.pointVenteSlice.pointVenteInfo
-  );
-
   const utilisateurConnecte = useSelector(
     (state) => state.utilisateurSystemSlice.utilisateurConnecte
   );
@@ -81,22 +77,20 @@ const ClientForm = () => {
   // * pour afficher le menu déroulante pour l'avatar
   const dispatch = useDispatch();
   const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
+  const listeToutCodesClients = useSelector(
+    (state) => state.clientSlice.listeToutCodesClients
+  );
   useEffect(() => {
     dispatch(getListeCodesPosteaux());
     dispatch(getNombreTotalDevis());
     dispatch(getTotalChiffres());
     dispatch(getListeCodesSecteur());
     dispatch(getListeCodeRegions());
-    dispatch(getDerniereCodeClient());
     dispatch(getListePointVente());
     dispatch(getToutCodesClient());
+    
   }, []);
 
-  useEffect(() => {
-    if(!clientInfos.code) {
-      dispatch(getDerniereCodeClient());
-    }
-  }, [clientInfos.code])
   useEffect(() => {
     dispatch(getLibellePointVneteparPVente(clientInfos.codepv));
     if (clientInfos.codepv == "") {
@@ -104,38 +98,52 @@ const ClientForm = () => {
     }
   }, [clientInfos.codepv]);
 
+  // * récupere un client par son code
   useEffect(() => {
-    if (dernierCodeClient && dernierCodeClient !== "") {
-      dispatch(setClientInfos({ colonne: "code", valeur: dernierCodeClient }));
+    if (toolbarMode === "ajout" || !clientInfos.code?.trim()) {
+      return;
     }
     
-  }, [dernierCodeClient]);
+    dispatch(getClientParCode(clientInfos.code));
+  }, [clientInfos.code, toolbarMode, dispatch]);
 
+  useEffect(() => {
+    console.log(clientInfos.code);
+    if (
+      !clientInfos.code &&
+      toolbarMode === "consultation" &&
+      listeToutCodesClients?.length > 0
+    ) {
+      const derniereCodeClient = listeToutCodesClients[listeToutCodesClients.length - 1].code;
+      console.log(derniereCodeClient)
+      if (derniereCodeClient !== clientInfos.code) {
+        dispatch(
+          setClientInfos({
+            colonne: "code",
+            valeur: derniereCodeClient,
+          })
+        );
+      }
+    }
+  }, [clientInfos.code, listeToutCodesClients, toolbarMode, dispatch]);
+  
   useEffect(() => {
     if (
-      ((clientInfos.code &&
-      clientInfos.code != "" &&
-      toolbarMode != "ajout") ||
-      (clientInfos.code == "" && dernierCodeClient !== ""))
+      toolbarMode === "ajout" &&
+      listeToutCodesClients?.length > 0 &&
+      clientInfos.code !== (parseInt(listeToutCodesClients[listeToutCodesClients.length - 1].code) + 1).toString()
     ) {
-      dispatch(getClientParCode(clientInfos.code));
-    }
-  }, [clientInfos.code]);
-
-  useEffect(() => {
-    // ! ?????????????
-    // if (toolbarMode === "consultation") {
-    //   dispatch(getClientParCode(parseInt(dernierCodeClient) + 1));
-    // }
-    if (toolbarMode === "ajout") {
+      const derniereCodeClient = listeToutCodesClients[listeToutCodesClients.length - 1].code;
+      const nouvCodeClient = (parseInt(derniereCodeClient) + 1).toString();
+      
       dispatch(
         setClientInfos({
           colonne: "code",
-          valeur: (parseInt(dernierCodeClient) + 1).toString(),
+          valeur: nouvCodeClient,
         })
       );
     }
-  }, [toolbarMode]);
+  }, [toolbarMode, listeToutCodesClients, clientInfos.code, dispatch]);
 
   // Sélection des informations du client depuis le state Redux
   // state pour désactiver/activer les champs lors de changement de modes editables (ajout/modification)
@@ -577,6 +585,7 @@ const ClientForm = () => {
                           type="text"
                           className="border border-gray-300 rounded-md p-2 w-full"
                           value={clientInfos.desisec}
+                          onChange={(e) => handleChange(e, "desisec")}
                           disabled={!activerChampsForm}
                         />
 
@@ -638,7 +647,8 @@ const ClientForm = () => {
                           type="text"
                           className="border border-gray-300 rounded-md p-2 w-full"
                           disabled={!activerChampsForm}
-                          value={clientInfos.desirgg}
+                          value={clientInfos.desireg || clientInfos.desirgg}
+                          onChange={(e) => handleChange(e, "desirgg")}
                         />
                         {(toolbarMode == "ajout" ||
                           toolbarMode == "modification") && (

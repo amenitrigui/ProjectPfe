@@ -11,7 +11,9 @@ import {
 import {
   ajouterClient,
   getDerniereCodeClient,
+  getToutCodesClient,
   majClient,
+  setClientInfos,
   setDerniereCodeClient,
   supprimerClient,
   viderChampsClientInfo,
@@ -75,14 +77,18 @@ function AlertModifier() {
     //*pour le client
     if (toolbarTable == "client") {
       if (toolbarMode == "ajout") {
-        dispatch(ajouterClient());
-        dispatch(setDerniereCodeClient(""))
+        dispatch(ajouterClient()).then(() => {
+          dispatch(getToutCodesClient());
+        });
+        // dispatch(setDerniereCodeClient(""))
       }
       if (toolbarMode == "modification") {
         dispatch(majClient());
       }
       if (toolbarMode == "suppression") {
-        dispatch(supprimerClient(clientSelectionne));
+        dispatch(supprimerClient(clientSelectionne)).then(() => {
+          dispatch(getToutCodesClient());
+        })
       }
       // * pour désactiver les champs du formulaire
       dispatch(setActiverChampsForm(false));
@@ -97,7 +103,7 @@ function AlertModifier() {
         if (validerChampsForm("devis", devisInfo)) {
           dispatch(AjouterDevis());
           dispatch(viderChampsDevisInfo());
-          dispatch(setDerniereNumbl(""));
+          // dispatch(setDerniereNumbl(""));
           // * pour obtenir la nouvelle liste de codes contenant le devis inseré
           dispatch(getListeNumbl());
         } else {

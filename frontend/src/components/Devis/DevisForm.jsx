@@ -122,9 +122,7 @@ function DevisForm() {
   }, [devisInfo.codesecteur]);
   // * useEffect #5: remplir le champ NUMBL par le derniere NUMBL récuperé
   useEffect(() => {
-    console.log(devisInfo);
     if (!devisInfo.NUMBL && listeNUMBL.length > 0) {
-      console.log(listeNUMBL);
       dispatch(
         // setDevisInfo({ collone: "NUMBL", valeur: "DV" + derniereNumbl })
         setDevisInfo({
@@ -139,7 +137,6 @@ function DevisForm() {
   }, [devisInfo.NUMBL,listeNUMBL]);
 
   useEffect(() => {
-    console.log(devisInfo.NUMBL)
     if(derniereNumbl && toolbarMode == "ajout"){
       const nouvNumbl = parseInt(derniereNumbl) + 1;
       console.log(nouvNumbl)

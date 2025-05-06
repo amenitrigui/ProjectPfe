@@ -4,7 +4,7 @@ const {
   verifyTokenValidity,
 } = require("../common/commonMethods");
 
-const { getConnexionBd } = require("../db/config")
+const { getConnexionBd } = require("../db/config");
 
 // * récupèrer la liste des clients à partir de la base des données
 // * dbName donnée comme paramètre de requete
@@ -16,7 +16,7 @@ const getListeClients = async (req, res) => {
   const { dbName } = req.params;
   try {
     //const decoded = verifyTokenValidity(req, res);
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
 
     const result = await dbConnection.query(`select * from client`, {
       type: dbConnection.QueryTypes.SELECT,
@@ -41,7 +41,7 @@ const filtrerListeClients = async (req, res) => {
   const { dbName } = req.params;
   const { filters } = req.query;
 
-  const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+  const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
   // ? liste des conditions
   // ? exemple : ["NUML like :numbl, "libpv like :libpv"...]
   let whereClauses = [];
@@ -103,9 +103,13 @@ const filtrerListeClients = async (req, res) => {
 const AjouterClient = async (req, res) => {
   const { dbName } = req.params;
   const { clientInfos } = req.body;
-  
+  console.log(
+    "==============================================================================" +
+      JSON.stringify(clientInfos)
+  );
+
   try {
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Client = defineClientModel(dbConnection);
     const newClient = await Client.create({
       //add + save min base 3ibrt 3ml insert into mn base de donnes
@@ -119,11 +123,11 @@ const AjouterClient = async (req, res) => {
       codes: clientInfos.codes,
       coder: clientInfos.coder,
       desicp: clientInfos.desicp,
-      nature: clientInfos.nature, // !
-      desisec: clientInfos.desisec, // !
-      desireg: clientInfos.desireg, // ! dans la base: desireg, dans clientInfos : desirgg
-      tel1:clientInfos.tel1,
-      tel2:clientInfos.tel2,
+      nature: clientInfos.nature,
+      desisec: clientInfos.desisec,
+      desireg: clientInfos.desirgg, // ! dans la base: desireg, dans clientInfos : desirgg
+      tel1: clientInfos.tel1,
+      tel2: clientInfos.tel2,
       email: clientInfos.email,
       fax: clientInfos.fax,
       nom1: clientInfos.nom1,
@@ -135,14 +139,14 @@ const AjouterClient = async (req, res) => {
       gsm1: clientInfos.gsm1,
       gsm2: clientInfos.gsm2,
       gsm3: clientInfos.gsm3,
-      datcreat:clientInfos.datcreat,
+      datcreat: clientInfos.datcreat,
       nposte1: clientInfos.nposte1,
       nposte2: clientInfos.nposte2,
       nposte3: clientInfos.nposte3,
       Commentaire: clientInfos.Commentaire,
       codepv: clientInfos.codepv,
       usera: clientInfos.usera,
-      fact: clientInfos.fact, // ! checkbox à vérifier
+      fact: clientInfos.fact,
       timbref: clientInfos.timbref,
       cltexport: clientInfos.cltexport,
       suspfodec: clientInfos.suspfodec,
@@ -160,18 +164,18 @@ const AjouterClient = async (req, res) => {
       srisque: clientInfos.srisque,
       scredit: clientInfos.scredit,
       remise: clientInfos.remise,
-      compteb : clientInfos.compteb,
-      banque:clientInfos.banque,
-      contrat:clientInfos.contrat,
-      blockage:clientInfos.blockage,
-      susptva:clientInfos.susptva,
-      tarif:clientInfos.tarif,
-      desireg:clientInfos.desireg,
+      compteb: clientInfos.compteb,
+      banque: clientInfos.banque,
+      contrat: clientInfos.contrat,
+      blockage: clientInfos.blockage,
+      susptva: clientInfos.susptva,
+      tarif: clientInfos.tarif,
       datec: new Date().toISOString().split("T")[0],
-      datefidel: clientInfos.fidel === "1" ? new Date().toISOString().split("T")[0] : ""
+      datefidel:
+        clientInfos.fidel === "1" ? new Date().toISOString().split("T")[0] : "",
     });
 
-    return res.status(200).json({ message: "insertion avec succès"});
+    return res.status(200).json({ message: "insertion avec succès" });
   } catch (error) {
     return res.status(500).json({ message: error });
   }
@@ -189,7 +193,7 @@ const supprimerClient = async (req, res) => {
   // ? tableau contenant les codes des clients à supprimer
   const { code } = req.params;
   try {
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Client = defineClientModel(dbConnection);
 
     await Client.destroy({ where: { code: code } });
@@ -215,7 +219,7 @@ const getClientParCode = async (req, res) => {
   const { dbName } = req.params;
   const { code } = req.params;
   try {
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const client = await dbConnection.query(
       `select * from client where code LIKE :code`,
       {
@@ -245,7 +249,7 @@ const majClient = async (req, res) => {
   const { dbName } = req.params;
   const { clientMaj } = req.body;
   try {
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Client = defineClientModel(dbConnection);
     const client = await Client.findOne({ where: { code: clientMaj.code } });
 
@@ -253,7 +257,7 @@ const majClient = async (req, res) => {
       await Client.update(
         {
           code: clientMaj.code,
-          typecli: clientMaj.typecli, 
+          typecli: clientMaj.typecli,
           cin: clientMaj.cin,
           rsoc: clientMaj.rsoc,
           codepv: clientMaj.codepv,
@@ -261,11 +265,11 @@ const majClient = async (req, res) => {
           activite: clientMaj.activite,
           cp: clientMaj.cp,
           desicp: clientMaj.desicp,
-          nature: clientMaj.nature, 
-          desisec: clientMaj.desisec, 
-          desireg: clientMaj.desireg, 
-          tel1:clientMaj.tel1,
-          tel2:clientMaj.tel2,
+          nature: clientMaj.nature,
+          desisec: clientMaj.desisec,
+          desireg: clientMaj.desireg,
+          tel1: clientMaj.tel1,
+          tel2: clientMaj.tel2,
           email: clientMaj.email,
           fax: clientMaj.fax,
           nom1: clientMaj.nom1,
@@ -275,21 +279,21 @@ const majClient = async (req, res) => {
           titre2: clientMaj.titre2,
           titre3: clientMaj.titre3,
           gsm1: clientMaj.gsm1,
-          datemaj:clientMaj.datemaj,
+          datemaj: clientMaj.datemaj,
           gsm2: clientMaj.gsm2,
           gsm3: clientMaj.gsm3,
           nposte1: clientMaj.nposte1,
           nposte2: clientMaj.nposte2,
           nposte3: clientMaj.nposte3,
           Commentaire: clientMaj.Commentaire,
-          usera: clientMaj.usera, 
-          fact: clientMaj.fact, 
-          timbref: clientMaj.timbref, 
-          cltexport: clientMaj.cltexport, 
+          usera: clientMaj.usera,
+          fact: clientMaj.fact,
+          timbref: clientMaj.timbref,
+          cltexport: clientMaj.cltexport,
           suspfodec: clientMaj.suspfodec,
-          regime: clientMaj.regime, 
-          exon: clientMaj.exon, 
-          majotva: clientMaj.majotva, 
+          regime: clientMaj.regime,
+          exon: clientMaj.exon,
+          majotva: clientMaj.majotva,
           fidel: clientMaj.fidel,
           datefinaut: clientMaj.datefinaut,
           datedebaut: clientMaj.datedebaut,
@@ -299,13 +303,13 @@ const majClient = async (req, res) => {
           srisque: clientMaj.srisque,
           scredit: clientMaj.scredit,
           remise: clientMaj.remise,
-          compteb : clientMaj.compteb, 
-          banque:clientMaj.banque,
-          contrat:clientMaj.contrat,
-          blockage:clientMaj.blockage,
-          susptva:clientMaj.susptva,
-          tarif:clientMaj.tarif,
-          desireg:clientMaj.desireg
+          compteb: clientMaj.compteb,
+          banque: clientMaj.banque,
+          contrat: clientMaj.contrat,
+          blockage: clientMaj.blockage,
+          susptva: clientMaj.susptva,
+          tarif: clientMaj.tarif,
+          desireg: clientMaj.desireg,
         },
         { where: { code: clientMaj.code } }
       );
@@ -331,14 +335,18 @@ const majClient = async (req, res) => {
 const getToutCodesClient = async (req, res) => {
   try {
     const { dbName } = req.params;
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
-
-    const listeCodesClients = await dbConnection.query(
-      `SELECT code FROM client ORDER BY code`,
-      {
-        type: dbConnection.QueryTypes.SELECT,
-      }
-    );
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
+    const query = `
+      SELECT code 
+      FROM client 
+      ORDER BY 
+      CAST(REGEXP_REPLACE(code, '^[A-Za-z]+', '') AS UNSIGNED),  -- Convert to unsigned integer
+      LENGTH(code),                                            -- Sort by length
+      code 
+    `;
+    const listeCodesClients = await dbConnection.query(query, {
+      type: dbConnection.QueryTypes.SELECT,
+    });
 
     return res.status(200).json({
       message: "Code client récupéré avec succès",
@@ -358,21 +366,21 @@ const getClientParRaisonSociale = async (req, res) => {
   try {
     const { dbName } = req.params;
     const { rsoc } = req.params;
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const client = await dbConnection.query(
       `SELECT * FROM CLIENT where rsoc LIKE :rsoc`,
       {
         replacements: {
-          rsoc:`%${rsoc}%`,
-
+          rsoc: `%${rsoc}%`,
         },
         type: dbConnection.QueryTypes.SELECT,
       }
     );
 
-    return res
-      .status(200)
-      .json({ message: "taison sociale  récuperé avec succès", clients: client });
+    return res.status(200).json({
+      message: "taison sociale  récuperé avec succès",
+      clients: client,
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -386,7 +394,7 @@ const getClientParCin = async (req, res) => {
   try {
     const { dbName } = req.params;
     const { cin } = req.params;
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const client = await dbConnection.query(
       `SELECT * FROM CLIENT where cin LIKE :cin`,
       {
@@ -412,7 +420,7 @@ const getClientParCin = async (req, res) => {
 const getDerniereCodeClient = async (req, res) => {
   try {
     const { dbName } = req.params;
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const derniereCodeClient = await dbConnection.query(
       `SELECT code FROM CLIENT ORDER BY CAST(code AS UNSIGNED) DESC LIMIT 1`,
       {

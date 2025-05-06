@@ -24,12 +24,12 @@ export const AjouterUtilisateur = createAsyncThunk(
 export const ModifierUtilisateur = createAsyncThunk(
   "utilisateurSystemSlices/ModifierUtilisateur",
   async (_, thunkAPI) => {
+    const utilisateur = thunkAPI.getState().utilisateurSystemSlice.Utilisateur_SuperviseurInfos
+    console.log(utilisateur)
     const response = await axios.put(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/ModifierUtilisateur`,
       {
-        MajUtilisateur:
-          thunkAPI.getState().utilisateurSystemSlices
-            .Utilisateur_SuperviseurInfos,
+        MajUtilisateur:utilisateur,
       }
     );
     return response.data.user;

@@ -35,18 +35,12 @@ import {
   setAfficherRecherchePopup,
   setIsDashBoardRoute,
   setIsListeRoute,
-  setOuvrireDrawerMenu,
   setToolbarMode,
 } from "./app/interface_slices/interfaceSlice";
 import ImprimerDevis from "./pages/Devis/Imprimer";
 import SecteurForm from "./pages/Clients/SecteurForm";
 import Test1 from "./test/Test1";
 import Secteur_Region_CpostalForm from "./pages/Clients/Secteur_Region_CpostalForm";
-import { viderChampsArticleInfo } from "./app/article_slices/articleSlice";
-import { viderChampsCPostalInfo } from "./app/cpostal_slices/cpostalSlice";
-import { viderChampsClientInfo } from "./app/client_slices/clientSlice";
-import { getDerniereNumbl, viderChampsDevisInfo } from "./app/devis_slices/devisSlice";
-import { viderChampsRegionInfo } from "./app/region_slices/regionSlice";
 
 function App() {
   //?==================================================================================================================
@@ -75,11 +69,6 @@ function App() {
     dispatch(setToolbarMode("consultation"));
     dispatch(setActiverBoutonsValiderAnnuler(false));
     dispatch(setAfficherAlert(false));
-    // dispatch(viderChampsArticleInfo());
-    // dispatch(viderChampsCPostalInfo());
-    // dispatch(viderChampsClientInfo());
-    // dispatch(viderChampsDevisInfo());
-    // dispatch(viderChampsRegionInfo());
     if (location.pathname.toLowerCase() == "/dashboard") {
       dispatch(setIsDashBoardRoute(true));
     }
@@ -94,59 +83,56 @@ function App() {
     }
     // * pour cacher les bouton du navbar is on est dans l'un
     // * de l'interfaces de listes
-    if(location.pathname.toLowerCase().includes("list")){
-      dispatch(setIsListeRoute(true))
+    if (location.pathname.toLowerCase().includes("list")) {
+      dispatch(setIsListeRoute(true));
     }
-    if(!location.pathname.toLowerCase().includes("list")){
+    if (!location.pathname.toLowerCase().includes("list")) {
       dispatch(setIsListeRoute(false));
     }
     // * =====================================================
-    // dispatch(setOuvrireDrawerMenu(false))
   }, [location.pathname]);
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
   // dispatch(setDevisInfo("usera", usera));
   return (
-    <div className={theme === 'dark' ? 'dark' : ''}>
-    <Routes>
-      <Route path="/" element={<SignInPage />} />
-      <Route path="/deconnexion" element={<Deconnexion />} />
-      <Route path="/Devis-Form" element={<DevisForm />} />
-      <Route path="/Home-Page" element={<HomePage />} />
-      <Route path="/DevisList" element={<DevisList />} />
-      <Route path="/dvis-details/e:numbl" element={<DevisDetails />} />
-      <Route path="/Dashboard" element={<Dashboard />} />
-      <Route path="/SocietiesList" element={<SocietiesList />} />
-      <Route path="/recherche" element={<Recherche />} />
-      <Route path="/GestionCommerciale" element={<GestionCommerciale />} />
-      <Route path="/GestionDesVentes" element={<GestionDesVentes />} />
-      <Route path="/RegisterPage" element={<RegisterPage />} />
-      <Route path="/ResetPassword" element={<ResetPassword />}></Route>
-      <Route path="/EmailEnvoye" element={<EmailEnvoye />}></Route>
-      <Route path="/ClientList" element={<ClientList />}></Route>
-      <Route path="/ClientFormTout" element={<ClientFormTout />} />
-      <Route path="/DevisFormTout" element={<DevisFormTout />}></Route>
-      <Route path="/ArticleFormTout" element={<ArticleFormTout />}></Route>
-      <Route path="/ArticleList" element={<ArticleList />}></Route>
-      <Route path="/FamilleFormTout" element={<FamilleFormTout />}></Route>
-      <Route path="/Settings" element={<Settings />}></Route>
-      <Route path="/ImprimerDevis" element={<ImprimerDevis />}></Route>
-      <Route path="/SecteurForm" element={<SecteurForm />}></Route>
-      <Route path="/test" element={<Test1 />}></Route>
-      <Route
-        path="/Secteur_Region_CpostalForm"
-        element={<Secteur_Region_CpostalForm />}
-      ></Route>
-
-
-      <Route
-        path="/DevisFormPlaceholder"
-        element={<DevisFormPlaceholder></DevisFormPlaceholder>}
-      ></Route>
-      <Route path="/UtilisateurFormTout" element={<UtilisateurFormTout />} />
-      <Route path="/UtilisateurList" element={<UtilisateurList />}></Route>
-    </Routes>
+    <div className={theme === "dark" ? "dark" : ""}>
+      <Routes>
+        <Route path="/" element={<SignInPage />} />
+        <Route path="/deconnexion" element={<Deconnexion />} />
+        <Route path="/Devis-Form" element={<DevisForm />} />
+        <Route path="/Home-Page" element={<HomePage />} />
+        <Route path="/DevisList" element={<DevisList />} />
+        <Route path="/dvis-details/e:numbl" element={<DevisDetails />} />
+        <Route path="/Dashboard" element={<Dashboard />} />
+        <Route path="/SocietiesList" element={<SocietiesList />} />
+        <Route path="/recherche" element={<Recherche />} />
+        <Route path="/GestionCommerciale" element={<GestionCommerciale />} />
+        <Route path="/GestionDesVentes" element={<GestionDesVentes />} />
+        <Route path="/RegisterPage" element={<RegisterPage />} />
+        <Route path="/ResetPassword" element={<ResetPassword />}></Route>
+        <Route path="/EmailEnvoye" element={<EmailEnvoye />}></Route>
+        <Route path="/ClientList" element={<ClientList />}></Route>
+        <Route path="/ClientFormTout" element={<ClientFormTout />} />
+        <Route path="/DevisFormTout" element={<DevisFormTout />}></Route>
+        <Route path="/ArticleFormTout" element={<ArticleFormTout />}></Route>
+        <Route path="/ArticleList" element={<ArticleList />}></Route>
+        <Route path="/FamilleFormTout" element={<FamilleFormTout />}></Route>
+        <Route path="/Settings" element={<Settings />}></Route>
+        <Route path="/ImprimerDevis" element={<ImprimerDevis />}></Route>
+        <Route path="/SecteurForm" element={<SecteurForm />}></Route>
+        <Route path="/test" element={<Test1 />}></Route>
+        <Route
+          path="/Secteur_Region_CpostalForm"
+          element={<Secteur_Region_CpostalForm />}
+        ></Route>
+        <Route
+          path="/DevisFormPlaceholder"
+          element={<DevisFormPlaceholder></DevisFormPlaceholder>}
+        ></Route>
+        <Route path="/UtilisateurFormTout" element={<UtilisateurFormTout />} />
+        <Route path="/UtilisateurList" element={<UtilisateurList />}></Route>
+      </Routes>
     </div>
   );
 }

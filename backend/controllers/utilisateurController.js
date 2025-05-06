@@ -55,7 +55,7 @@ const loginUtilisateur = async (req, res) => {
 
     // Recherche de l'utilisateur
     const user = await User.findOne({
-      attributes: ["codeuser", "nom", "motpasse", "email", "directeur", "type"],
+      attributes: ["codeuser", "nom", "motpasse", "email", "directeur", "type", "image"],
       where: { nom },
     });
     if (!user) {
@@ -285,6 +285,8 @@ const uploadImageUtilisateur = async (req, res) => {
     const imageUrl = `${req.protocol}://${req.get(
       "host"
     )}/uploads/${imagePath}`;
+
+
 
     return res.status(200).json({
       message: "Image uploadée avec succès",

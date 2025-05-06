@@ -179,7 +179,6 @@ const Dashboard = () => {
   const toggleSidebar = () => {
     dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
   };
-
   return (
     <div className="container">
       <SideBar />
