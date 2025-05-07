@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import ToolBar from "../Common/ToolBar";
@@ -13,7 +13,7 @@ import {
 import SideBar from "../Common/SideBar";
 
 import { setAfficherRecherchePopup } from "../../app/interface_slices/interfaceSlice";
-import { setUtilisateur_SuperviseurInfos } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
+import { setUtilisateur_SuperviseurInfos, setutilisateurConnecte } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 
 const UtilisateurForm = () => {
   const location = useLocation();
@@ -31,7 +31,9 @@ const UtilisateurForm = () => {
   const infosUtilisateur = useSelector(
     (state) => state.utilisateurSlice.infosUtilisateur
   );
-  const infosUtilisateursup =useSelector((state)=> state.utilisateurSystemSlice.infosUtilisateursup)
+  const infosUtilisateursup = useSelector(
+    (state) => state.utilisateurSystemSlice.infosUtilisateursup
+  );
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file && infosUtilisateur.codeuser) {
@@ -51,6 +53,7 @@ const UtilisateurForm = () => {
   const listeCodesUtilisateur = useSelector(
     (state) => state.utilisateurSlice.listeCodesUtilisateur
   );
+  // * pour initialiser les valeur d'objet infosUtilisateur
   useEffect(() => {
     if (utilisateurConnecte.type.toLowerCase() === "utilisateur") {
       dispatch(setInfosUtilisateurEntiere(utilisateurConnecte));
@@ -59,7 +62,7 @@ const UtilisateurForm = () => {
       dispatch(getDerniereCodeUtilisateur());
       dispatch(getListeCodesUtilisateur());
     }
-  },[])
+  }, []);
   useEffect(() => {
     // * le deuxième test, infosUtilisateur.codeuser === "" est pour éviter
     // * une cercle infini d'appèls de cet effet
@@ -90,8 +93,10 @@ const UtilisateurForm = () => {
     dispatch(
       setUtilisateur_SuperviseurInfos({ colonne: colonne, valeur: valeur })
     );
-    dispatch(setInfosUtilisateur({colonne,valeur}))
+    dispatch(setInfosUtilisateur({ colonne, valeur }));
   };
+
+  console.log(utilisateurConnecte)
   return (
     <div className="container">
       <SideBar />
@@ -177,7 +182,10 @@ const UtilisateurForm = () => {
                       onChange={(e) =>
                         hundlechange("directeur", e.target.value)
                       }
-                      disabled={!activerChampsForm || utilisateurConnecte.type.toLowerCase() === "utilisateur"}
+                      disabled={
+                        !activerChampsForm ||
+                        utilisateurConnecte.type.toLowerCase() === "utilisateur"
+                      }
                     />
                   </div>
 
@@ -190,7 +198,10 @@ const UtilisateurForm = () => {
                       className="border border-gray-300 rounded-md p-2"
                       value={infosUtilisateur.type ? infosUtilisateur.type : ""}
                       onChange={(e) => hundlechange("type", e.target.value)}
-                      disabled={!activerChampsForm || utilisateurConnecte.type.toLowerCase() === "utilisateur"}
+                      disabled={
+                        !activerChampsForm ||
+                        utilisateurConnecte.type.toLowerCase() === "utilisateur"
+                      }
                     />
                   </div>
                   <div className="flex flex-col">
@@ -213,10 +224,11 @@ const UtilisateurForm = () => {
                     <label className="font-bold mb-1 text-[rgb(48,60,123)]">
                       Image
                     </label>
-                    {infosUtilisateur.imageUrl ? (
+                    
+                    {infosUtilisateur.image ? (
                       <img
-                        src={infosUtilisateur.imageUrl}
-                        alt="Utilisateur"
+                        src={utilisateurConnecte.image}
+                        alt="Photo Profile"
                         className="border border-gray-300 rounded-md p-2 mb-2"
                         style={{ maxWidth: "150px" }} // Ajuste la taille de l'image si nécessaire
                       />
@@ -226,7 +238,7 @@ const UtilisateurForm = () => {
                     <input
                       type="file"
                       className="border border-gray-300 rounded-md p-2"
-                     // disabled={!activerChampsForm}
+                      // disabled={!activerChampsForm}
                       onChange={handleImageUpload}
                       accept="image/*" // Pour n'accepter que les images
                     />
