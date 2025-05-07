@@ -350,28 +350,27 @@ function ToolBar() {
       }
     }
   };
-  const nav = useNavigate();
   const handleEditionClick = () => {
-    nav("/ImprimerDevis");
+    navigate("/ImprimerDevis");
   };
   const handleQuitterClick = () => {
     if (location.pathname.toLowerCase() == "/devislist") {
-      nav("/DevisFormTout");
+      navigate("/DevisFormTout");
       return "";
     }
     if (location.pathname.toLowerCase() == "/clientlist") {
-      nav("/ClientFormTout");
+      navigate("/ClientFormTout");
       return "";
     }
     if (location.pathname.toLowerCase() == "/articlelist") {
-      nav("/ArticleFormTout");
+      navigate("/ArticleFormTout");
       return "";
     }
     if (location.pathname.toLowerCase() == "/utilisateurlist") {
-      nav("/UtilisateurFormTout");
+      navigate("/UtilisateurFormTout");
       return "";
     }
-    nav("/dashboard");
+    navigate("/dashboard");
   };
   // * fonction pour récuperer l'indice de l'utilisateur selectionné depuis le formulaire
   // * pour qu'on peut l'incrementer par 1 ou décrementer par 1 lors de la naviguation
@@ -450,9 +449,12 @@ function ToolBar() {
     dispatch(setOuvrireAvatarMenu(false));
   });
 
-  const handleDeconnexionBtnClick = () => {
+  const handleDeconnexionBtnClick = (e) => {
+    // * pour prévenir le composant LINK de se naviger
+    // * vers l'url par défaut #
+    e.preventDefault();
     dispatch(setOuvrireAvatarMenu(false));
-    navigate("/deconnexion")
+    navigate("/deconnexion");
   };
 
   // * on vide le derniere code pour que le useEffect
@@ -729,8 +731,7 @@ function ToolBar() {
                   </li>
                   <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-t">
                     <Link
-                      to="/"
-                      onClick={() => handleDeconnexionBtnClick()}
+                      onClick={(e) => {handleDeconnexionBtnClick(e)}}
                       className="flex items-center"
                     >
                       <FaSignOutAlt className="mr-3" /> Déconnexion

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 
 import DevisForm from "./components/Devis/DevisForm";
 import HomePage from "./pages/ErpPages/HomePage";
@@ -41,17 +41,23 @@ import ImprimerDevis from "./pages/Devis/Imprimer";
 import SecteurForm from "./pages/Clients/SecteurForm";
 import Test1 from "./test/Test1";
 import Secteur_Region_CpostalForm from "./pages/Clients/Secteur_Region_CpostalForm";
+import {
+  deconnecterUtilisateur,
+  deconnexionUtilisateur,
+} from "./app/utilisateur_slices/utilisateurSlice";
 
 function App() {
   //?==================================================================================================================
   //?=====================================================variables====================================================
   //?==================================================================================================================
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const usera = useSelector((state) => state.utilisateurSlice.codeuser);
   const location = useLocation();
   const toolbarTable = useSelector(
     (state) => state.interfaceSlice.toolbarTable
   );
+  const jetton = useSelector((state) => state.utilisateurSystemSlice.token);
   const utilisateurConnecte = useSelector(
     (state) => state.utilisateurSystemSlice.utilisateurConnecte
   );
@@ -88,6 +94,15 @@ function App() {
     }
     if (!location.pathname.toLowerCase().includes("list")) {
       dispatch(setIsListeRoute(false));
+    }
+    // * =====================================================
+
+    // * naviguer vers l'interface de connexion si l'utilisateur n'est pas authentifié
+    if (location.pathname.toLowerCase() !== "/") {
+      if (jetton.length == 0) {
+        console.log("no jetton == no access == :(");
+        dispatch(deconnexionUtilisateur(navigate));
+      }
     }
     // * =====================================================
   }, [location.pathname]);
