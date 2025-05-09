@@ -139,7 +139,6 @@ function DevisForm() {
   useEffect(() => {
     if(derniereNumbl && toolbarMode == "ajout"){
       const nouvNumbl = parseInt(derniereNumbl) + 1;
-      console.log(nouvNumbl)
       dispatch(setDevisInfo({collone: "NUMBL", valeur: "DV"+nouvNumbl}))
     }
   },[derniereNumbl])
@@ -397,12 +396,14 @@ function DevisForm() {
                       <h3 className="text-lg font-bold flex items-center space-x-2">
                         <FaUser className="text-green-500" />
                         <span>Information Client</span>
-                        <button
+                        {toolbarMode == "ajout" && (
+                          <button
                           className="btn btn-outline btn-accent"
                           onClick={() => handleAjoutClientRedirect()}
                         >
                           <i className="fas fa-plus-circle"></i>
                         </button>
+                        )}
                       </h3>
                       <label className="block font-medium">Code Client :</label>
                       <input

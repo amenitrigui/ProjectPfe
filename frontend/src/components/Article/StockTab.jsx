@@ -17,7 +17,7 @@ function StockTab() {
           <div className="flex flex-nowrap w-full h-[49%] mb-6">
             {/* Added mb-4 for space */}
             {/* Première table */}
-            <div className="h-full overflow-y-auto w-1/2 pr-2">
+            <div className="h-[400px] overflow-y-auto w-1/2 pl-2">
               <table className="table table-pin-rows bg-base-200 w-full">
                 <thead>
                   <tr>
@@ -28,7 +28,7 @@ function StockTab() {
                 <tbody>
                   {listePointVente.length > 0 ? (
                     listePointVente.map((PV, indice) => (
-                      <tr key={indice}>
+                      <tr key={indice} onClick={() => {}}>
                         {/* N'oubliez pas la prop key */}
                         <td>{PV.Code}</td>
                         <td>{PV.Libelle}</td>

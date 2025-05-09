@@ -710,9 +710,11 @@ function ToolBar() {
                 <ul className="py-2">
                   <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                     <Link
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.preventDefault();
                         dispatch(setOuvrireAvatarMenu(false));
                         dispatch(setUtilisateurSupInfo(utilisateurConnecte));
+                        navigate("/UtilisateurFormTout")
                       }}
                       to="/UtilisateurFormTout"
                       className="flex items-center"

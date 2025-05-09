@@ -14,7 +14,11 @@ import {
   setArticleInfos,
   viderChampsArticleInfo,
 } from "../../app/article_slices/articleSlice";
-import { isAlphabetique, isAlphaNumerique, isNumerique } from "../../utils/validations";
+import {
+  isAlphabetique,
+  isAlphaNumerique,
+  isNumerique,
+} from "../../utils/validations";
 import {
   setAfficherFamillePopub,
   setAfficherRecherchePopup,
@@ -103,10 +107,10 @@ function ArticleForm() {
   }, []);
 
   useEffect(() => {
-    if(!articleInfos.code){
+    if (!articleInfos.code) {
       dispatch(getDerniereCodeArticle());
     }
-  }, [articleInfos.code])
+  }, [articleInfos.code]);
 
   useEffect(() => {
     if (derniereCodeArticle && derniereCodeArticle != "") {
@@ -241,16 +245,17 @@ function ArticleForm() {
                       disabled={!activerChampsForm}
                     />
                   </div>
-
-                  {/* Bouton */}
-                  <div className="col-span-12 md:col-span-2 flex items-end">
-                    <button
-                      className="btn btn-outline btn-accent w-full"
-                      onClick={() => togglePopup("famille")}
-                    >
-                      <i className="fas fa-plus-circle"></i>
-                    </button>
-                  </div>
+                  {/* Bouton Ajout d'une famille */}
+                  {toolbarMode == "ajout" && (
+                    <div className="col-span-12 md:col-span-2 flex items-end">
+                      <button
+                        className="btn btn-outline btn-accent w-full"
+                        onClick={() => togglePopup("famille")}
+                      >
+                        <i className="fas fa-plus-circle"></i>
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
@@ -302,6 +307,7 @@ function ArticleForm() {
                   </div>
 
                   {/* Bouton */}
+                  {toolbarMode == "ajout" && (
                   <div className="col-span-12 md:col-span-2 flex items-end">
                     <button
                       className="btn btn-outline btn-accent w-full"
@@ -310,6 +316,7 @@ function ArticleForm() {
                       <i className="fas fa-plus-circle"></i>
                     </button>
                   </div>
+                  )}
                 </div>
 
                 {/* Code Article et Désignation */}

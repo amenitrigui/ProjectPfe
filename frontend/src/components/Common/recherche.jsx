@@ -266,6 +266,7 @@ const Recherche = () => {
       switch (filtrerPar) {
         case "code":
           if(FamilleInfos.code) {
+            console.log("ok")
             dispatch(getListeArticleParCodeArticle({"codeArticle": valeur, "codeFamille": FamilleInfos.code}));
           }
           if(!FamilleInfos.code) {
@@ -341,19 +342,16 @@ const Recherche = () => {
   const handleBtnValiderClick = () => {
     if (toolbarTable == "devis") {
       dispatch(setDevisInfoEntiere(datatableElementSelection));
-      dispatch(setDevisList([]));
       dispatch(setAfficherRecherchePopup(false));
     }
     if (toolbarTable == "client") {
       dispatch(setClientInfosEntiere(datatableElementSelection));
       dispatch(setDevisClientInfos({"CODECLI": datatableElementSelection.code, "RSCLI": datatableElementSelection.rsoc, "ADRCLI": datatableElementSelection.adresse }))
-      dispatch(setListeClients([]));
       dispatch(setAfficherRecherchePopup(false));
     }
     if (toolbarTable == "article") {
       dispatch(setArticleInfosEntiere(datatableElementSelection));
       remplirChampsLigneDevis();
-      dispatch(setListeArticle([]));
       dispatch(setAfficherRecherchePopup(false));
     }
     if (toolbarTable == "famille") {
@@ -375,7 +373,6 @@ const Recherche = () => {
         })
       );
       // * ============================================================
-      dispatch(setListeFamilles([]));
       dispatch(setAfficherRecherchePopup(false));
     }
     if (toolbarTable == "utilisateur") {
@@ -395,8 +392,7 @@ const Recherche = () => {
           valeur: datatableElementSelection.libelle,
         })
       );
-
-      dispatch(setListeSousfamille([]));
+      
       dispatch(setAfficherRecherchePopup(false));
     }
     viderListes();

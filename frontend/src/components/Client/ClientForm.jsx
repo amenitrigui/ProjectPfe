@@ -108,14 +108,12 @@ const ClientForm = () => {
   }, [clientInfos.code, toolbarMode, dispatch]);
 
   useEffect(() => {
-    console.log(clientInfos.code);
     if (
       !clientInfos.code &&
       toolbarMode === "consultation" &&
       listeToutCodesClients?.length > 0
     ) {
       const derniereCodeClient = listeToutCodesClients[listeToutCodesClients.length - 1].code;
-      console.log(derniereCodeClient)
       if (derniereCodeClient !== clientInfos.code) {
         dispatch(
           setClientInfos({
