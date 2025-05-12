@@ -44,6 +44,7 @@ import {
   deconnecterUtilisateur,
   getListeUtilisateurParCode,
   setInfosUtilisateur,
+  setInfosUtilisateurEntiere,
 } from "../../app/utilisateur_slices/utilisateurSlice";
 import {
   getDerniereCodeArticle,
@@ -96,7 +97,9 @@ function ToolBar() {
   const isDashBoardRoute = useSelector(
     (state) => state.interfaceSlice.isDashBoardRoute
   );
-  const listeToutCodesClients = useSelector((state) => state.clientSlice.listeToutCodesClients);
+  const listeToutCodesClients = useSelector(
+    (state) => state.clientSlice.listeToutCodesClients
+  );
   const listeNUMBL = useSelector((state) => state.devisSlice.listeNUMBL);
   const menuRef = useRef();
   const buttonRef = useRef();
@@ -115,7 +118,9 @@ function ToolBar() {
       return () => document.removeEventListener("mousedown", handleClick);
     }, [refs, callback]);
   };
-  const isListeRoute = useSelector((state) => state.interfaceSlice.isListeRoute);
+  const isListeRoute = useSelector(
+    (state) => state.interfaceSlice.isListeRoute
+  );
   //?==================================================================================================================
   //?==================================================appels UseEffect================================================
   //?==================================================================================================================
@@ -172,7 +177,6 @@ function ToolBar() {
       dispatch(viderChampsArticleInfo());
     }
     if (toolbarTable == "utilisateur") {
-      
       dispatch(setViderChampsUtilisateur());
     }
   };
@@ -182,6 +186,7 @@ function ToolBar() {
       if (!devisInfo.NUMBL) {
         // ! a remplacer par toast
         alert("aucune devis est selectionné pour la modification");
+        return;
       }
     }
 
@@ -189,28 +194,44 @@ function ToolBar() {
       if (!clientInfos.code) {
         // ! a remplacer par toast
         alert("aucun client est selectionné pour la modification");
+        return;
       }
     }
     if (toolbarTable == "article") {
       if (!articleInfo.code) {
         alert("aucun article est selectionne pour la modification");
+        return;
       }
     }
-    if (
-      (toolbarTable == "client" && clientInfos.code) ||
-      (toolbarTable == "devis" && devisInfo.NUMBL) ||
-      (toolbarTable == "article" && articleInfo.code) ||
-      (toolbarTable == "utilisateur" && Utilisateur_SuperviseurInfos.codeuser)
-    ) {
-      dispatch(setToolbarMode("modification"));
-      dispatch(setActiverBoutonsValiderAnnuler(true));
-      dispatch(setActiverChampsForm(true));
-    }
+    dispatch(setToolbarMode("modification"));
+    dispatch(setActiverBoutonsValiderAnnuler(true));
+    dispatch(setActiverChampsForm(true));
   };
 
   // * afficher la fenetre de confirmation
   // * pour supprimer un ou plusieurs clients/devis
   const handleSupprimerBtnClick = async () => {
+    if (toolbarTable == "devis") {
+      if (!devisInfo.NUMBL) {
+        // ! a remplacer par toast
+        alert("aucune devis est selectionné pour la suppression");
+        return;
+      }
+    }
+
+    if (toolbarTable == "client") {
+      if (!clientInfos.code) {
+        // ! a remplacer par toast
+        alert("aucun client est selectionné pour la suppression");
+        return;
+      }
+    }
+    if (toolbarTable == "article") {
+      if (!articleInfo.code) {
+        alert("aucun article est selectionne pour la suppression");
+        return;
+      }
+    }
     dispatch(setActiverChampsForm(false));
     dispatch(setToolbarMode("suppression"));
     if (toolbarTable === "article") {
@@ -275,7 +296,7 @@ function ToolBar() {
     if (toolbarTable == "utilisateur") {
       if (toolbarMode == "ajout") {
         dispatch(setAlertMessage("Confirmez-vous ajouter de ce utilisateur ?"));
-        dispatch(SetUtilisateurSystemremplir(infosUtilisateur))
+        dispatch(SetUtilisateurSystemremplir(infosUtilisateur));
       }
       if (toolbarMode == "modification") {
         dispatch(setAlertMessage("confirmer vous de modifier de utilisateur?"));
@@ -291,10 +312,15 @@ function ToolBar() {
   const handleAnnulerBtnClick = () => {
     if (toolbarTable === "devis") {
       dispatch(viderChampsDevisInfo());
-      // * récuperer la dernière numbl  
+      // * récuperer la dernière numbl
       // dispatch(getDerniereNumbl(utilisateurConnecte.codeuser));
-      if(listeNUMBL.length > 0) {
-        dispatch(setDevisInfo({collone: "NUMBL", valeur: listeNUMBL[listeNUMBL.length-1].NUMBL}))
+      if (listeNUMBL.length > 0) {
+        dispatch(
+          setDevisInfo({
+            collone: "NUMBL",
+            valeur: listeNUMBL[listeNUMBL.length - 1].NUMBL,
+          })
+        );
       }
     }
     if (toolbarTable === "client") {
@@ -320,31 +346,35 @@ function ToolBar() {
   const handleNaviguerVersPrecedent = () => {
     if (toolbarTable == "client") {
       const indiceClientCourant = getIndiceClientCourant();
-      if(indiceClientCourant > 0) {
-        dispatch(setClientInfos({colonne: "code", valeur: listeToutCodesClients[indiceClientCourant-1].code}))
+      if (indiceClientCourant > 0) {
+        dispatch(
+          setClientInfos({
+            colonne: "code",
+            valeur: listeToutCodesClients[indiceClientCourant - 1].code,
+          })
+        );
       }
     }
 
     if (toolbarTable == "devis") {
       const indiceNUMBL = getIndiceNUMBLSelectionne();
-      if(indiceNUMBL > 0){
+      if (indiceNUMBL > 0) {
         dispatch(
           setDevisInfo({
             collone: "NUMBL",
-            valeur:
-              listeNUMBL[indiceNUMBL-1].NUMBL,
+            valeur: listeNUMBL[indiceNUMBL - 1].NUMBL,
           })
         );
       }
     }
     if (toolbarTable == "utilisateur") {
       const indiceutilisateurCourant = getIndiceUtilisateurSelectionne();
-      if(indiceutilisateurCourant > 0){
+      if (indiceutilisateurCourant > 0) {
         dispatch(
           setInfosUtilisateur({
             colonne: "codeuser",
             valeur:
-              listeCodesUtilisateur[indiceutilisateurCourant-1].codeuser,
+              listeCodesUtilisateur[indiceutilisateurCourant - 1].codeuser,
           })
         );
       }
@@ -388,51 +418,55 @@ function ToolBar() {
   const getIndiceClientCourant = () => {
     let indiceClientCourant = 0;
     listeToutCodesClients.map((codeClient, indice) => {
-      if(clientInfos.code == codeClient.code) {
+      if (clientInfos.code == codeClient.code) {
         indiceClientCourant = indice;
       }
-    })
+    });
     return indiceClientCourant;
-  }
+  };
 
   const getIndiceNUMBLSelectionne = () => {
     let indiceNumblCourant = 0;
     listeNUMBL.map((numbl, indice) => {
-      if(devisInfo.NUMBL == numbl.NUMBL) {
+      if (devisInfo.NUMBL == numbl.NUMBL) {
         indiceNumblCourant = indice;
       }
-    })
+    });
     return indiceNumblCourant;
-  }
+  };
   const handleNaviguerVersSuivant = () => {
     if (toolbarTable == "client") {
       const indiceClientCourant = getIndiceClientCourant();
-      if(indiceClientCourant != listeToutCodesClients.length-1) {
-        dispatch(setClientInfos({colonne: "code", valeur: listeToutCodesClients[indiceClientCourant+1].code}))
+      if (indiceClientCourant != listeToutCodesClients.length - 1) {
+        dispatch(
+          setClientInfos({
+            colonne: "code",
+            valeur: listeToutCodesClients[indiceClientCourant + 1].code,
+          })
+        );
       }
     }
 
     if (toolbarTable == "devis") {
       const indiceNUMBL = getIndiceNUMBLSelectionne();
-      if(indiceNUMBL != listeNUMBL.length-1){
+      if (indiceNUMBL != listeNUMBL.length - 1) {
         dispatch(
           setDevisInfo({
             collone: "NUMBL",
-            valeur:
-              listeNUMBL[indiceNUMBL+1].NUMBL,
+            valeur: listeNUMBL[indiceNUMBL + 1].NUMBL,
           })
         );
       }
     }
     if (toolbarTable == "utilisateur") {
       const indiceutilisateurCourant = getIndiceUtilisateurSelectionne();
-      if(indiceutilisateurCourant != listeCodesUtilisateur.length-1){
-        console.log(listeCodesUtilisateur)
+      if (indiceutilisateurCourant != listeCodesUtilisateur.length - 1) {
+        console.log(listeCodesUtilisateur);
         dispatch(
           setInfosUtilisateur({
             colonne: "codeuser",
             valeur:
-              listeCodesUtilisateur[indiceutilisateurCourant+1].codeuser,
+              listeCodesUtilisateur[indiceutilisateurCourant + 1].codeuser,
           })
         );
       }
@@ -475,18 +509,18 @@ function ToolBar() {
   const estVisible = () => {
     const userType = utilisateurConnecte?.type?.toLowerCase();
     const currentTable = toolbarTable?.toLowerCase();
-    
+
     if (userType === "superviseur") {
       return true;
     }
-    
+
     if (userType === "utilisateur" && currentTable !== "utilisateur") {
       return true;
     }
-    
+
     return false;
   };
-  
+
   return (
     <>
       <nav className="w-full border-b border-gray-300 px-4 py-2 bg-white shadow-sm sticky top-0 z-50">
@@ -506,7 +540,7 @@ function ToolBar() {
               {!activerBoutonsValiderAnnuler && (
                 <>
                   {/* Bouton Nouveau */}
-                  {estVisible() && !isListeRoute &&(
+                  {estVisible() && !isListeRoute && (
                     <button
                       type="button"
                       onClick={handleAjoutBtnClick}
@@ -523,20 +557,21 @@ function ToolBar() {
                   )}
 
                   {/* Bouton Modifier */}
-                  {(!isListeRoute && <button
-                    type="button"
-                    onClick={handleModifierBtnClick}
-                    className="flex flex-col items-center w-16 sm:w-20 p-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-lg transition-all duration-200"
-                  >
-                    <FontAwesomeIcon icon={faEdit} className="text-xl mb-1" />
-                    <span className="text-[10px] sm:text-xs font-semibold">
-                      Modifier
-                    </span>
-                  </button>
+                  {!isListeRoute && (
+                    <button
+                      type="button"
+                      onClick={handleModifierBtnClick}
+                      className="flex flex-col items-center w-16 sm:w-20 p-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-lg transition-all duration-200"
+                    >
+                      <FontAwesomeIcon icon={faEdit} className="text-xl mb-1" />
+                      <span className="text-[10px] sm:text-xs font-semibold">
+                        Modifier
+                      </span>
+                    </button>
                   )}
 
                   {/* Bouton Supprimer */}
-                  {estVisible() && !isListeRoute &&(
+                  {estVisible() && !isListeRoute && (
                     <button
                       type="button"
                       onClick={handleSupprimerBtnClick}
@@ -553,7 +588,7 @@ function ToolBar() {
                   )}
 
                   {/* Liste */}
-                  {estVisible() && !isListeRoute &&(
+                  {estVisible() && !isListeRoute && (
                     <button
                       type="button"
                       onClick={handleNaviguerVersListe}
@@ -567,7 +602,8 @@ function ToolBar() {
                   )}
 
                   {/* Précédent */}
-                  {estVisible() && !isListeRoute &&
+                  {estVisible() &&
+                    !isListeRoute &&
                     [
                       "client",
                       "devis",
@@ -591,7 +627,8 @@ function ToolBar() {
                     )}
 
                   {/* Suivant */}
-                  {estVisible() && !isListeRoute &&
+                  {estVisible() &&
+                    !isListeRoute &&
                     [
                       "client",
                       "devis",
@@ -613,7 +650,6 @@ function ToolBar() {
                         </span>
                       </button>
                     )}
-
                   {/* Édition */}
                   {toolbarTable === "devis" && (
                     <button
@@ -714,9 +750,17 @@ function ToolBar() {
                         e.preventDefault();
                         dispatch(setOuvrireAvatarMenu(false));
                         dispatch(setUtilisateurSupInfo(utilisateurConnecte));
-                        navigate("/UtilisateurFormTout")
+                        dispatch(
+                          setInfosUtilisateurEntiere(utilisateurConnecte)
+                        );
+                        if (
+                          location.pathname.toLowerCase() !=
+                          "/utilisateurformtout"
+                        ) {
+                          navigate("/UtilisateurFormTout");
+                        }
                       }}
-                      to="/UtilisateurFormTout"
+                      // to="/UtilisateurFormTout"
                       className="flex items-center"
                     >
                       <FaUser className="mr-3" /> Mon Profile
@@ -733,7 +777,9 @@ function ToolBar() {
                   </li>
                   <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-t">
                     <Link
-                      onClick={(e) => {handleDeconnexionBtnClick(e)}}
+                      onClick={(e) => {
+                        handleDeconnexionBtnClick(e);
+                      }}
                       className="flex items-center"
                     >
                       <FaSignOutAlt className="mr-3" /> Déconnexion

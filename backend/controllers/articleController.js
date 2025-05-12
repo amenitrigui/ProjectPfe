@@ -402,7 +402,7 @@ const getToutCodesArticle = async (req, res) => {
     
     if(!codeFamille) {
       listeCodesArticles = await dbConnection.query(
-        `SELECT code FROM article ORDER BY code`,
+        `SELECT code FROM article ORDER BY datecreate ASC`,
         {
           type: dbConnection.QueryTypes.SELECT,
         }
