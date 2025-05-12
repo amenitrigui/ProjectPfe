@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { toast, ToastContainer, Bounce } from "react-toastify";
 import {
   setToken,
@@ -14,10 +14,8 @@ function SignInPage() {
     (state) => state.utilisateurSlice.responseLogin
   );
   const navigate = useNavigate();
-
-  // useEffect(()=>{
-  //   dispatch(loginUtilisateur({nom:"hanen",motpasse:"hanen123ps"}))
-  // },[])
+  const jetton = useSelector((state) => state.utilisateurSystemSlice.token)
+  const utilisateurConnecte = useSelector((state) => state.utilisateurSystemSlice.utilisateurConnecte)
   const [nom, setNom] = useState("");
   const [motpasse, setMotpasse] = useState("");
   const hundleLogin = (e) => {

@@ -88,7 +88,6 @@ const ClientForm = () => {
     dispatch(getListeCodeRegions());
     dispatch(getListePointVente());
     dispatch(getToutCodesClient());
-    
   }, []);
 
   useEffect(() => {
@@ -103,19 +102,18 @@ const ClientForm = () => {
     if (toolbarMode === "ajout" || !clientInfos.code?.trim()) {
       return;
     }
-    
+
     dispatch(getClientParCode(clientInfos.code));
   }, [clientInfos.code, toolbarMode, dispatch]);
 
   useEffect(() => {
-    console.log(clientInfos.code);
     if (
       !clientInfos.code &&
       toolbarMode === "consultation" &&
       listeToutCodesClients?.length > 0
     ) {
-      const derniereCodeClient = listeToutCodesClients[listeToutCodesClients.length - 1].code;
-      console.log(derniereCodeClient)
+      const derniereCodeClient =
+        listeToutCodesClients[listeToutCodesClients.length - 1].code;
       if (derniereCodeClient !== clientInfos.code) {
         dispatch(
           setClientInfos({
@@ -126,16 +124,22 @@ const ClientForm = () => {
       }
     }
   }, [clientInfos.code, listeToutCodesClients, toolbarMode, dispatch]);
-  
+
   useEffect(() => {
     if (
       toolbarMode === "ajout" &&
       listeToutCodesClients?.length > 0 &&
-      clientInfos.code !== (parseInt(listeToutCodesClients[listeToutCodesClients.length - 1].code) + 1).toString()
+      clientInfos.code !==
+        (
+          parseInt(
+            listeToutCodesClients[listeToutCodesClients.length - 1].code
+          ) + 1
+        ).toString()
     ) {
-      const derniereCodeClient = listeToutCodesClients[listeToutCodesClients.length - 1].code;
+      const derniereCodeClient =
+        listeToutCodesClients[listeToutCodesClients.length - 1].code;
       const nouvCodeClient = (parseInt(derniereCodeClient) + 1).toString();
-      
+
       dispatch(
         setClientInfos({
           colonne: "code",
@@ -317,7 +321,11 @@ const ClientForm = () => {
                   onChange={(e) => handleChangeCodeClient(e, "code")}
                   readOnly={true}
                   maxLength={8}
-                  onClick={() => afficherRecherchePopup()}
+                  onClick={() => {
+                    if (toolbarMode != "ajout") {
+                      afficherRecherchePopup();
+                    }
+                  }}
                 />
               </div>
               <div className="flex flex-col w-1/3">

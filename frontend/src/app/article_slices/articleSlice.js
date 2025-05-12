@@ -548,7 +548,7 @@ export const articleSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getArticleParCode.fulfilled, (state, action) => {
-        if (action.payload && action.payload != []) {
+        if (action.payload && action.payload != [] && action.payload.length != 0) {
           // ! ceci est pour l'interface de recherche qui nécissite
           // ! une tableau pour populer le data table
           state.ListeArticle = action.payload;

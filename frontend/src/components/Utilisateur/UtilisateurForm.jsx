@@ -58,7 +58,7 @@ const UtilisateurForm = () => {
     if (utilisateurConnecte.type.toLowerCase() === "utilisateur") {
       dispatch(setInfosUtilisateurEntiere(utilisateurConnecte));
     }
-    if (utilisateurConnecte.type.toLowerCase() === "superviseur") {
+    if (utilisateurConnecte.type.toLowerCase() === "superviseur" && !infosUtilisateur.codeuser) {
       dispatch(getDerniereCodeUtilisateur());
       dispatch(getListeCodesUtilisateur());
     }
@@ -95,8 +95,6 @@ const UtilisateurForm = () => {
     );
     dispatch(setInfosUtilisateur({ colonne, valeur }));
   };
-
-  console.log(utilisateurConnecte)
   return (
     <div className="container">
       <SideBar />

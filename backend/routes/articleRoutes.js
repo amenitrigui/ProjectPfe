@@ -1,7 +1,7 @@
 const express = require("express");
 const {
   getListeFamilles,
-  getCodesArticlesByFamille,
+  getListeArticlesParFamille,
   getToutCodesArticle,
   suprimerArticle,
   getArticleParCode,
@@ -27,7 +27,7 @@ const router = express.Router();
 //hthi 5dmtna
 router.get("/:dbName/getListeFamilles", getListeFamilles);
 // ! ddddd
-router.get("/:dbName/codes/famille", getCodesArticlesByFamille);
+router.get("/:dbName/codes/famille", getListeArticlesParFamille);
 router.delete("/:dbName/suprimerArticle",suprimerArticle);
 router.get("/:dbName/getArticleParCode", getArticleParCode);
 router.post("/:dbName/ajouterArticle", ajouterArticle);

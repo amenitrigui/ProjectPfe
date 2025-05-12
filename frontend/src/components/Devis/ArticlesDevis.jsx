@@ -37,6 +37,7 @@ function ArticlesDevis() {
   const dispatch = useDispatch();
   const [netHt, setNetHt] = useState(0);
   const [puttc, setPuttc] = useState(0);
+  const [ligneDevisExiste, setLigneDevisExiste] = useState(false)
   const articleInfos = useSelector((state) => state.articleSlice.articleInfos);
   const ligneDevisInfos = useSelector(
     (state) => state.articleSlice.ligneDevisInfos
@@ -56,7 +57,7 @@ function ArticlesDevis() {
     if (
       ligneDevisInfos.QteART &&
       ligneDevisInfos.PUART &&
-      ligneDevisInfos.Remise && 
+      ligneDevisInfos.Remise &&
       parseInt(ligneDevisInfos.QteART) > 0 &&
       parseFloat(ligneDevisInfos.PUART) > 0 &&
       parseFloat(ligneDevisInfos.Remise) >= 0
@@ -74,7 +75,12 @@ function ArticlesDevis() {
   }, [ligneDevisInfos.QteART, ligneDevisInfos.PUART, ligneDevisInfos.Remise]);
 
   useEffect(() => {
-    if (ligneDevisInfos.PUART && ligneDevisInfos.TauxTVA && parseFloat(ligneDevisInfos.PUART) > 0 && parseFloat(ligneDevisInfos.TauxTVA) >= 0) {
+    if (
+      ligneDevisInfos.PUART &&
+      ligneDevisInfos.TauxTVA &&
+      parseFloat(ligneDevisInfos.PUART) > 0 &&
+      parseFloat(ligneDevisInfos.TauxTVA) >= 0
+    ) {
       setPuttc(
         (ligneDevisInfos.PUART * (1 + ligneDevisInfos.TauxTVA / 100)).toFixed(3)
       );
@@ -82,6 +88,23 @@ function ArticlesDevis() {
       setPuttc(0);
     }
   }, [ligneDevisInfos.PUART, ligneDevisInfos.TauxTVA]);
+
+  // * useEffect pour activer/désactiver les boutons de mise à jour et suppression
+  // * pour les lignes de devis
+  useEffect(() => {
+    let existe = false;
+    if(devisInfo.articles && devisInfo.articles.length > 0) {
+      if(ligneDevisInfos && Object.values(ligneDevisInfos).length > 0) {
+        devisInfo.articles.map((article, indice) => {
+          if(article.CodeART === ligneDevisInfos.CodeART) {
+            existe = true
+          }
+        })
+      }
+
+      setLigneDevisExiste(existe);
+    }
+  },[devisInfo.articles, ligneDevisInfos.CodeART])
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
@@ -112,7 +135,11 @@ function ArticlesDevis() {
     dispatch(
       setDevisInfo({
         collone: "MREMISE",
-        valeur: (parseInt(devisInfo.MREMISE) + (parseFloat(ligneDevisInfos.PUART) * parseFloat(ligneDevisInfos.Remise/100))).toFixed(3),
+        valeur: (
+          parseInt(devisInfo.MREMISE) +
+          parseFloat(ligneDevisInfos.PUART) *
+            parseFloat(ligneDevisInfos.Remise / 100)
+        ).toFixed(3),
       })
     );
     dispatch(
@@ -121,7 +148,7 @@ function ArticlesDevis() {
         valeur: parseInt(devisInfo.MTTC) + parseInt(puttc),
       })
     );
-    
+
     dispatch(viderChampsArticleInfo());
     dispatch(setLigneDevisInfosEntiere({}));
     dispatch(setLignedevisSelectionne([]));
@@ -469,24 +496,29 @@ function ArticlesDevis() {
                     <CheckIcon className="h-5 w-5" />
                     <span className="sr-only">Valider</span>
                   </button>
+                  {devisInfo.artices && devisInfo.articles.length > 0 && (
+                    <>
+                      <button
+                        className="btn btn-sm btn-ghost text-blue-500"
+                        title="Modifier"
+                        disabled={ligneDevisExiste === false}
+                        onClick={handleModifierLDFPBtnClick}
+                      >
+                        <PencilIcon className="h-5 w-5" />
+                        <span className="sr-only">Modifier</span>
+                      </button>
 
-                  <button
-                    className="btn btn-sm btn-ghost text-blue-500"
-                    title="Modifier"
-                    onClick={handleModifierLDFPBtnClick}
-                  >
-                    <PencilIcon className="h-5 w-5" />
-                    <span className="sr-only">Modifier</span>
-                  </button>
-
-                  <button
-                    className="btn btn-sm btn-ghost text-red-500"
-                    title="Supprimer"
-                    onClick={handleSupprimerLDFPBtnClick}
-                  >
-                    <TrashIcon className="h-5 w-5" />
-                    <span className="sr-only">Supprimer</span>
-                  </button>
+                      <button
+                        className="btn btn-sm btn-ghost text-red-500"
+                        title="Supprimer"
+                        disabled={ligneDevisExiste === false}
+                        onClick={handleSupprimerLDFPBtnClick}
+                      >
+                        <TrashIcon className="h-5 w-5" />
+                        <span className="sr-only">Supprimer</span>
+                      </button>
+                    </>
+                  )}
                   <button
                     className="btn btn-sm btn-ghost text-black-500"
                     title="Vider Champs"

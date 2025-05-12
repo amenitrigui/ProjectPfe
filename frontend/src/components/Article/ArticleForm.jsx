@@ -14,7 +14,11 @@ import {
   setArticleInfos,
   viderChampsArticleInfo,
 } from "../../app/article_slices/articleSlice";
-import { isAlphabetique, isAlphaNumerique, isNumerique } from "../../utils/validations";
+import {
+  isAlphabetique,
+  isAlphaNumerique,
+  isNumerique,
+} from "../../utils/validations";
 import {
   setAfficherFamillePopub,
   setAfficherRecherchePopup,
@@ -53,7 +57,9 @@ function ArticleForm() {
   const SousFamilleInfos = useSelector(
     (state) => state.sousfamilleSlice.SousFamilleInfos
   );
-
+  const ListeCodeArticles = useSelector(
+    (state) => state.articleSlice.ListeCodeArticles
+  );
   //?==================================================================================================================
   //?==============================================appels UseEffect====================================================
   //?==================================================================================================================
@@ -63,12 +69,27 @@ function ArticleForm() {
     dispatch(getListeCodesArticles()); // * la colonne de code article
   }, []);
   useEffect(() => {
-    if (articleInfos.code && articleInfos.code != "")
+    if (
+      !articleInfos.code &&
+      ListeCodeArticles.length > 0 &&
+      toolbarMode != "ajout"
+    ) {
+      // dispatch(getDerniereCodeArticle());
+      dispatch(
+        setArticleInfos({
+          colonne: "code",
+          valeur: ListeCodeArticles[ListeCodeArticles.length - 1].code,
+        })
+      );
+    }
+    if (articleInfos.code && articleInfos.code != "") {
+      if (toolbarMode != "ajout") {
+        dispatch(getArticleParCode(articleInfos.code));
+      }
       dispatch(getPrixVente(articleInfos.code));
-  }, [articleInfos.code]);
-  useEffect(() => {
-    if (articleInfos.code) dispatch(getPrixVente(articleInfos.code));
-  }, [articleInfos.code]);
+    }
+  }, [articleInfos.code, ListeCodeArticles, toolbarMode]);
+
   useEffect(() => {
     if (articleInfos.codesousfam && articleInfos.codesousfam != "") {
       dispatch(
@@ -76,15 +97,6 @@ function ArticleForm() {
       );
     }
   }, [articleInfos.codesousfam]);
-  useEffect(() => {
-    if (articleInfos.famille && articleInfos.famille != "") {
-      dispatch(getDesignationFamilleParCodeFamille(articleInfos.famille));
-    }
-  }, [articleInfos.famille]);
-
-  const activerChampsForm = useSelector(
-    (state) => state.interfaceSlice.activerChampsForm
-  );
   useEffect(() => {
     if (articleInfos.code && articleInfos.code != "") {
       dispatch(
@@ -97,23 +109,15 @@ function ArticleForm() {
       dispatch(getlistepointvente());
     }
   }, [articleInfos.code]);
-
   useEffect(() => {
-    dispatch(getDerniereCodeArticle());
-  }, []);
-
-  useEffect(() => {
-    if(!articleInfos.code){
-      dispatch(getDerniereCodeArticle());
+    if (articleInfos.famille && articleInfos.famille != "") {
+      dispatch(getDesignationFamilleParCodeFamille(articleInfos.famille));
     }
-  }, [articleInfos.code])
+  }, [articleInfos.famille]);
 
-  useEffect(() => {
-    if (derniereCodeArticle && derniereCodeArticle != "") {
-      dispatch(getArticleParCode(derniereCodeArticle));
-    }
-  }, [derniereCodeArticle]);
-
+  const activerChampsForm = useSelector(
+    (state) => state.interfaceSlice.activerChampsForm
+  );
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
@@ -132,6 +136,8 @@ function ArticleForm() {
         {
           dispatch(viderChampsArticleInfo());
         }
+      } else {
+        dispatch(setArticleInfos({ colonne, valeur }));
       }
     }
 
@@ -241,16 +247,18 @@ function ArticleForm() {
                       disabled={!activerChampsForm}
                     />
                   </div>
-
-                  {/* Bouton */}
-                  <div className="col-span-12 md:col-span-2 flex items-end">
-                    <button
-                      className="btn btn-outline btn-accent w-full"
-                      onClick={() => togglePopup("famille")}
-                    >
-                      <i className="fas fa-plus-circle"></i>
-                    </button>
-                  </div>
+                  {/* Bouton Ajout d'une famille */}
+                  {(toolbarMode == "ajout" ||
+                    toolbarMode == "modification") && (
+                    <div className="col-span-12 md:col-span-2 flex items-end">
+                      <button
+                        className="btn btn-outline btn-accent w-full"
+                        onClick={() => togglePopup("famille")}
+                      >
+                        <i className="fas fa-plus-circle"></i>
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
@@ -302,14 +310,17 @@ function ArticleForm() {
                   </div>
 
                   {/* Bouton */}
-                  <div className="col-span-12 md:col-span-2 flex items-end">
-                    <button
-                      className="btn btn-outline btn-accent w-full"
-                      onClick={() => togglePopup("sousfamille")}
-                    >
-                      <i className="fas fa-plus-circle"></i>
-                    </button>
-                  </div>
+                  {(toolbarMode == "ajout" ||
+                    toolbarMode == "modification") && (
+                    <div className="col-span-12 md:col-span-2 flex items-end">
+                      <button
+                        className="btn btn-outline btn-accent w-full"
+                        onClick={() => togglePopup("sousfamille")}
+                      >
+                        <i className="fas fa-plus-circle"></i>
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 {/* Code Article et Désignation */}
@@ -322,7 +333,7 @@ function ArticleForm() {
                     <input
                       type="text"
                       className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                      disabled={toolbarMode == "modification"}
+                      readOnly={toolbarMode != "ajout"}
                       value={articleInfos.code}
                       list={toolbarMode == "ajout" ? "listeCodesArticle" : ""}
                       onChange={(e) =>

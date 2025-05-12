@@ -55,7 +55,7 @@ const loginUtilisateur = async (req, res) => {
 
     // Recherche de l'utilisateur
     const user = await User.findOne({
-      attributes: ["codeuser", "nom", "motpasse", "email", "directeur", "type", "image"],
+      attributes: ["codeuser", "nom", "motpasse", "email", "directeur", "type"],
       where: { nom },
     });
     if (!user) {

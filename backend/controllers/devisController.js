@@ -1365,8 +1365,8 @@ const filtrerListeDevis = async (req, res) => {
 };
 module.exports = {
   getTousDevis,
-  getNombreDevis,
   getTotalChiffres,
+  getNombreDevis,
   ajouterDevis,
   getDevisParNUMBL,
   getCodesDevis,

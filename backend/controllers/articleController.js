@@ -53,7 +53,7 @@ const getListeFamilles = async (req, res) => {
 // * input : 02-SP
 // * output : liste d'articles ayant le code famille 02-SP
 // * http://localhost:5000/api/article/SOLEVO/codes/famille?famille=test
-const getCodesArticlesByFamille = async (req, res) => {
+const getListeArticlesParFamille = async (req, res) => {
   const { dbName } = req.params;
   const { famille } = req.query;
   if (!dbName || !famille) {
@@ -402,7 +402,7 @@ const getToutCodesArticle = async (req, res) => {
     
     if(!codeFamille) {
       listeCodesArticles = await dbConnection.query(
-        `SELECT code FROM article ORDER BY code`,
+        `SELECT code FROM article ORDER BY datecreate ASC`,
         {
           type: dbConnection.QueryTypes.SELECT,
         }
@@ -778,7 +778,7 @@ module.exports = {
   //*apartient l'interface devis
   getListeFamilles,
   //*appartient l'interface devis
-  getCodesArticlesByFamille,
+  getListeArticlesParFamille,
   //*appartient La base de donnes c'est a dire l'interface d'article
   suprimerArticle,
   getArticleParCode,

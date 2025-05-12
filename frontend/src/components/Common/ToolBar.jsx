@@ -44,6 +44,7 @@ import {
   deconnecterUtilisateur,
   getListeUtilisateurParCode,
   setInfosUtilisateur,
+  setInfosUtilisateurEntiere,
 } from "../../app/utilisateur_slices/utilisateurSlice";
 import {
   getDerniereCodeArticle,
@@ -185,6 +186,7 @@ function ToolBar() {
       if (!devisInfo.NUMBL) {
         // ! a remplacer par toast
         alert("aucune devis est selectionné pour la modification");
+        return;
       }
     }
 
@@ -192,28 +194,44 @@ function ToolBar() {
       if (!clientInfos.code) {
         // ! a remplacer par toast
         alert("aucun client est selectionné pour la modification");
+        return;
       }
     }
     if (toolbarTable == "article") {
       if (!articleInfo.code) {
         alert("aucun article est selectionne pour la modification");
+        return;
       }
     }
-    if (
-      (toolbarTable == "client" && clientInfos.code) ||
-      (toolbarTable == "devis" && devisInfo.NUMBL) ||
-      (toolbarTable == "article" && articleInfo.code) ||
-      (toolbarTable == "utilisateur" && Utilisateur_SuperviseurInfos.codeuser)
-    ) {
-      dispatch(setToolbarMode("modification"));
-      dispatch(setActiverBoutonsValiderAnnuler(true));
-      dispatch(setActiverChampsForm(true));
-    }
+    dispatch(setToolbarMode("modification"));
+    dispatch(setActiverBoutonsValiderAnnuler(true));
+    dispatch(setActiverChampsForm(true));
   };
 
   // * afficher la fenetre de confirmation
   // * pour supprimer un ou plusieurs clients/devis
   const handleSupprimerBtnClick = async () => {
+    if (toolbarTable == "devis") {
+      if (!devisInfo.NUMBL) {
+        // ! a remplacer par toast
+        alert("aucune devis est selectionné pour la suppression");
+        return;
+      }
+    }
+
+    if (toolbarTable == "client") {
+      if (!clientInfos.code) {
+        // ! a remplacer par toast
+        alert("aucun client est selectionné pour la suppression");
+        return;
+      }
+    }
+    if (toolbarTable == "article") {
+      if (!articleInfo.code) {
+        alert("aucun article est selectionne pour la suppression");
+        return;
+      }
+    }
     dispatch(setActiverChampsForm(false));
     dispatch(setToolbarMode("suppression"));
 
@@ -379,28 +397,27 @@ function ToolBar() {
       }
     }
   };
-  const nav = useNavigate();
   const handleEditionClick = () => {
-    nav("/ImprimerDevis");
+    navigate("/ImprimerDevis");
   };
   const handleQuitterClick = () => {
     if (location.pathname.toLowerCase() == "/devislist") {
-      nav("/DevisFormTout");
+      navigate("/DevisFormTout");
       return "";
     }
     if (location.pathname.toLowerCase() == "/clientlist") {
-      nav("/ClientFormTout");
+      navigate("/ClientFormTout");
       return "";
     }
     if (location.pathname.toLowerCase() == "/articlelist") {
-      nav("/ArticleFormTout");
+      navigate("/ArticleFormTout");
       return "";
     }
     if (location.pathname.toLowerCase() == "/utilisateurlist") {
-      nav("/UtilisateurFormTout");
+      navigate("/UtilisateurFormTout");
       return "";
     }
-    nav("/dashboard");
+    navigate("/dashboard");
   };
   // * fonction pour récuperer l'indice de l'utilisateur selectionné depuis le formulaire
   // * pour qu'on peut l'incrementer par 1 ou décrementer par 1 lors de la naviguation
@@ -483,7 +500,10 @@ function ToolBar() {
     dispatch(setOuvrireAvatarMenu(false));
   });
 
-  const handleDeconnexionBtnClick = () => {
+  const handleDeconnexionBtnClick = (e) => {
+    // * pour prévenir le composant LINK de se naviger
+    // * vers l'url par défaut #
+    e.preventDefault();
     dispatch(setOuvrireAvatarMenu(false));
     navigate("/deconnexion");
   };
@@ -647,7 +667,6 @@ function ToolBar() {
                         </span>
                       </button>
                     )}
-
                   {/* Édition */}
                   {toolbarTable === "devis" && (
                     <button
@@ -744,11 +763,21 @@ function ToolBar() {
                 <ul className="py-2">
                   <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                     <Link
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.preventDefault();
                         dispatch(setOuvrireAvatarMenu(false));
                         dispatch(setUtilisateurSupInfo(utilisateurConnecte));
+                        dispatch(
+                          setInfosUtilisateurEntiere(utilisateurConnecte)
+                        );
+                        if (
+                          location.pathname.toLowerCase() !=
+                          "/utilisateurformtout"
+                        ) {
+                          navigate("/UtilisateurFormTout");
+                        }
                       }}
-                      to="/UtilisateurFormTout"
+                      // to="/UtilisateurFormTout"
                       className="flex items-center"
                     >
                       <FaUser className="mr-3" /> Mon Profile
@@ -765,8 +794,9 @@ function ToolBar() {
                   </li>
                   <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-t">
                     <Link
-                      to="/"
-                      onClick={() => handleDeconnexionBtnClick()}
+                      onClick={(e) => {
+                        handleDeconnexionBtnClick(e);
+                      }}
                       className="flex items-center"
                     >
                       <FaSignOutAlt className="mr-3" /> Déconnexion

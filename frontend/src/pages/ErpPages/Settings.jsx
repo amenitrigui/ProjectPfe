@@ -78,7 +78,7 @@ function Settings() {
                   </label>
                   <input
                     type="checkbox"
-                    className="toggle toggle-secondary"
+                    className="toggle toggle-grey"
                     checked={theme === "dark"}
                     onChange={(e) =>
                       dispatch(setTheme(e.target.checked ? "dark" : "light"))
