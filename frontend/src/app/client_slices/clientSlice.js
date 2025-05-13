@@ -8,7 +8,11 @@ export const getListeClient = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getListeClients`
+      }/getListeClients`, {
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        }
+      }
     );
     return response.data.result;
   }
@@ -21,7 +25,11 @@ export const getClientParRaisonSociale = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getClientParRaisonSociale/${rsoc}`
+      }/getClientParRaisonSociale/${rsoc}`,{
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        },
+      }
     );
     return response.data.clients;
   }
@@ -34,19 +42,27 @@ export const getClientParCin = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getClientParCin/${cin}`
+      }/getClientParCin/${cin}`,{
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        },
+      }
     );
     return response.data.client;
   }
 );
 // * récupere un client par son code
 export const getClientParCode = createAsyncThunk(
-  "Slice/getListeClient",
+  "Slice/getClientParCode",
   async (code, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getClientParCode/${code}`
+      }/getClientParCode/${code}`,{
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        },
+      }
     );
     return response.data.client;
   }
@@ -61,7 +77,10 @@ export const ajouterClient = createAsyncThunk(
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/AjouterClient`,
       {
-        clientInfos,
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        },
+        clientInfos
       }
     );
     thunkAPI.getState().interfaceSlice.setAlertMessage(response.data.message);
@@ -79,7 +98,12 @@ export const majClient = createAsyncThunk(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/majClient`,
-      { clientMaj } // htha y3niii bch tjib les donds il kol htha body, ya3ni objet kamel mesh bel champ bel champ
+      {
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        },
+        clientMaj 
+      } // htha y3niii bch tjib les donds il kol htha body, ya3ni objet kamel mesh bel champ bel champ
     );
     return response.message;
   }
@@ -98,6 +122,9 @@ export const filtrerClients = createAsyncThunk(
         params: {
           filters: thunkAPI.getState().clientSlice.filters, // Utiliser filters ici
         },
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        }
       }
     );
     return response.data.data; // Retourner la réponse
@@ -112,7 +139,11 @@ export const getToutCodesClient = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getToutCodesClient`
+      }/getToutCodesClient`,{
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        },
+      }
     );
     return response.data.listeCodesClients;
   }
@@ -126,7 +157,11 @@ export const supprimerClient = createAsyncThunk(
     const response = await axios.delete(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/Delete/${code}`
+      }/Delete/${code}`,{
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        },
+      }
     );
     return response.data.message;
   }
@@ -139,7 +174,11 @@ export const getDerniereCodeClient = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getDerniereCodeClient`
+      }/getDerniereCodeClient`,{
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        },
+      }
     );
     return response.data.derniereCodeClient.code;
   }

@@ -46,7 +46,8 @@ const getListeFamilles = async (req, res) => {
       message: "Familles d'articles récupérées avec succès.",
       familles: familles,
     });
-  } catch (error) {
+  } 
+  catch (error) {
     console.error("Erreur lors de la récupération :", error);
     return res.status(500).json({
       message: "Erreur lors de la récupération des familles des articles.",
