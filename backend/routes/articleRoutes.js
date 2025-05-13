@@ -31,7 +31,7 @@ router.get("/:dbName/codes/famille", getListeArticlesParFamille);
 router.delete("/:dbName/suprimerArticle",suprimerArticle);
 router.get("/:dbName/getArticleParCode", getArticleParCode);
 router.post("/:dbName/ajouterArticle", ajouterArticle);
-router.put("/:dbName/modifierArticle/:code", modifierArticle);
+router.put("/:dbName/modifierArticle", modifierArticle);
 router.get("/:dbName/getListeArticles", getListeArticles);
 router.get("/:dbName/filtrerListeArticle", filtrerListeArticle);
 router.get("/:dbName/getToutCodesArticle", getToutCodesArticle);

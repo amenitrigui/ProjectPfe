@@ -6,27 +6,24 @@ const { Sequelize, QueryTypes } = require("sequelize");
 // * entete "Authorization" existantes
 // * durée de validité encore valable
 
-function verifyTokenValidity(req, res) {
+function verifyTokenValidity(req) {
   const authHeader = req.header("Authorization");
+  console.log(req.header);
   if (!authHeader) {
-    return res.status(401).json({ message: "En-tête Authorization manquant." });
+    return false;
   }
 
   const decodedJWT = jwt.verify(
     authHeader.replace("Bearer ", ""),
     process.env.JWT_SECRET_KEY
   );
-
+  console.log(decodedJWT);
+  console.log(Date.now(), decodedJWT.exp);
   // ? decodedJWT.exp s'exprime en secondes d'ou *1000
-  if (Date.now() > decodedJWT.exp * 1000) {
-    return res
-      .status(401)
-      .json({ message: "Session expiré, veuillez reconnectez svp" });
+  if (Date.now() < decodedJWT.exp * 1000) {
+    return decodedJWT;
   }
-
-  return decodedJWT;
 }
-
 // * obtention d'un objet Sequelize qui établit la connexion
 // * avec une base des données databaseName donnée en paramètres
 

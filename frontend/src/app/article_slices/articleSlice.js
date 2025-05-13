@@ -15,7 +15,14 @@ export const getArticleFamiles = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getListeFamilles`
+      }/getListeFamilles`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
     return response.data.familles;
   }
@@ -34,7 +41,14 @@ export const getListeCodesArticles = createAsyncThunk(
       response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/article/${
           thunkAPI.getState().utilisateurSystemSlice.dbName
-        }/getToutCodesArticle`
+        }/getToutCodesArticle`,
+        {
+          headers: {
+            Authorization: `Bearer ${
+              thunkAPI.getState().utilisateurSystemSlice.token
+            }`,
+          },
+        }
         // $paramettre de la requette
       );
     }
@@ -45,6 +59,12 @@ export const getListeCodesArticles = createAsyncThunk(
           thunkAPI.getState().utilisateurSystemSlice.dbName
         }/getToutCodesArticle`,
         {
+          headers: {
+            Authorization: `Bearer ${
+              thunkAPI.getState().utilisateurSystemSlice.token
+            }`,
+          },
+
           params: {
             codeFamille: codeFamille,
           },
@@ -74,6 +94,11 @@ export const suprimerArticle = createAsyncThunk(
         params: {
           code: code,
         },
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
     );
     return response;
@@ -91,7 +116,14 @@ export const getListeFamillesArticle = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getListeFamilles`
+      }/getListeFamilles`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
 
     return response.data.familles;
@@ -107,7 +139,14 @@ export const getListeArticles = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getListeArticles`
+      }/getListeArticles`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
     return response.data.listeArticles;
   }
@@ -124,6 +163,11 @@ export const filtrerListeArticle = createAsyncThunk(
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/filtrerListeArticle`,
       {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
         params: {
           filters: thunkAPI.getState().articleSlice.filters,
         },
@@ -145,6 +189,11 @@ export const getDesignationFamilleParCodeFamille = createAsyncThunk(
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getDesignationFamilleParCodeFamille`,
       {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
         params: {
           codeFamille: codeFamille,
         },
@@ -160,7 +209,14 @@ export const getListecodesousFamille = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getListecodesousFamille`
+      }/getListecodesousFamille`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
     return response.data.getcodesousFamille;
   }
@@ -171,7 +227,14 @@ export const getdesignationSousFamillebycodeSousFamille = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getdesignationSousFamillebycodeSousFamille/${codeSousFamille}`
+      }/getdesignationSousFamillebycodeSousFamille/${codeSousFamille}`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
     return response.data.libelle[0].libelle;
   }
@@ -184,6 +247,11 @@ export const getArticleParCode = createAsyncThunk(
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getArticleParCode`,
       {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
         params: {
           code: code,
         },
@@ -200,10 +268,17 @@ export const ajouterArticle = createAsyncThunk(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/ajouterArticle`,
-      // * body/ req.body : c'est l'objet equivalent à req.body dans le backend
       {
         articleAjoute: thunkAPI.getState().articleSlice.articleInfos,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
+      // * body/ req.body : c'est l'objet equivalent à req.body dans le backend
     );
 
     //return response.data
@@ -215,9 +290,20 @@ export const modifierarticle = createAsyncThunk(
     const response = await axios.put(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/modifierArticle/${code}`,
+      }/modifierArticle`,
       {
         article: thunkAPI.getState().articleSlice.articleInfos,
+      },
+      {
+        params: {
+          code: code,
+        },
+
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
     );
     return response;
@@ -232,6 +318,11 @@ export const getListeArticleparFamille = createAsyncThunk(
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeArticleparFamille`,
       {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
         params: {
           codeFamille: codeFamille,
         },
@@ -249,6 +340,11 @@ export const getListeArticleparLibelle = createAsyncThunk(
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeArticleparLibelle`,
       {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
         params: {
           libelle: libelle,
         },
@@ -264,7 +360,14 @@ export const getListeArticleParSousFamille = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getListeArticleParSousFamille/${SousFamille}`
+      }/getListeArticleParSousFamille/${SousFamille}`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
     return response.data.ListeArticleSousFamille;
   }
@@ -280,6 +383,11 @@ export const getListeArticleParCodeArticle = createAsyncThunk(
           thunkAPI.getState().utilisateurSystemSlice.dbName
         }/getListeArticleParCodeArticle`,
         {
+          headers: {
+            Authorization: `Bearer ${
+              thunkAPI.getState().utilisateurSystemSlice.token
+            }`,
+          },
           params: {
             codeArticle: parametres.codeArticle,
           },
@@ -309,7 +417,14 @@ export const getDerniereCodeArticle = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getDerniereCodeArticle`
+      }/getDerniereCodeArticle`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
 
     return response.data.derniereCodeArticle.code;
@@ -548,7 +663,11 @@ export const articleSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getArticleParCode.fulfilled, (state, action) => {
-        if (action.payload && action.payload != [] && action.payload.length != 0) {
+        if (
+          action.payload &&
+          action.payload != [] &&
+          action.payload.length != 0
+        ) {
           // ! ceci est pour l'interface de recherche qui nécissite
           // ! une tableau pour populer le data table
           state.ListeArticle = action.payload;

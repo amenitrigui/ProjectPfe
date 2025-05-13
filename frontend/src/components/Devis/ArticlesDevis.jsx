@@ -496,7 +496,7 @@ function ArticlesDevis() {
                     <CheckIcon className="h-5 w-5" />
                     <span className="sr-only">Valider</span>
                   </button>
-                  {devisInfo.artices && devisInfo.articles.length > 0 && (
+                  {devisInfo.articles && devisInfo.articles.length > 0 && (
                     <>
                       <button
                         className="btn btn-sm btn-ghost text-blue-500"

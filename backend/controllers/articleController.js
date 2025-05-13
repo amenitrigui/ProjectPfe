@@ -3,8 +3,11 @@ const defineArticleModel = require("../models/societe/article");
 const defineFamilleModel = require("../models/societe/famille");
 const defineLdfpModel = require("../models/societe/ldfp");
 const defineSousFamilleModel = require("../models/societe/sousfamille");
-const { getDatabaseConnection } = require("../common/commonMethods");
-const { getConnexionBd } = require("../db/config")
+const {
+  getDatabaseConnection,
+  verifyTokenValidity,
+} = require("../common/commonMethods");
+const { getConnexionBd } = require("../db/config");
 
 // * méthode pour récuperer la liste de familles (code+libelle)
 // * exemple :
@@ -13,7 +16,6 @@ const { getConnexionBd } = require("../db/config")
 // * http://localhost:5000/api/article/SOLEVO/getListeFamilles
 const getListeFamilles = async (req, res) => {
   const { dbName } = req.params;
-
   if (!dbName) {
     return res.status(400).json({
       message: "Le nom de la base de données est requis.",
@@ -21,7 +23,12 @@ const getListeFamilles = async (req, res) => {
   }
 
   try {
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const decoded = verifyTokenValidity(req);
+    console.log("dd", decoded);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
 
     const Familles = defineFamilleModel(dbConnection);
 
@@ -63,15 +70,20 @@ const getListeArticlesParFamille = async (req, res) => {
   }
 
   try {
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const decoded = verifyTokenValidity(req);
+    console.log("dd", decoded);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Article = defineArticleModel(dbConnection);
 
     const articles = await Article.findAll({
       attributes: ["code", "libelle", "unite", "puht", "tauxtva", "prix1"],
       where: {
-        famille: {[Op.like] : '%'+famille+'%'},
+        famille: { [Op.like]: "%" + famille + "%" },
       },
-      order: [["libelle","ASC"]]
+      order: [["libelle", "ASC"]],
     });
 
     if (articles.length === 0) {
@@ -109,12 +121,19 @@ const suprimerArticle = async (req, res) => {
   const { dbName } = req.params;
   const { code } = req.query;
 
-  if(!dbName || !code) {
-    return res.status(400).json({message: "l'un ou les deux paramètres sont nulles"})
+  if (!dbName || !code) {
+    return res
+      .status(400)
+      .json({ message: "l'un ou les deux paramètres sont nulles" });
   }
 
   try {
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const decoded = verifyTokenValidity(req);
+    console.log("dd", decoded);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const article = await dbConnection.query(
       `Delete FROM ARTICLE WHERE code = :code`,
       {
@@ -124,7 +143,9 @@ const suprimerArticle = async (req, res) => {
         type: dbConnection.QueryTypes.DELETE,
       }
     );
-    return res.status(200).json({ message: "suprime article avec succes" ,article});
+    return res
+      .status(200)
+      .json({ message: "suprime article avec succes", article });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -135,11 +156,18 @@ const suprimerArticle = async (req, res) => {
 const getArticleParCode = async (req, res) => {
   const { dbName } = req.params;
   const { code } = req.query;
-  if(!dbName || !code) {
-    return res.status(400).json({message: "l'un ou les deux paramètres sont nulles"})
+  if (!dbName || !code) {
+    return res
+      .status(400)
+      .json({ message: "l'un ou les deux paramètres sont nulles" });
   }
   try {
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const decoded = verifyTokenValidity(req);
+    console.log("dd", decoded);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const article = await dbConnection.query(
       `SELECT * FROM ARTICLE WHERE code = :code`,
       {
@@ -161,12 +189,17 @@ const getArticleParCode = async (req, res) => {
 //* ajouter un artile  lorsque tu veux ajoute un meme code d'article il s'affiche erreur
 //* voici url http://localhost:5000/api/article/SOLEVO/ajouterArticle
 //* input: {"articleAjoute": {  "code": "122",  "libelle": "bnn" }}
-//* il va etre ajouter 
+//* il va etre ajouter
 const ajouterArticle = async (req, res) => {
   const { dbName } = req.params;
   const { articleAjoute } = req.body;
   try {
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const decoded = verifyTokenValidity(req);
+    console.log("dd", decoded);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Article = defineArticleModel(dbConnection);
     const article = await Article.findOne({
       where: {
@@ -189,7 +222,7 @@ const ajouterArticle = async (req, res) => {
         comptec: articleAjoute.comptec,
         type: articleAjoute.type,
         typeart: articleAjoute.typeart,
-        remmax:articleAjoute.remmax,
+        remmax: articleAjoute.remmax,
         colisage: articleAjoute.colisage,
         import: articleAjoute.import,
         tauxtva: articleAjoute.tauxtva,
@@ -207,15 +240,15 @@ const ajouterArticle = async (req, res) => {
         avecconfig: articleAjoute.avecconfig,
         ventevrac: articleAjoute.ventevrac,
         usera: articleAjoute.usera,
-        Dtcons:articleAjoute.Dtcons,
-        prix1TTC:articleAjoute.prix1TTC,
-        prix2TTC:articleAjoute.prix2TTC,
-        prix3TTC:articleAjoute.prix3TTC,
-        prix4TTC:articleAjoute.prix4TTC,
-        prix1:articleAjoute.prix1,
-        prix2:articleAjoute.prix2,
-        prix3:articleAjoute.prix3,
-        prix4:articleAjoute.prix4,
+        Dtcons: articleAjoute.Dtcons,
+        prix1TTC: articleAjoute.prix1TTC,
+        prix2TTC: articleAjoute.prix2TTC,
+        prix3TTC: articleAjoute.prix3TTC,
+        prix4TTC: articleAjoute.prix4TTC,
+        prix1: articleAjoute.prix1,
+        prix2: articleAjoute.prix2,
+        prix3: articleAjoute.prix3,
+        prix4: articleAjoute.prix4,
         datecreate: new Date().toISOString().split("T")[0],
       });
 
@@ -228,15 +261,20 @@ const ajouterArticle = async (req, res) => {
   }
 };
 //* Article Modifie
-// *url : http://localhost:5000/api/article/SOLEVO/modifierArticle/BL-MR16-6W
+// *url : http://localhost:5000/api/article/SOLEVO/modifierArticle?code=BL-MR16-6W
 //* resultat attendu :  les infomation d'un code BL-MR16-6W seront modifie
 
 const modifierArticle = async (req, res) => {
   const { dbName } = req.params;
   const { article } = req.body;
-  const { code } = req.params;
+  const { code } = req.query;
   try {
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const decoded = verifyTokenValidity(req);
+    console.log("dd", decoded);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Article = defineArticleModel(dbConnection);
 
     const articleAModifier = await Article.findOne({
@@ -295,7 +333,12 @@ const modifierArticle = async (req, res) => {
 const getListeArticles = async (req, res) => {
   const { dbName } = req.params;
   try {
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const decoded = verifyTokenValidity(req);
+    console.log("dd", decoded);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const listeArticles = await dbConnection.query(`SELECT * FROM ARTICLE`, {
       type: dbConnection.QueryTypes.SELECT,
     });
@@ -333,58 +376,70 @@ const getListeArticles = async (req, res) => {
 const filtrerListeArticle = async (req, res) => {
   const { dbName } = req.params;
   const { filters } = req.query;
+  try {
+    const decoded = verifyTokenValidity(req);
+    console.log("dd", decoded);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
 
-  const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
-  // ? liste des conditions
-  // ? exemple : ["NUML like :numbl, "libpv like :libpv"...]
-  let whereClauses = [];
-  // ? object contenant les noms des paramètres de requete sql avec leurs remplacements
-  // ? exemple : {{numbl: %dv2401%}, {libpv: %kasserine% }}
-  let replacements = {};
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
+    // ? liste des conditions
+    // ? exemple : ["NUML like :numbl, "libpv like :libpv"...]
+    let whereClauses = [];
+    // ? object contenant les noms des paramètres de requete sql avec leurs remplacements
+    // ? exemple : {{numbl: %dv2401%}, {libpv: %kasserine% }}
+    let replacements = {};
 
-  // ? ajout de chaque condition quand la valeur n'est pas vide
-  if (filters.code) {
-    whereClauses.push("code like :code");
-    replacements.code = `%${filters.code}%`;
-  }
-  if (filters.libelle) {
-    whereClauses.push("libelle like :libelle");
-    replacements.libelle = `%${filters.libelle}%`;
-  }
-  if (filters.famille) {
-    whereClauses.push("famille like :famille");
-    replacements.famille = `%${filters.famille}%`;
-  }
-  if (filters.type) {
-    whereClauses.push("type like :type");
-    replacements.type = `%${filters.type}%`;
-  }
-  if (filters.typeart) {
-    whereClauses.push("typeart like :typeart");
-    replacements.typeart = `%${filters.typeart}%`;
-  }
-  if (filters.codesousfam) {
-    whereClauses.push("codesousfam like :codesousfam");
-    replacements.codesousfam = `%${filters.codesousfam}%`;
-  }
+    // ? ajout de chaque condition quand la valeur n'est pas vide
 
-  // ? concatenation de l'opérateur logique après chaque ajout d'un nouvelle condition
-  let whereCondition = whereClauses.join(" AND ");
+    if (filters.code) {
+      whereClauses.push("code like :code");
+      replacements.code = `%${filters.code}%`;
+    }
+    if (filters.libelle) {
+      whereClauses.push("libelle like :libelle");
+      replacements.libelle = `%${filters.libelle}%`;
+    }
+    if (filters.famille) {
+      whereClauses.push("famille like :famille");
+      replacements.famille = `%${filters.famille}%`;
+    }
+    if (filters.type) {
+      whereClauses.push("type like :type");
+      replacements.type = `%${filters.type}%`;
+    }
+    if (filters.typeart) {
+      whereClauses.push("typeart like :typeart");
+      replacements.typeart = `%${filters.typeart}%`;
+    }
+    if (filters.codesousfam) {
+      whereClauses.push("codesousfam like :codesousfam");
+      replacements.codesousfam = `%${filters.codesousfam}%`;
+    }
 
-  // ? Si on on a aucune condition on effectue une requete de select * from dfp
-  let query = `SELECT code, libelle, famille, type, typeart, codesousfam
+    // ? concatenation de l'opérateur logique après chaque ajout d'un nouvelle condition
+    let whereCondition = whereClauses.join(" AND ");
+
+    // ? Si on on a aucune condition on effectue une requete de select * from dfp
+    let query = `SELECT code, libelle, famille, type, typeart, codesousfam
      FROM article 
       ${whereCondition ? "WHERE " + whereCondition : ""}`;
 
-  const result = await dbConnection.query(query, {
-    replacements: replacements,
-    type: dbConnection.QueryTypes.SELECT,
-  });
+    const result = await dbConnection.query(query, {
+      replacements: replacements,
+      type: dbConnection.QueryTypes.SELECT,
+    });
 
-  return res.status(200).json({
-    message: "Filtrage réussi",
-    data: result,
-  });
+    return res.status(200).json({
+      message: "Filtrage réussi",
+      data: result,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "erreur est survenur lors de recupération de filters" });
+  }
 };
 
 //* récuperer la liste de codes articles
@@ -394,13 +449,18 @@ const filtrerListeArticle = async (req, res) => {
 // * http://localhost:5000/api/article/SOLEVO/getToutCodesArticle
 const getToutCodesArticle = async (req, res) => {
   try {
+    const decoded = verifyTokenValidity(req);
+    console.log("dd", decoded);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
     const { dbName } = req.params;
-    const { codeFamille} = req.query;
-    
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const { codeFamille } = req.query;
+
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     let listeCodesArticles;
-    
-    if(!codeFamille) {
+
+    if (!codeFamille) {
       listeCodesArticles = await dbConnection.query(
         `SELECT code FROM article ORDER BY datecreate ASC`,
         {
@@ -408,15 +468,15 @@ const getToutCodesArticle = async (req, res) => {
         }
       );
     }
-    
-    if(codeFamille) {
+
+    if (codeFamille) {
       listeCodesArticles = await dbConnection.query(
         `SELECT code FROM article where famille = :famille ORDER BY code`,
         {
           type: dbConnection.QueryTypes.SELECT,
           replacements: {
-            famille: codeFamille
-          }
+            famille: codeFamille,
+          },
         }
       );
     }
@@ -437,11 +497,18 @@ const getToutCodesArticle = async (req, res) => {
 const getDesignationFamilleParCodeFamille = async (req, res) => {
   const { dbName } = req.params;
   const { codeFamille } = req.query;
-  if(!dbName || !codeFamille) {
-    return res.status(400).json({message: "l'un ou les deux paramètres sont nulles"})
+  if (!dbName || !codeFamille) {
+    return res
+      .status(400)
+      .json({ message: "l'un ou les deux paramètres sont nulles" });
   }
   try {
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const decoded = verifyTokenValidity(req);
+    console.log("dd", decoded);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const getDesignationFamilleParCodeFamille = await dbConnection.query(
       `select libelle from famille where code = :code`,
       {
@@ -467,7 +534,12 @@ const getListecodesousFamille = async (req, res) => {
   const { dbName } = req.params;
 
   try {
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const decoded = verifyTokenValidity(req);
+    console.log("dd", decoded);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const getcodesousFamille = await dbConnection.query(
       `select code from sousfamille`,
       {
@@ -490,12 +562,17 @@ const getListecodesousFamille = async (req, res) => {
 const getCodeFamilleParDesignationFamille = async (req, res) => {
   const { dbName, desFamille } = req.params;
   try {
+    const decoded = verifyTokenValidity(req);
+    console.log("dd", decoded);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
     if (!dbName || !desFamille) {
       return res
         .status(400)
         .json({ message: "dbName et desFamille sont réquises" });
     }
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Familles = defineFamilleModel(dbConnection);
     const codesFamillesTrouves = await Familles.findAll({
       attributes: ["code"],
@@ -530,7 +607,12 @@ const getCodeFamilleParDesignationFamille = async (req, res) => {
 const getCodeSousFamilleParDesignationSousFamille = async (req, res) => {
   const { dbName, desSousFamille } = req.params;
   try {
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const decoded = verifyTokenValidity(req);
+    console.log("dd", decoded);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const SousFamilles = defineSousFamilleModel(dbConnection);
     const sousFamillesTrouves = await SousFamilles.findAll({
       attributes: ["code"],
@@ -565,10 +647,15 @@ const getCodeSousFamilleParDesignationSousFamille = async (req, res) => {
 const getArticleParLibelle = async (req, res) => {
   const { dbName, libelle } = req.params;
   try {
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const decoded = verifyTokenValidity(req);
+    console.log("dd", decoded);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Article = defineArticleModel(dbConnection);
     const articlesTrouves = await Article.findAll({
-      where: { libelle: { [Op.like]: '%'+libelle+'%' } },
+      where: { libelle: { [Op.like]: "%" + libelle + "%" } },
       order: [["libelle", "ASC"]],
     });
     if (articlesTrouves.length == 1) {
@@ -600,7 +687,12 @@ const getdesignationSousFamillebycodeSousFamille = async (req, res) => {
   const { dbName, codeSousFamille } = req.params;
 
   try {
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const decoded = verifyTokenValidity(req);
+    console.log("dd", decoded);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
 
     const result = await dbConnection.query(
       `SELECT libelle FROM sousfamille WHERE code = :code`,
@@ -630,7 +722,12 @@ const getListeArticleparFamille = async (req, res) => {
   const { dbName } = req.params;
   const { codeFamille } = req.query;
   try {
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const decoded = verifyTokenValidity(req);
+    console.log("dd", decoded);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const ListecodeFamille = await dbConnection.query(
       `select * from article where famille LIKE :famille`,
       {
@@ -654,24 +751,27 @@ const getListeArticleparLibelle = async (req, res) => {
   const { dbName } = req.params;
   const { libelle } = req.query;
   try {
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const decoded = verifyTokenValidity(req);
+    console.log("dd", decoded);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const ListelibelleArticle = await dbConnection.query(
       `Select * from article where libelle like :libelle`,
 
       {
         replacements: {
-          libelle: "%"+libelle+"%",
+          libelle: "%" + libelle + "%",
         },
 
         type: dbConnection.QueryTypes.SELECT,
       }
     );
-    return res
-      .status(200)
-      .json({
-        message: "liste article par  libelle  recupere avec succes",
-        ListelibelleArticle,
-      });
+    return res.status(200).json({
+      message: "liste article par  libelle  recupere avec succes",
+      ListelibelleArticle,
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -679,7 +779,12 @@ const getListeArticleparLibelle = async (req, res) => {
 const getListeArticleParSousFamille = async (req, res) => {
   const { dbName, SousFamille } = req.params;
   try {
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const decoded = verifyTokenValidity(req);
+    console.log("dd", decoded);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const ListeArticleSousFamille = await dbConnection.query(
       `Select * from article where codesousfam like :codesousfam`,
 
@@ -691,12 +796,10 @@ const getListeArticleParSousFamille = async (req, res) => {
         type: dbConnection.QueryTypes.SELECT,
       }
     );
-    return res
-      .status(200)
-      .json({
-        message: "liste article par  code famille  recupere avec succes",
-        ListeArticleSousFamille,
-      });
+    return res.status(200).json({
+      message: "liste article par  code famille  recupere avec succes",
+      ListeArticleSousFamille,
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -704,33 +807,38 @@ const getListeArticleParSousFamille = async (req, res) => {
 //* au niveau de la recherche.jsx url : http://localhost:5000/api/article/SOLEVO/getListeArticleParCodeArticle/PR
 //* input Code : pr
 //* output plusieurs code pr "ListecodeArticle": [ {  "code": "PRZ2002",  "famille": "02-IN",  "libelle": "PROFILE EN ACIER GALVA 41X21  SIBEC",  "codesousfam": " "  ,
-const getListeArticleParCodeArticle=async(req,res)=>{
+const getListeArticleParCodeArticle = async (req, res) => {
   const { dbName } = req.params;
   const { codeArticle, codeFamille } = req.query;
   try {
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
-    let ListecodeArticle ;
-    if(!codeFamille) {
+    const decoded = verifyTokenValidity(req);
+    console.log("dd", decoded);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
+    let ListecodeArticle;
+    if (!codeFamille) {
       ListecodeArticle = await dbConnection.query(
         `select * from article where code LIKE :code`,
         {
           replacements: {
             code: `%${codeArticle}%`,
           },
-  
+
           type: dbConnection.QueryTypes.SELECT,
         }
       );
     }
-    if(codeFamille) {
+    if (codeFamille) {
       ListecodeArticle = await dbConnection.query(
         `select * from article where code LIKE :code and famille LIKE :famille`,
         {
           replacements: {
             code: `%${codeArticle}%`,
-            famille: `%${codeFamille}%`
+            famille: `%${codeFamille}%`,
           },
-  
+
           type: dbConnection.QueryTypes.SELECT,
         }
       );
@@ -741,38 +849,45 @@ const getListeArticleParCodeArticle=async(req,res)=>{
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
-
-}
+};
 // * récuperer le code article de derniere article inseré dans la base de données
 // * url : http://localhost:5000/api/article/SOLEVO/getDerniereCodeArticle
-const getDerniereCodeArticle = async(req, res) => {
+const getDerniereCodeArticle = async (req, res) => {
   const { dbName } = req.params;
-  let dbConnection
-  try{
+  let dbConnection;
+  try {
+    const decoded = verifyTokenValidity(req);
+    console.log("dd", decoded);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
     dbConnection = await getDatabaseConnection(dbName);
     const derniereCodeArticle = await dbConnection.query(
       `SELECT code FROM article WHERE datecreate = (SELECT MAX(datecreate) FROM article)`,
       {
         type: dbConnection.QueryTypes.SELECT,
       }
-    )
-    if(!derniereCodeArticle){
-      return res.status(400).json({message: "erreur"})
+    );
+    if (!derniereCodeArticle) {
+      return res.status(400).json({ message: "erreur" });
     }
-    if(derniereCodeArticle.length == 0) {
-      return res.status(404).json({message: "aucun article est trouvé"})
+    if (derniereCodeArticle.length == 0) {
+      return res.status(404).json({ message: "aucun article est trouvé" });
     }
-    if(derniereCodeArticle && derniereCodeArticle.length > 0){
+    if (derniereCodeArticle && derniereCodeArticle.length > 0) {
       // ?? ?????? ? ?? ? ??? ??? ?? ?? ? ?? ???
-      return res.status(200).json({message: "succès", derniereCodeArticle: derniereCodeArticle[(derniereCodeArticle.length)-1]})
-
+      return res.status(200).json({
+        message: "succès",
+        derniereCodeArticle:
+          derniereCodeArticle[derniereCodeArticle.length - 1],
+      });
     }
-  }catch(error) {
-    return res.status(500).json({message: error.message})
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   } finally {
     dbConnection.close();
   }
-}
+};
 
 module.exports = {
   //*apartient l'interface devis
@@ -797,5 +912,5 @@ module.exports = {
   getListeArticleparLibelle,
   getListeArticleParSousFamille,
   getListeArticleParCodeArticle,
-  getDerniereCodeArticle
+  getDerniereCodeArticle,
 };

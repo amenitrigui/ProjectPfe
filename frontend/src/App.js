@@ -99,13 +99,17 @@ function App() {
 
     // * naviguer vers l'interface de connexion si l'utilisateur n'est pas authentifié
     if (location.pathname.toLowerCase() !== "/") {
-      if (jetton.length == 0) {
-        console.log("no jetton == no access == :(");
+      //*attob : decode token 64  lil texte
+      //* json.parse : objet json 
+      //* . exp 
+      const dateExpriation = JSON.parse(atob(jetton.split(".")[1])).exp;
+      if (jetton.length == 0 || Date.now() >= dateExpriation * 1000) {
         dispatch(deconnexionUtilisateur(navigate));
       }
     }
     // * =====================================================
   }, [location.pathname]);
+
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
