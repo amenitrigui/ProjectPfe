@@ -3,17 +3,19 @@ import axios from "axios";
 import { PURGE } from "redux-persist";
 
 export const deconnexionUtilisateur = createAsyncThunk(
-  'auth/deconnexionUtilisateur',
+  "auth/deconnexionUtilisateur",
   async (navigate, thunkAPI) => {
     // * try catch my beloved
-    try{
-      await axios.post(`${process.env.REACT_APP_API_URL}/api/utilisateurs/deconnecterUtilisateur`);
-      window.sessionStorage.clear(); 
+    try {
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/utilisateurs/deconnecterUtilisateur`
+      );
+      window.sessionStorage.clear();
       window.localStorage.clear();
-      navigate('/');
+      navigate("/");
       window.location.reload(true);
-    }catch(error) {
-      console.log(error)
+    } catch (error) {
+      console.log(error);
     }
   }
 );
@@ -94,15 +96,22 @@ export const getDerniereCodeUtilisateur = createAsyncThunk(
 
 export const getListeUtilisateurParCode = createAsyncThunk(
   "utilisateurSlice/getListeUtilisateurParCode",
-  async (codeuser) => {
+  async (codeuser, thunkAPI) => {
+    console.log(codeuser);
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeUtilisateurParCode`,
       {
         params: {
           codeuser: codeuser,
         },
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
     );
+    console.log(response);
     return response.data.result;
   }
 );
@@ -161,15 +170,18 @@ export const AjouterUtilisateur = createAsyncThunk(
   "slice/AjouterUtilisateur",
   async (_, thunkAPI) => {
     const UtilisateurInfos = thunkAPI.getState().clientSlice.clientInfos;
-   console.log("dssdss",thunkAPI.getState().interfaceSlice.setAlertMessage(response.data.message));
+    console.log(
+      "dssdss",
+      thunkAPI.getState().interfaceSlice.setAlertMessage(response.data.message)
+    );
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/utilisateurs/AjouterUtilisateur`,
       {
         UtilisateurInfos,
       }
     );
-    console.log(response)
-    return response
+    console.log(response);
+    return response;
   }
 );
 export const getListeCodesUtilisateur = createAsyncThunk(
@@ -187,18 +199,18 @@ export const uploadImageUtilisateur = createAsyncThunk(
   async ({ codeuser, imageFile }, thunkAPI) => {
     try {
       const formData = new FormData();
-      formData.append('image', imageFile);
-      
+      formData.append("image", imageFile);
+
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/utilisateurs/uploadImage/${codeuser}`,
         formData,
         {
           headers: {
-            'Content-Type': 'multipart/form-data'
-          }
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
-      
+
       return { imageUrl: response.data.imageUrl };
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -212,7 +224,7 @@ const infoUtilisateurInitiales = {
   nom: "",
   type: "",
   directeur: "",
-  image:""
+  image: "",
 };
 export const utilisateurSlice = createSlice({
   name: "utilisateurSlice",
@@ -262,12 +274,12 @@ export const utilisateurSlice = createSlice({
     },
     viderChampsInfosUtilisateur: (state, action) => {
       state.infosUtilisateur = {
-        ...infoUtilisateurInitiales
-      }
+        ...infoUtilisateurInitiales,
+      };
     },
     viderResponseLogin: (state, action) => {
       state.responseLogin = {};
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -402,6 +414,6 @@ export const {
   setInfosUtilisateurEntiere,
   setListeUtilisateur_Superviseur,
   viderChampsInfosUtilisateur,
-  viderResponseLogin  
+  viderResponseLogin,
 } = utilisateurSlice.actions;
 export default utilisateurSlice.reducer;

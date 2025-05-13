@@ -10,7 +10,7 @@ import {
   getListeDevisParNUMBL,
   viderChampsDevisInfo,
   setDevisInfo,
-  setDevisClientInfos
+  setDevisClientInfos,
 } from "../../app/devis_slices/devisSlice";
 import DataTable from "react-data-table-component";
 import {
@@ -51,10 +51,16 @@ import {
   setListeSousfamille,
 } from "../../app/sousfamille_slices/sousfamilleSlice";
 import { useLocation } from "react-router-dom";
+import { setUtilisateurSupInfo } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 import {
-  setUtilisateurSupInfo,
-} from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
-import { getListeUtilisateurParCode, getListeUtilisateurParDirecteur, getListeUtilisateurParNom, getListeUtilisateurParType, setListeUtilisateur_Superviseur, viderChampsInfosUtilisateur } from "../../app/utilisateur_slices/utilisateurSlice";
+  getListeUtilisateurParCode,
+  getListeUtilisateurParDirecteur,
+  getListeUtilisateurParNom,
+  getListeUtilisateurParType,
+  setInfosUtilisateurEntiere,
+  setListeUtilisateur_Superviseur,
+  viderChampsInfosUtilisateur,
+} from "../../app/utilisateur_slices/utilisateurSlice";
 
 const Recherche = () => {
   //?==================================================================================================================
@@ -66,7 +72,7 @@ const Recherche = () => {
   const listeToutCodesClients = useSelector(
     (state) => state.clientSlice.listeToutCodesClients
   );
-  const[estFiltreChoisit, setEstFiltreChoisit] = useState(false);
+  const [estFiltreChoisit, setEstFiltreChoisit] = useState(false);
   // * tableau contenant la liste des codes des devis
   const listeNUMBL = useSelector((state) => state.devisSlice.listeNUMBL);
   // * récuperer la liste de codes sélon table choisit
@@ -90,7 +96,7 @@ const Recherche = () => {
     (state) => state.sousfamilleSlice.listeSousfamille
   );
   const listeUtilisateur_Superviseur = useSelector(
-    (state) => state.utilisateurSystemSlice.listeUtilisateur_Superviseur
+    (state) => state.utilisateurSlice.listeUtilisateur_Superviseur
   );
   // * state qui contient l'information d'élèment selectionné
   const [datatableElementSelection, setDatatableElementSelection] = useState(
@@ -169,6 +175,10 @@ const Recherche = () => {
   const colonnesUtilisateur = [
     { name: "code", selector: (row) => row.codeuser, sortable: true },
     { name: "nom", selector: (row) => row.nom, sortable: true },
+    { name: "directeur", selector: (row) => row.directeur, sortable: true },
+    { name: "type", selector: (row) => row.type, type: true },
+
+
   ];
 
   const location = useLocation();
@@ -187,10 +197,10 @@ const Recherche = () => {
   }, [toolbarTable]);
 
   useEffect(() => {
-    if(FamilleInfos.code) {
+    if (FamilleInfos.code) {
       dispatch(getListeCodesArticles(FamilleInfos.code));
     }
-  }, [FamilleInfos.code])
+  }, [FamilleInfos.code]);
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
@@ -233,15 +243,17 @@ const Recherche = () => {
       switch (filtrerPar) {
         case "code":
           dispatch(getListeUtilisateurParCode(valeur));
+
           break;
         case "nom":
           dispatch(getListeUtilisateurParNom(valeur));
           break;
         case "directeur":
           dispatch(getListeUtilisateurParDirecteur(valeur));
+          break;
         case "type":
           dispatch(getListeUtilisateurParType(valeur));
-
+          break;
         default:
           alert("Valeur de filtre non définie");
       }
@@ -263,15 +275,19 @@ const Recherche = () => {
     }
 
     if (toolbarTable == "article") {
-      
       switch (filtrerPar) {
         case "code":
-          if(FamilleInfos.code) {
-            console.log("ok")
-            dispatch(getListeArticleParCodeArticle({"codeArticle": valeur, "codeFamille": FamilleInfos.code}));
+          if (FamilleInfos.code) {
+            console.log("ok");
+            dispatch(
+              getListeArticleParCodeArticle({
+                codeArticle: valeur,
+                codeFamille: FamilleInfos.code,
+              })
+            );
           }
-          if(!FamilleInfos.code) {
-            dispatch(getListeArticleParCodeArticle({"codeArticle": valeur}));
+          if (!FamilleInfos.code) {
+            dispatch(getListeArticleParCodeArticle({ codeArticle: valeur }));
           }
           break;
         case "libelle":
@@ -323,22 +339,72 @@ const Recherche = () => {
     dispatch(setListeClients([]));
     dispatch(setListeFamilles([]));
     dispatch(setListeSousfamille([]));
-  }
+  };
 
   const remplirChampsLigneDevis = () => {
-    if(datatableElementSelection) {
-      dispatch(setLigneDevisInfos({colonne: "CodeART", valeur: datatableElementSelection.code}));
-      dispatch(setLigneDevisInfos({colonne: "DesART", valeur: datatableElementSelection.libelle}));
-      dispatch(setLigneDevisInfos({colonne: "PUART",  valeur: datatableElementSelection.prixnet}));
-      dispatch(setLigneDevisInfos({colonne: "Remise", valeur: datatableElementSelection.DREMISE}));
-      dispatch(setLigneDevisInfos({colonne: "TypeART", valeur: datatableElementSelection.type}));
-      dispatch(setLigneDevisInfos({colonne: "TauxTVA", valeur: datatableElementSelection.tauxtva}));
-      dispatch(setLigneDevisInfos({colonne: "famille", valeur: datatableElementSelection.famille}));
-      dispatch(setLigneDevisInfos({colonne: "nbun", valeur:datatableElementSelection.nbrunite }));
-      dispatch(setLigneDevisInfos({colonne: "Unite", valeur: datatableElementSelection.unite}))
-      dispatch(setLigneDevisInfos({colonne: "Conf", valeur: datatableElementSelection.CONFIG}));
+    if (datatableElementSelection) {
+      dispatch(
+        setLigneDevisInfos({
+          colonne: "CodeART",
+          valeur: datatableElementSelection.code,
+        })
+      );
+      dispatch(
+        setLigneDevisInfos({
+          colonne: "DesART",
+          valeur: datatableElementSelection.libelle,
+        })
+      );
+      dispatch(
+        setLigneDevisInfos({
+          colonne: "PUART",
+          valeur: datatableElementSelection.prixnet,
+        })
+      );
+      dispatch(
+        setLigneDevisInfos({
+          colonne: "Remise",
+          valeur: datatableElementSelection.DREMISE,
+        })
+      );
+      dispatch(
+        setLigneDevisInfos({
+          colonne: "TypeART",
+          valeur: datatableElementSelection.type,
+        })
+      );
+      dispatch(
+        setLigneDevisInfos({
+          colonne: "TauxTVA",
+          valeur: datatableElementSelection.tauxtva,
+        })
+      );
+      dispatch(
+        setLigneDevisInfos({
+          colonne: "famille",
+          valeur: datatableElementSelection.famille,
+        })
+      );
+      dispatch(
+        setLigneDevisInfos({
+          colonne: "nbun",
+          valeur: datatableElementSelection.nbrunite,
+        })
+      );
+      dispatch(
+        setLigneDevisInfos({
+          colonne: "Unite",
+          valeur: datatableElementSelection.unite,
+        })
+      );
+      dispatch(
+        setLigneDevisInfos({
+          colonne: "Conf",
+          valeur: datatableElementSelection.CONFIG,
+        })
+      );
     }
-  }
+  };
 
   const handleBtnValiderClick = () => {
     if (toolbarTable == "devis") {
@@ -347,7 +413,13 @@ const Recherche = () => {
     }
     if (toolbarTable == "client") {
       dispatch(setClientInfosEntiere(datatableElementSelection));
-      dispatch(setDevisClientInfos({"CODECLI": datatableElementSelection.code, "RSCLI": datatableElementSelection.rsoc, "ADRCLI": datatableElementSelection.adresse }))
+      dispatch(
+        setDevisClientInfos({
+          CODECLI: datatableElementSelection.code,
+          RSCLI: datatableElementSelection.rsoc,
+          ADRCLI: datatableElementSelection.adresse,
+        })
+      );
       dispatch(setAfficherRecherchePopup(false));
     }
     if (toolbarTable == "article") {
@@ -357,7 +429,12 @@ const Recherche = () => {
     }
     if (toolbarTable == "famille") {
       // * ceci est pour l'interface d'ajout d'une ligne devis
-      dispatch(setLigneDevisInfos({colonne: "famille", valeur: datatableElementSelection.code}))
+      dispatch(
+        setLigneDevisInfos({
+          colonne: "famille",
+          valeur: datatableElementSelection.code,
+        })
+      );
       dispatch(setFamilleInfosEntiere(datatableElementSelection));
       // * ============================================================
       // * ceci est pour l'interface d'articles
@@ -377,7 +454,7 @@ const Recherche = () => {
       dispatch(setAfficherRecherchePopup(false));
     }
     if (toolbarTable == "utilisateur") {
-      dispatch(setUtilisateurSupInfo(datatableElementSelection));
+      dispatch(setInfosUtilisateurEntiere(datatableElementSelection));
       dispatch(setAfficherRecherchePopup(false));
     }
     if (toolbarTable == "sousfamille") {
@@ -393,17 +470,17 @@ const Recherche = () => {
           valeur: datatableElementSelection.libelle,
         })
       );
-      
+
       dispatch(setAfficherRecherchePopup(false));
     }
     viderListes();
-    // ! ?????? 
+    // ! ??????
     // viderChamps();
     revenirToolbarTablePrecedent();
   };
 
   const viderChamps = () => {
-    switch(toolbarTable) {
+    switch (toolbarTable) {
       case "article":
         dispatch(viderChampsArticleInfo());
         break;
@@ -415,9 +492,9 @@ const Recherche = () => {
         break;
       case "utilisateur":
         dispatch(viderChampsInfosUtilisateur());
-        break
+        break;
     }
-  }
+  };
 
   const fermerPopupRecherche = () => {
     // viderChamps();
@@ -479,20 +556,21 @@ const Recherche = () => {
 
             <div className="space-y-2">
               {toolbarTable === "devis" &&
-                ["numbl", "client", "montant", "periode"].map(
-                  (filtre) => (
-                    <label key={filtre} className="flex items-center">
-                      <input
-                        type="radio"
-                        name="filtres"
-                        value={filtre}
-                        className="mr-2"
-                        onChange={() => {setEstFiltreChoisit(true);setFiltrerPar(filtre)}}
-                      />
-                      {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
-                    </label>
-                  )
-                )}
+                ["numbl", "client", "montant", "periode"].map((filtre) => (
+                  <label key={filtre} className="flex items-center">
+                    <input
+                      type="radio"
+                      name="filtres"
+                      value={filtre}
+                      className="mr-2"
+                      onChange={() => {
+                        setEstFiltreChoisit(true);
+                        setFiltrerPar(filtre);
+                      }}
+                    />
+                    {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
+                  </label>
+                ))}
 
               {toolbarTable === "client" &&
                 ["code", "raison sociale", "cin"].map((filtre) => (
@@ -502,7 +580,10 @@ const Recherche = () => {
                       name="filtres"
                       value={filtre}
                       className="mr-2"
-                      onChange={() => {setEstFiltreChoisit(true);setFiltrerPar(filtre)}}
+                      onChange={() => {
+                        setEstFiltreChoisit(true);
+                        setFiltrerPar(filtre);
+                      }}
                     />
                     {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                   </label>
@@ -516,7 +597,10 @@ const Recherche = () => {
                       name="filtres"
                       value={filtre}
                       className="mr-2"
-                      onChange={() => {setEstFiltreChoisit(true);setFiltrerPar(filtre)}}
+                      onChange={() => {
+                        setEstFiltreChoisit(true);
+                        setFiltrerPar(filtre);
+                      }}
                     />
                     {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                   </label>
@@ -530,7 +614,10 @@ const Recherche = () => {
                       name="filtres"
                       value={filtre}
                       className="mr-2"
-                      onChange={() => {setEstFiltreChoisit(true);setFiltrerPar(filtre)}}
+                      onChange={() => {
+                        setEstFiltreChoisit(true);
+                        setFiltrerPar(filtre);
+                      }}
                     />
                     {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                   </label>
@@ -544,7 +631,10 @@ const Recherche = () => {
                       name="filtres"
                       value={filtre}
                       className="mr-2"
-                      onChange={() => {setEstFiltreChoisit(true);setFiltrerPar(filtre)}}
+                      onChange={() => {
+                        setEstFiltreChoisit(true);
+                        setFiltrerPar(filtre);
+                      }}
                     />
                     {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                   </label>
@@ -558,7 +648,10 @@ const Recherche = () => {
                       name="filtres"
                       value={filtre}
                       className="mr-2"
-                      onChange={() => {setEstFiltreChoisit(true);setFiltrerPar(filtre)}}
+                      onChange={() => {
+                        setEstFiltreChoisit(true);
+                        setFiltrerPar(filtre);
+                      }}
                     />
                     {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                   </label>

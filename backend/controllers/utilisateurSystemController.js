@@ -125,13 +125,20 @@ const getDerniereCodeUtilisateur = async (req, res) => {
 //*url: http://localhost:5000/api/utilisateurSystem/ModifierUtilisateur
 const ModifierUtilisateur = async (req, res) => {
   const { MajUtilisateur } = req.body;
+  const {codeuser}=req.query;
+
 
   try {
+     const decoded = verifyTokenValidity(req);
+    console.log("dd", decoded);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
     
     const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     const Utilisateur = defineUtilisateurModel(sequelizeConnexionDbUtilisateur);
     const user = await Utilisateur.findOne({
-      where: { codeuser: MajUtilisateur.codeuser },
+      where: { codeuser: codeuser },
     });
 
     if (user) {
@@ -143,14 +150,14 @@ const ModifierUtilisateur = async (req, res) => {
           nom: MajUtilisateur.nom,
           motpasse: MajUtilisateur.motpasse,
         },
-        { where: { codeuser: MajUtilisateur.codeuser } }
+        { where: { codeuser: codeuser } }
       );
       return res
         .status(200)
         .json({ message: "utilisateur mise à jour avec succès", usermodifie });
     } else {
       return res
-        .status(500)
+        .status(404)
         .json({ message: "le utilisateur n'est pas définit" });
     }
   } catch (error) {
@@ -164,6 +171,11 @@ const ModifierUtilisateur = async (req, res) => {
 const supprimerUtilisateur = async (req, res) => {
   const { codeuser } = req.query;
   try {
+     const decoded = verifyTokenValidity(req);
+    console.log("dd", decoded);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
     console.log("nice")
     const sequelizeConnexionDbUtilisateur = await getDatabaseConnection(process.env.DB_USERS_NAME)//getConnexionAuBdUtilisateurs();
     const Utilisateur = defineUtilisateurModel(sequelizeConnexionDbUtilisateur);
@@ -184,13 +196,18 @@ const supprimerUtilisateur = async (req, res) => {
 const getListeUtilisateurParCode = async (req, res) => {
   const { codeuser } = req.query;
   try {
+      const decoded = verifyTokenValidity(req);
+    console.log("dd", decoded);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
     //const decoded = verifyTokenValidity(req, res);
     const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     const result = await sequelizeConnexionDbUtilisateur.query(
-      `select codeuser,nom,directeur,email,type,motpasse from utilisateur where codeuser = :codeuser `,
+      `select codeuser,nom,directeur,email,type,motpasse from utilisateur where codeuser LIKE  :codeuser `,
       {
         replacements: {
-          codeuser: codeuser,
+          codeuser: "%"+codeuser+ "%",
         },
         type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
       }
