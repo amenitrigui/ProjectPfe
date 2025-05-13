@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled, { keyframes } from "styled-components";
-import { setAfficherFamillePopub } from "../../app/interface_slices/interfaceSlice";
+import { setAfficherFamillePopub, setToolbarTable } from "../../app/interface_slices/interfaceSlice";
 import {
   ajouterFamille,
   setFamilleInfo,
@@ -11,6 +11,7 @@ import {
   setSousFamilleInfos,
 } from "../../app/sousfamille_slices/sousfamilleSlice";
 import { setArticleInfos } from "../../app/article_slices/articleSlice";
+import { useLocation } from "react-router-dom";
 
 // Définition des animations
 const fadeIn = keyframes`
@@ -117,12 +118,14 @@ const SubmitButton = styled.button`
 
 const FamilleForm = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
   const [formData, setFormData] = useState({
     champ1: "",
     champ2: "",
   });
   const dispatch = useDispatch();
   const togglePopup = () => {
+    revenirToolbarTablePrecedent()
     dispatch(setAfficherFamillePopub(false));
   };
 
@@ -156,12 +159,30 @@ const FamilleForm = () => {
       dispatch(setArticleInfos({colonne:"codesousfam",valeur:SousFamilleInfos.code}))
       dispatch(setArticleInfos({colonne:"Libellesousfamille",valeur:SousFamilleInfos.libelle}))
     }
+    revenirToolbarTablePrecedent();
   };
 
 
   const afficherFamillePopub = useSelector(
     (state) => state.interfaceSlice.afficherFamillePopub
   );
+
+  const revenirToolbarTablePrecedent = () => {
+      switch (location.pathname) {
+        case "/DevisFormTout":
+          dispatch(setToolbarTable("devis"));
+          break;
+        case "/UtilisateurFormTout":
+          dispatch(setToolbarTable("utilisateur"));
+          break;
+        case "/ArticleFormTout":
+          dispatch(setToolbarTable("article"));
+          break;
+        case "/clientFormTout":
+          dispatch(setToolbarTable("client"));
+          break;
+      }
+    };
   return (
     <AppContainer style={{ position: "relative", zIndex: 10 }}>
     {afficherFamillePopub && (

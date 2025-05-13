@@ -45,6 +45,7 @@ import {
   deconnecterUtilisateur,
   deconnexionUtilisateur,
 } from "./app/utilisateur_slices/utilisateurSlice";
+import { setToken } from "./app/utilisateurSystemSlices/utilisateurSystemSlice";
 
 function App() {
   //?==================================================================================================================
@@ -98,10 +99,22 @@ function App() {
     // * =====================================================
 
     // * naviguer vers l'interface de connexion si l'utilisateur n'est pas authentifié
-    if (location.pathname.toLowerCase() !== "/") {
-      if (jetton.length == 0) {
-        console.log("no jetton == no access == :(");
-        dispatch(deconnexionUtilisateur(navigate));
+    if (
+      location.pathname.toLowerCase() !== "/" &&
+      location.pathname.toLowerCase() !== "/emailenvoye" &&
+      location.pathname.toLowerCase() !== "/resetpassword"
+    ) {
+      // * split(".") : renvoi un tableau contenant 3 élèments
+      // * atob : décode une chaine en base 64 vers une chaine text
+      if (jetton.length > 10) {
+        const dateExpiration = JSON.parse(atob(jetton.split(".")[1])).exp;
+        if (Date.now() >= dateExpiration * 1000) {
+          // dispatch(deconnexionUtilisateur(navigate));
+          console.log("no token");
+        }
+      } else {
+        // dispatch(deconnexionUtilisateur(navigate));
+        console.log("no token");
       }
     }
     // * =====================================================
@@ -112,6 +125,26 @@ function App() {
   // dispatch(setDevisInfo("usera", usera));
   return (
     <div className={theme === "dark" ? "dark" : ""}>
+      <button
+        className="btn btn-primary"
+        onClick={() => {
+          dispatch(setToken(""));
+        }}
+      >
+        Mangle token
+      </button>
+      <button
+        className="btn btn-primary"
+        onClick={() => {
+          dispatch(
+            setToken(
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2RldXNlciI6IjA0IiwiaWF0IjoxNzQ3MTI2ODQ1LCJleHAiOjE3NDcyMTMyNDV9.6_jE45Ri4QesICyXrpEaNrIAmmsU0GAhzY-dqMLP_yM"
+            )
+          );
+        }}
+      >
+        restore token
+      </button>
       <Routes>
         <Route path="/" element={<SignInPage />} />
         <Route path="/deconnexion" element={<Deconnexion />} />

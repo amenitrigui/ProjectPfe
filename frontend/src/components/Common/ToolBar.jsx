@@ -45,9 +45,11 @@ import {
   getListeUtilisateurParCode,
   setInfosUtilisateur,
   setInfosUtilisateurEntiere,
+  viderChampsInfosUtilisateur,
 } from "../../app/utilisateur_slices/utilisateurSlice";
 import {
   getDerniereCodeArticle,
+  setArticleInfos,
   setDerniereCodeArticle,
   viderChampsArticleInfo,
 } from "../../app/article_slices/articleSlice";
@@ -178,6 +180,9 @@ function ToolBar() {
     }
     if (toolbarTable == "utilisateur") {
       dispatch(setViderChampsUtilisateur());
+      dispatch(viderChampsInfosUtilisateur());
+      const codeDerniereUtilisateur = parseInt(listeCodesUtilisateur[listeCodesUtilisateur.length-1].codeuser)+1
+      dispatch(setInfosUtilisateur({colonne: "codeuser", valeur: codeDerniereUtilisateur}))
     }
   };
   // * méthode pour mettre à jour un client/devis
@@ -337,6 +342,9 @@ function ToolBar() {
     if (toolbarTable === "region") {
       dispatch(viderChampsRegionInfo());
     }
+    if(toolbarTable === "utilisateur"){
+      dispatch(viderChampsInfosUtilisateur());
+    }
     dispatch(setActiverBoutonsValiderAnnuler(false));
     dispatch(setActiverChampsForm(false));
 
@@ -461,7 +469,6 @@ function ToolBar() {
     if (toolbarTable == "utilisateur") {
       const indiceutilisateurCourant = getIndiceUtilisateurSelectionne();
       if (indiceutilisateurCourant != listeCodesUtilisateur.length - 1) {
-        console.log(listeCodesUtilisateur);
         dispatch(
           setInfosUtilisateur({
             colonne: "codeuser",
@@ -749,7 +756,6 @@ function ToolBar() {
                       onClick={(e) => {
                         e.preventDefault();
                         dispatch(setOuvrireAvatarMenu(false));
-                        dispatch(setUtilisateurSupInfo(utilisateurConnecte));
                         dispatch(
                           setInfosUtilisateurEntiere(utilisateurConnecte)
                         );

@@ -66,6 +66,7 @@ const Recherche = () => {
   const listeToutCodesClients = useSelector(
     (state) => state.clientSlice.listeToutCodesClients
   );
+  const[estFiltreChoisit, setEstFiltreChoisit] = useState(false);
   // * tableau contenant la liste des codes des devis
   const listeNUMBL = useSelector((state) => state.devisSlice.listeNUMBL);
   // * récuperer la liste de codes sélon table choisit
@@ -419,7 +420,7 @@ const Recherche = () => {
   }
 
   const fermerPopupRecherche = () => {
-    viderChamps();
+    // viderChamps();
     revenirToolbarTablePrecedent();
     dispatch(setAfficherRecherchePopup(false));
   };
@@ -432,7 +433,7 @@ const Recherche = () => {
       case "/UtilisateurFormTout":
         dispatch(setToolbarTable("utilisateur"));
         break;
-      case "/articleFormTout":
+      case "/ArticleFormTout":
         dispatch(setToolbarTable("article"));
         break;
       case "/clientFormTout":
@@ -486,7 +487,7 @@ const Recherche = () => {
                         name="filtres"
                         value={filtre}
                         className="mr-2"
-                        onChange={() => setFiltrerPar(filtre)}
+                        onChange={() => {setEstFiltreChoisit(true);setFiltrerPar(filtre)}}
                       />
                       {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                     </label>
@@ -501,7 +502,7 @@ const Recherche = () => {
                       name="filtres"
                       value={filtre}
                       className="mr-2"
-                      onChange={() => setFiltrerPar(filtre)}
+                      onChange={() => {setEstFiltreChoisit(true);setFiltrerPar(filtre)}}
                     />
                     {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                   </label>
@@ -515,7 +516,7 @@ const Recherche = () => {
                       name="filtres"
                       value={filtre}
                       className="mr-2"
-                      onChange={() => setFiltrerPar(filtre)}
+                      onChange={() => {setEstFiltreChoisit(true);setFiltrerPar(filtre)}}
                     />
                     {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                   </label>
@@ -529,7 +530,7 @@ const Recherche = () => {
                       name="filtres"
                       value={filtre}
                       className="mr-2"
-                      onChange={() => setFiltrerPar(filtre)}
+                      onChange={() => {setEstFiltreChoisit(true);setFiltrerPar(filtre)}}
                     />
                     {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                   </label>
@@ -543,7 +544,7 @@ const Recherche = () => {
                       name="filtres"
                       value={filtre}
                       className="mr-2"
-                      onChange={() => setFiltrerPar(filtre)}
+                      onChange={() => {setEstFiltreChoisit(true);setFiltrerPar(filtre)}}
                     />
                     {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                   </label>
@@ -557,7 +558,7 @@ const Recherche = () => {
                       name="filtres"
                       value={filtre}
                       className="mr-2"
-                      onChange={() => setFiltrerPar(filtre)}
+                      onChange={() => {setEstFiltreChoisit(true);setFiltrerPar(filtre)}}
                     />
                     {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                   </label>
@@ -574,6 +575,7 @@ const Recherche = () => {
                 onChange={(e) => handleChampRechercheChange(e.target.value)}
                 className="p-2 border border-gray-300 rounded-lg w-full"
                 placeholder="Entrez votre recherche..."
+                disabled={!estFiltreChoisit}
                 list={
                   toolbarTable === "client" && filtrerPar === "code"
                     ? "listeCodesClients"

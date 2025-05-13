@@ -47,6 +47,7 @@ const UtilisateurForm = () => {
   };
   // * state pour désactiver/activer les champs lors de changement de modes editables (ajout/modification)
   // * vers le mode de consultation respectivement
+  const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
   const activerChampsForm = useSelector(
     (state) => state.interfaceSlice.activerChampsForm
   );
@@ -55,14 +56,16 @@ const UtilisateurForm = () => {
   );
   // * pour initialiser les valeur d'objet infosUtilisateur
   useEffect(() => {
+    dispatch(getListeCodesUtilisateur());
+  },[])
+  useEffect(() => {
     if (utilisateurConnecte.type.toLowerCase() === "utilisateur") {
       dispatch(setInfosUtilisateurEntiere(utilisateurConnecte));
     }
-    if (utilisateurConnecte.type.toLowerCase() === "superviseur" && !infosUtilisateur.codeuser) {
-      dispatch(getDerniereCodeUtilisateur());
-      dispatch(getListeCodesUtilisateur());
+    if (utilisateurConnecte.type.toLowerCase() === "superviseur" && !infosUtilisateur.codeuser && listeCodesUtilisateur.length > 0 && toolbarMode !="ajout" && toolbarMode != "modification") {
+      dispatch(setInfosUtilisateur({colonne:"codeuser", valeur: listeCodesUtilisateur[listeCodesUtilisateur.length-1].codeuser}))
     }
-  }, []);
+  }, [utilisateurConnecte.type, infosUtilisateur.codeuser, listeCodesUtilisateur, toolbarMode]);
   useEffect(() => {
     // * le deuxième test, infosUtilisateur.codeuser === "" est pour éviter
     // * une cercle infini d'appèls de cet effet
@@ -77,11 +80,10 @@ const UtilisateurForm = () => {
   }, [derniereCodeUtilisateur.codeuser]);
 
   useEffect(() => {
-    if (infosUtilisateur.codeuser && infosUtilisateur.codeuser != "") {
+    if (infosUtilisateur.codeuser && infosUtilisateur.codeuser != "" && toolbarMode != "ajout") {
       dispatch(getUtilisateurParCode(infosUtilisateur.codeuser));
     }
   }, [infosUtilisateur.codeuser]);
-  const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
   const handleCodeUtilisateur = (codeuser) => {
     dispatch(getUtilisateurParCode(codeuser));
   };
@@ -118,6 +120,7 @@ const UtilisateurForm = () => {
                       <input
                         type="text"
                         className="border border-gray-300 rounded-md p-2"
+                        readOnly
                         value={
                           infosUtilisateur.codeuser
                             ? infosUtilisateur.codeuser

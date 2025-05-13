@@ -15,7 +15,10 @@ const { getConnexionBd } = require("../db/config");
 const getListeClients = async (req, res) => {
   const { dbName } = req.params;
   try {
-    //const decoded = verifyTokenValidity(req, res);
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
 
     const result = await dbConnection.query(`select * from client`, {
@@ -40,58 +43,73 @@ const getListeClients = async (req, res) => {
 const filtrerListeClients = async (req, res) => {
   const { dbName } = req.params;
   const { filters } = req.query;
+  try {
+    if(!filters) {
+      return res.status(400).json({message: "les filtres sont manquantes"})
+    }
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
+    // ? liste des conditions
+    // ? exemple : ["NUML like :numbl, "libpv like :libpv"...]
+    let whereClauses = [];
+    // ? object contenant les noms des paramètres de requete sql avec leurs remplacements
+    // ? exemple : {{numbl: %dv2401%}, {libpv: %kasserine% }}
+    let replacements = {};
 
-  const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
-  // ? liste des conditions
-  // ? exemple : ["NUML like :numbl, "libpv like :libpv"...]
-  let whereClauses = [];
-  // ? object contenant les noms des paramètres de requete sql avec leurs remplacements
-  // ? exemple : {{numbl: %dv2401%}, {libpv: %kasserine% }}
-  let replacements = {};
+    // ? ajout de chaque condition quand la valeur n'est pas vide
+    if (filters.code) {
+      whereClauses.push("code like :code");
+      replacements.code = `%${filters.code}%`;
+    }
+    if (filters.Matricule) {
+      whereClauses.push("Matricule like :Matricule");
+      replacements.Matricule = `%${filters.Matricule}%`;
+    }
+    if (filters.telephone) {
+      whereClauses.push("telephone like :telephone");
+      replacements.telephone = `%${filters.telephone}%`;
+    }
+    if (filters.fax) {
+      whereClauses.push("fax like :fax");
+      replacements.fax = `%${filters.fax}%`;
+    }
+    if (filters.rsoc) {
+      whereClauses.push("rsoc like :rsoc");
+      replacements.rsoc = `%${filters.rsoc}%`;
+    }
+    if (filters.desrep) {
+      whereClauses.push("desrep like :desrep");
+      replacements.desrep = `%${filters.desrep}%`;
+    }
 
-  // ? ajout de chaque condition quand la valeur n'est pas vide
-  if (filters.code) {
-    whereClauses.push("code like :code");
-    replacements.code = `%${filters.code}%`;
-  }
-  if (filters.Matricule) {
-    whereClauses.push("Matricule like :Matricule");
-    replacements.Matricule = `%${filters.Matricule}%`;
-  }
-  if (filters.telephone) {
-    whereClauses.push("telephone like :telephone");
-    replacements.telephone = `%${filters.telephone}%`;
-  }
-  if (filters.fax) {
-    whereClauses.push("fax like :fax");
-    replacements.fax = `%${filters.fax}%`;
-  }
-  if (filters.rsoc) {
-    whereClauses.push("rsoc like :rsoc");
-    replacements.rsoc = `%${filters.rsoc}%`;
-  }
-  if (filters.desrep) {
-    whereClauses.push("desrep like :desrep");
-    replacements.desrep = `%${filters.desrep}%`;
-  }
+    // ? concatenation de l'opérateur logique après chaque ajout d'un nouvelle condition
+    let whereCondition = whereClauses.join(" AND ");
 
-  // ? concatenation de l'opérateur logique après chaque ajout d'un nouvelle condition
-  let whereCondition = whereClauses.join(" AND ");
-
-  // ? Si on on a aucune condition on effectue une requete de select * from dfp
-  let query = `SELECT code, rsoc, desrep, fax, telephone, Matricule
+    // ? Si on on a aucune condition on effectue une requete de select * from dfp
+    let query = `SELECT code, rsoc, desrep, fax, telephone, Matricule
      FROM client 
       ${whereCondition ? "WHERE " + whereCondition : ""}`;
 
-  const result = await dbConnection.query(query, {
-    replacements: replacements,
-    type: dbConnection.QueryTypes.SELECT,
-  });
+    const result = await dbConnection.query(query, {
+      replacements: replacements,
+      type: dbConnection.QueryTypes.SELECT,
+    });
 
-  return res.status(200).json({
-    message: "Filtrage réussi",
-    data: result,
-  });
+    return res.status(200).json({
+      message: "Filtrage réussi",
+      data: result,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({
+        message:
+          "un erreur est survenu lors de la filtrage de liste des clients",
+      });
+  }
 };
 
 // * Inserer les informations d'un client clientInfos
@@ -103,12 +121,14 @@ const filtrerListeClients = async (req, res) => {
 const AjouterClient = async (req, res) => {
   const { dbName } = req.params;
   const { clientInfos } = req.body;
-  console.log(
-    "==============================================================================" +
-      JSON.stringify(clientInfos)
-  );
-
   try {
+    if(!clientInfos) {
+      return res.status(400).json({message:"informations client à ajouter sont manquantes"})
+    }
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Client = defineClientModel(dbConnection);
     const newClient = await Client.create({
@@ -193,6 +213,13 @@ const supprimerClient = async (req, res) => {
   // ? tableau contenant les codes des clients à supprimer
   const { code } = req.params;
   try {
+    if(!code) {
+      return res.status(400).json({message: "code client est manquante"})
+    }
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Client = defineClientModel(dbConnection);
 
@@ -219,6 +246,13 @@ const getClientParCode = async (req, res) => {
   const { dbName } = req.params;
   const { code } = req.params;
   try {
+    if(!code) {
+      return res.status(400).json({message: "code client est manquante"})
+    }
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const client = await dbConnection.query(
       `select * from client where code LIKE :code`,
@@ -249,6 +283,13 @@ const majClient = async (req, res) => {
   const { dbName } = req.params;
   const { clientMaj } = req.body;
   try {
+    if(!clientMaj) {
+      return res.status(400).json({message:"informations clients à mettre à jour sont manquantes"})
+    }
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Client = defineClientModel(dbConnection);
     const client = await Client.findOne({ where: { code: clientMaj.code } });
@@ -333,8 +374,12 @@ const majClient = async (req, res) => {
 // * output : liste codes clients
 // * http://localhost:5000/api/client/SOLEVO/getToutCodesClient
 const getToutCodesClient = async (req, res) => {
+  const { dbName } = req.params;
   try {
-    const { dbName } = req.params;
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const query = `
       SELECT code 
@@ -363,9 +408,16 @@ const getToutCodesClient = async (req, res) => {
 // * output : client
 // * http://localhost:5000/api/client/SOLEVO/getClientParTypecli/l
 const getClientParRaisonSociale = async (req, res) => {
+  const { dbName } = req.params;
+  const { rsoc } = req.params;
   try {
-    const { dbName } = req.params;
-    const { rsoc } = req.params;
+    if(!rsoc){
+      return res.status(400).json({message: "Le champs rsoc est manquante"})
+    }
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const client = await dbConnection.query(
       `SELECT * FROM CLIENT where rsoc LIKE :rsoc`,
@@ -391,9 +443,16 @@ const getClientParRaisonSociale = async (req, res) => {
 // * output : client
 // * http://localhost:5000/api/client/SOLEVO/getClientParCin/9780000
 const getClientParCin = async (req, res) => {
+  const { dbName } = req.params;
+  const { cin } = req.params;
   try {
-    const { dbName } = req.params;
-    const { cin } = req.params;
+    if(!cin) {
+      return res.status(400).json({message: "le champ cin est manquante"})
+    }
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const client = await dbConnection.query(
       `SELECT * FROM CLIENT where cin LIKE :cin`,
@@ -418,8 +477,12 @@ const getClientParCin = async (req, res) => {
 // * output : 2000
 // * http://localhost:5000/api/client/SOLEVO/getDerniereCodeClient
 const getDerniereCodeClient = async (req, res) => {
+  const { dbName } = req.params;
   try {
-    const { dbName } = req.params;
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const derniereCodeClient = await dbConnection.query(
       `SELECT code FROM CLIENT ORDER BY CAST(code AS UNSIGNED) DESC LIMIT 1`,

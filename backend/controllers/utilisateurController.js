@@ -117,11 +117,13 @@ const selectDatabase = async (req, res) => {
   }
 
   try {
-    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     const decoded = verifyTokenValidity(req);
+    if(!decoded) {
+      return res.status(401).json({message: "utilisateur non authentifié"})
+    }
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     const codeuser = decoded.codeuser;
     setBdConnexion(databaseName);
-    console.log(sequelizeConnexionDbUtilisateur)
     const Utilisateur = defineUserModel(sequelizeConnexionDbUtilisateur)
     await Utilisateur.update({socutil: databaseName},{
       where: {

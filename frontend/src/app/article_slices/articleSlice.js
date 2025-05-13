@@ -91,7 +91,11 @@ export const getListeFamillesArticle = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getListeFamilles`
+      }/getListeFamilles`,{
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        }
+      }
     );
 
     return response.data.familles;

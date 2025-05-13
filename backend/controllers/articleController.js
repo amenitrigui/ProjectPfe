@@ -3,7 +3,7 @@ const defineArticleModel = require("../models/societe/article");
 const defineFamilleModel = require("../models/societe/famille");
 const defineLdfpModel = require("../models/societe/ldfp");
 const defineSousFamilleModel = require("../models/societe/sousfamille");
-const { getDatabaseConnection } = require("../common/commonMethods");
+const { getDatabaseConnection, verifyTokenValidity } = require("../common/commonMethods");
 const { getConnexionBd } = require("../db/config")
 
 // * méthode pour récuperer la liste de familles (code+libelle)
@@ -21,6 +21,10 @@ const getListeFamilles = async (req, res) => {
   }
 
   try {
+    const decodedJwt = verifyTokenValidity(req);
+    if(!decodedJwt) {
+      return res.status(401).json({message: "utilisateur non authentifié"})
+    }
     const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
 
     const Familles = defineFamilleModel(dbConnection);
@@ -39,7 +43,8 @@ const getListeFamilles = async (req, res) => {
       message: "Familles d'articles récupérées avec succès.",
       familles: familles,
     });
-  } catch (error) {
+  } 
+  catch (error) {
     console.error("Erreur lors de la récupération :", error);
     return res.status(500).json({
       message: "Erreur lors de la récupération des familles des articles.",
