@@ -1,4 +1,4 @@
-const { getDatabaseConnection } = require("../common/commonMethods");
+const { getDatabaseConnection, verifyTokenValidity } = require("../common/commonMethods");
 const defineUtilisateurModel = require("../models/utilisateur/utilisateur");
 const defineUserModel = require("../models/utilisateur/utilisateur");
 const { getConnexionAuBdUtilisateurs } = require("../db/config")
@@ -58,6 +58,11 @@ const AjouterUtilisateur = async (req, res) => {
   const { utilisateurInfo } = req.body;
 
   try {
+     const decoded = verifyTokenValidity(req);
+    console.log("dd", decoded);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
     const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     // 1. Obtenir la connexion à la base de données AVEC le nom de la base spécifié
     const dbConnection = await getDatabaseConnection(process.env.DB_USERS_NAME); // Remplacez par votre variable d'environnement

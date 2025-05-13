@@ -189,14 +189,17 @@ const ajouterDevis = async (req, res) => {
       mlettre,
       TIMBRE,
     };
+
     const devis = await Dfp.create(dfpData);
+
+    if (articles &&articles.length>0)
     // * map tout seul n'attend pas que les promis sont resolus
-    await Promise.all(articles.map(async (article) => {
+    {await Promise.all(articles.map(async (article) => {
       article.NumBL = NUMBL;
       article.NLigne = articles.length;
       await ldfp.create(article);
     }));
-    
+  }
     return res.status(201).json({
       message: "Devis créé avec succès.",
       devis,

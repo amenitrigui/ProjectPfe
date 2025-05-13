@@ -239,22 +239,39 @@ function ToolBar() {
     }
     dispatch(setActiverChampsForm(false));
     dispatch(setToolbarMode("suppression"));
+
     if (toolbarTable === "article") {
+      if (!articleInfo.code) {
+        // ! a remplacer par toast
+        alert("aucune article est selectionné pour la suppresion");
+        return;
+      }
+
       dispatch(
         setAlertMessage("Êtes-vous sûr de vouloir supprimer cet article ?")
       );
     }
 
     if (toolbarTable === "client") {
+       if (!clientInfos.code) {
+        // ! a remplacer par toast
+        alert("aucune client est selectionné pour la suppresion");
+        return;
+      }
+
       dispatch(
         setAlertMessage("Êtes-vous sûr de vouloir supprimer ce client ?")
       );
     }
 
     if (toolbarTable === "devis") {
-      dispatch(
-        setAlertMessage("Êtes-vous sûr de vouloir supprimer ce devis ?")
-      );
+       if (!devisInfo.NUMBL) {
+        // ! a remplacer par toast
+        alert("aucune devis est selectionné pour la suppresion");
+        return;
+      }
+
+      dispatch(setAlertMessage("Êtes-vous sûr de vouloir annuler ce devis ?"));
     }
     if (toolbarTable === "utilisateur") {
       dispatch(
@@ -301,6 +318,7 @@ function ToolBar() {
     if (toolbarTable == "utilisateur") {
       if (toolbarMode == "ajout") {
         dispatch(setAlertMessage("Confirmez-vous ajouter de ce utilisateur ?"));
+      
         dispatch(SetUtilisateurSystemremplir(infosUtilisateur));
       }
       if (toolbarMode == "modification") {

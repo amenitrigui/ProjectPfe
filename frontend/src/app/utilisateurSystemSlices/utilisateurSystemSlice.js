@@ -14,6 +14,13 @@ export const AjouterUtilisateur = createAsyncThunk(
         utilisateurInfo:
           thunkAPI.getState().utilisateurSystemSlice
             .Utilisateur_SuperviseurInfos,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
     );
     console.log(response);
@@ -24,12 +31,13 @@ export const AjouterUtilisateur = createAsyncThunk(
 export const ModifierUtilisateur = createAsyncThunk(
   "utilisateurSystemSlices/ModifierUtilisateur",
   async (_, thunkAPI) => {
-    const utilisateur = thunkAPI.getState().utilisateurSystemSlice.Utilisateur_SuperviseurInfos
-    console.log(utilisateur)
+    const utilisateur =
+      thunkAPI.getState().utilisateurSystemSlice.Utilisateur_SuperviseurInfos;
+    console.log(utilisateur);
     const response = await axios.put(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/ModifierUtilisateur`,
       {
-        MajUtilisateur:utilisateur,
+        MajUtilisateur: utilisateur,
       }
     );
     return response.data.user;
@@ -37,7 +45,7 @@ export const ModifierUtilisateur = createAsyncThunk(
 );
 export const supprimerUtilisateur = createAsyncThunk(
   "utilisateurSystemSlices/supprimerUtilisateur",
-    async (codeuser) => {
+  async (codeuser) => {
     const response = await axios.delete(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/supprimerUtilisateur`,
       {

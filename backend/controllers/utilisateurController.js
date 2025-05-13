@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const path = require('path');
+const path = require("path");
 
 // const bcrypt = require("bcryptjs");
 
@@ -9,7 +9,12 @@ const nodeMailer = require("nodemailer");
 const { google } = require("googleapis");
 const handlebars = require("handlebars");
 const fs = require("fs");
-const { getConnexionAuBdUtilisateurs, setConnexionAuBdUtilisateurs, setBdConnexion, getConnexionBd } = require("../db/config");
+const {
+  getConnexionAuBdUtilisateurs,
+  setConnexionAuBdUtilisateurs,
+  setBdConnexion,
+  getConnexionBd,
+} = require("../db/config");
 const {
   verifyTokenValidity,
   getDatabaseConnection,
@@ -115,21 +120,26 @@ const selectDatabase = async (req, res) => {
       .status(400)
       .json({ message: "Le nom de la base de données est requis." });
   }
+  
 
   try {
-    const decoded = verifyTokenValidity(req);
-    if(!decoded) {
-      return res.status(401).json({message: "utilisateur non authentifié"})
+     const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
     }
     const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
+  
     const codeuser = decoded.codeuser;
     setBdConnexion(databaseName);
-    const Utilisateur = defineUserModel(sequelizeConnexionDbUtilisateur)
-    await Utilisateur.update({socutil: databaseName},{
-      where: {
-        codeuser: codeuser
+    const Utilisateur = defineUserModel(sequelizeConnexionDbUtilisateur);
+    await Utilisateur.update(
+      { socutil: databaseName },
+      {
+        where: {
+          codeuser: codeuser,
+        },
       }
-  });
+    );
     return res.status(200).json({
       message: `Connecté à la base ${databaseName}`,
       databaseName,
@@ -223,12 +233,7 @@ const envoyerDemandeReinitialisationMp = async (req, res) => {
 // * verb : put
 // * http://localhost:5000/api/utilisateurs/reinitialiserMotPasse
 const reinitialiserMotPasse = async (req, res) => {
-  const { email, password, token } = req.body;
-  if (!token) {
-    return res
-      .status(401)
-      .json({ message: "L'utilisateur n'est pas authentifié" });
-  }
+  const { email, password } = req.body;
 
   if (!password) {
     return res.status(500).json({
@@ -239,7 +244,7 @@ const reinitialiserMotPasse = async (req, res) => {
 
   try {
     const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
-    const decodedJWT = verifyTokenValidity(req, res);
+
     const User = defineUserModel(sequelizeConnexionDbUtilisateur);
 
     const user = await User.findOne({ where: { email } });
@@ -287,8 +292,6 @@ const uploadImageUtilisateur = async (req, res) => {
     const imageUrl = `${req.protocol}://${req.get(
       "host"
     )}/uploads/${imagePath}`;
-
-
 
     return res.status(200).json({
       message: "Image uploadée avec succès",
@@ -344,7 +347,7 @@ const deconnecterUtilisateur = async (req, res) => {
   try {
     const connexionBd = getConnexionBd();
     const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
-    if(sequelizeConnexionDbUtilisateur){
+    if (sequelizeConnexionDbUtilisateur) {
       sequelizeConnexionDbUtilisateur.close();
     }
     if (connexionBd) {
@@ -360,14 +363,14 @@ const deconnecterUtilisateur = async (req, res) => {
 };
 const AjouterUtilisateur = async (req, res) => {
   const { utilisateurInfo } = req.body;
-  
+
   try {
     // 1. Obtenir la connexion à la base de données AVEC le nom de la base spécifié
     const dbConnection = await getDatabaseConnection(process.env.DB_USERS_NAME); // Remplacez par votre variable d'environnement
-    
+
     // 2. Définir le modèle avec la connexion active
     const Utilisateur = defineUserModel(dbConnection);
-    
+
     // 3. Créer l'utilisateur avec les valeurs par défaut pour les champs non fournis
     const newUser = await Utilisateur.create({
       codeuser: utilisateurInfo.codeuser,
@@ -377,7 +380,7 @@ const AjouterUtilisateur = async (req, res) => {
       nom: utilisateurInfo.nom,
       motpasse: utilisateurInfo.motpasse,
       image: utilisateurInfo.image,
-      
+
       // Valeurs par défaut pour les autres champs requis
       etatbcf: 0,
       etatbcc: 0,
@@ -385,15 +388,14 @@ const AjouterUtilisateur = async (req, res) => {
       // ... autres champs avec leurs valeurs par défaut
     });
 
-    return res.status(201).json({ 
+    return res.status(201).json({
       success: true,
       message: "Insertion réussie",
-      data: newUser
+      data: newUser,
     });
-    
   } catch (error) {
     console.error("Erreur lors de l'ajout d'utilisateur:", error);
-    return res.status(500).json({message:error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
