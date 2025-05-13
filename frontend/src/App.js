@@ -140,7 +140,7 @@ function App() {
         onClick={() => {
           dispatch(
             setToken(
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2RldXNlciI6IjA0IiwiaWF0IjoxNzQ3MTI4NTk1LCJleHAiOjE3NDcyMTQ5OTV9.4zfCqIIhHgZdR_RQ8miUelsd3XE1Tu9TmPOyuQP271M"
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2RldXNlciI6IjA1IiwiaWF0IjoxNzQ3MTMyMjM5LCJleHAiOjE3NDcyMTg2Mzl9.D4fZ5HwVP8BMlscBXTFfdCmzmmSRGfs-FfpK3wCPa9s"
             )
           );
         }}

@@ -1,7 +1,10 @@
-const { getDatabaseConnection, verifyTokenValidity } = require("../common/commonMethods");
+const {
+  getDatabaseConnection,
+  verifyTokenValidity,
+} = require("../common/commonMethods");
 const defineUtilisateurModel = require("../models/utilisateur/utilisateur");
 const defineUserModel = require("../models/utilisateur/utilisateur");
-const { getConnexionAuBdUtilisateurs } = require("../db/config")
+const { getConnexionAuBdUtilisateurs } = require("../db/config");
 // const bcrypt = require("bcryptjs");
 
 // * enregistrer une nouvelle utilisateur
@@ -58,7 +61,7 @@ const AjouterUtilisateur = async (req, res) => {
   const { utilisateurInfo } = req.body;
 
   try {
-     const decoded = verifyTokenValidity(req);
+    const decoded = verifyTokenValidity(req);
     console.log("dd", decoded);
     if (!decoded) {
       return res.status(401).json({ message: "utilisateur non authentifie" });
@@ -127,7 +130,6 @@ const ModifierUtilisateur = async (req, res) => {
   const { MajUtilisateur } = req.body;
 
   try {
-    
     const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     const Utilisateur = defineUtilisateurModel(sequelizeConnexionDbUtilisateur);
     const user = await Utilisateur.findOne({
@@ -164,8 +166,10 @@ const ModifierUtilisateur = async (req, res) => {
 const supprimerUtilisateur = async (req, res) => {
   const { codeuser } = req.query;
   try {
-    console.log("nice")
-    const sequelizeConnexionDbUtilisateur = await getDatabaseConnection(process.env.DB_USERS_NAME)//getConnexionAuBdUtilisateurs();
+    console.log("nice");
+    const sequelizeConnexionDbUtilisateur = await getDatabaseConnection(
+      process.env.DB_USERS_NAME
+    ); //getConnexionAuBdUtilisateurs();
     const Utilisateur = defineUtilisateurModel(sequelizeConnexionDbUtilisateur);
     const utilisateur = await Utilisateur.destroy({
       where: { codeuser: codeuser },
@@ -208,8 +212,14 @@ const getListeUtilisateurParCode = async (req, res) => {
 const getListeUtilisateurParNom = async (req, res) => {
   const { nom } = req.query;
   try {
+    if(!nom) {
+      return res.status(400).json({message: "le champ nom utilisateur est manquant"})
+    }
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
-    //const decoded = verifyTokenValidity(req, res);
 
     const result = await sequelizeConnexionDbUtilisateur.query(
       `select codeuser,nom,directeur,type from utilisateur where nom LIKE :nom `,
@@ -234,8 +244,14 @@ const getListeUtilisateurParDirecteur = async (req, res) => {
   const { directeur } = req.query;
 
   try {
+    if (!directeur) {
+      return res.status(400).json({ message: "le champ directeur est manquant" });
+    }
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
-    //const decoded = verifyTokenValidity(req, res);
 
     const result = await sequelizeConnexionDbUtilisateur.query(
       `select codeuser,nom,directeur,type from utilisateur where directeur LIKE :directeur `,
@@ -260,7 +276,15 @@ const getListeUtilisateurParType = async (req, res) => {
   const { type } = req.query;
 
   try {
-    //const decoded = verifyTokenValidity(req, res);
+    if (!type) {
+      return res
+        .status(400)
+        .json({ message: "type utilisateur est manquante" });
+    }
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     const result = await sequelizeConnexionDbUtilisateur.query(
       `select codeuser,nom,directeur,type from utilisateur where type LIKE :type `,
@@ -285,7 +309,10 @@ const getListeUtilisateurParType = async (req, res) => {
 // * verb : get
 const getListeUtilisateur = async (req, res) => {
   try {
-    //const decoded = verifyTokenValidity(req, res);
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     const result = await sequelizeConnexionDbUtilisateur.query(
       `select codeuser,nom,directeur, email ,type from utilisateur `,
@@ -305,49 +332,63 @@ const getListeUtilisateur = async (req, res) => {
 //* url :http://localhost:5000/api/utilisateurSystem/filterListeUtilisateur?filters=1
 const filterListeUtilisateur = async (req, res) => {
   const { filters } = req.query;
+  try {
+    if (!filters) {
+      return res
+        .status(400)
+        .json({ messasge: "les filtres ne sont pas définits" });
+    }
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
 
-  let whereClauses = [];
+    let whereClauses = [];
 
-  let replacements = {};
+    let replacements = {};
 
-  if (filters.codeuser) {
-    whereClauses.push("codeuser like :codeuser");
-    replacements.codeuser = `%${filters.codeuser}%`;
-  }
-  if (filters.email) {
-    whereClauses.push("email like :email");
-    replacements.email = `%${filters.email}%`;
-  }
-  if (filters.type) {
-    whereClauses.push("type like :type");
-    replacements.type = `%${filters.type}%`;
-  }
-  if (filters.directeur) {
-    whereClauses.push("directeur like :directeur");
-    replacements.directeur = `%${filters.directeur}%`;
-  }
-  if (filters.nom) {
-    whereClauses.push("nom like :nom");
-    replacements.nom = `%${filters.nom}%`;
-  }
+    if (filters.codeuser) {
+      whereClauses.push("codeuser like :codeuser");
+      replacements.codeuser = `%${filters.codeuser}%`;
+    }
+    if (filters.email) {
+      whereClauses.push("email like :email");
+      replacements.email = `%${filters.email}%`;
+    }
+    if (filters.type) {
+      whereClauses.push("type like :type");
+      replacements.type = `%${filters.type}%`;
+    }
+    if (filters.directeur) {
+      whereClauses.push("directeur like :directeur");
+      replacements.directeur = `%${filters.directeur}%`;
+    }
+    if (filters.nom) {
+      whereClauses.push("nom like :nom");
+      replacements.nom = `%${filters.nom}%`;
+    }
 
-  // ? concatenation de l'opérateur logique après chaque ajout d'un nouvelle condition
-  let whereCondition = whereClauses.join(" AND ");
+    // ? concatenation de l'opérateur logique après chaque ajout d'un nouvelle condition
+    let whereCondition = whereClauses.join(" AND ");
 
-  // ? Si on on a aucune condition on effectue une requete de select * from dfp
-  let query = `SELECT codeuser, email, type, directeur, nom
+    // ? Si on on a aucune condition on effectue une requete de select * from dfp
+    let query = `SELECT codeuser, email, type, directeur, nom
      FROM utilisateur 
       ${whereCondition ? "WHERE " + whereCondition : ""}`;
-  const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
-  const result = await sequelizeConnexionDbUtilisateur.query(query, {
-    replacements: replacements,
-    type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
-  });
-  return res.status(200).json({
-    message: "Filtrage réussi",
-    data: result,
-  });
+    const result = await sequelizeConnexionDbUtilisateur.query(query, {
+      replacements: replacements,
+      type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
+    });
+    return res.status(200).json({
+      message: "Filtrage réussi",
+      data: result,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 };
+// ? pas encore utilisée
 //* url :http://localhost:5000/api/utilisateurSystem/getCodeUtilisateurSuivant
 const getCodeUtilisateurSuivant = async (req, res) => {
   try {
@@ -374,27 +415,26 @@ const getCodeUtilisateurSuivant = async (req, res) => {
 // * url : http://localhost:5000/api/utilisateurSystem/getListeCodesUtilisateur
 const getListeCodesUtilisateur = async (req, res) => {
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
-    console.log(sequelizeConnexionDbUtilisateur)
     const Utilisateur = defineUserModel(sequelizeConnexionDbUtilisateur);
     const listeCodesUtilisateur = await Utilisateur.findAll({
       order: [["codeuser", "ASC"]],
       attributes: ["codeuser"],
     });
     if (listeCodesUtilisateur.length == 0) {
-      return res
-        .status(400)
-        .json({
-          message: "aucun utilisateur n'est trouvé dans la base des données",
-        });
+      return res.status(400).json({
+        message: "aucun utilisateur n'est trouvé dans la base des données",
+      });
     }
     if (listeCodesUtilisateur.length > 0) {
-      return res
-        .status(200)
-        .json({
-          message: "liste codes utilisateurs récupéré avec succès",
-          listeCodesUtilisateur,
-        });
+      return res.status(200).json({
+        message: "liste codes utilisateurs récupéré avec succès",
+        listeCodesUtilisateur,
+      });
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -405,6 +445,15 @@ const getUtilisateurParCode = async (req, res) => {
   const { codeuser } = req.query;
 
   try {
+    if (!codeuser) {
+      return res
+        .status(400)
+        .json({ message: "le code d'utilisateur à récupere n'est pas défini" });
+    }
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     const Utilisateur = defineUserModel(sequelizeConnexionDbUtilisateur);
     const utilisateur = await Utilisateur.findOne({

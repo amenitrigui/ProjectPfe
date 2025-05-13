@@ -13,7 +13,10 @@ import {
 import SideBar from "../Common/SideBar";
 
 import { setAfficherRecherchePopup } from "../../app/interface_slices/interfaceSlice";
-import { setUtilisateur_SuperviseurInfos, setutilisateurConnecte } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
+import {
+  setUtilisateur_SuperviseurInfos,
+  setutilisateurConnecte,
+} from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 
 const UtilisateurForm = () => {
   const location = useLocation();
@@ -57,15 +60,32 @@ const UtilisateurForm = () => {
   // * pour initialiser les valeur d'objet infosUtilisateur
   useEffect(() => {
     dispatch(getListeCodesUtilisateur());
-  },[])
+  }, []);
   useEffect(() => {
     if (utilisateurConnecte.type.toLowerCase() === "utilisateur") {
       dispatch(setInfosUtilisateurEntiere(utilisateurConnecte));
     }
-    if (utilisateurConnecte.type.toLowerCase() === "superviseur" && !infosUtilisateur.codeuser && listeCodesUtilisateur.length > 0 && toolbarMode !="ajout" && toolbarMode != "modification") {
-      dispatch(setInfosUtilisateur({colonne:"codeuser", valeur: listeCodesUtilisateur[listeCodesUtilisateur.length-1].codeuser}))
+    if (
+      utilisateurConnecte.type.toLowerCase() === "superviseur" &&
+      !infosUtilisateur.codeuser &&
+      listeCodesUtilisateur.length > 0 &&
+      toolbarMode != "ajout" &&
+      toolbarMode != "modification"
+    ) {
+      dispatch(
+        setInfosUtilisateur({
+          colonne: "codeuser",
+          valeur:
+            listeCodesUtilisateur[listeCodesUtilisateur.length - 1].codeuser,
+        })
+      );
     }
-  }, [utilisateurConnecte.type, infosUtilisateur.codeuser, listeCodesUtilisateur, toolbarMode]);
+  }, [
+    utilisateurConnecte.type,
+    infosUtilisateur.codeuser,
+    listeCodesUtilisateur,
+    toolbarMode,
+  ]);
   useEffect(() => {
     // * le deuxième test, infosUtilisateur.codeuser === "" est pour éviter
     // * une cercle infini d'appèls de cet effet
@@ -80,7 +100,12 @@ const UtilisateurForm = () => {
   }, [derniereCodeUtilisateur.codeuser]);
 
   useEffect(() => {
-    if (infosUtilisateur.codeuser && infosUtilisateur.codeuser != "" && toolbarMode != "ajout") {
+    if (
+      infosUtilisateur.codeuser &&
+      infosUtilisateur.codeuser != "" &&
+      toolbarMode != "ajout" &&
+      toolbarMode != "modification"
+    ) {
       dispatch(getUtilisateurParCode(infosUtilisateur.codeuser));
     }
   }, [infosUtilisateur.codeuser]);
@@ -225,7 +250,7 @@ const UtilisateurForm = () => {
                     <label className="font-bold mb-1 text-[rgb(48,60,123)]">
                       Image
                     </label>
-                    
+
                     {infosUtilisateur.image ? (
                       <img
                         src={utilisateurConnecte.image}
