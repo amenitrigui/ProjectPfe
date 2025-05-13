@@ -124,6 +124,7 @@ function App() {
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
   // dispatch(setDevisInfo("usera", usera));
+  // console.log(jetton)
   return (
     <div className={theme === "dark" ? "dark" : ""}>
       <button
@@ -139,7 +140,7 @@ function App() {
         onClick={() => {
           dispatch(
             setToken(
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2RldXNlciI6IjA0IiwiaWF0IjoxNzQ3MTI2ODQ1LCJleHAiOjE3NDcyMTMyNDV9.6_jE45Ri4QesICyXrpEaNrIAmmsU0GAhzY-dqMLP_yM"
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2RldXNlciI6IjA0IiwiaWF0IjoxNzQ3MTI4NTk1LCJleHAiOjE3NDcyMTQ5OTV9.4zfCqIIhHgZdR_RQ8miUelsd3XE1Tu9TmPOyuQP271M"
             )
           );
         }}
