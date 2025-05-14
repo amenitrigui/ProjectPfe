@@ -1,7 +1,10 @@
 const { QueryTypes, Op, where } = require("sequelize");
 const defineDfpModel = require("../models/societe/dfp");
 const defineLdfpModel = require("../models/societe/ldfp");
-const { getDatabaseConnection } = require("../common/commonMethods");
+const {
+  getDatabaseConnection,
+  verifyTokenValidity,
+} = require("../common/commonMethods");
 const { getConnexionBd } = require("../db/config");
 
 // * récuperer la liste des dévis d'une societé donnée (dbName)
@@ -19,6 +22,10 @@ const getTousDevis = async (req, res) => {
   }
 
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
 
     const result = await dbConnection.query(
@@ -58,6 +65,10 @@ const getTotalChiffres = async (req, res) => {
     });
   }
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     const totalchifre = await Devis.sum("MTTC");
@@ -93,6 +104,10 @@ const getNombreDevis = async (req, res) => {
   }
 
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     // const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const dbConnection = getConnexionBd();
 
@@ -149,6 +164,10 @@ const ajouterDevis = async (req, res) => {
   } = req.body.devisInfo;
 
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
 
     const Dfp = defineDfpModel(dbConnection);
@@ -192,14 +211,16 @@ const ajouterDevis = async (req, res) => {
 
     const devis = await Dfp.create(dfpData);
 
-    if (articles &&articles.length>0)
-    // * map tout seul n'attend pas que les promis sont resolus
-    {await Promise.all(articles.map(async (article) => {
-      article.NumBL = NUMBL;
-      article.NLigne = articles.length;
-      await ldfp.create(article);
-    }));
-  }
+    if (articles && articles.length > 0) {
+      // * map tout seul n'attend pas que les promis sont resolus
+      await Promise.all(
+        articles.map(async (article) => {
+          article.NumBL = NUMBL;
+          article.NLigne = articles.length;
+          await ldfp.create(article);
+        })
+      );
+    }
     return res.status(201).json({
       message: "Devis créé avec succès.",
       devis,
@@ -221,6 +242,10 @@ const ajouterDevis = async (req, res) => {
 // * http://localhost:5000/api/devis/SOLEVO/getLignesDevis/DV2300002
 const getLignesDevis = async (req, res) => {
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const { dbName } = req.params;
     const { NumBL } = req.params;
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
@@ -245,6 +270,10 @@ const getLignesDevis = async (req, res) => {
 // * pour une societé donnée (dbName)
 const GetDevisParPeriode = async (req, res) => {
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const { dbName } = req.params;
     const { DATEBL, codeuser } = req.query;
 
@@ -285,6 +314,10 @@ const GetDevisParPeriode = async (req, res) => {
 //* url http://localhost:5000/api/devis/SOLEVO/getDevisParClient?CODECLI=41102630&codeuser=4
 const GetDevisListParClient = async (req, res) => {
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const { dbName } = req.params;
     const { CODECLI, codeuser } = req.query;
 
@@ -322,6 +355,10 @@ const GetDevisListParClient = async (req, res) => {
 // * http://localhost:5000/api/devis/SOLEVO/getCodesDevis/05
 const getCodesDevis = async (req, res) => {
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const { dbName } = req.params;
     const { usera } = req.params;
     const query = `
@@ -334,15 +371,12 @@ const getCodesDevis = async (req, res) => {
         NUMBL                                     -- Final sort
     `;
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
-    const listeNUMBL = await dbConnection.query(
-      query,
-      {
-        type: dbConnection.QueryTypes.SELECT,
-        replacements: {
-          usera: usera,
-        },
-      }
-    );
+    const listeNUMBL = await dbConnection.query(query, {
+      type: dbConnection.QueryTypes.SELECT,
+      replacements: {
+        usera: usera,
+      },
+    });
 
     return res.status(200).json({
       message: "tout le code devis recupere avec succes",
@@ -361,6 +395,10 @@ const getCodesDevis = async (req, res) => {
 // * http://localhost:5000/api/devis/SOLEVO/getDevisParNUMBL/DV2300002?codeuser=4
 const getDevisParNUMBL = async (req, res) => {
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const { dbName, NUMBL } = req.params;
     const { codeuser } = req.query;
 
@@ -404,6 +442,10 @@ const getDevisParNUMBL = async (req, res) => {
 // ! still haven't tested this
 const getDevisCreator = async (req, res) => {
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const { codea } = req.params;
     const dbConnection = getDatabaseConnection(process.env.DB_USERS_NAME);
     const resultat = await dbConnection.query(
@@ -423,6 +465,10 @@ const getDevisCreator = async (req, res) => {
 
 const getInfoUtilisateur = async (req, res) => {
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const { dbName } = req.params;
     const { usera } = req.query;
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
@@ -451,6 +497,10 @@ const getInfoUtilisateur = async (req, res) => {
 // * http://localhost:5000/api/devis/SOLEVO/getDevisParMontant/5664.511
 const getDevisParMontant = async (req, res) => {
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const { dbName, montant } = req.params;
     const { codeuser } = req.query;
 
@@ -492,6 +542,10 @@ const getDevisParMontant = async (req, res) => {
 // * http://localhost:5000/api/devis/SOLEVO/getListePointVente
 const getListePointVente = async (req, res) => {
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const { dbName } = req.params;
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const pointsVenteDistincts = await dbConnection.query(
@@ -519,6 +573,10 @@ const getListePointVente = async (req, res) => {
 // * http://localhost:5000/api/devis/SOLEVO/getDerniereNumbl?codeuser=04
 const getDerniereNumbl = async (req, res) => {
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const { dbName } = req.params;
     const { codeuser } = req.query;
     let derniereNumbl;
@@ -578,6 +636,10 @@ const annulerDevis = async (req, res) => {
       .json({ message: "Le numéro du devis (NUMBL) est requis." });
   }
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
 
     const Dfp = defineDfpModel(dbConnection);
@@ -628,6 +690,10 @@ const getListeDevisParCodeClient = async (req, res) => {
   }
 
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     const listeDevis = await Devis.findAll({
@@ -659,6 +725,10 @@ const getListeDevisParCodeClient = async (req, res) => {
 // * http://localhost:5000/api/devis/SOLEVO/getListeDevisParNUMBL/?NUMBL=DV2300&codeuser=4
 const getListeDevisParNUMBL = async (req, res) => {
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const { dbName } = req.params;
     const { codeuser, NUMBL } = req.query;
 
@@ -702,6 +772,10 @@ const majDevis = async (req, res) => {
   const { DevisMaj } = req.body;
 
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     const modelLigneDevis = defineLdfpModel(dbConnection);
@@ -774,6 +848,10 @@ const getDevisCountByMonthAndYear = async (req, res) => {
   }
 
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
 
     const sqlQuery = `
@@ -823,6 +901,10 @@ const getNbTotalDevisGeneres = async (req, res) => {
   const { dbName } = req.params;
   let dbConnection;
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     dbConnection = await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     const nbDevisGeneresTotal = await Devis.count({
@@ -875,6 +957,10 @@ const getNbTotalDevisGeneresParUtilisateur = async (req, res) => {
     return res.status(400).json({ message: "le code utilisateur est requis" });
   }
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     dbConnection = await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
 
@@ -937,6 +1023,10 @@ const getNbDevisNonGeneresParUtilisateur = async (req, res) => {
   }
   let dbConnection;
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     dbConnection = await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     const nbDevisNonGeneresParUtilisateur = await Devis.count({
@@ -974,6 +1064,10 @@ const getNbTotalDevisAnnulees = async (req, res) => {
   const { dbName } = req.params;
   let dbConnection;
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     dbConnection = await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     const nbDevisANnulees = await Devis.count({
@@ -1005,6 +1099,10 @@ const getNbTotalDevisEnCours = async (req, res) => {
   const { dbName } = req.params;
   let dbConnection;
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     dbConnection = await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     const nbDevisEncours = await Devis.count({
@@ -1035,6 +1133,10 @@ const getNbTotalDevisSansStatus = async (req, res) => {
   const { dbName } = req.params;
   let dbConnection;
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     dbConnection = await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     const nbDevisSansStatus = await Devis.count({
@@ -1073,6 +1175,11 @@ const getListeDevisAvecPagination = async (req, res) => {
   }
 
   try {
+      const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     const devis = await Devis.findAll({
@@ -1097,6 +1204,10 @@ const getAnneesDistinctGenerationDevis = async (req, res) => {
   const { dbName } = req.params;
   let dbConnection;
   try {
+      const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     dbConnection = await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     // ? ?????????????
@@ -1124,6 +1235,10 @@ const getDirecteursDevis = async (req, res) => {
   const { dbName } = req.params;
   let dbConnection;
   try {
+      const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     dbConnection = await getDatabaseConnection(dbName);
   } catch (error) {
     return res.statuss(500).json({ message: error.message });
@@ -1142,6 +1257,7 @@ const getDevisparRepresentant = async (req, res) => {
 
   let dbConnection;
   try {
+    
     dbConnection = await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     const Rep = await dbConnection.query(
@@ -1304,7 +1420,7 @@ const getrepresentantparcodevendeur = async (req, res) => {
 };
 const filtrerListeDevis = async (req, res) => {
   const { dbName } = req.params;
-  const  filters  = req.query.filters;
+  const filters = req.query.filters;
 
   const dbConnection = await getDatabaseConnection(dbName);
   // ? liste des conditions
