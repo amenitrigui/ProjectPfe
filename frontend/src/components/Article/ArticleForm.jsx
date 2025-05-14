@@ -47,18 +47,7 @@ function ArticleForm() {
   );
   const toolbarTable = useSelector((state) => state.interfaceSlice.toolbarTable);
   const articleInfos = useSelector((state) => state.articleSlice.articleInfos);
-  const ListeFamille = useSelector((state) => state.articleSlice.ListeFamille);
   const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
-  const ListeSousFamille = useSelector(
-    (state) => state.articleSlice.ListeSousFamille
-  );
-  const derniereCodeArticle = useSelector(
-    (state) => state.articleSlice.derniereCodeArticle
-  );
-  const FamilleInfos = useSelector((state) => state.familleSlice.FamilleInfos);
-  const SousFamilleInfos = useSelector(
-    (state) => state.sousfamilleSlice.SousFamilleInfos
-  );
   const ListeCodeArticles = useSelector(
     (state) => state.articleSlice.ListeCodeArticles
   );
@@ -111,6 +100,14 @@ function ArticleForm() {
       dispatch(getlistepointvente());
     }
   }, [articleInfos.code,articleInfos.codepv]);
+  useEffect(() => {
+    if(!articleInfos.famille) {
+      dispatch(setArticleInfos({colonne: "libelleFamille", valeur: ""}))
+    }
+    if(!articleInfos.codesousfam) {
+      dispatch(setArticleInfos({colonne: "Libellesousfamille", valeur: ""}))
+    }
+  },[articleInfos.famille, articleInfos.codesousfam])
   useEffect(() => {
     if (articleInfos.famille && articleInfos.famille != "") {
       dispatch(getDesignationFamilleParCodeFamille(articleInfos.famille));
@@ -182,7 +179,6 @@ function ArticleForm() {
 
     dispatch(setAfficherFamillePopub(true));
   };
-
   return (
     <div className="container">
       <SideBar />
@@ -215,20 +211,12 @@ function ArticleForm() {
                       onChange={(e) =>
                         hundlesubmitTousLesChamp(e.target.value, "famille")
                       }
-                      disabled={!activerChampsForm}
-                    //  list="listeCodesFamilles"
+                      readOnly
                       onClick={() => {
                         dispatch(setToolbarTable("famille"));
                         afficherRecherchePopup();
                       }}
                     />
-                    {/* <datalist id="listeCodesFamilles">
-                      {ListeFamille.map((famille, indice) => (
-                        <option key={indice} value={famille.code}>
-                          {famille.code}
-                        </option>
-                      ))}
-                    </datalist> */}
                   </div>
 
                   {/* Désignation Famille */}
@@ -273,23 +261,15 @@ function ArticleForm() {
                       type="text"
                       className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
                       value={articleInfos.codesousfam}
-                     // list="listeCodesSousFamille"
                       onChange={(e) =>
                         hundlesubmitTousLesChamp(e.target.value, "codesousfam")
                       }
-                      disabled={!activerChampsForm}
+                      readOnly
                       onClick={() => {
                         dispatch(setToolbarTable("sousfamille"));
                         afficherRecherchePopup();
                       }}
                     />
-                    {/* <datalist id="listeCodesSousFamille">
-                      {ListeSousFamille.map((Sousfamille, indice) => (
-                        <option key={indice} value={Sousfamille.code}>
-                          {Sousfamille.code}
-                        </option>
-                      ))}
-                    </datalist> */}
                   </div>
 
                   {/* Désignation Sous-Famille */}

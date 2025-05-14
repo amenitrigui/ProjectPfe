@@ -89,6 +89,10 @@ const Recherche = () => {
   const listeFamilles = useSelector(
     (state) => state.familleSlice.listeFamilles
   );
+  const ListeSousFamille = useSelector(
+    (state) => state.articleSlice.ListeSousFamille
+  );
+  const listeCodesFamille = useSelector((state) => state.articleSlice.ListeFamille)
   const ListeCodeArticles = useSelector(
     (state) => state.articleSlice.ListeCodeArticles
   );
@@ -496,7 +500,6 @@ const Recherche = () => {
   };
 
   const fermerPopupRecherche = () => {
-    // viderChamps();
     revenirToolbarTablePrecedent();
     dispatch(setAfficherRecherchePopup(false));
   };
@@ -519,9 +522,29 @@ const Recherche = () => {
   };
   const changerFiltre = (filtre) => {
     viderListes();
+    document.getElementById("searchInput").value = "";
     setEstFiltreChoisit(true);
     setFiltrerPar(filtre);
   };
+
+  const getListeCodesDataList = () => {
+    if(toolbarTable === "client" && filtrerPar === "code"){
+      return "listeCodesClients";
+    }
+    if(toolbarTable === "article" && filtrerPar === "code"){
+      return "listeCodesArticle"
+    }
+    if(toolbarTable === "devis" && filtrerPar === "numbl"){
+      return "listeCodesNumbl"
+    }
+    if(toolbarTable === "famille" && filtrerPar === "code"){
+      return "listeCodesFamilles"
+    }
+    if(toolbarTable === "sousfamille" && filtrerPar === "code"){
+      return "listeCodesSousFamille"
+    }
+    return ""
+  }
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-6xl p-6 relative max-h-screen overflow-y-auto">
@@ -666,17 +689,7 @@ const Recherche = () => {
                 className="p-2 border border-gray-300 rounded-lg w-full"
                 placeholder="Entrez votre recherche..."
                 disabled={!estFiltreChoisit}
-                list={
-                  toolbarTable === "client" && filtrerPar === "code"
-                    ? "listeCodesClients"
-                    : toolbarTable === "article" && filtrerPar === "code"
-                    ? "listeCodesArticle"
-                    : toolbarTable === "devis" && filtrerPar === "numbl"
-                    ? "listeCodesNumbl"
-                    : toolbarTable === "famille" && filtrerPar === "code"
-                    ? "listeCodesFamilles"
-                    : ""
-                }
+                list={getListeCodesDataList()}
               />
               <datalist id="listeCodesClients">
                 {listeToutCodesClients.length > 0 ? (
@@ -705,10 +718,9 @@ const Recherche = () => {
                   </option>
                 ))}
               </datalist>
-
               <datalist id="listeCodesFamilles">
-                {ListeArticle.length > 0 ? (
-                  ListeArticle.map((famille, indice) => (
+                {listeCodesFamille.length > 0 ? (
+                  listeCodesFamille.map((famille, indice) => (
                     <option key={indice} value={famille.code}>
                       {famille.code}
                     </option>
@@ -716,6 +728,14 @@ const Recherche = () => {
                 ) : (
                   <option disabled>Aucun article trouvé</option>
                 )}
+              </datalist>
+
+              <datalist id="listeCodesSousFamille">
+                {ListeSousFamille.map((Sousfamille, indice) => (
+                  <option key={indice} value={Sousfamille.code}>
+                    {Sousfamille.code}
+                  </option>
+                ))}
               </datalist>
             </div>
 

@@ -83,6 +83,11 @@ export const sousfamilleSlice = createSlice({
       const { colonne, valeur } = action.payload;
       state.SousFamilleInfos[colonne] = valeur;
     },
+    viderSousFamilleInfos: (state) => {
+      state.SousFamilleInfos = {
+        ...sousfamilleInfoInitiales
+      }
+    }
   },
 
   extraReducers: (builder) => {
@@ -127,7 +132,7 @@ export const sousfamilleSlice = createSlice({
       );
   },
 });
-export const { setListeSousfamille, setSousFamilleInfos } =
+export const { setListeSousfamille, setSousFamilleInfos, viderSousFamilleInfos } =
   sousfamilleSlice.actions;
 
 export default sousfamilleSlice.reducer;

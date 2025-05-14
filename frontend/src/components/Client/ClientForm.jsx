@@ -82,7 +82,6 @@ const ClientForm = () => {
   );
   useEffect(() => {
     dispatch(getListeCodesPosteaux());
-    dispatch(getNombreTotalDevis());
     dispatch(getTotalChiffres());
     dispatch(getListeCodesSecteur());
     dispatch(getListeCodeRegions());
