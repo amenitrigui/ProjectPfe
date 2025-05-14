@@ -211,10 +211,13 @@ function ArticleForm() {
                       onChange={(e) =>
                         hundlesubmitTousLesChamp(e.target.value, "famille")
                       }
-                      readOnly
+                      readOnly={toolbarMode === "ajout" || toolbarMode === "modification"}
+                      disabled={toolbarMode === "consultation" || toolbarMode === "suppression"}
                       onClick={() => {
-                        dispatch(setToolbarTable("famille"));
-                        afficherRecherchePopup();
+                        if(toolbarMode === "ajout" || toolbarMode === "modification"){
+                          dispatch(setToolbarTable("famille"));
+                          afficherRecherchePopup();
+                        }
                       }}
                     />
                   </div>
@@ -264,10 +267,13 @@ function ArticleForm() {
                       onChange={(e) =>
                         hundlesubmitTousLesChamp(e.target.value, "codesousfam")
                       }
-                      readOnly
+                      readOnly={toolbarMode === "ajout" || toolbarMode === "modification"}
+                      disabled={toolbarMode === "consultation" || toolbarMode === "suppression"}
                       onClick={() => {
-                        dispatch(setToolbarTable("sousfamille"));
-                        afficherRecherchePopup();
+                        if(toolbarMode === "ajout" || toolbarMode === "modification"){
+                          dispatch(setToolbarTable("sousfamille"));
+                          afficherRecherchePopup();
+                        }
                       }}
                     />
                   </div>

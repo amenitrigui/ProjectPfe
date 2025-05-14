@@ -69,6 +69,11 @@ function ToolBar() {
   const navigate = useNavigate();
   const location = useLocation();
   const devisInfo = useSelector((state) => state.devisSlice.devisInfo);
+  // * boolean pour afficher / cacher les bouton valider et supprimer
+  const activerBoutonsValiderAnnuler = useSelector(
+    (state) => state.interfaceSlice.activerBoutonsValiderAnnuler
+  );
+  const insertionDepuisDevisForm = useSelector((state) => state.clientSlice.insertionDepuisDevisForm);
   const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
   // * state pour controller quelle table on utilise
   // * puisque ce composant est partagé
@@ -77,10 +82,6 @@ function ToolBar() {
   );
   const listeCodesUtilisateur = useSelector(
     (state) => state.utilisateurSlice.listeCodesUtilisateur
-  );
-  // * boolean pour afficher / cacher les bouton valider et supprimer
-  const activerBoutonsValiderAnnuler = useSelector(
-    (state) => state.interfaceSlice.activerBoutonsValiderAnnuler
   );
   const articleInfo = useSelector((state) => state.articleSlice.articleInfos);
   const Utilisateur_SuperviseurInfos = useSelector(
@@ -115,7 +116,7 @@ function ToolBar() {
           callback();
         }
       };
-
+      
       document.addEventListener("mousedown", handleClick);
       return () => document.removeEventListener("mousedown", handleClick);
     }, [refs, callback]);
@@ -126,7 +127,7 @@ function ToolBar() {
   //?==================================================================================================================
   //?==================================================appels UseEffect================================================
   //?==================================================================================================================
-
+  
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
@@ -356,6 +357,9 @@ function ToolBar() {
     }
     if (toolbarTable === "client") {
       dispatch(viderChampsClientInfo());
+      if(insertionDepuisDevisForm){
+        navigate("/DevisFormTout")
+      }
       // dispatch(getDerniereCodeClient());
     }
     if (toolbarTable === "article") {

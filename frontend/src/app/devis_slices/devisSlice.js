@@ -79,7 +79,6 @@ export const getNombreTotalDevis = createAsyncThunk(
         },
       }
     );
-    console.log(response);
     return response.data.totalDevis;
   }
 );
@@ -416,7 +415,6 @@ export const getDerniereNumbl = createAsyncThunk(
         }
       );
     }
-    console.log(response)
     return response.data.derniereNumbl;
   }
 );

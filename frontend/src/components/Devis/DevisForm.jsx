@@ -30,6 +30,7 @@ import {
 } from "../../app/devis_slices/devisSlice";
 import ToolBar from "../Common/ToolBar";
 import {
+  setActiverBoutonsValiderAnnuler,
   setActiverChampsForm,
   setAfficherRecherchePopup,
   setToolbarMode,
@@ -134,7 +135,6 @@ function DevisForm() {
   }, [devisInfo.NUMBL, listeNUMBL]);
 
   useEffect(() => {
-    console.log(derniereNumbl);
     if (
       derniereNumbl &&
       toolbarMode == "ajout" &&
@@ -176,17 +176,18 @@ function DevisForm() {
       );
     }
   }, [toolbarMode]);
-
-  // * useEffect #8: remplir les informations client pour un devis
-  // useEffect(() => {
-  //   if (clientInfos) {
-  //     dispatch(setDevisInfo({ collone: "CODECLI", valeur: clientInfos.code }));
-  //     dispatch(setDevisInfo({ collone: "RSCLI", valeur: clientInfos.rsoc }));
-  //     dispatch(
-  //       setDevisInfo({ collone: "ADRCLI", valeur: clientInfos.adresse })
-  //     );
-  //   }
-  // }, [clientInfos.code, clientInfos.rsoc, clientInfos.adresse]);
+  const insertionDepuisDevisForm = useSelector(
+    (state) => state.clientSlice.insertionDepuisDevisForm
+  );
+  console.log(insertionDepuisDevisForm)
+  useEffect(() => {
+    if(insertionDepuisDevisForm){
+      dispatch(setActiverBoutonsValiderAnnuler(true))
+      dispatch(setActiverChampsForm(true));
+      dispatch(setToolbarMode("ajout"))
+      console.log("ajout client ", toolbarMode, " ", toolbarTable)
+    }
+  },[toolbarMode, toolbarTable])
 
   //?==================================================================================================================
   //?=====================================================fonctions====================================================

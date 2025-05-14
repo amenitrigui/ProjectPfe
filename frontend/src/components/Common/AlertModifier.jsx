@@ -15,6 +15,7 @@ import {
   majClient,
   setClientInfos,
   setDerniereCodeClient,
+  setInsertionDepuisDevisForm,
   supprimerClient,
   viderChampsClientInfo,
 } from "../../app/client_slices/clientSlice";
@@ -34,6 +35,7 @@ import {
   getListeNumbl,
   majDevis,
   setDerniereNumbl,
+  setDevisInfo,
   viderChampsDevisInfo,
 } from "../../app/devis_slices/devisSlice";
 
@@ -44,11 +46,13 @@ import {
   supprimerUtilisateur,
 } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 import { viderChampsInfosUtilisateur } from "../../app/utilisateur_slices/utilisateurSlice";
+import { useNavigate } from "react-router-dom";
 function AlertModifier() {
   //?==================================================================================================================
   //?=====================================================variables====================================================
   //?==================================================================================================================
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const afficherAlert = useSelector(
     (state) => state.interfaceSlice.afficherAlert
   );
@@ -73,6 +77,8 @@ function AlertModifier() {
   const infosUtilisateur = useSelector(
     (state) => state.utilisateurSlice.infosUtilisateur
   );
+  const clientInfos = useSelector((state) => state.clientSlice.clientInfos)
+  const insertionDepuisDevisForm = useSelector((state) => state.clientSlice.insertionDepuisDevisForm);
   //?==================================================================================================================
   //?=================================================appels UseEffect=================================================
   //?==================================================================================================================
@@ -85,9 +91,18 @@ function AlertModifier() {
     //*pour le client
     if (toolbarTable == "client") {
       if (toolbarMode == "ajout") {
-        dispatch(ajouterClient()).then(() => {
-          dispatch(getToutCodesClient());
-        });
+        if(insertionDepuisDevisForm){
+          dispatch(ajouterClient());
+          dispatch(setDevisInfo({collone: "CODECLI", valeur: clientInfos.code}))
+          dispatch(setDevisInfo({collone: "RSCLI", valeur: clientInfos.rsoc}))
+          dispatch(setDevisInfo({collone: "ADRCLI", valeur: clientInfos.adresse}));
+          navigate("/DevisFormTout");
+        }
+        if(!insertionDepuisDevisForm) {
+          dispatch(ajouterClient()).then(() => {
+            dispatch(getToutCodesClient());
+          });
+        }
         // dispatch(setDerniereCodeClient(""))
       }
       if (toolbarMode == "modification") {
@@ -109,6 +124,7 @@ function AlertModifier() {
     if (toolbarTable == "devis") {
       if (toolbarMode == "ajout") {
         if (validerChampsForm("devis", devisInfo)) {
+          dispatch(setInsertionDepuisDevisForm(false))
           dispatch(AjouterDevis());
           dispatch(viderChampsDevisInfo());
           // dispatch(setDerniereNumbl(""));

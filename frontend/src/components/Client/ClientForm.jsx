@@ -279,8 +279,9 @@ const ClientForm = () => {
       dispatch(setToolbarTable("client"));
       dispatch(setActiverChampsForm(true));
       dispatch(setActiverBoutonsValiderAnnuler(true));
+      console.log(insertionDepuisDevisForm,toolbarMode,toolbarTable)
     }
-  }, [insertionDepuisDevisForm]);
+  }, [insertionDepuisDevisForm,clientInfos.code]);
   return (
     <div className="container">
       <SideBar />
