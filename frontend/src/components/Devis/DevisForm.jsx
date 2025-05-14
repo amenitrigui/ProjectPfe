@@ -134,12 +134,15 @@ function DevisForm() {
   }, [devisInfo.NUMBL,listeNUMBL]);
 
   useEffect(() => {
-    if(derniereNumbl && toolbarMode == "ajout"){
-      const nouvNumbl = parseInt(derniereNumbl) + 1;
-      console.log(nouvNumbl);
-      dispatch(setDevisInfo({collone: "NUMBL", valeur: "DV"+nouvNumbl}))
+    if(listeNUMBL.length > 0) {
+      // ? extraire la partie numérique de numbl
+      const numblNumerique = listeNUMBL[listeNUMBL.length-1].NUMBL.substring(2, 9);
+      const nouvNumbl = parseInt(numblNumerique) + 1;
+      if(toolbarMode == "ajout" && devisInfo.NUMBL != nouvNumbl){
+        dispatch(setDevisInfo({collone: "NUMBL", valeur: "DV"+nouvNumbl}))
+      }
     }
-  },[derniereNumbl])
+  },[listeNUMBL, toolbarMode, devisInfo.NUMBL])
 
   // * useEffect #6: récuperer les informations de devis
   // * et les lignes de devis par NUMBL
