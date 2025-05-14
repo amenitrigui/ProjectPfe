@@ -148,6 +148,7 @@ export const getListeArticles = createAsyncThunk(
         },
       }
     );
+    console.log(response)
     return response.data.listeArticles;
   }
 );

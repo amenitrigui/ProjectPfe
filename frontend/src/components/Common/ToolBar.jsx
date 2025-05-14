@@ -181,8 +181,16 @@ function ToolBar() {
     if (toolbarTable == "utilisateur") {
       dispatch(setViderChampsUtilisateur());
       dispatch(viderChampsInfosUtilisateur());
-      const codeDerniereUtilisateur = parseInt(listeCodesUtilisateur[listeCodesUtilisateur.length-1].codeuser)+1
-      dispatch(setInfosUtilisateur({colonne: "codeuser", valeur: codeDerniereUtilisateur}))
+      const codeDerniereUtilisateur =
+        parseInt(
+          listeCodesUtilisateur[listeCodesUtilisateur.length - 1].codeuser
+        ) + 1;
+      dispatch(
+        setInfosUtilisateur({
+          colonne: "codeuser",
+          valeur: codeDerniereUtilisateur,
+        })
+      );
     }
   };
   // * méthode pour mettre à jour un client/devis
@@ -253,7 +261,7 @@ function ToolBar() {
     }
 
     if (toolbarTable === "client") {
-       if (!clientInfos.code) {
+      if (!clientInfos.code) {
         // ! a remplacer par toast
         alert("aucune client est selectionné pour la suppresion");
         return;
@@ -265,7 +273,7 @@ function ToolBar() {
     }
 
     if (toolbarTable === "devis") {
-       if (!devisInfo.NUMBL) {
+      if (!devisInfo.NUMBL) {
         // ! a remplacer par toast
         alert("aucune devis est selectionné pour la suppresion");
         return;
@@ -318,7 +326,7 @@ function ToolBar() {
     if (toolbarTable == "utilisateur") {
       if (toolbarMode == "ajout") {
         dispatch(setAlertMessage("Confirmez-vous ajouter de ce utilisateur ?"));
-      
+
         dispatch(SetUtilisateurSystemremplir(infosUtilisateur));
       }
       if (toolbarMode == "modification") {
@@ -360,7 +368,7 @@ function ToolBar() {
     if (toolbarTable === "region") {
       dispatch(viderChampsRegionInfo());
     }
-    if(toolbarTable === "utilisateur"){
+    if (toolbarTable === "utilisateur") {
       dispatch(viderChampsInfosUtilisateur());
     }
     dispatch(setActiverBoutonsValiderAnnuler(false));
