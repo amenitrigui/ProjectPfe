@@ -407,7 +407,13 @@ export const getDerniereNumbl = createAsyncThunk(
       response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/devis/${
           thunkAPI.getState().utilisateurSystemSlice.dbName
-        }/getDerniereNumbl`
+        }/getDerniereNumbl`, {
+          headers: {
+            Authorization: `Bearer ${
+              thunkAPI.getState().utilisateurSystemSlice.token
+            }`,
+          },
+        }
       );
     }
     console.log(response)

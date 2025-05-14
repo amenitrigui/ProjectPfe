@@ -100,9 +100,10 @@ function ArticleForm() {
   }, [articleInfos.codesousfam]);
   useEffect(() => {
     if (articleInfos.code && articleInfos.code != "") {
+      // ? récuperer initialement les informations de premier depot 
       dispatch(
         getListedepotdeStockparpcodepointvente({
-          codepv: articleInfos.codepv,
+          codepv: "01",
           codeArticle: articleInfos.code,
         })
       );
