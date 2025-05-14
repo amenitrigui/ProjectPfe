@@ -7,11 +7,16 @@ export const getlistepointvente = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/Stock_Article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getlistepointvente`
+      }/getlistepointvente`, {
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        }
+      }
     );
     return response.data.listepointVente;
   }
 );
+
 export const getListedepotdeStockparpcodepointvente = createAsyncThunk(
   "StockSlice/getListedepotdeStockparpcodepointvente",
   async (parames, thunkAPI) => {
@@ -21,6 +26,9 @@ export const getListedepotdeStockparpcodepointvente = createAsyncThunk(
       }/getListedepotdeStockparpcodepointvente`,
       {
         params: { codepv: parames.codepv, codeArticle: parames.codeArticle },
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        }
       }
     );
 
@@ -39,6 +47,9 @@ export const getQteTotalArticle = createAsyncThunk(
         params: {
           codeArticle: codeArticle,
         },
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        }
       }
     );
 

@@ -131,9 +131,6 @@ function DevisForm() {
         })
       );
     }
-    // if(derniereNumbl == "") {
-    //   dispatch(getDerniereNumbl(utilisateurConnecte.codeuser));
-    // }
   }, [devisInfo.NUMBL,listeNUMBL]);
 
   useEffect(() => {

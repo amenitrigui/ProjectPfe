@@ -76,7 +76,6 @@ function ArticleForm() {
       ListeCodeArticles.length > 0 &&
       toolbarMode != "ajout"
     ) {
-      // dispatch(getDerniereCodeArticle());
       dispatch(
         setArticleInfos({
           colonne: "code",
@@ -103,14 +102,14 @@ function ArticleForm() {
     if (articleInfos.code && articleInfos.code != "") {
       dispatch(
         getListedepotdeStockparpcodepointvente({
-          codepv: "01",
+          codepv: articleInfos.codepv,
           codeArticle: articleInfos.code,
         })
       );
       dispatch(getQteTotalArticle(articleInfos.code));
       dispatch(getlistepointvente());
     }
-  }, [articleInfos.code]);
+  }, [articleInfos.code,articleInfos.codepv]);
   useEffect(() => {
     if (articleInfos.famille && articleInfos.famille != "") {
       dispatch(getDesignationFamilleParCodeFamille(articleInfos.famille));

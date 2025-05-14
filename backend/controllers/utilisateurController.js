@@ -120,15 +120,13 @@ const selectDatabase = async (req, res) => {
       .status(400)
       .json({ message: "Le nom de la base de données est requis." });
   }
-  
-
   try {
-     const decoded = verifyTokenValidity(req);
+    const decoded = verifyTokenValidity(req);
     if (!decoded) {
       return res.status(401).json({ message: "utilisateur non authentifie" });
     }
     const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
-  
+
     const codeuser = decoded.codeuser;
     setBdConnexion(databaseName);
     const Utilisateur = defineUserModel(sequelizeConnexionDbUtilisateur);
@@ -305,10 +303,15 @@ const uploadImageUtilisateur = async (req, res) => {
 // * récuperer les informations d'un utilisateur par son code
 // * verb : get
 // * http://localhost:5000/api/utilisateurs/getUtilisateurParCode/1
+// ! duplicate method
 const getUtilisateurParCode = async (req, res) => {
   const { codeuser } = req.params;
 
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
     const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     const utilisateur = await sequelizeConnexionDbUtilisateur.query(
       "SELECT * FROM utilisateur WHERE codeuser = :codeuser",
@@ -361,6 +364,7 @@ const deconnecterUtilisateur = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+// ! duplicate method
 const AjouterUtilisateur = async (req, res) => {
   const { utilisateurInfo } = req.body;
 
