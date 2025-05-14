@@ -215,7 +215,6 @@ export const getDevisParCodeClient = createAsyncThunk(
           CODECLI,
           codeuser,
         },
-
         headers: {
           Authorization: `Bearer ${
             thunkAPI.getState().utilisateurSystemSlice.token

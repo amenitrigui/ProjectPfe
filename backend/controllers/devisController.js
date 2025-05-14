@@ -680,6 +680,7 @@ const annulerDevis = async (req, res) => {
 
 // * méthode pour récuperer la liste de devis par code client
 // * url : http://localhost:5000/api/devis/SOLEVO/getListeDevisParCodeClient?codeClient=2
+// ! à supprimer
 const getListeDevisParCodeClient = async (req, res) => {
   const { dbName } = req.params;
   const { codeClient } = req.query;
@@ -838,6 +839,7 @@ const majDevis = async (req, res) => {
 //     return res.status(500).json({message: "erreur lors de la modification de devis: "+error.message})
 //   }
 // }
+// ! à supprimer?
 const getDevisCountByMonthAndYear = async (req, res) => {
   const { dbName } = req.params;
 
