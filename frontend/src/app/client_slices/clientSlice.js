@@ -210,7 +210,11 @@ export const getListeCodesSecteur = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/secteur/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getListeCodesSecteur`
+      }/getListeCodesSecteur`,{
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        }
+      }
     );
     return response.data.listeCodesSecteurs;
   }
@@ -242,7 +246,11 @@ export const getListeCodesPosteaux = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/codePostal/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getListeCodesPosteaux`
+      }/getListeCodesPosteaux`, {
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        }
+      }
     );
     return response.data.listeCodesPosteaux;
   }
@@ -258,7 +266,11 @@ export const getListeCodeRegions = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/region/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getListeCodeRegions`
+      }/getListeCodeRegions`,{
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        }
+      }
     );
     return response.data.listeCodesRegion;
   }

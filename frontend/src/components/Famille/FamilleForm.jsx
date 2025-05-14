@@ -1,14 +1,19 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled, { keyframes } from "styled-components";
-import { setAfficherFamillePopub, setToolbarTable } from "../../app/interface_slices/interfaceSlice";
+import {
+  setAfficherFamillePopub,
+  setToolbarTable,
+} from "../../app/interface_slices/interfaceSlice";
 import {
   ajouterFamille,
   setFamilleInfo,
+  viderFamilleInfos,
 } from "../../app/famille_slices/familleSlice";
 import {
   ajouterSousFamille,
   setSousFamilleInfos,
+  viderSousFamilleInfos,
 } from "../../app/sousfamille_slices/sousfamilleSlice";
 import { setArticleInfos } from "../../app/article_slices/articleSlice";
 import { useLocation } from "react-router-dom";
@@ -124,9 +129,11 @@ const FamilleForm = () => {
     champ2: "",
   });
   const dispatch = useDispatch();
-  const togglePopup = () => {
-    revenirToolbarTablePrecedent()
+  const handleAnnulerBtnClick = () => {
+    revenirToolbarTablePrecedent();
     dispatch(setAfficherFamillePopub(false));
+    dispatch(viderFamilleInfos());
+    dispatch(viderSousFamilleInfos());
   };
 
   const handleChange = (colonne, valeur, NomTable) => {
@@ -136,94 +143,125 @@ const FamilleForm = () => {
       dispatch(setSousFamilleInfos({ colonne: colonne, valeur: valeur }));
     }
   };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    togglePopup();
-  };
-  const toolbartable = useSelector((state) => state.interfaceSlice.toolbarTable);
+  const toolbartable = useSelector(
+    (state) => state.interfaceSlice.toolbarTable
+  );
   const FamilleInfos = useSelector((state) => state.familleSlice.FamilleInfos);
-  const SousFamilleInfos=useSelector((state)=>state.sousfamilleSlice.SousFamilleInfos)
+  const SousFamilleInfos = useSelector(
+    (state) => state.sousfamilleSlice.SousFamilleInfos
+  );
   const hundleAjout = () => {
     if (toolbartable == "famille") {
-
       dispatch(ajouterFamille());
-      dispatch(setArticleInfos({colonne:"famille",valeur:FamilleInfos.code}))
-      dispatch(setArticleInfos({colonne:"libelleFamille",valeur:FamilleInfos.libelle}))
+      dispatch(
+        setArticleInfos({ colonne: "famille", valeur: FamilleInfos.code })
+      );
+      dispatch(
+        setArticleInfos({
+          colonne: "libelleFamille",
+          valeur: FamilleInfos.libelle,
+        })
+      );
 
+      dispatch(viderFamilleInfos());
     }
     if (toolbartable == "sousfamille") {
-
       dispatch(ajouterSousFamille());
-      dispatch(setArticleInfos({colonne:"codesousfam",valeur:SousFamilleInfos.code}))
-      dispatch(setArticleInfos({colonne:"Libellesousfamille",valeur:SousFamilleInfos.libelle}))
+      dispatch(
+        setArticleInfos({
+          colonne: "codesousfam",
+          valeur: SousFamilleInfos.code,
+        })
+      );
+      dispatch(
+        setArticleInfos({
+          colonne: "Libellesousfamille",
+          valeur: SousFamilleInfos.libelle,
+        })
+      );
+      dispatch(viderSousFamilleInfos());
     }
     revenirToolbarTablePrecedent();
+    dispatch(setAfficherFamillePopub(false));
   };
-
 
   const afficherFamillePopub = useSelector(
     (state) => state.interfaceSlice.afficherFamillePopub
   );
 
   const revenirToolbarTablePrecedent = () => {
-      switch (location.pathname) {
-        case "/DevisFormTout":
-          dispatch(setToolbarTable("devis"));
-          break;
-        case "/UtilisateurFormTout":
-          dispatch(setToolbarTable("utilisateur"));
-          break;
-        case "/ArticleFormTout":
-          dispatch(setToolbarTable("article"));
-          break;
-        case "/clientFormTout":
-          dispatch(setToolbarTable("client"));
-          break;
-      }
-    };
+    switch (location.pathname) {
+      case "/DevisFormTout":
+        dispatch(setToolbarTable("devis"));
+        break;
+      case "/UtilisateurFormTout":
+        dispatch(setToolbarTable("utilisateur"));
+        break;
+      case "/ArticleFormTout":
+        dispatch(setToolbarTable("article"));
+        break;
+      case "/clientFormTout":
+        dispatch(setToolbarTable("client"));
+        break;
+    }
+  };
   return (
     <AppContainer style={{ position: "relative", zIndex: 10 }}>
-    {afficherFamillePopub && (
-      <div
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: "1rem",
-          zIndex: 999,
-        }}
-      >
+      {afficherFamillePopub && (
         <div
           style={{
-            backgroundColor: "#fff",
+            position: "fixed",
+            top: 0,
+            left: 0,
             width: "100%",
-            maxWidth: "500px",
-            borderRadius: "10px",
-            padding: "2rem",
-            boxShadow: "0 0 10px rgba(0,0,0,0.3)",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: "1rem",
+            zIndex: 999,
           }}
         >
-          <h2 style={{ marginBottom: "1rem", fontSize: "1.25rem" }}>Formulaire Popup</h2>
-          <form onSubmit={handleSubmit}>
+          <div
+            style={{
+              backgroundColor: "#fff",
+              width: "100%",
+              maxWidth: "500px",
+              borderRadius: "10px",
+              padding: "2rem",
+              boxShadow: "0 0 10px rgba(0,0,0,0.3)",
+            }}
+          >
+            <h2 style={{ marginBottom: "1rem", fontSize: "1.25rem" }}>
+              Formulaire Popup
+            </h2>
             <div style={{ marginBottom: "1rem" }}>
-              <label htmlFor="champ1" style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600" }}>
+              <label
+                htmlFor="champ1"
+                style={{
+                  display: "block",
+                  marginBottom: "0.5rem",
+                  fontWeight: "600",
+                }}
+              >
                 Code:
               </label>
               <input
                 type="text"
                 id="champ1"
                 name="champ1"
-                value={toolbartable === "famille" ? FamilleInfos.code : SousFamilleInfos.code}
+                value={
+                  toolbartable === "famille"
+                    ? FamilleInfos.code
+                    : SousFamilleInfos.code
+                }
                 onChange={(e) =>
-                  handleChange("code", e.target.value, toolbartable === "famille" ? "famille" : "sousfamille")
+                  handleChange(
+                    "code",
+                    e.target.value,
+                    toolbartable === "famille" ? "famille" : "sousfamille"
+                  )
                 }
                 placeholder="Entrez du texte ici"
                 required
@@ -235,18 +273,33 @@ const FamilleForm = () => {
                 }}
               />
             </div>
-  
+
             <div style={{ marginBottom: "1rem" }}>
-              <label htmlFor="champ2" style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600" }}>
+              <label
+                htmlFor="champ2"
+                style={{
+                  display: "block",
+                  marginBottom: "0.5rem",
+                  fontWeight: "600",
+                }}
+              >
                 Libelle:
               </label>
               <input
                 type="text"
                 id="champ2"
                 name="champ2"
-                value={toolbartable === "famille" ? FamilleInfos.libelle : SousFamilleInfos.libelle}
+                value={
+                  toolbartable === "famille"
+                    ? FamilleInfos.libelle
+                    : SousFamilleInfos.libelle
+                }
                 onChange={(e) =>
-                  handleChange("libelle", e.target.value, toolbartable === "famille" ? "famille" : "sousfamille")
+                  handleChange(
+                    "libelle",
+                    e.target.value,
+                    toolbartable === "famille" ? "famille" : "sousfamille"
+                  )
                 }
                 placeholder="Entrez du texte ici"
                 required
@@ -258,7 +311,7 @@ const FamilleForm = () => {
                 }}
               />
             </div>
-  
+
             <div
               style={{
                 display: "flex",
@@ -270,7 +323,7 @@ const FamilleForm = () => {
             >
               <button
                 type="button"
-                onClick={togglePopup}
+                onClick={handleAnnulerBtnClick}
                 style={{
                   backgroundColor: "#ccc",
                   border: "none",
@@ -296,12 +349,10 @@ const FamilleForm = () => {
                 Valider
               </button>
             </div>
-          </form>
+          </div>
         </div>
-      </div>
-    )}
-  </AppContainer>
-  
+      )}
+    </AppContainer>
   );
 };
 

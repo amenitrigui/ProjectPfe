@@ -45,6 +45,7 @@ export const defaultArticleInfos = {
   Libellesousfamille: "",
   derniereCodeArticle: "",
   quantite: "",
+  PrixPub: "",
 };
   
 export const defaultLigneDevisInfos = {

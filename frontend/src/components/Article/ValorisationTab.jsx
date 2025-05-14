@@ -14,17 +14,16 @@ function ValorisationTab() {
     "prix2",
     "prix3",
     "prix4",
-    "prix1ttc",
-    "prix2ttc",
-    "prix3ttc",
-    "prix4ttc",
-    "prixpub",
+    "prix1TTC",
+    "prix2TTC",
+    "prix3TTC",
+    "prix4TTC",
+    "PrixPub",
     "remmax",
   ];
   const handleChange = (colonne, valeur) => {
     if (colNum.includes(colonne) && isNumerique(valeur)) {
-      dispatch(setArticleInfos({ colonne: "prixpub", valeur }));
-      dispatch(setArticleInfos({ colonne: "remmax", valeur }));
+      dispatch(setArticleInfos({ colonne, valeur }));
     }
   };
 
@@ -76,47 +75,47 @@ function ValorisationTab() {
 
   const handleChangePrixUnitaireTTCArticle = (colonne, valeur) => {
     if (
-      colonne === "prix1ttc" &&
+      colonne === "prix1TTC" &&
       colNum.includes(colonne) &&
       isNumerique(valeur)
     ) {
-      dispatch(setArticleInfos({ colonne: "prix1ttc", valeur }));
-      dispatch(setArticleInfos({ colonne: "prix2ttc", valeur: 0 }));
-      dispatch(setArticleInfos({ colonne: "prix3ttc", valeur: 0 }));
-      dispatch(setArticleInfos({ colonne: "prix4ttc", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix1TTC", valeur }));
+      dispatch(setArticleInfos({ colonne: "prix2TTC", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix3TTC", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix4TTC", valeur: 0 }));
     }
 
     if (
-      colonne === "prix2ttc" &&
+      colonne === "prix2TTC" &&
       colNum.includes(colonne) &&
       isNumerique(valeur)
     ) {
-      dispatch(setArticleInfos({ colonne: "prix2ttc", valeur }));
-      dispatch(setArticleInfos({ colonne: "prix1ttc", valeur: 0 }));
-      dispatch(setArticleInfos({ colonne: "prix3ttc", valeur: 0 }));
-      dispatch(setArticleInfos({ colonne: "prix4ttc", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix2TTC", valeur }));
+      dispatch(setArticleInfos({ colonne: "prix1TTC", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix3TTC", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix4TTC", valeur: 0 }));
     }
 
     if (
-      colonne === "prix3ttc" &&
+      colonne === "prix3TTC" &&
       colNum.includes(colonne) &&
       isNumerique(valeur)
     ) {
-      dispatch(setArticleInfos({ colonne: "prix3ttc", valeur }));
-      dispatch(setArticleInfos({ colonne: "prix1ttc", valeur: 0 }));
-      dispatch(setArticleInfos({ colonne: "prix2ttc", valeur: 0 }));
-      dispatch(setArticleInfos({ colonne: "prix4ttc", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix3TTC", valeur }));
+      dispatch(setArticleInfos({ colonne: "prix1TTC", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix2TTC", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix4TTC", valeur: 0 }));
     }
 
     if (
-      colonne === "prix4ttc" &&
+      colonne === "prix4TTC" &&
       colNum.includes(colonne) &&
       isNumerique(valeur)
     ) {
-      dispatch(setArticleInfos({ colonne: "prix4ttc", valeur }));
-      dispatch(setArticleInfos({ colonne: "prix1ttc", valeur: 0 }));
-      dispatch(setArticleInfos({ colonne: "prix2ttc", valeur: 0 }));
-      dispatch(setArticleInfos({ colonne: "prix3ttc", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix4TTC", valeur }));
+      dispatch(setArticleInfos({ colonne: "prix1TTC", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix2TTC", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix3TTC", valeur: 0 }));
     }
   };
   return (
@@ -152,10 +151,10 @@ function ValorisationTab() {
                   type="text"
                   placeholder="TTC"
                   className="input input-xs w-full"
-                  value={articleInfos.prix1ttc || "0"}
+                  value={articleInfos.prix1TTC || "0"}
                   onChange={(e) =>
                     handleChangePrixUnitaireTTCArticle(
-                      "prix1ttc",
+                      "prix1TTC",
                       e.target.value
                     )
                   }
@@ -189,10 +188,10 @@ function ValorisationTab() {
                 <input
                   type="text"
                   className="input input-xs w-full"
-                  value={articleInfos.prix2ttc || "0"}
+                  value={articleInfos.prix2TTC || "0"}
                   onChange={(e) =>
                     handleChangePrixUnitaireTTCArticle(
-                      "prix2ttc",
+                      "prix2TTC",
                       e.target.value
                     )
                   }
@@ -217,10 +216,10 @@ function ValorisationTab() {
                 <input
                   type="text"
                   className="input input-xs w-full"
-                  value={articleInfos.prix3ttc || "0"}
+                  value={articleInfos.prix3TTC || "0"}
                   onChange={(e) =>
                     handleChangePrixUnitaireTTCArticle(
-                      "prix3ttc",
+                      "prix3TTC",
                       e.target.value
                     )
                   }
@@ -245,10 +244,10 @@ function ValorisationTab() {
                 <input
                   type="text"
                   className="input input-xs w-full"
-                  value={articleInfos.prix4ttc || "0"}
+                  value={articleInfos.prix4TTC || "0"}
                   onChange={(e) =>
                     handleChangePrixUnitaireTTCArticle(
-                      "prix4ttc",
+                      "prix4TTC",
                       e.target.value
                     )
                   }
@@ -263,8 +262,8 @@ function ValorisationTab() {
                 <input
                   type="text"
                   className="input input-xs w-full"
-                  value={articleInfos.prixpub || "0"}
-                  onChange={(e) => handleChange("prixpub", e.target.value)}
+                  value={articleInfos.PrixPub || "0"}
+                  onChange={(e) => handleChange("PrixPub", e.target.value)}
                 />
               </td>
             </tr>

@@ -142,7 +142,7 @@ function DevisForm() {
     ) {
       const nouvNumbl = derniereNumbl + 1;
       dispatch(
-        setDevisInfo({ collone: "NUMBL", valeur: "DV" + derniereNumbl })
+        setDevisInfo({ collone: "NUMBL", valeur: "DV" + nouvNumbl })
       );
     }
   }, [derniereNumbl, toolbarMode, devisInfo.NUMBL]);

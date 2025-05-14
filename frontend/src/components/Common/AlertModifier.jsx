@@ -49,12 +49,16 @@ function AlertModifier() {
   //?=====================================================variables====================================================
   //?==================================================================================================================
   const dispatch = useDispatch();
-  const afficherAlert = useSelector((state) => state.interfaceSlice.afficherAlert);
+  const afficherAlert = useSelector(
+    (state) => state.interfaceSlice.afficherAlert
+  );
   const Utilisateur_SuperviseurInfos = useSelector(
     (state) => state.utilisateurSystemSlice.Utilisateur_SuperviseurInfos
   );
   const message = useSelector((state) => state.interfaceSlice.message);
-  const toolbarTable = useSelector((state) => state.interfaceSlice.toolbarTable);
+  const toolbarTable = useSelector(
+    (state) => state.interfaceSlice.toolbarTable
+  );
   const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
   const clientSelectionne = useSelector(
     (state) => state.clientSlice.clientInfos
@@ -64,10 +68,11 @@ function AlertModifier() {
   ).code;
   const devisInfo = useSelector((state) => state.devisSlice.devisInfo);
   const utilisateurConnecte = useSelector(
-      (state) => state.utilisateurSystemSlice.utilisateurConnecte
-    );
-    const infosUtilisateur = useSelector((state)=>state.utilisateurSlice.infosUtilisateur)
-    console.log(infosUtilisateur)
+    (state) => state.utilisateurSystemSlice.utilisateurConnecte
+  );
+  const infosUtilisateur = useSelector(
+    (state) => state.utilisateurSlice.infosUtilisateur
+  );
   //?==================================================================================================================
   //?=================================================appels UseEffect=================================================
   //?==================================================================================================================
@@ -91,7 +96,7 @@ function AlertModifier() {
       if (toolbarMode == "suppression") {
         dispatch(supprimerClient(clientSelectionne)).then(() => {
           dispatch(getToutCodesClient());
-        })
+        });
       }
       // * pour désactiver les champs du formulaire
       dispatch(setActiverChampsForm(false));
@@ -114,11 +119,11 @@ function AlertModifier() {
         }
       }
       if (toolbarMode == "modification") {
-        dispatch(majDevis(devisInfo.NUMBL))
+        dispatch(majDevis(devisInfo.NUMBL));
         dispatch(viderChampsDevisInfo());
       }
       if (toolbarMode == "suppression") {
-        dispatch(annulerDevis(devisInfo.NUMBL))
+        dispatch(annulerDevis(devisInfo.NUMBL));
       }
     }
     // * pour l'article
@@ -148,7 +153,7 @@ function AlertModifier() {
       if (toolbarMode == "suppression") {
         dispatch(supprimerUtilisateur(infosUtilisateur.codeuser));
         dispatch(setViderChampsUtilisateur());
-        dispatch(viderChampsInfosUtilisateur())
+        dispatch(viderChampsInfosUtilisateur());
       }
     }
     // * pour la famille
@@ -159,7 +164,7 @@ function AlertModifier() {
     dispatch(setAfficherAlert(false));
     dispatch(setActiverBoutonsValiderAnnuler(false));
     dispatch(setToolbarMode("consultation"));
-    dispatch(setActiverChampsForm(false))
+    dispatch(setActiverChampsForm(false));
     closeToast();
   };
 

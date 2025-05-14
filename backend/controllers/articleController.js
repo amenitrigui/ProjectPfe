@@ -234,6 +234,7 @@ const ajouterArticle = async (req, res) => {
         lieustock: articleAjoute.lieustock,
         NGP: articleAjoute.NGP,
         sav: articleAjoute.sav,
+        PrixPub: articleAjoute.PrixPub,
         cons: articleAjoute.cons,
         nomenclature: articleAjoute.nomenclature,
         gestionstock: articleAjoute.gestionstock,

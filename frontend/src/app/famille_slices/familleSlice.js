@@ -96,6 +96,11 @@ export const familleSlice = createSlice({
       const { colonne, valeur } = action.payload;
       state.FamilleInfos[colonne] = valeur;
     },
+    viderFamilleInfos: (state) =>{
+      state.FamilleInfos = {
+        ...familleInfoInitiales
+      }
+    }
   },
 
   extraReducers: (builder) => {
@@ -127,7 +132,7 @@ export const familleSlice = createSlice({
       });
   },
 });
-export const { setListeFamilles, setFamilleInfosEntiere, setFamilleInfo } =
+export const { setListeFamilles, setFamilleInfosEntiere, setFamilleInfo, viderFamilleInfos } =
   familleSlice.actions;
 
 export default familleSlice.reducer;
