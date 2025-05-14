@@ -676,7 +676,7 @@ function ToolBar() {
                       </button>
                     )}
                   {/* Édition */}
-                  {toolbarTable === "devis" && (
+                  {toolbarTable === "devis" && !isListeRoute && (
                     <button
                       type="button"
                       onClick={handleEditionClick}

@@ -131,7 +131,7 @@ export const getListeUtilisateurParCode = createAsyncThunk(
 );
 export const getListeUtilisateurParNom = createAsyncThunk(
   "utilisateurSlice/getListeUtilisateurParNom",
-  async (nom,thunkAPI) => {
+  async (nom, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeUtilisateurParNom`,
       {
@@ -150,7 +150,7 @@ export const getListeUtilisateurParNom = createAsyncThunk(
 );
 export const getListeUtilisateurParDirecteur = createAsyncThunk(
   "utilisateurSlice/getListeUtilisateurParDirecteur",
-  async (directeur,thunkAPI) => {
+  async (directeur, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeUtilisateurParDirecteur`,
       {
@@ -206,12 +206,10 @@ export const AjouterUtilisateur = createAsyncThunk(
   "slice/AjouterUtilisateur",
   async (_, thunkAPI) => {
     const UtilisateurInfos = thunkAPI.getState().clientSlice.clientInfos;
-   
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/utilisateurs/AjouterUtilisateur`,
       {
         UtilisateurInfos,
-
       },
       {
         headers: {
@@ -221,7 +219,6 @@ export const AjouterUtilisateur = createAsyncThunk(
         },
       }
     );
-    console.log(response);
     return response;
   }
 );

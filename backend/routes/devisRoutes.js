@@ -70,10 +70,4 @@ router.get("/:dbName/getListeCodeVendeur", getListeCodeVendeur);
 router.get("/:dbName/getrepresentantparcodevendeur", getrepresentantparcodevendeur);
 router.put("/:dbName/majDevis", majDevis);
 router.get("/:dbName/filtrerListeDevis", filtrerListeDevis);
-
-
-
-
-
-
 module.exports = router;

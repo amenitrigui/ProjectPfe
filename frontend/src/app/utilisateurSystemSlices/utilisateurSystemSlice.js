@@ -32,7 +32,7 @@ export const ModifierUtilisateur = createAsyncThunk(
   "utilisateurSystemSlices/ModifierUtilisateur",
   async (codeuser, thunkAPI) => {
     const utilisateur =
-      thunkAPI.getState().utilisateurSystemSlice.Utilisateur_SuperviseurInfos;
+      thunkAPI.getState().utilisateurSlice.infosUtilisateur;
     console.log(utilisateur);
     const response = await axios.put(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/ModifierUtilisateur`,

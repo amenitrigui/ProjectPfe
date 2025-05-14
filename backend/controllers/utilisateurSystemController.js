@@ -179,7 +179,6 @@ const supprimerUtilisateur = async (req, res) => {
     if (!decoded) {
       return res.status(401).json({ message: "utilisateur non authentifie" });
     }
-    console.log("nice")
     const sequelizeConnexionDbUtilisateur = await getDatabaseConnection(process.env.DB_USERS_NAME)//getConnexionAuBdUtilisateurs();
     const Utilisateur = defineUtilisateurModel(sequelizeConnexionDbUtilisateur);
     const utilisateur = await Utilisateur.destroy({

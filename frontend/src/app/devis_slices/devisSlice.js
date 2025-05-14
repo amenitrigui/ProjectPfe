@@ -215,6 +215,12 @@ export const getDevisParCodeClient = createAsyncThunk(
           CODECLI,
           codeuser,
         },
+
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
     );
     return response.data.devis;
@@ -327,7 +333,14 @@ export const getListeSecteur = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getListeSecteur`
+      }/getListeSecteur`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
     return response.data.secteurDistincts;
   }
@@ -338,7 +351,14 @@ export const getListeCodeVendeur = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getListeCodeVendeur`
+      }/getListeCodeVendeur`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
     return response.data.VendeurDistincts;
   }
@@ -569,7 +589,14 @@ export const getDevisparRepresentant = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getDevisparRepresentant`
+      }/getDevisparRepresentant`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
     return response.data.nombredevisparrepresentant;
   }
@@ -585,6 +612,11 @@ export const getNbDevisGeneresParAnnee = createAsyncThunk(
       {
         params: {
           annee: annee,
+        },
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
         },
       }
     );
@@ -625,6 +657,11 @@ export const filtrerListeDevis = createAsyncThunk(
         params: {
           filters: thunkAPI.getState().devisSlice.filterDevis, // Utiliser filters ici
         },
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
     );
 
@@ -642,6 +679,11 @@ export const getrepresentantparcodevendeur = createAsyncThunk(
       {
         params: {
           CODEREP: CODEREP,
+        },
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
         },
       }
     );
