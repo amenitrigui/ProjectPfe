@@ -447,7 +447,7 @@ const getDevisCreator = async (req, res) => {
       return res.status(401).json({ message: "utilisateur non authentifié" });
     }
     const { codea } = req.params;
-    const dbConnection = getDatabaseConnection(process.env.DB_USERS_NAME);
+    const dbConnection = getConnexionBd(); //getDatabaseConnection(process.env.DB_USERS_NAME);
     const resultat = await dbConnection.query(
       `SELECT * FROM utlisateur u, dfp d where d.codea = u.codeuser`,
       {
@@ -496,13 +496,13 @@ const getInfoUtilisateur = async (req, res) => {
 // * output : le(s) devis ayant(ent) le montant 5664.511 et créé par l'utilisateur 4
 // * http://localhost:5000/api/devis/SOLEVO/getDevisParMontant/5664.511
 const getDevisParMontant = async (req, res) => {
+  const { dbName, montant } = req.params;
+  const { codeuser } = req.query;
   try {
     const decoded = verifyTokenValidity(req);
     if (!decoded) {
       return res.status(401).json({ message: "utilisateur non authentifié" });
     }
-    const { dbName, montant } = req.params;
-    const { codeuser } = req.query;
 
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
 
@@ -777,7 +777,7 @@ const majDevis = async (req, res) => {
     if (!decoded) {
       return res.status(401).json({ message: "utilisateur non authentifié" });
     }
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     const modelLigneDevis = defineLdfpModel(dbConnection);
 
@@ -907,7 +907,7 @@ const getNbTotalDevisGeneres = async (req, res) => {
     if (!decoded) {
       return res.status(401).json({ message: "utilisateur non authentifié" });
     }
-    dbConnection = await getDatabaseConnection(dbName);
+    dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     const nbDevisGeneresTotal = await Devis.count({
       where: {
@@ -941,8 +941,6 @@ const getNbTotalDevisGeneres = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });
-  } finally {
-    dbConnection.close();
   }
 };
 // * récuperer le nombre de devis générés pour un utilisateur données
@@ -955,15 +953,17 @@ const getNbTotalDevisGeneresParUtilisateur = async (req, res) => {
   const { dbName } = req.params;
   const { codeuser } = req.query;
   let dbConnection;
-  if (!codeuser) {
-    return res.status(400).json({ message: "le code utilisateur est requis" });
-  }
   try {
+    if (!codeuser) {
+      return res
+        .status(400)
+        .json({ message: "le code utilisateur est requis" });
+    }
     const decoded = verifyTokenValidity(req);
     if (!decoded) {
       return res.status(401).json({ message: "utilisateur non authentifié" });
     }
-    dbConnection = await getDatabaseConnection(dbName);
+    dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
 
     const nbDevisGeneresTotal = await Devis.count({
@@ -1006,8 +1006,6 @@ const getNbTotalDevisGeneresParUtilisateur = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });
-  } finally {
-    dbConnection.close();
   }
 };
 
@@ -1020,16 +1018,18 @@ const getNbTotalDevisGeneresParUtilisateur = async (req, res) => {
 const getNbDevisNonGeneresParUtilisateur = async (req, res) => {
   const { dbName } = req.params;
   const { codeuser } = req.query;
-  if (!codeuser) {
-    return res.status(400).json({ message: "le code utilisateur est requis" });
-  }
   let dbConnection;
   try {
+    if (!codeuser) {
+      return res
+        .status(400)
+        .json({ message: "le code utilisateur est requis" });
+    }
     const decoded = verifyTokenValidity(req);
     if (!decoded) {
       return res.status(401).json({ message: "utilisateur non authentifié" });
     }
-    dbConnection = await getDatabaseConnection(dbName);
+    dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     const nbDevisNonGeneresParUtilisateur = await Devis.count({
       where: {
@@ -1051,8 +1051,6 @@ const getNbDevisNonGeneresParUtilisateur = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });
-  } finally {
-    dbConnection.close();
   }
 };
 
@@ -1070,7 +1068,7 @@ const getNbTotalDevisAnnulees = async (req, res) => {
     if (!decoded) {
       return res.status(401).json({ message: "utilisateur non authentifié" });
     }
-    dbConnection = await getDatabaseConnection(dbName);
+    dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     const nbDevisANnulees = await Devis.count({
       where: {
@@ -1086,8 +1084,6 @@ const getNbTotalDevisAnnulees = async (req, res) => {
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
-  } finally {
-    dbConnection.close();
   }
 };
 
@@ -1105,7 +1101,7 @@ const getNbTotalDevisEnCours = async (req, res) => {
     if (!decoded) {
       return res.status(401).json({ message: "utilisateur non authentifié" });
     }
-    dbConnection = getConnexionBd();//await getDatabaseConnection(dbName);
+    dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     const nbDevisEncours = await Devis.count({
       where: {
@@ -1138,7 +1134,7 @@ const getNbTotalDevisSansStatus = async (req, res) => {
     if (!decoded) {
       return res.status(401).json({ message: "utilisateur non authentifié" });
     }
-    dbConnection = await getDatabaseConnection(dbName);
+    dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     const nbDevisSansStatus = await Devis.count({
       where: {
@@ -1161,8 +1157,6 @@ const getNbTotalDevisSansStatus = async (req, res) => {
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
-  } finally {
-    dbConnection.close();
   }
 };
 // * url : http://localhost:5000/api/devis/SOLEVO/getListeDevisAvecPagination?page=1&limit=10
@@ -1177,7 +1171,7 @@ const getListeDevisAvecPagination = async (req, res) => {
   }
 
   try {
-      const decoded = verifyTokenValidity(req);
+    const decoded = verifyTokenValidity(req);
     if (!decoded) {
       return res.status(401).json({ message: "utilisateur non authentifié" });
     }
@@ -1210,7 +1204,7 @@ const getAnneesDistinctGenerationDevis = async (req, res) => {
     if (!decoded) {
       return res.status(401).json({ message: "utilisateur non authentifié" });
     }
-    dbConnection = getConnexionBd();//await getDatabaseConnection(dbName);
+    dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     // ? ?????????????
     const annees = await Devis.findAll({
@@ -1236,11 +1230,11 @@ const getDirecteursDevis = async (req, res) => {
   const { dbName } = req.params;
   let dbConnection;
   try {
-      const decoded = verifyTokenValidity(req);
+    const decoded = verifyTokenValidity(req);
     if (!decoded) {
       return res.status(401).json({ message: "utilisateur non authentifié" });
     }
-    dbConnection = await getDatabaseConnection(dbName);
+    dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
   } catch (error) {
     return res.statuss(500).json({ message: error.message });
   }
@@ -1258,7 +1252,7 @@ const getDevisparRepresentant = async (req, res) => {
     if (!decoded) {
       return res.status(401).json({ message: "utilisateur non authentifié" });
     }
-    dbConnection = getConnexionBd() //await getDatabaseConnection(dbName);
+    dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     const Rep = await dbConnection.query(
       `select distinct(rsoc) from representant`,
@@ -1305,16 +1299,17 @@ const getNbDevisGeneresParAnnee = async (req, res) => {
   const { annee } = req.query;
   let dbConnection;
   try {
-
-    if(!annee) {
-      return res.status(400).json({message: "l'annee de filtrage est manquante"})
+    if (!annee) {
+      return res
+        .status(400)
+        .json({ message: "l'annee de filtrage est manquante" });
     }
     const decoded = verifyTokenValidity(req);
     if (!decoded) {
       return res.status(401).json({ message: "utilisateur non authentifié" });
     }
 
-    dbConnection = getConnexionBd();//await getDatabaseConnection(dbName);
+    dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     let nbDevisParAnne = [];
     for (let i = 1; i <= 12; i++) {
@@ -1396,19 +1391,19 @@ const getListeCodeVendeur = async (req, res) => {
   }
 };
 // {
-  //   "message": "Liste de désignation vendeur récupérée avec succès",
-  //   "data": [
-    //     {
-      //       "RSREP": "22",
-      //       "CODEREP": "12"
-      //     }
-      //   ]
-      // }
+//   "message": "Liste de désignation vendeur récupérée avec succès",
+//   "data": [
+//     {
+//       "RSREP": "22",
+//       "CODEREP": "12"
+//     }
+//   ]
+// }
 //*http://localhost:5000/api/devis/SOLEVO/getrepresentantparcodevendeur?CODEREP=12
 const getrepresentantparcodevendeur = async (req, res) => {
   const { CODEREP } = req.query;
   try {
-    if(!CODEREP) {
+    if (!CODEREP) {
       return res.status(400).json({ message: "le code vendeur est manquant" });
     }
     const decoded = verifyTokenValidity(req);
@@ -1451,7 +1446,7 @@ const filtrerListeDevis = async (req, res) => {
       return res.status(401).json({ message: "utilisateur non authentifié" });
     }
 
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     // ? liste des conditions
     // ? exemple : ["NUML like :numbl, "libpv like :libpv"...]
     let whereClauses = [];

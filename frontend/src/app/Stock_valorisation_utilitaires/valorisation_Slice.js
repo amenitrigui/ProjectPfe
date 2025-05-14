@@ -12,6 +12,9 @@ export const getPrixVente = createAsyncThunk(
         params: {
           code: code,
         },
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        }
       }
     );
     return response.data.getPrixVente;
