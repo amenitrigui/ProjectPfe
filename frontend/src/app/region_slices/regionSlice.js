@@ -11,7 +11,14 @@ export const getListeCodeRegions = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/region/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getListeCodeRegions`
+      }/getListeCodeRegions`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
     return response.data.listeCodesRegion;
   }
@@ -26,7 +33,14 @@ export const getVilleParRegion = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/region/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getVilleParRegion/${codeRegion}`
+      }/getVilleParRegion/${codeRegion}`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
 
     return response.data.ListRegion[0];
@@ -44,6 +58,13 @@ export const ajouterRegion = createAsyncThunk(
       }/ajouterRegion`,
       {
         RegionInfo: thunkAPI.getState().regionSlice.RegionInfo,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
     );
     return response.data.newRegion;
@@ -58,7 +79,7 @@ export const regionSlice = createSlice({
   initialState: {
     regionInfoInitiales,
     RegionInfo: {
-      ...regionInfoInitiales
+      ...regionInfoInitiales,
     },
     listeCodesRegion: [],
     status: "inactive",
@@ -76,7 +97,7 @@ export const regionSlice = createSlice({
     },
     viderChampsRegionInfo: (state) => {
       state.RegionInfo = {
-        ...regionInfoInitiales
+        ...regionInfoInitiales,
       };
     },
   },

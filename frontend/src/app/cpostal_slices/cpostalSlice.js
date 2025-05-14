@@ -10,6 +10,13 @@ export const ajouterCodePostal = createAsyncThunk(
       }/ajouterCodePostal`,
       {
         CodePostalInfo: thunkAPI.getState().codePostaleSlice.CpostaleInfo,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
     );
     return response.data.newCodePostal;
@@ -24,7 +31,7 @@ export const cpostalSlice = createSlice({
   initialState: {
     cpostalInfoInitiales,
     CpostaleInfo: {
-      ...cpostalInfoInitiales
+      ...cpostalInfoInitiales,
     },
 
     status: "inactive",
@@ -45,7 +52,7 @@ export const cpostalSlice = createSlice({
     },
     viderChampsCPostalInfo: (state) => {
       state.CpostaleInfo = {
-        ...cpostalInfoInitiales
+        ...cpostalInfoInitiales,
       };
     },
   },

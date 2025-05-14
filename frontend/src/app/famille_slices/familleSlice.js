@@ -13,6 +13,12 @@ export const getListeFamillesParCodeFamille = createAsyncThunk(
         params: {
           codeFamille: codeFamille,
         },
+
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
     );
     return response.data.getListeFamillesParCodeFamille;
@@ -26,7 +32,14 @@ export const getListeFamillesParLibelleFamille = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/famille/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getListeFamillesParLibelleFamille/${LibelleFamille}`
+      }/getListeFamillesParLibelleFamille/${LibelleFamille}`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
     return response.data.familles;
   }
@@ -42,6 +55,13 @@ export const ajouterFamille = createAsyncThunk(
       }/ajouterFamille`,
       {
         FamilleAjoute: thunkAPI.getState().familleSlice.FamilleInfos,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
     );
 

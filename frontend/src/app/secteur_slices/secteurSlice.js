@@ -35,6 +35,13 @@ export const ajouterSecteur = createAsyncThunk(
       }/ajouterSecteur`,
       {
         secteurInfo: thunkAPI.getState().secteurSlice.secteurInfo,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
     );
     return response.data.newSecteur;

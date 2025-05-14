@@ -368,7 +368,14 @@ export const getDesignationSecteurparCodeSecteur = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/secteur/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getDesignationSecteurparCodeSecteur/${codesecteur}`
+      }/getDesignationSecteurparCodeSecteur/${codesecteur}`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
     return response.data.secteurInfo;
   }
@@ -403,6 +410,7 @@ export const getDerniereNumbl = createAsyncThunk(
         }/getDerniereNumbl`
       );
     }
+    console.log(response)
     return response.data.derniereNumbl;
   }
 );

@@ -1,4 +1,4 @@
-const { getDatabaseConnection } = require("../common/commonMethods");
+const { getDatabaseConnection, verifyTokenValidity } = require("../common/commonMethods");
 const { getConnexionBd } = require("../db/config")
 const defineregionmodels = require("../models/societe/region");
 const definePointVentemodels=require("../models/societe/pointvente");
@@ -9,6 +9,10 @@ const ajouterpointVente = async (req, res) => {
   const { PointVenteInfo } = req.body;
 
   try {
+      const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const PointVente = definePointVentemodels(dbConnection);
     const newPointVente = await PointVente.create({
@@ -31,6 +35,11 @@ const getLibellePointVneteparPVente = async (req, res) => {
   const { Code } = req.query;
 
   try {
+      const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+
     const dbConnection = await getConnexionBd();
 
     const libellePointVente = await dbConnection.query(
@@ -58,6 +67,10 @@ const getLibellePointVneteparPVente = async (req, res) => {
  
 const getListePointVente = async (req, res) => {
   try {
+      const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = await getConnexionBd();
     const listePointVente = await dbConnection.query(
       `SELECT Code FROM pointvente`,

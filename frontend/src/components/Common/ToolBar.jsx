@@ -160,7 +160,7 @@ function ToolBar() {
       dispatch(
         setDevisInfo({ collone: "usera", valeur: utilisateurConnecte.codeuser })
       );
-      dispatch(getDerniereNumbl());
+    
     }
 
     if (toolbarTable == "client") {

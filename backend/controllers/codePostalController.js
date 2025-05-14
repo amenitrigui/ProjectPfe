@@ -1,6 +1,6 @@
-const { getDatabaseConnection } = require("../common/commonMethods");
+const { getDatabaseConnection, verifyTokenValidity } = require("../common/commonMethods");
 const { getConnexionBd } = require("../db/config");
-const defineCodePostalemodels= require("../models/societe/cpostal")
+const defineCodePostalemodels = require("../models/societe/cpostal");
 //* récuperer la ville associé à un code postal
 // * example:
 // * input : 1000
@@ -9,7 +9,11 @@ const defineCodePostalemodels= require("../models/societe/cpostal")
 const getVilleParCodePostale = async (req, res) => {
   const { dbName, cp } = req.params;
   try {
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const ville = await dbConnection.query(
       `SELECT desicp from cpostal where CODEp = :cp`,
       {
@@ -36,7 +40,11 @@ const getVilleParCodePostale = async (req, res) => {
 const getListeCodesPosteaux = async (req, res) => {
   const { dbName } = req.params;
   try {
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+      const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const listeCodesPosteaux = await dbConnection.query(
       `SELECT CODEp from cpostal`,
       {
@@ -62,7 +70,11 @@ const getCodePostalParVille = async (req, res) => {
   const { ville } = req.query;
 
   try {
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+      const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const codePostal = await dbConnection.query(
       `
           SELECT CODEp from cpostal where desicp = :ville
@@ -93,7 +105,11 @@ const ajouterCodePostal = async (req, res) => {
   const { CodePostalInfo } = req.body;
 
   try {
-    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+      const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const CodePostale = defineCodePostalemodels(dbConnection);
     const newCodePostal = await CodePostale.create({
       //add + save min base 3ibrt 3ml insert into mn base de donnes
@@ -112,5 +128,5 @@ module.exports = {
   getListeCodesPosteaux,
   getVilleParCodePostale,
   getCodePostalParVille,
-  ajouterCodePostal
+  ajouterCodePostal,
 };

@@ -1,4 +1,4 @@
-const { getDatabaseConnection } = require("../common/commonMethods");
+const { getDatabaseConnection, verifyTokenValidity } = require("../common/commonMethods");
 const defineregionmodels = require("../models/societe/region");
 const { getConnexionBd } = require("../db/config")
 
@@ -10,6 +10,10 @@ const { getConnexionBd } = require("../db/config")
 const getListeCodeRegions = async (req, res) => {
   const { dbName } = req.params;
   try {
+      const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const listeCodesRegion = await dbConnection.query(
       `SELECT codergg from region`,
@@ -34,6 +38,10 @@ const getListeCodeRegions = async (req, res) => {
 const getVilleParRegion = async (req, res) => {
   const { dbName, codeRegion } = req.params;
   try {
+      const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const ListRegion = await dbConnection.query(
       `Select desirgg from region where codergg = :codeRegion`,
@@ -57,6 +65,10 @@ const ajouterRegion = async (req, res) => {
   const { RegionInfo } = req.body;
 
   try {
+      const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const Region = defineregionmodels(dbConnection);
     const newRegion = await Region.create({

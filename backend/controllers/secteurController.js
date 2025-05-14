@@ -1,4 +1,4 @@
-const { getDatabaseConnection } = require("../common/commonMethods");
+const { getDatabaseConnection, verifyTokenValidity } = require("../common/commonMethods");
 const { getConnexionBd } = require("../db/config")
 const defineSecteurModel = require("../models/societe/secteur")
 //* récuperer la liste de codes secteurs
@@ -10,6 +10,10 @@ const defineSecteurModel = require("../models/societe/secteur")
 const getListeCodesSecteur = async (req, res) => {
     const { dbName } = req.params;
     try {
+        const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
       const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
       const listeCodesSecteurs = await dbConnection.query(
         `SELECT codesec from secteur`,
@@ -38,6 +42,10 @@ const getListeCodesSecteur = async (req, res) => {
   const getDesignationSecteurparCodeSecteur = async (req, res) => {
     const { dbName, codesecteur } = req.params;
     try {
+        const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
       const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
       const secteurInfo = await dbConnection.query(
         `Select codesec, desisec from secteur where codesec = :codesecteur `,
@@ -64,6 +72,10 @@ const { dbName } = req.params;
   const { secteurInfo } = req.body;
   
   try {
+      const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const Secteur = defineSecteurModel(dbConnection);
     const newSecteur = await Secteur.create({
