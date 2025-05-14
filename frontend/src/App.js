@@ -116,6 +116,7 @@ function App() {
         // dispatch(deconnexionUtilisateur(navigate));
         console.log("no token");
       }
+
     }
     // * =====================================================
   }, [location.pathname]);
@@ -124,7 +125,7 @@ function App() {
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
   // dispatch(setDevisInfo("usera", usera));
-  // console.log(jetton)
+  console.log(jetton)
   return (
     <div className={theme === "dark" ? "dark" : ""}>
       <button

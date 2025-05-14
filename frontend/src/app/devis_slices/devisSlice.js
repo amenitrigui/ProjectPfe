@@ -8,7 +8,14 @@ export const getDevisList = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getTousDevis`
+      }/getTousDevis`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
     return response.data.devisList;
   }
@@ -21,7 +28,14 @@ export const getLignesDevis = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getLignesDevis/${NumBL}`
+      }/getLignesDevis/${NumBL}`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
     return response.data.listeArticle;
   }
@@ -36,7 +50,14 @@ export const AjouterDevis = createAsyncThunk(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/ajouterDevis`,
-      { devisInfo }
+      { devisInfo },
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
     return response.data.devis;
   }
@@ -49,8 +70,16 @@ export const getNombreTotalDevis = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getNombreDevis`
+      }/getNombreDevis`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
+    console.log(response);
     return response.data.totalDevis;
   }
 );
@@ -62,7 +91,14 @@ export const getTotalChiffres = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getTotalChiffres`
+      }/getTotalChiffres`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
     return response.data.totalchifre;
   }
@@ -81,6 +117,12 @@ export const getDevisParNUMBL = createAsyncThunk(
       {
         params: {
           codeuser: codeuser,
+        },
+
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
         },
       }
     );
@@ -103,6 +145,11 @@ export const getListeDevisParNUMBL = createAsyncThunk(
             thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte
               .codeuser,
         },
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
     );
 
@@ -115,7 +162,14 @@ export const getDevisCountByMonthAndYear = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getDevisCountByMonthAndYear`
+      }/getDevisCountByMonthAndYear`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
     return response.data.devisCountByMonthAndYear;
   }
@@ -134,6 +188,11 @@ export const getDevisParMontant = createAsyncThunk(
       {
         params: {
           codeuser,
+        },
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
         },
       }
     );
@@ -156,6 +215,9 @@ export const getDevisParCodeClient = createAsyncThunk(
           CODECLI,
           codeuser,
         },
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        }
       }
     );
     return response.data.devis;
@@ -173,6 +235,12 @@ export const getInfoUtilisateur = createAsyncThunk(
       {
         params: {
           usera,
+        },
+
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
         },
       }
     );
@@ -196,6 +264,12 @@ export const getDevisParPeriode = createAsyncThunk(
           DATEBL,
           codeuser,
         },
+
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
     );
     return response.data.devis;
@@ -214,7 +288,14 @@ export const getListeNumbl = createAsyncThunk(
         }/getCodesDevis/${
           thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte
             .codeuser
-        }`
+        }`,
+        {
+          headers: {
+            Authorization: `Bearer ${
+              thunkAPI.getState().utilisateurSystemSlice.token
+            }`,
+          },
+        }
       );
     }
     return response.data.listeNUMBL;
@@ -228,7 +309,14 @@ export const getListePointsVente = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getListePointVente`
+      }/getListePointVente`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
 
     return response.data.pointsVenteDistincts;
@@ -298,6 +386,11 @@ export const getDerniereNumbl = createAsyncThunk(
           params: {
             codeuser: codeuser,
           },
+          headers: {
+            Authorization: `Bearer ${
+              thunkAPI.getState().utilisateurSystemSlice.token
+            }`,
+          },
         }
       );
     }
@@ -325,6 +418,12 @@ export const annulerDevis = createAsyncThunk(
             thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte
               .codeuser,
         },
+
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
     );
     return response;
@@ -337,7 +436,14 @@ export const getNbTotalDevisGeneres = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getNbTotalDevisGeneres`
+      }/getNbTotalDevisGeneres`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
     return response.data.nbDevisGeneresTotal;
   }
@@ -355,6 +461,12 @@ export const getNbTotalDevisGeneresParUtilisateur = createAsyncThunk(
           codeuser:
             thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte
               .codeuser,
+        },
+
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
         },
       }
     );
@@ -375,6 +487,11 @@ export const getNbDevisNonGeneresParUtilisateur = createAsyncThunk(
             thunkAPI.getState().utilisateurSystemSlice.utilisateurConnecte
               .codeuser,
         },
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
     );
     return response.data.nbDevisNonGeneresParUtilisateur;
@@ -384,11 +501,20 @@ export const getNbDevisNonGeneresParUtilisateur = createAsyncThunk(
 export const getNbTotalDevisAnnulees = createAsyncThunk(
   "devisSlice/getNbTotalDevisAnnulees",
   async (_, thunkAPI) => {
-    const response = await axios.get(`
+    const response = await axios.get(
+      `
       ${process.env.REACT_APP_API_URL}/api/devis/${
-      thunkAPI.getState().utilisateurSystemSlice.dbName
-    }/getNbTotalDevisAnnulees
-    `);
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getNbTotalDevisAnnulees
+    `,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
+    );
     return response.data.nbDevisANnulees;
   }
 );
@@ -416,11 +542,20 @@ export const getNbTotalDevisEnCours = createAsyncThunk(
 export const getNbTotalDevisSansStatus = createAsyncThunk(
   "devisSlice/getNbTotalDevisSansStatus",
   async (_, thunkAPI) => {
-    const response = await axios.get(`
+    const response = await axios.get(
+      `
       ${process.env.REACT_APP_API_URL}/api/devis/${
-      thunkAPI.getState().utilisateurSystemSlice.dbName
-    }/getNbTotalDevisSansStatus
-    `);
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getNbTotalDevisSansStatus
+    `,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
+    );
     return response.data.nbDevisSansStatus;
   }
 );
@@ -496,6 +631,12 @@ export const majDevis = createAsyncThunk(
       { DevisMaj: devismaj },
       {
         params: { NUMBL },
+
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
     );
     return response;

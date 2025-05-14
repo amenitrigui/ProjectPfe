@@ -639,7 +639,7 @@ const Recherche = () => {
                       value={filtre}
                       className="mr-2"
                       onChange={() => {changerFiltre(filtre)}}
-git pu                    />
+                    />
                     {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                   </label>
                 ))}
