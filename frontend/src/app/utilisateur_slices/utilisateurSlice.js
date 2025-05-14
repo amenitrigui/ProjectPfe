@@ -110,15 +110,22 @@ export const getDerniereCodeUtilisateur = createAsyncThunk(
 
 export const getListeUtilisateurParCode = createAsyncThunk(
   "utilisateurSlice/getListeUtilisateurParCode",
-  async (codeuser) => {
+  async (codeuser, thunkAPI) => {
+    console.log(codeuser);
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeUtilisateurParCode`,
       {
         params: {
           codeuser: codeuser,
         },
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
     );
+    console.log(response);
     return response.data.result;
   }
 );
@@ -203,6 +210,12 @@ export const AjouterUtilisateur = createAsyncThunk(
       `${process.env.REACT_APP_API_URL}/api/utilisateurs/AjouterUtilisateur`,
       {
         UtilisateurInfos,
+      },  {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
     );
     return response;

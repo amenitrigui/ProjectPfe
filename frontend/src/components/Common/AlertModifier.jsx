@@ -43,6 +43,7 @@ import {
   setViderChampsUtilisateur,
   supprimerUtilisateur,
 } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
+import { viderChampsInfosUtilisateur } from "../../app/utilisateur_slices/utilisateurSlice";
 function AlertModifier() {
   //?==================================================================================================================
   //?=====================================================variables====================================================
@@ -65,6 +66,8 @@ function AlertModifier() {
   const utilisateurConnecte = useSelector(
       (state) => state.utilisateurSystemSlice.utilisateurConnecte
     );
+    const infosUtilisateur = useSelector((state)=>state.utilisateurSlice.infosUtilisateur)
+    console.log(infosUtilisateur)
   //?==================================================================================================================
   //?=================================================appels UseEffect=================================================
   //?==================================================================================================================
@@ -140,11 +143,12 @@ function AlertModifier() {
         dispatch(AjouterUtilisateur());
       }
       if (toolbarMode == "modification") {
-        dispatch(ModifierUtilisateur());
+        dispatch(ModifierUtilisateur(infosUtilisateur.codeuser));
       }
       if (toolbarMode == "suppression") {
-        dispatch(supprimerUtilisateur(Utilisateur_SuperviseurInfos.codeuser));
+        dispatch(supprimerUtilisateur(infosUtilisateur.codeuser));
         dispatch(setViderChampsUtilisateur());
+        dispatch(viderChampsInfosUtilisateur())
       }
     }
     // * pour la famille
