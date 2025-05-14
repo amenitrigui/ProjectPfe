@@ -24,7 +24,6 @@ const getListeFamilles = async (req, res) => {
 
   try {
     const decoded = verifyTokenValidity(req);
-    console.log("dd", decoded);
     if (!decoded) {
       return res.status(401).json({ message: "utilisateur non authentifie" });
     }

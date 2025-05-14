@@ -116,6 +116,7 @@ function App() {
         // dispatch(deconnexionUtilisateur(navigate));
         console.log("no token");
       }
+
     }
     // * =====================================================
   }, [location.pathname]);
@@ -124,6 +125,7 @@ function App() {
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
   // dispatch(setDevisInfo("usera", usera));
+  console.log(jetton)
   return (
     <div className={theme === "dark" ? "dark" : ""}>
       <button
@@ -139,7 +141,7 @@ function App() {
         onClick={() => {
           dispatch(
             setToken(
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2RldXNlciI6IjA0IiwiaWF0IjoxNzQ3MTI2ODQ1LCJleHAiOjE3NDcyMTMyNDV9.6_jE45Ri4QesICyXrpEaNrIAmmsU0GAhzY-dqMLP_yM"
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2RldXNlciI6IjA1IiwiaWF0IjoxNzQ3MTMyMjM5LCJleHAiOjE3NDcyMTg2Mzl9.D4fZ5HwVP8BMlscBXTFfdCmzmmSRGfs-FfpK3wCPa9s"
             )
           );
         }}

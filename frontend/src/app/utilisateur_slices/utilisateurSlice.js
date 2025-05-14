@@ -53,9 +53,19 @@ export const getUtilisateurParCode = createAsyncThunk(
   async (codeuser, thunkAPI) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/utilisateurs/getUtilisateurParCode/${codeuser}`
+        `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getUtilisateurParCode`,
+        {
+          params: {
+            codeuser: codeuser,
+          },
+          headers: {
+            Authorization: `Bearer ${
+              thunkAPI.getState().utilisateurSystemSlice.token
+            }`,
+          },
+        }
       );
-      return response.data.utilisateur[0];
+      return response.data.utilisateur;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || error.message
@@ -70,12 +80,16 @@ export const filterListeUtilisateur = createAsyncThunk(
     // Passer `filters` en paramètre
     const filterutilisateur =
       thunkAPI.getState().utilisateurSlice.filtersUtilisateur;
-    console.log(filterutilisateur);
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/filterListeUtilisateur`,
       {
         params: {
           filters: filterutilisateur, // Utiliser filters ici
+        },
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
         },
       }
     );
@@ -117,12 +131,17 @@ export const getListeUtilisateurParCode = createAsyncThunk(
 );
 export const getListeUtilisateurParNom = createAsyncThunk(
   "utilisateurSlice/getListeUtilisateurParNom",
-  async (nom) => {
+  async (nom,thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeUtilisateurParNom`,
       {
         params: {
           nom: nom,
+        },
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
         },
       }
     );
@@ -131,12 +150,17 @@ export const getListeUtilisateurParNom = createAsyncThunk(
 );
 export const getListeUtilisateurParDirecteur = createAsyncThunk(
   "utilisateurSlice/getListeUtilisateurParDirecteur",
-  async (directeur) => {
+  async (directeur,thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeUtilisateurParDirecteur`,
       {
         params: {
           directeur: directeur,
+        },
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
         },
       }
     );
@@ -145,12 +169,17 @@ export const getListeUtilisateurParDirecteur = createAsyncThunk(
 );
 export const getListeUtilisateurParType = createAsyncThunk(
   "utilisateurSlice/getListeUtilisateurParType",
-  async (type) => {
+  async (type, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeUtilisateurParType`,
       {
         params: {
           type: type,
+        },
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
         },
       }
     );
@@ -159,9 +188,16 @@ export const getListeUtilisateurParType = createAsyncThunk(
 );
 export const getListeUtilisateur = createAsyncThunk(
   "utilisateurSlice/getListeUtilisateur",
-  async () => {
+  async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeUtilisateur`
+      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeUtilisateur`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
     return response.data.result;
   }
@@ -170,14 +206,19 @@ export const AjouterUtilisateur = createAsyncThunk(
   "slice/AjouterUtilisateur",
   async (_, thunkAPI) => {
     const UtilisateurInfos = thunkAPI.getState().clientSlice.clientInfos;
-    console.log(
-      "dssdss",
-      thunkAPI.getState().interfaceSlice.setAlertMessage(response.data.message)
-    );
+   
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/utilisateurs/AjouterUtilisateur`,
       {
         UtilisateurInfos,
+
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
     );
     console.log(response);
@@ -187,9 +228,18 @@ export const AjouterUtilisateur = createAsyncThunk(
 export const getListeCodesUtilisateur = createAsyncThunk(
   "utilisateurSlice/getListeCodesUtilisateur",
   async (_, thunkAPI) => {
-    const response = await axios.get(`
+    const response = await axios.get(
+      `
       ${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeCodesUtilisateur
-      `);
+      `,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
+    );
 
     return response.data.listeCodesUtilisateur;
   }

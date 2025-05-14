@@ -76,11 +76,11 @@ export const ajouterClient = createAsyncThunk(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/AjouterClient`,
+      {clientInfos},
       {
         headers: {
           Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
         },
-        clientInfos
       }
     );
     thunkAPI.getState().interfaceSlice.setAlertMessage(response.data.message);
@@ -98,12 +98,12 @@ export const majClient = createAsyncThunk(
       `${process.env.REACT_APP_API_URL}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/majClient`,
+      {clientMaj}, // htha y3niii bch tjib les donds il kol htha body, ya3ni objet kamel mesh bel champ bel champ
       {
         headers: {
           Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
         },
-        clientMaj 
-      } // htha y3niii bch tjib les donds il kol htha body, ya3ni objet kamel mesh bel champ bel champ
+      }
     );
     return response.message;
   }
