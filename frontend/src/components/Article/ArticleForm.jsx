@@ -100,9 +100,10 @@ function ArticleForm() {
   }, [articleInfos.codesousfam]);
   useEffect(() => {
     if (articleInfos.code && articleInfos.code != "") {
+      // ? récuperer initialement les informations de premier depot 
       dispatch(
         getListedepotdeStockparpcodepointvente({
-          codepv: articleInfos.codepv,
+          codepv: "01",
           codeArticle: articleInfos.code,
         })
       );
@@ -215,19 +216,19 @@ function ArticleForm() {
                         hundlesubmitTousLesChamp(e.target.value, "famille")
                       }
                       disabled={!activerChampsForm}
-                      list="listeCodesFamilles"
+                    //  list="listeCodesFamilles"
                       onClick={() => {
                         dispatch(setToolbarTable("famille"));
                         afficherRecherchePopup();
                       }}
                     />
-                    <datalist id="listeCodesFamilles">
+                    {/* <datalist id="listeCodesFamilles">
                       {ListeFamille.map((famille, indice) => (
                         <option key={indice} value={famille.code}>
                           {famille.code}
                         </option>
                       ))}
-                    </datalist>
+                    </datalist> */}
                   </div>
 
                   {/* Désignation Famille */}
@@ -272,7 +273,7 @@ function ArticleForm() {
                       type="text"
                       className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
                       value={articleInfos.codesousfam}
-                      list="listeCodesSousFamille"
+                     // list="listeCodesSousFamille"
                       onChange={(e) =>
                         hundlesubmitTousLesChamp(e.target.value, "codesousfam")
                       }
@@ -282,13 +283,13 @@ function ArticleForm() {
                         afficherRecherchePopup();
                       }}
                     />
-                    <datalist id="listeCodesSousFamille">
+                    {/* <datalist id="listeCodesSousFamille">
                       {ListeSousFamille.map((Sousfamille, indice) => (
                         <option key={indice} value={Sousfamille.code}>
                           {Sousfamille.code}
                         </option>
                       ))}
-                    </datalist>
+                    </datalist> */}
                   </div>
 
                   {/* Désignation Sous-Famille */}

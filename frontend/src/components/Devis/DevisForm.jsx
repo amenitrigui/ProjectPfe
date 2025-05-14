@@ -131,14 +131,21 @@ function DevisForm() {
         })
       );
     }
-  }, [devisInfo.NUMBL,listeNUMBL]);
+  }, [devisInfo.NUMBL, listeNUMBL]);
 
   useEffect(() => {
-    if(derniereNumbl && toolbarMode == "ajout"){
-      const nouvNumbl = parseInt(derniereNumbl) + 1;
-      dispatch(setDevisInfo({collone: "NUMBL", valeur: "DV"+nouvNumbl}))
+    console.log(derniereNumbl);
+    if (
+      derniereNumbl &&
+      toolbarMode == "ajout" &&
+      devisInfo.NUMBL != derniereNumbl
+    ) {
+      const nouvNumbl = derniereNumbl + 1;
+      dispatch(
+        setDevisInfo({ collone: "NUMBL", valeur: "DV" + derniereNumbl })
+      );
     }
-  },[derniereNumbl])
+  }, [derniereNumbl, toolbarMode, devisInfo.NUMBL]);
 
   // * useEffect #6: récuperer les informations de devis
   // * et les lignes de devis par NUMBL
@@ -395,11 +402,11 @@ function DevisForm() {
                         <span>Information Client</span>
                         {toolbarMode == "ajout" && (
                           <button
-                          className="btn btn-outline btn-accent"
-                          onClick={() => handleAjoutClientRedirect()}
-                        >
-                          <i className="fas fa-plus-circle"></i>
-                        </button>
+                            className="btn btn-outline btn-accent"
+                            onClick={() => handleAjoutClientRedirect()}
+                          >
+                            <i className="fas fa-plus-circle"></i>
+                          </button>
                         )}
                       </h3>
                       <label className="block font-medium">Code Client :</label>
