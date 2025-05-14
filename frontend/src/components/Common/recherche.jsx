@@ -176,7 +176,7 @@ const Recherche = () => {
     { name: "code", selector: (row) => row.codeuser, sortable: true },
     { name: "nom", selector: (row) => row.nom, sortable: true },
     { name: "directeur", selector: (row) => row.directeur, sortable: true },
-    { name: "type", selector: (row) => row.type, sortable: true}
+    { name: "type", selector: (row) => row.type, sortable: true },
   ];
 
   const location = useLocation();
@@ -337,8 +337,8 @@ const Recherche = () => {
     dispatch(setListeClients([]));
     dispatch(setListeFamilles([]));
     dispatch(setListeSousfamille([]));
-  }
-  // * ceci est utilisé pour remplir les informations d'un ligne de devis par la 
+  };
+  // * ceci est utilisé pour remplir les informations d'un ligne de devis par la
   // * résultat d'un recherche d'article dans l'interface de gestion de devis
   const remplirChampsLigneDevis = () => {
     if (datatableElementSelection) {
@@ -520,8 +520,8 @@ const Recherche = () => {
   const changerFiltre = (filtre) => {
     viderListes();
     setEstFiltreChoisit(true);
-    setFiltrerPar(filtre)
-  }
+    setFiltrerPar(filtre);
+  };
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-6xl p-6 relative max-h-screen overflow-y-auto">
@@ -559,20 +559,20 @@ const Recherche = () => {
 
             <div className="space-y-2">
               {toolbarTable === "devis" &&
-                ["numbl", "client", "montant", "periode"].map(
-                  (filtre) => (
-                    <label key={filtre} className="flex items-center">
-                      <input
-                        type="radio"
-                        name="filtres"
-                        value={filtre}
-                        className="mr-2"
-                        onChange={() => {changerFiltre(filtre)}}
-                      />
-                      {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
-                    </label>
-                  )
-                )}
+                ["numbl", "client", "montant", "periode"].map((filtre) => (
+                  <label key={filtre} className="flex items-center">
+                    <input
+                      type="radio"
+                      name="filtres"
+                      value={filtre}
+                      className="mr-2"
+                      onChange={() => {
+                        changerFiltre(filtre);
+                      }}
+                    />
+                    {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
+                  </label>
+                ))}
 
               {toolbarTable === "client" &&
                 ["code", "raison sociale", "cin"].map((filtre) => (
@@ -582,7 +582,9 @@ const Recherche = () => {
                       name="filtres"
                       value={filtre}
                       className="mr-2"
-                      onChange={() => {changerFiltre(filtre)}}
+                      onChange={() => {
+                        changerFiltre(filtre);
+                      }}
                     />
                     {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                   </label>
@@ -596,7 +598,9 @@ const Recherche = () => {
                       name="filtres"
                       value={filtre}
                       className="mr-2"
-                      onChange={() => {changerFiltre(filtre)}}
+                      onChange={() => {
+                        changerFiltre(filtre);
+                      }}
                     />
                     {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                   </label>
@@ -610,7 +614,9 @@ const Recherche = () => {
                       name="filtres"
                       value={filtre}
                       className="mr-2"
-                      onChange={() => {changerFiltre(filtre)}}
+                      onChange={() => {
+                        changerFiltre(filtre);
+                      }}
                     />
                     {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                   </label>
@@ -624,7 +630,9 @@ const Recherche = () => {
                       name="filtres"
                       value={filtre}
                       className="mr-2"
-                      onChange={() => {changerFiltre(filtre)}}
+                      onChange={() => {
+                        changerFiltre(filtre);
+                      }}
                     />
                     {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                   </label>
@@ -638,7 +646,9 @@ const Recherche = () => {
                       name="filtres"
                       value={filtre}
                       className="mr-2"
-                      onChange={() => {changerFiltre(filtre)}}
+                      onChange={() => {
+                        changerFiltre(filtre);
+                      }}
                     />
                     {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                   </label>

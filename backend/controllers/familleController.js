@@ -1,5 +1,5 @@
 const defineFamilleModel = require("../models/societe/famille");
-const { getDatabaseConnection } = require("../common/commonMethods");
+const { getDatabaseConnection, verifyTokenValidity } = require("../common/commonMethods");
 const { Sequelize } = require("sequelize");
 const { getConnexionBd } = require("../db/config");
 const famille = require("../models/societe/famille");
@@ -18,6 +18,10 @@ const getListeFamillesParCodeFamille = async (req, res) => {
   const { dbName } = req.params;
   const { codeFamille } = req.query;
   try {
+      const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const getListeFamillesParCodeFamille = await dbConnection.query(
       `select code , libelle from famille where code LIKE :code`,
@@ -42,6 +46,10 @@ const getListeFamillesParCodeFamille = async (req, res) => {
 const getListeFamillesParLibelleFamille = async (req, res) => {
   const { dbName, LibelleFamille } = req.params;
   try {
+      const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const result = await dbConnection.query(
       "SELECT code, libelle FROM famille WHERE libelle LIKE :libelle",
@@ -65,6 +73,10 @@ const ajouterFamille = async(req,res)=>{
 const { dbName } = req.params;
   const { FamilleAjoute } = req.body;
   try {
+      const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const Famille = defineFamilleModel(dbConnection);
     const famille = await Famille.findOne({

@@ -136,6 +136,7 @@ function DevisForm() {
   useEffect(() => {
     if(derniereNumbl && toolbarMode == "ajout"){
       const nouvNumbl = parseInt(derniereNumbl) + 1;
+      console.log(nouvNumbl);
       dispatch(setDevisInfo({collone: "NUMBL", valeur: "DV"+nouvNumbl}))
     }
   },[derniereNumbl])

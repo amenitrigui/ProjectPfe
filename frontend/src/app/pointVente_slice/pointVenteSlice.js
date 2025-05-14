@@ -13,6 +13,13 @@ export const ajouterpointVente = createAsyncThunk(
       }/ajouterpointVente`,
       {
         PointVenteInfo: pointVenteInfo,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
     );
     return response.data.newPointVente;
@@ -24,10 +31,14 @@ export const getListePointVente = createAsyncThunk(
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/pointvente/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getListePointVente`, {
+      }/getListePointVente`,
+
+      {
         headers: {
-          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
-        }
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
     );
     return response.data.data;
@@ -43,6 +54,12 @@ export const getLibellePointVneteparPVente = createAsyncThunk(
       {
         params: {
           Code: codepv,
+        },
+
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
         },
       }
     );
