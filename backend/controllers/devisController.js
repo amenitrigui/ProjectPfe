@@ -1,7 +1,7 @@
 const { QueryTypes, Op, where } = require("sequelize");
 const defineDfpModel = require("../models/societe/dfp");
 const defineLdfpModel = require("../models/societe/ldfp");
-const { getDatabaseConnection } = require("../common/commonMethods");
+const { getDatabaseConnection,verifyTokenValidity } = require("../common/commonMethods");
 const { getConnexionBd } = require("../db/config");
 
 // * récuperer la liste des dévis d'une societé donnée (dbName)
@@ -192,14 +192,16 @@ const ajouterDevis = async (req, res) => {
 
     const devis = await Dfp.create(dfpData);
 
-    if (articles &&articles.length>0)
-    // * map tout seul n'attend pas que les promis sont resolus
-    {await Promise.all(articles.map(async (article) => {
-      article.NumBL = NUMBL;
-      article.NLigne = articles.length;
-      await ldfp.create(article);
-    }));
-  }
+    if (articles && articles.length > 0) {
+      // * map tout seul n'attend pas que les promis sont resolus
+      await Promise.all(
+        articles.map(async (article) => {
+          article.NumBL = NUMBL;
+          article.NLigne = articles.length;
+          await ldfp.create(article);
+        })
+      );
+    }
     return res.status(201).json({
       message: "Devis créé avec succès.",
       devis,
@@ -334,15 +336,12 @@ const getCodesDevis = async (req, res) => {
         NUMBL                                     -- Final sort
     `;
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
-    const listeNUMBL = await dbConnection.query(
-      query,
-      {
-        type: dbConnection.QueryTypes.SELECT,
-        replacements: {
-          usera: usera,
-        },
-      }
-    );
+    const listeNUMBL = await dbConnection.query(query, {
+      type: dbConnection.QueryTypes.SELECT,
+      replacements: {
+        usera: usera,
+      },
+    });
 
     return res.status(200).json({
       message: "tout le code devis recupere avec succes",
@@ -1005,7 +1004,11 @@ const getNbTotalDevisEnCours = async (req, res) => {
   const { dbName } = req.params;
   let dbConnection;
   try {
-    dbConnection = await getDatabaseConnection(dbName);
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    dbConnection = getConnexionBd();//await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     const nbDevisEncours = await Devis.count({
       where: {
@@ -1021,8 +1024,6 @@ const getNbTotalDevisEnCours = async (req, res) => {
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
-  } finally {
-    dbConnection.close();
   }
 };
 // * récuperer le nombre de devis sans status
@@ -1031,6 +1032,7 @@ const getNbTotalDevisEnCours = async (req, res) => {
 // * input : dbName = SOLEVO
 // * output : 472 devis non générés
 // * http://localhost:5000/api/devis/SOLEVO/getNbTotalDevisSansStatus
+// ! méthode non utile, à supprimer.
 const getNbTotalDevisSansStatus = async (req, res) => {
   const { dbName } = req.params;
   let dbConnection;
@@ -1063,6 +1065,7 @@ const getNbTotalDevisSansStatus = async (req, res) => {
   }
 };
 // * url : http://localhost:5000/api/devis/SOLEVO/getListeDevisAvecPagination?page=1&limit=10
+// ? méthode de test, n'a pas implementé jwt ici
 const getListeDevisAvecPagination = async (req, res) => {
   const { dbName } = req.params;
   const { page, limit } = req.query;
@@ -1097,7 +1100,11 @@ const getAnneesDistinctGenerationDevis = async (req, res) => {
   const { dbName } = req.params;
   let dbConnection;
   try {
-    dbConnection = await getDatabaseConnection(dbName);
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    dbConnection = getConnexionBd();//await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     // ? ?????????????
     const annees = await Devis.findAll({
@@ -1115,11 +1122,10 @@ const getAnneesDistinctGenerationDevis = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });
-  } finally {
-    dbConnection.close();
   }
 };
 
+// !! ????
 const getDirecteursDevis = async (req, res) => {
   const { dbName } = req.params;
   let dbConnection;
@@ -1127,10 +1133,6 @@ const getDirecteursDevis = async (req, res) => {
     dbConnection = await getDatabaseConnection(dbName);
   } catch (error) {
     return res.statuss(500).json({ message: error.message });
-  } finally {
-    if (dbConnection) {
-      dbConnection.close();
-    }
   }
 };
 //* url : http://localhost:5000/api/devis/SOLEVO/getDevisparRepresentant
@@ -1142,7 +1144,11 @@ const getDevisparRepresentant = async (req, res) => {
 
   let dbConnection;
   try {
-    dbConnection = await getDatabaseConnection(dbName);
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    dbConnection = getConnexionBd() //await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     const Rep = await dbConnection.query(
       `select distinct(rsoc) from representant`,
@@ -1178,10 +1184,6 @@ const getDevisparRepresentant = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });
-  } finally {
-    if (dbConnection) {
-      await dbConnection.close();
-    }
   }
 };
 
@@ -1193,7 +1195,16 @@ const getNbDevisGeneresParAnnee = async (req, res) => {
   const { annee } = req.query;
   let dbConnection;
   try {
-    dbConnection = await getDatabaseConnection(dbName);
+
+    if(!annee) {
+      return res.status(400).json({message: "l'annee de filtrage est manquante"})
+    }
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+
+    dbConnection = getConnexionBd();//await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     let nbDevisParAnne = [];
     for (let i = 1; i <= 12; i++) {
@@ -1220,16 +1231,18 @@ const getNbDevisGeneresParAnnee = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });
-  } finally {
-    dbConnection.close();
   }
 };
 //* url :http://localhost:5000/api/devis/SOLEVO/getListeSecteur
 //*message": "Secteur recupérés avec succès", "pointssecteurDistincts": [ { "desisec": "SOLEVO" },
 
 const getListeSecteur = async (req, res) => {
+  const { dbName } = req.params;
   try {
-    const { dbName } = req.params;
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const secteurDistincts = await dbConnection.query(
       `SELECT DISTINCT(desisec),codesec from secteur`,
@@ -1256,6 +1269,10 @@ const getListeSecteur = async (req, res) => {
 const getListeCodeVendeur = async (req, res) => {
   const { dbName } = req.params;
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd();
     const VendeurDistincts = await dbConnection.query(
       `select DISTINCT(CODEREP) from dfp`,
@@ -1268,19 +1285,26 @@ const getListeCodeVendeur = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-//*http://localhost:5000/api/devis/SOLEVO/getrepresentantparcodevendeur?CODEREP=12
 // {
-//   "message": "Liste de désignation vendeur récupérée avec succès",
-//   "data": [
-//     {
-//       "RSREP": "22",
-//       "CODEREP": "12"
-//     }
-//   ]
-// }
+  //   "message": "Liste de désignation vendeur récupérée avec succès",
+  //   "data": [
+    //     {
+      //       "RSREP": "22",
+      //       "CODEREP": "12"
+      //     }
+      //   ]
+      // }
+//*http://localhost:5000/api/devis/SOLEVO/getrepresentantparcodevendeur?CODEREP=12
 const getrepresentantparcodevendeur = async (req, res) => {
   const { CODEREP } = req.query;
   try {
+    if(!CODEREP) {
+      return res.status(400).json({ message: "le code vendeur est manquant" });
+    }
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const dbConnection = getConnexionBd();
 
     // Utilisation correcte de query avec replacements
@@ -1302,66 +1326,80 @@ const getrepresentantparcodevendeur = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+// * url : http://localhost:5000/api/devis/SOLEVO/filtrerListeDevis?filters={"NUMBL":"DV2401","libpv":"kasserine"}
+// * verb : get
 const filtrerListeDevis = async (req, res) => {
   const { dbName } = req.params;
-  const  filters  = req.query.filters;
+  const filters = req.query.filters;
+  try {
+    if (!filters) {
+      return res.status(400).json({ message: "aucun filtre trouvé" });
+    }
 
-  const dbConnection = await getDatabaseConnection(dbName);
-  // ? liste des conditions
-  // ? exemple : ["NUML like :numbl, "libpv like :libpv"...]
-  let whereClauses = [];
-  // ? object contenant les noms des paramètres de requete sql avec leurs remplacements
-  // ? exemple : {{numbl: %dv2401%}, {libpv: %kasserine% }}
-  let replacements = {};
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
 
-  // ? ajout de chaque condition quand la valeur n'est pas vide
-  if (filters.NUMBL) {
-    whereClauses.push("NUMBL like :NUMBL");
-    replacements.NUMBL = `%${filters.NUMBL}%`;
-  }
+    const dbConnection = await getDatabaseConnection(dbName);
+    // ? liste des conditions
+    // ? exemple : ["NUML like :numbl, "libpv like :libpv"...]
+    let whereClauses = [];
+    // ? object contenant les noms des paramètres de requete sql avec leurs remplacements
+    // ? exemple : {{numbl: %dv2401%}, {libpv: %kasserine% }}
+    let replacements = {};
 
-  if (filters.DATEBL) {
-    whereClauses.push("DATEBL like :DATEBL");
-    replacements.DATEBL = `%${filters.DATEBL}%`;
-  }
-  if (filters.CODEFACTURE) {
-    whereClauses.push("CODEFACTURE like :CODEFACTURE");
-    replacements.CODEFACTURE = `%${filters.CODEFACTURE}%`;
-  }
-  if (filters.CODECLI) {
-    whereClauses.push("CODECLI like :CODECLI");
-    replacements.CODECLI = `%${filters.CODECLI}%`;
-  }
-  if (filters.ADRCLI) {
-    whereClauses.push("ADRCLI like :ADRCLI");
-    replacements.ADRCLI = `%${filters.ADRCLI}%`;
-  }
-  if (filters.RSCLI) {
-    whereClauses.push("RSCLI like :RSCLI");
-    replacements.RSCLI = `%${filters.RSCLI}%`;
-  }
-  if (filters.MTTC) {
-    whereClauses.push("MTTC like :MTTC");
-    replacements.MTTC = `%${filters.MTTC}%`;
-  }
+    // ? ajout de chaque condition quand la valeur n'est pas vide
+    if (filters.NUMBL) {
+      whereClauses.push("NUMBL like :NUMBL");
+      replacements.NUMBL = `%${filters.NUMBL}%`;
+    }
 
-  // ? concatenation de l'opérateur logique après chaque ajout d'un nouvelle condition
-  let whereCondition = whereClauses.join(" AND ");
+    if (filters.DATEBL) {
+      whereClauses.push("DATEBL like :DATEBL");
+      replacements.DATEBL = `%${filters.DATEBL}%`;
+    }
+    if (filters.CODEFACTURE) {
+      whereClauses.push("CODEFACTURE like :CODEFACTURE");
+      replacements.CODEFACTURE = `%${filters.CODEFACTURE}%`;
+    }
+    if (filters.CODECLI) {
+      whereClauses.push("CODECLI like :CODECLI");
+      replacements.CODECLI = `%${filters.CODECLI}%`;
+    }
+    if (filters.ADRCLI) {
+      whereClauses.push("ADRCLI like :ADRCLI");
+      replacements.ADRCLI = `%${filters.ADRCLI}%`;
+    }
+    if (filters.RSCLI) {
+      whereClauses.push("RSCLI like :RSCLI");
+      replacements.RSCLI = `%${filters.RSCLI}%`;
+    }
+    if (filters.MTTC) {
+      whereClauses.push("MTTC like :MTTC");
+      replacements.MTTC = `%${filters.MTTC}%`;
+    }
 
-  // ? Si on on a aucune condition on effectue une requete de select * from dfp
-  let query = `SELECT NUMBL, DATEBL, CODEFACTURE, CODECLI, ADRCLI, RSCLI,MTTC
+    // ? concatenation de l'opérateur logique après chaque ajout d'un nouvelle condition
+    let whereCondition = whereClauses.join(" AND ");
+
+    // ? Si on on a aucune condition on effectue une requete de select * from dfp
+    let query = `SELECT NUMBL, DATEBL, CODEFACTURE, CODECLI, ADRCLI, RSCLI,MTTC
      FROM dfp 
       ${whereCondition ? "WHERE " + whereCondition : ""}`;
 
-  const result = await dbConnection.query(query, {
-    replacements: replacements,
-    type: dbConnection.QueryTypes.SELECT,
-  });
+    const result = await dbConnection.query(query, {
+      replacements: replacements,
+      type: dbConnection.QueryTypes.SELECT,
+    });
 
-  return res.status(200).json({
-    message: "Filtrage réussi",
-    data: result,
-  });
+    return res.status(200).json({
+      message: "Filtrage réussi",
+      data: result,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 };
 module.exports = {
   getTousDevis,
