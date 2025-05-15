@@ -110,11 +110,11 @@ function App() {
         const dateExpiration = JSON.parse(atob(jetton.split(".")[1])).exp;
         if (Date.now() >= dateExpiration * 1000) {
           // dispatch(deconnexionUtilisateur(navigate));
-          console.log("no token");
+ 
         }
       } else {
         // dispatch(deconnexionUtilisateur(navigate));
-        console.log("no token");
+
       }
 
     }
@@ -125,10 +125,9 @@ function App() {
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
   // dispatch(setDevisInfo("usera", usera));
-  console.log(jetton)
   return (
     <div className={theme === "dark" ? "dark" : ""}>
-      <button
+      {/* <button
         className="btn btn-primary"
         onClick={() => {
           dispatch(setToken(""));
@@ -147,7 +146,7 @@ function App() {
         }}
       >
         restore token
-      </button>
+      </button> */}
       <Routes>
         
         <Route path="/" element={<SignInPage />} />

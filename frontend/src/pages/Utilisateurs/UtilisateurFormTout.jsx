@@ -15,8 +15,8 @@ function UtilisateurFormTout() {
     dispatch(setToolbarMode("superviseur"))
   },[])
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      <div className="flex-1 ">
+    <div className="flex min-h-screen bg-base-100">
+      <div className="flex-1 bg-base-100">
       { afficherRecherchePopup == true && <Recherche></Recherche> }
         <AlertModifier />
         <UtilisateurForm />

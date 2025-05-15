@@ -54,8 +54,8 @@ function LignesDevis() {
 
   return (
     <>
-      <table className="min-w-[600px] sm:min-w-full table-auto border-collapse border bg-gray-100 p-3">
-        <thead className="bg-gray-100 p-3">
+      <table className="min-w-[600px] sm:min-w-full table-auto border-collapse border bg-base-100 p-3">
+        <thead className="bg-base-100 p-3">
           {/* Ajout du fond gris pour l'en-tête */}
           <tr>
             <th className="p-3 text-left text-sm font-medium text-gray-600 border">

@@ -40,7 +40,7 @@ function SideBar() {
         </li>
 
         {elementsDrawer.map((item, index) => (
-          <li key={index}>
+          <li key={index} className="hover:bg-base-100">
             <Link to={item.path} onClick={handleLinkClick}>
               <span className="icon">
                 <ion-icon name={item.icon}></ion-icon>

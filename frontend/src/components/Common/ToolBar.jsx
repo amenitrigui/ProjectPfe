@@ -561,7 +561,7 @@ function ToolBar() {
 
   return (
     <>
-      <nav className="w-full border-b border-gray-300 px-4 py-2 bg-white shadow-sm sticky top-0 z-50">
+      <nav className="w-full border-b border-gray-300 px-4 py-2 shadow-sm sticky top-0 z-50 bg-base-100">
         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
           {/* Bouton Sidebar (always visible) */}
           <button

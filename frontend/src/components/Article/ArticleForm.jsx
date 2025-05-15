@@ -182,10 +182,10 @@ function ArticleForm() {
   return (
     <div className="container">
       <SideBar />
-      <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
+      <div className={`main ${ouvrireMenuDrawer ? "active" : ""} bg-base-100`}>
         <ToolBar />
         <div className="details p-6">
-          <div className="ameni">
+          <div className="ameni bg-base-100">
             {/* Titre */}
             <div className="cardHeader ">
               <h2 className="text-3xl font-bold text-blue-900 italic">
