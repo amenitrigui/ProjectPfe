@@ -179,13 +179,12 @@ function DevisForm() {
   const insertionDepuisDevisForm = useSelector(
     (state) => state.clientSlice.insertionDepuisDevisForm
   );
-  console.log(insertionDepuisDevisForm)
   useEffect(() => {
     if(insertionDepuisDevisForm){
       dispatch(setActiverBoutonsValiderAnnuler(true))
       dispatch(setActiverChampsForm(true));
       dispatch(setToolbarMode("ajout"))
-      console.log("ajout client ", toolbarMode, " ", toolbarTable)
+      // console.log("ajout client ", toolbarMode, " ", toolbarTable)
     }
   },[toolbarMode, toolbarTable])
 

@@ -33,6 +33,10 @@ function Settings() {
     console.log("Paramètres sauvegardés !");
   };
 
+  const modifierParametresAcces = () => {
+    dispatch(modifierParametresAcces())
+  }
+
   return (
     <div className="container ">
       <SideBar />
@@ -88,7 +92,7 @@ function Settings() {
                 </div>
 
                 <div className="mt-8">
-                  <button className="btn btn-primary" onClick={handleSave}>
+                  <button className="btn btn-primary" onClick={modifierParametresAcces}>
                     Enregistrer
                   </button>
                 </div>

@@ -490,6 +490,47 @@ const getUtilisateurParCode = async (req, res) => {
   }
 };
 
+const getModuleParamettreParClient = async(req, res) => {
+  const { societe,codeuser, modulepr, module } = req.query;
+  try {
+    if(!societe) {
+      return res.status(400).json({message: "le nom du société est manquant"})
+    }
+    if(!codeuser) {
+      return res.status(400).json({message: "le code d'utilisateur est manquant"})
+    }
+    if(!modulepr) {
+      return res.status(400).json({message: "le paramètre de module est manquant"})
+    }
+    if(!module) {
+      return res.status(400).json({message: "le nom du module est manquant"})
+    }
+    
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
+    const parametres = await sequelizeConnexionDbUtilisateur.query(`
+      SELECT accee, ecriture, ajouter, modifier, supprimer from usermodule where modulepr = :modulepr and module = :module and codeuser = :codeuser and societe = :societe
+      `, {
+        type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
+        replacements: {
+          modulepr,
+          module,
+          codeuser,
+          societe
+        }
+      })
+
+      if(parametres.length > 0) {
+        return res.status(200).json({message: `paramètres d'utilisateur ${codeuser} `})
+      }
+  }catch(error) {
+    return res.status(500).json({message: error.message})
+  }
+}
+
 module.exports = {
   AjouterUtilisateur,
   getDerniereCodeUtilisateur,
