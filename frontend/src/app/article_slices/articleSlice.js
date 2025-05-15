@@ -148,7 +148,7 @@ export const getListeArticles = createAsyncThunk(
         },
       }
     );
-    console.log(response)
+    console.log(response);
     return response.data.listeArticles;
   }
 );
@@ -384,13 +384,13 @@ export const getListeArticleParCodeArticle = createAsyncThunk(
           thunkAPI.getState().utilisateurSystemSlice.dbName
         }/getListeArticleParCodeArticle`,
         {
+          params: {
+            codeArticle: parametres.codeArticle,
+          },
           headers: {
             Authorization: `Bearer ${
               thunkAPI.getState().utilisateurSystemSlice.token
             }`,
-          },
-          params: {
-            codeArticle: parametres.codeArticle,
           },
         }
       );
