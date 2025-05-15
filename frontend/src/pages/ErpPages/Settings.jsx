@@ -2,8 +2,9 @@ import React, { useEffect } from "react";
 import SideBar from "../../components/Common/SideBar";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { setOuvrireDrawerMenu, setTheme } from "../../app/interface_slices/interfaceSlice";
+import { setIsParametresRoute, setOuvrireDrawerMenu, setTheme } from "../../app/interface_slices/interfaceSlice";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
+import ToolBar from "../../components/Common/ToolBar";
 
 function Settings() {
   const dispatch = useDispatch();
@@ -15,6 +16,14 @@ function Settings() {
     const savedTheme = localStorage.getItem("theme") || "light";
     dispatch(setTheme(savedTheme));
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(setIsParametresRoute(true));
+
+    return () => {
+      dispatch(setIsParametresRoute(false));
+    }
+  },[dispatch])
 
   const toggleSidebar = () => {
     dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
@@ -31,14 +40,7 @@ function Settings() {
     <div className="container">
       <SideBar />
       <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
-        <button
-          type="button"
-          className="flex flex-col items-center w-16 sm:w-20 p-2 mr-3 rounded-lg transition-all duration-200"
-          onClick={toggleSidebar}
-        >
-          <FontAwesomeIcon icon={faBars} className="text-xl mb-1" />
-          <span className="text-[10px] sm:text-xs">Menu</span>
-        </button>
+        <ToolBar />
         <div className="details">
           <div className="recentOrders flex flex-row flex-nowrap gap-4">
             <div className="flex-1">

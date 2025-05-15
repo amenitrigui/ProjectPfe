@@ -103,6 +103,7 @@ function ToolBar() {
   const listeToutCodesClients = useSelector(
     (state) => state.clientSlice.listeToutCodesClients
   );
+  const isParametresRoute = useSelector((state) => state.interfaceSlice.isParametresRoute);
   const listeNUMBL = useSelector((state) => state.devisSlice.listeNUMBL);
   const menuRef = useRef();
   const buttonRef = useRef();
@@ -572,7 +573,7 @@ function ToolBar() {
             <span className="text-[10px] sm:text-xs">Menu</span>
           </button>
 
-          {!isDashBoardRoute && (
+          {!isDashBoardRoute && !isParametresRoute && (
             <>
               {!activerBoutonsValiderAnnuler && (
                 <>
