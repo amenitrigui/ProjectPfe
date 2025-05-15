@@ -285,7 +285,7 @@ const ClientForm = () => {
   return (
     <div className="container">
       <SideBar />
-      <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
+      <div className={`main ${ouvrireMenuDrawer ? "active" : ""} bg-base-100`}>
         <ToolBar />
         <div className="details">
           <div className="recentOrders">
@@ -300,7 +300,7 @@ const ClientForm = () => {
                 t
               </h2>Fiche clien
             </div> */}
-            <div className="cardHeader ">
+            <div className="cardHeader bg-base-100">
               <h2 className="text-3xl font-bold text-blue-900 italic">
                 Fiche Client
               </h2>
@@ -682,7 +682,7 @@ const ClientForm = () => {
             </div>
           </div>
 
-          <div className="recentCustomers">
+          <div className="recentCustomers bg-base-100">
             <div className="card rounded-box  space-y-2">
               <h2
                 style={{
@@ -782,7 +782,7 @@ const ClientForm = () => {
         </div>
         {/* 2eme whada */}
         <div className="details">
-          <div className="banquedetails">
+          <div className="banquedetails bg-base-100">
             <div className="collapse bg-base-100 border-base-300 border">
               <input type="checkbox" />
               <div

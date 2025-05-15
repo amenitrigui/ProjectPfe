@@ -261,15 +261,15 @@ function DevisForm() {
     <>
       <div className="container">
         <SideBar />
-        <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
+        <div className={`main ${ouvrireMenuDrawer ? "active" : ""} bg-base-100`}>
           <ToolBar />
-          <div className="details">
+          <div className="details bg-base-100">
             <div className="recentOrders flex flex-row flex-nowrap gap-4">
               <div className="flex-1">
                 {/*Identifiants devis */}
                 <div className="flex-1">
                   <div className="grid grid-cols-2 grid-rows-2">
-                    <div className="space-y-0 p-6 border rounded-lg shadow-md bg-white">
+                    <div className="space-y-0 p-6 border rounded-lg shadow-md bg-base-100">
                       <h3 className="text-lg font-bold flex items-center space-x-2">
                         <FaFileInvoice className="text-blue-500" />
                         <span>Identifiants Devis</span>
@@ -343,7 +343,7 @@ function DevisForm() {
                     </div>
 
                     {/* Détails Devis */}
-                    <div className="space-y-0 p-6 border rounded-lg shadow-md bg-white">
+                    <div className="space-y-0 p-6 border rounded-lg shadow-md bg-base-100">
                       <h3 className="text-lg font-bold flex items-center space-x-2">
                         <FaClipboardList className="text-purple-500" />
                         <span>Détails Devis</span>
@@ -397,7 +397,7 @@ function DevisForm() {
                       />
                     </div>
                     {/* Information Client */}
-                    <div className="col-span-2 space-y-0 p-6 border rounded-lg shadow-md bg-white">
+                    <div className="col-span-2 space-y-0 p-6 border rounded-lg shadow-md bg-base-100">
                       <h3 className="text-lg font-bold flex items-center space-x-2">
                         <FaUser className="text-green-500" />
                         <span>Information Client</span>
@@ -456,9 +456,9 @@ function DevisForm() {
               </div>
             </div>
 
-            <div className="recentCustomers">
+            <div className="recentCustomers bg-base-100">
               {/* Informations de l'Utilisateur */}
-              <div className="space-y-0 p-6 border rounded-lg shadow-md bg-white">
+              <div className="space-y-0 p-6 border rounded-lg shadow-md bg-base-100">
                 <h3 className="text-lg font-bold flex items-center space-x-2">
                   <FaUsers className="text-red-500" />
                   <span>Informations de Vendeur</span>
@@ -531,7 +531,7 @@ function DevisForm() {
               <LignesDevis />
             </div>
           </div>
-          <div className="bg-gray-100 p-3 sm:p-9 sticky bottom-3 w-full border-t border-gray-300">
+          <div className="bg-base-100 p-3 sm:p-9 sticky bottom-3 w-full border-t border-gray-300">
             <div className="flex flex-wrap gap-4 justify-between">
               {/* Montant HT */}
               <div className="flex-1 min-w-[150px] max-w-[200px]">

@@ -128,7 +128,7 @@ function App() {
   console.log(jetton)
   return (
     <div className={theme === "dark" ? "dark" : ""}>
-      <button
+      {/* <button
         className="btn btn-primary"
         onClick={() => {
           dispatch(setToken(""));
@@ -147,7 +147,7 @@ function App() {
         }}
       >
         restore token
-      </button>
+      </button> */}
       <Routes>
         
         <Route path="/" element={<SignInPage />} />

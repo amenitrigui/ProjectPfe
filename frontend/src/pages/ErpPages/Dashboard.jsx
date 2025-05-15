@@ -183,7 +183,7 @@ const Dashboard = () => {
     <div className="container">
       <SideBar />
 
-      <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
+      <div className={`main ${ouvrireMenuDrawer ? "active" : ""} bg-base-100`}>
         <ToolBar />
 
         <div className="cardBox grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -217,19 +217,19 @@ const Dashboard = () => {
             };
 
             return (
-              <div className="card" key={index}>
+              <div className="bg-base-100 card" key={index}>
                 <div>
-                  <div className="numbers">{card.number}</div>
-                  <div className="cardName">
+                  <div className="numbers dark:bg-base-100">{card.number}</div>
+                  <div className="cardName dark:bg-base-100">
                     {card.name}
                     {card.user && (
-                      <span className="text-blue-600 font-semibold ml-1">
+                      <span className="text-blue-600 font-semibold ml-1 ">
                         {` ${card.user}`}
                       </span>
                     )}
                   </div>
                 </div>
-                <div className="iconBx">
+                <div className="iconBx dark:bg-base-100">
                   <ion-icon name={getIcon(card.name)}></ion-icon>
                 </div>
               </div>
@@ -240,7 +240,7 @@ const Dashboard = () => {
         <div className="details grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           {/* Bar Chart */}
           {utilisateurConnecte.type.toLowerCase() === "superviseur" && (
-            <div className="p-4 bg-white shadow rounded">
+            <div className="p-4 bg-base-100 shadow rounded">
               <div className="cardHeader mb-4">
                 <h2>Nombre de devis par représentant</h2>
               </div>
@@ -265,7 +265,7 @@ const Dashboard = () => {
           )}
 
           {/* Pie Chart */}
-          <div className="p-4 bg-white shadow rounded">
+          <div className="p-4 shadow rounded bg-base-100">
             <div className="cardHeader mb-4">
               <h2>Statistiques Devis</h2>
             </div>
@@ -295,7 +295,7 @@ const Dashboard = () => {
           </div>
 
           {/* Bar Chart */}
-          <div className="p-4 bg-white shadow rounded">
+          <div className="p-4 bg-base-100 shadow rounded">
             <div className="cardHeader mb-4">
               <h2>Nombre de devis générés par mois et année</h2>
             </div>

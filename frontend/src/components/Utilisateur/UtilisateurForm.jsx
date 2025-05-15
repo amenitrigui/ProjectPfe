@@ -125,10 +125,10 @@ const UtilisateurForm = () => {
   return (
     <div className="container">
       <SideBar />
-      <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
+      <div className={`main ${ouvrireMenuDrawer ? "active" : ""} bg-base-100`}>
         <ToolBar />
         <div className="details">
-          <div className="recentCustomers" style={{ width: "90vw" }}>
+          <div className="recentCustomers bg-base-100" style={{ width: "90vw" }}>
             <fieldset className="border border-gray-300 p-4 rounded-lg">
               <legend className="px-2 text-lg font-semibold text-blue-900">
                 Fiche Utilisateur
