@@ -6,7 +6,7 @@ function Tab() {
     
   return (
     <>
-      <div className="test">
+      <div className="test min-w-[200px]">
         <div className="w-50 min-h-screen p-1">
           {/* Conteneur principal des onglets - Taille augmentée */}
           <div
@@ -30,7 +30,7 @@ function Tab() {
               aria-label="Valorisation"
               defaultChecked
             />
-            <div className="tab-content bg-base-100 border-base-300 rounded-lg p-20 w-full min-h-[400px] space-y-6">
+            <div className="tab-content  border-base-300 rounded-lg p-6 w-full min-h-[100px] space-y-6">
               <div className="w-full h-full">
                 {/* Contenu Valorisation */}
                 <ValorisationTab />

@@ -426,7 +426,7 @@ function ArticleForm() {
           </div>
         </div>
         <div className="details p-6">
-          <div className="collapse bg-base-100 border-base-300 border h-120 w-[90vw]">
+          <div className="collapse bg-base-100 border-base-300 border h-120 w-[100vw]">
             <input type="checkbox" />
             <div
               className="collapse-title font-semibold mb-1"
@@ -434,7 +434,7 @@ function ArticleForm() {
             >
               Informations supplementaires d'article
             </div>
-            <div className="collapse-content  text-sm w-[45vw]">
+            <div className="collapse-content text-sm w-[45vw]">
               <Tab />
             </div>
           </div>
