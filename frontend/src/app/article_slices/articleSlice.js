@@ -1,4 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  defaultArticleInfos,
+  defaultLigneDevisInfos,
+} from "../constantes/article";
 import axios from "axios";
 
 // * récupere la liste de familles
@@ -10,8 +14,15 @@ export const getArticleFamiles = createAsyncThunk(
   async (_, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getListeFamilles`
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getListeFamilles`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
     return response.data.familles;
   }
@@ -24,13 +35,42 @@ export const getArticleFamiles = createAsyncThunk(
 
 export const getListeCodesArticles = createAsyncThunk(
   "Slice/getListeCodesArticles",
-  async (_, thunkAPI) => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getToutCodesArticle`
-      // $paramettre de la requette
-    );
+  async (codeFamille, thunkAPI) => {
+    let response;
+    if (!codeFamille) {
+      response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/article/${
+          thunkAPI.getState().utilisateurSystemSlice.dbName
+        }/getToutCodesArticle`,
+        {
+          headers: {
+            Authorization: `Bearer ${
+              thunkAPI.getState().utilisateurSystemSlice.token
+            }`,
+          },
+        }
+        // $paramettre de la requette
+      );
+    }
+
+    if (codeFamille) {
+      response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/article/${
+          thunkAPI.getState().utilisateurSystemSlice.dbName
+        }/getToutCodesArticle`,
+        {
+          headers: {
+            Authorization: `Bearer ${
+              thunkAPI.getState().utilisateurSystemSlice.token
+            }`,
+          },
+
+          params: {
+            codeFamille: codeFamille,
+          },
+        }
+      );
+    }
     return response.data.listeCodesArticles;
   }
 );
@@ -45,13 +85,22 @@ export const suprimerArticle = createAsyncThunk(
   // ! param1 (code) : à passer au moment de l'appel de la méthode
   // ! param2 (thunkAPI) : un paramètres supplementaire qui revient de la méthode createAsyncThunk
   async (code, thunkAPI) => {
-    console.log(code);
-    const response = await axios.delete(`
-      ${process.env.REACT_APP_API_URL}/api/article/${
-      thunkAPI.getState().UtilisateurInfo.dbName
-    }/suprimerArticle/${code}
-    `);
-    console.log(response);
+    const response = await axios.delete(
+      `${process.env.REACT_APP_API_URL}/api/article/${
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/suprimerArticle`,
+
+      {
+        params: {
+          code: code,
+        },
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
+    );
     return response;
   }
 );
@@ -66,8 +115,15 @@ export const getListeFamillesArticle = createAsyncThunk(
   async (_, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getListeFamilles`
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getListeFamilles`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
 
     return response.data.familles;
@@ -82,9 +138,17 @@ export const getListeArticles = createAsyncThunk(
   async (_, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getListeArticles`
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getListeArticles`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
+    console.log(response);
     return response.data.listeArticles;
   }
 );
@@ -94,18 +158,22 @@ export const getListeArticles = createAsyncThunk(
 // * output: listeArticles = [{"code": "testCode", "libelle": "testLibelle", ... ""}]
 export const filtrerListeArticle = createAsyncThunk(
   "Slice/filtrerListeArticle",
-  async (filters, thunkAPI) => {
+  async (_, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().UtilisateurInfo.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/filtrerListeArticle`,
       {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
         params: {
-          filters: filters,
+          filters: thunkAPI.getState().articleSlice.filters,
         },
       }
     );
-
     return response.data.data;
   }
 );
@@ -119,11 +187,17 @@ export const getDesignationFamilleParCodeFamille = createAsyncThunk(
   async (codeFamille, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getDesignationFamilleParCodeFamille`, {
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getDesignationFamilleParCodeFamille`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
         params: {
-          codeFamille: codeFamille
-        }
+          codeFamille: codeFamille,
+        },
       }
     );
     return response.data.getDesignationFamilleParCodeFamille[0].libelle;
@@ -135,8 +209,15 @@ export const getListecodesousFamille = createAsyncThunk(
   async (_, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getListecodesousFamille`
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getListecodesousFamille`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
     return response.data.getcodesousFamille;
   }
@@ -144,13 +225,18 @@ export const getListecodesousFamille = createAsyncThunk(
 export const getdesignationSousFamillebycodeSousFamille = createAsyncThunk(
   "article/getdesignationSousFamillebycodeSousFamille",
   async (codeSousFamille, thunkAPI) => {
-    console.log(codeSousFamille);
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getdesignationSousFamillebycodeSousFamille/${codeSousFamille}`
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getdesignationSousFamillebycodeSousFamille/${codeSousFamille}`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
-    console.log(response.data.libelle[0].libelle);
     return response.data.libelle[0].libelle;
   }
 );
@@ -159,11 +245,17 @@ export const getArticleParCode = createAsyncThunk(
   async (code, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getArticleParCode`, {
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getArticleParCode`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
         params: {
-          code: code
-        }
+          code: code,
+        },
       }
     );
     return response.data.article;
@@ -175,32 +267,46 @@ export const ajouterArticle = createAsyncThunk(
   async (_, thunkAPI) => {
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().UtilisateurInfo.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/ajouterArticle`,
-      // * body/ req.body : c'est l'objet equivalent à req.body dans le backend
       {
-        articleAjoute: thunkAPI.getState().ArticlesDevis.articleInfos,
+        articleAjoute: thunkAPI.getState().articleSlice.articleInfos,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
-
+      // * body/ req.body : c'est l'objet equivalent à req.body dans le backend
     );
 
-    console.log(response);
- //return response.data
+    //return response.data
   }
 );
 export const modifierarticle = createAsyncThunk(
   "articleSlice/ModifierArticle",
   async (code, thunkAPI) => {
-    console.log(code);
     const response = await axios.put(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/modifierArticle/${code}`,
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/modifierArticle`,
       {
-        article: thunkAPI.getState().ArticlesDevis.articleInfos,
+        article: thunkAPI.getState().articleSlice.articleInfos,
+      },
+      {
+        params: {
+          code: code,
+        },
+
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
     );
-    console.log(response.data);
     return response;
   }
 );
@@ -210,14 +316,19 @@ export const getListeArticleparFamille = createAsyncThunk(
   async (codeFamille, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getListeArticleparFamille`, {
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getListeArticleparFamille`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
         params: {
-          codeFamille: codeFamille
-        }
+          codeFamille: codeFamille,
+        },
       }
     );
-    console.log(response);
     return response.data.ListecodeFamille;
   }
 );
@@ -227,14 +338,19 @@ export const getListeArticleparLibelle = createAsyncThunk(
   async (libelle, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getListeArticleparLibelle`, {
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getListeArticleparLibelle`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
         params: {
-          libelle: libelle
-        }
+          libelle: libelle,
+        },
       }
     );
-    console.log(response);
     return response.data.ListelibelleArticle;
   }
 );
@@ -244,63 +360,125 @@ export const getListeArticleParSousFamille = createAsyncThunk(
   async (SousFamille, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getListeArticleParSousFamille/${SousFamille}`
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getListeArticleParSousFamille/${SousFamille}`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
-    console.log(response);
     return response.data.ListeArticleSousFamille;
   }
 );
 
 export const getListeArticleParCodeArticle = createAsyncThunk(
   "article/getListeArticleParCodeArticle",
-  async (codeArticle, thunkAPI) => {
-    console.log(codeArticle);
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/article/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getListeArticleParCodeArticle/${codeArticle}`
-    );
-    console.log(response);
+  async (parametres, thunkAPI) => {
+    let response;
+    if (parametres.codeArticle) {
+      response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/article/${
+          thunkAPI.getState().utilisateurSystemSlice.dbName
+        }/getListeArticleParCodeArticle`,
+        {
+          params: {
+            codeArticle: parametres.codeArticle,
+          },
+          headers: {
+            Authorization: `Bearer ${
+              thunkAPI.getState().utilisateurSystemSlice.token
+            }`,
+          },
+        }
+      );
+    }
+    if (parametres.codeArticle && parametres.codeFamille) {
+      response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/article/${
+          thunkAPI.getState().utilisateurSystemSlice.dbName
+        }/getListeArticleParCodeArticle`,
+        {
+          params: {
+            codeArticle: parametres.codeArticle,
+            codeFamille: parametres.codeFamille,
+          },
+        }
+      );
+    }
     return response.data.ListecodeArticle;
   }
 );
 
-const defaultArticleInfos = {
-  // ! ajouter les valeurs par défaut pour les états de checkbox
-  code: "",
-  libelle: "",
-  unite: "",
-  famille: "",
-  codesousfam: "",
-  codebarre: "",
-  nbrunite: "",
-  comptec: "",
-  type: "",
-  typeart: "",
-  colisage: "",
-  import: "",
-  tauxtva: "",
-  prixbrut: "",
-  prixnet: "",
-  fodec: "",
-  CONFIG: "",
-  reforigine: "",
-  lieustock: "",
-  NGP: "",
-  sav: "",
-  cons: "",
-  nomenclature: "",
-  gestionstock: "",
-  avecconfig: "",
-  ventevrac: "",
-  usera: "",
-  userm: "",
-  datecreate: new Date().toISOString().split("T")[0],
-  datemaj: new Date().toISOString().split("T")[0],
-  libelleFamille: "",
-  Libellesousfamille: "",
-};
+export const getDerniereCodeArticle = createAsyncThunk(
+  "articleSlice/getDerniereCodeArticle",
+  async (_, thunkAPI) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/article/${
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getDerniereCodeArticle`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
+    );
+
+    return response.data.derniereCodeArticle.code;
+  }
+);
+
+// const defaultArticleInfos = {
+//   code: "",
+//   libelle: "",
+//   unite: "",
+//   famille: "",
+//   codesousfam: "",
+//   codebarre: "",
+//   nbrunite: "",
+//   comptec: "",
+//   type: "",
+//   typeart: "",
+//   colisage: "",
+//   import: "",
+//   tauxtva: "",
+//   prixbrut: "",
+//   prixnet: "",
+//   fodec: "",
+//   CONFIG: "",
+//   reforigine: "",
+//   lieustock: "",
+//   NGP: "",
+//   sav: "",
+//   cons: "",
+//   Dtcons: "0",
+//   remmax: "",
+//   prix1ttc: "",
+//   prix2TTC: "",
+//   prix3TTC: "",
+//   prix4TTC: "",
+
+//   prix1: "",
+//   prix2: "",
+//   prix3: "",
+//   prix4: "",
+//   nomenclature: "",
+//   gestionstock: "",
+//   avecconfig: "",
+//   ventevrac: "",
+//   usera: "",
+//   userm: "",
+//   datecreate: new Date().toISOString().split("T")[0],
+//   datemaj: new Date().toISOString().split("T")[0],
+//   libelleFamille: "",
+//   Libellesousfamille: "",
+//   derniereCodeArticle: "",
+//   quantite: "",
+// };
 
 export const articleSlice = createSlice({
   name: "articleSlice",
@@ -310,7 +488,18 @@ export const articleSlice = createSlice({
     ListeFamille: [],
     ListeSousFamille: [],
     ListeCodeArticlesparLib: {},
+    derniereCodeArticle: "",
+    filters: {
+      code: "",
+      libelle: "",
+      famille: "",
+      type: "",
+      typeart: "",
+      codesousfam: "",
+    },
     defaultArticleInfos,
+    defaultLigneDevisInfos,
+    ligneDevisInfos: { ...defaultLigneDevisInfos },
     articleInfos: { ...defaultArticleInfos },
   },
   reducers: {
@@ -318,8 +507,19 @@ export const articleSlice = createSlice({
       const { colonne, valeur } = action.payload;
       state.articleInfos[colonne] = valeur;
     },
+    setFiltresSaisient: (state, action) => {
+      const { valeur, collonne } = action.payload;
+      state.filters[collonne] = valeur; // Correction ici
+    },
+    setLigneDevisInfos: (state, action) => {
+      const { colonne, valeur } = action.payload;
+      state.ligneDevisInfos[colonne] = valeur;
+    },
     setArticleInfosEntiere: (state, action) => {
       state.articleInfos = action.payload;
+    },
+    setLigneDevisInfosEntiere: (state, action) => {
+      state.ligneDevisInfos = action.payload;
     },
     setListeArticle: (state, action) => {
       state.ListeArticle = action.payload;
@@ -328,6 +528,14 @@ export const articleSlice = createSlice({
       state.articleInfos = {
         ...state.defaultArticleInfos,
       };
+    },
+    viderChampsLigneDevisInfos: (state) => {
+      state.ligneDevisInfos = {
+        ...state.defaultLigneDevisInfos,
+      };
+    },
+    setDerniereCodeArticle: (state, action) => {
+      state.derniereCodeArticle = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -456,11 +664,16 @@ export const articleSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getArticleParCode.fulfilled, (state, action) => {
-        if (action.payload && action.payload != []) {
+        if (
+          action.payload &&
+          action.payload != [] &&
+          action.payload.length != 0
+        ) {
           // ! ceci est pour l'interface de recherche qui nécissite
           // ! une tableau pour populer le data table
           state.ListeArticle = action.payload;
           state.articleInfos = action.payload[0];
+          state.ligneDevisInfos = action.payload[0];
         }
         state.status = "reussi";
       })
@@ -512,14 +725,22 @@ export const articleSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getListeArticleParCodeArticle.fulfilled, (state, action) => {
-        
         state.ListeArticle = action.payload;
-       
-       
-
         state.status = "reussi";
       })
       .addCase(getListeArticleParCodeArticle.rejected, (state, action) => {
+        state.erreur = action.payload;
+        state.status = "echoue";
+      })
+
+      .addCase(getDerniereCodeArticle.pending, (state) => {
+        state.status = "chargement";
+      })
+      .addCase(getDerniereCodeArticle.fulfilled, (state, action) => {
+        state.derniereCodeArticle = action.payload;
+        state.status = "reussi";
+      })
+      .addCase(getDerniereCodeArticle.rejected, (state, action) => {
         state.erreur = action.payload;
         state.status = "echoue";
       });
@@ -527,8 +748,13 @@ export const articleSlice = createSlice({
 });
 export const {
   setArticleInfos,
-  setArticleInfosEntiere,
+  setLigneDevisInfos,
   viderChampsArticleInfo,
   setListeArticle,
+  setArticleInfosEntiere,
+  setLigneDevisInfosEntiere,
+  viderChampsLigneDevisInfos,
+  setDerniereCodeArticle,
+  setFiltresSaisient,
 } = articleSlice.actions;
 export default articleSlice.reducer;

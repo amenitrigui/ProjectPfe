@@ -5,22 +5,19 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   filtrerListeArticle,
   getListeArticles,
+  setFiltresSaisient,
 } from "../../app/article_slices/articleSlice";
+import SideBar from "../../components/Common/SideBar";
+import ToolBar from "../../components/Common/ToolBar";
 function ArticleList() {
   const dispatch = useDispatch();
-  const listeArticle = useSelector((state) => state.ArticlesDevis.ListeArticle);
-  const filters = {
-    code: "",
-    libelle: "",
-    famille: "",
-    type: "",
-    typeart: "",
-    codesousfam: "",
-  };
+  const listeArticle = useSelector((state) => state.articleSlice.ListeArticle);
+  const filters = useSelector((state) => state.articleSlice.filters);
 
-  const handleFilterChange = (e, colonne) => {
-    const updatedFilters = { ...filters, [colonne]: e.target.value };
-    dispatch(filtrerListeArticle(updatedFilters));
+  const handleFilterChange = (e, column) => {
+    dispatch(setFiltresSaisient({ valeur: e.target.value, collonne: column }));
+
+    dispatch(filtrerListeArticle(filters));
   };
 
   useEffect(() => {
@@ -65,25 +62,16 @@ function ArticleList() {
       },
     },
   };
+  const ouvrireMenuDrawer = useSelector(
+    (state) => state.interfaceSlice.ouvrireMenuDrawer
+  );
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      <div className="flex-1 p-6">
-        <div className="mt-2 flex items-center relative">
-          <Link
-            to="/ArticleFormTout"
-            className="text-lg font-semibold text-[primaryColor] underline hover:text-blue-500 absolute left-0"
-          >
-            ← Retour
-          </Link>
+    <div className="container">
+      <SideBar></SideBar>
 
-          <h1
-            className="text-2xl font-bold text-center flex-1"
-            style={{ color: primaryColor }}
-          >
-            Liste d'Article
-          </h1>
-        </div>
+      <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
+        <ToolBar></ToolBar>
 
         {/* Filtres */}
         <div className="grid grid-cols-3 gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
@@ -104,7 +92,6 @@ function ArticleList() {
             columns={columns}
             data={listeArticle}
             customStyles={customStyles}
-            selectableRows
             fixedHeader
             pagination
             highlightOnHover

@@ -1,0 +1,4 @@
+const sousfamilleInfoInitiales = {
+  code: "",
+  libelle: "",
+};

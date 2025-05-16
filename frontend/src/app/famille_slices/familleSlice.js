@@ -2,39 +2,25 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // * thunk pour récuperer la liste de familles par code
-// export const getListeFamillesParCodeFamille = createAsyncThunk(
-//   "familleSlice/getListeFamillesParCodeFamille",
-//   async (codeFamille, thunkAPI) => {
-//     console.log(codeFamille);
-//     const response = await axios.get(
-//       `${process.env.REACT_APP_API_URL}/api/famille/${
-//         thunkAPI.getState().UtilisateurInfo.dbName
-//       }/getListeFamillesParCodeFamille`,
-//       {
-//         params: {
-//           codeFamille: codeFamille,
-//         },
-//       }
-//     );
-
-//     console.log(response);
-//    // return response.data.listeFamilles;
-//   }
-// );
 export const getListeFamillesParCodeFamille = createAsyncThunk(
   "articleSlice/getListeFamillesParCodeFamille",
   async (codeFamille, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/famille/${
-        thunkAPI.getState().UtilisateurInfo.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeFamillesParCodeFamille`,
       {
         params: {
           codeFamille: codeFamille,
         },
+
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
     );
-    console.log(response);
     return response.data.getListeFamillesParCodeFamille;
   }
 );
@@ -45,10 +31,16 @@ export const getListeFamillesParLibelleFamille = createAsyncThunk(
   async (LibelleFamille, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/famille/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getListeFamillesParLibelleFamille/${LibelleFamille}`
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getListeFamillesParLibelleFamille/${LibelleFamille}`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
-    console.log(response);
     return response.data.familles;
   }
 );
@@ -57,30 +49,38 @@ export const getListeFamillesParLibelleFamille = createAsyncThunk(
 export const ajouterFamille = createAsyncThunk(
   "FamilleSlice/ajouterFamille",
   async (_, thunkAPI) => {
-    console.log(thunkAPI.getState().familleSlice.FamilleInfos);
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/famille/${
-        thunkAPI.getState().UtilisateurInfo.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/ajouterFamille`,
       {
         FamilleAjoute: thunkAPI.getState().familleSlice.FamilleInfos,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
     );
 
- 
     return response.data.FamilleCree;
   }
 );
 
 // * thunk pour récuperer la liste de sous-familles par libelle
-
+const familleInfoInitiales = {
+  code: "",
+  libelle: "",
+};
 export const familleSlice = createSlice({
   name: "familleSlice",
   initialState: {
+    familleInfoInitiales,
     listeFamilles: [],
     FamilleInfos: {
-      code: "",
-      libelle: "",
+      ...familleInfoInitiales,
     },
     status: "",
     erreur: "",
@@ -94,9 +94,13 @@ export const familleSlice = createSlice({
     },
     setFamilleInfo: (state, action) => {
       const { colonne, valeur } = action.payload;
-
       state.FamilleInfos[colonne] = valeur;
     },
+    viderFamilleInfos: (state) =>{
+      state.FamilleInfos = {
+        ...familleInfoInitiales
+      }
+    }
   },
 
   extraReducers: (builder) => {
@@ -128,7 +132,7 @@ export const familleSlice = createSlice({
       });
   },
 });
-export const { setListeFamilles, setFamilleInfosEntiere, setFamilleInfo } =
+export const { setListeFamilles, setFamilleInfosEntiere, setFamilleInfo, viderFamilleInfos } =
   familleSlice.actions;
 
 export default familleSlice.reducer;

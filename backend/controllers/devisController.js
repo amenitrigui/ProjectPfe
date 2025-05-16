@@ -1,8 +1,11 @@
-const { QueryTypes, Op } = require("sequelize");
+const { QueryTypes, Op, where } = require("sequelize");
 const defineDfpModel = require("../models/societe/dfp");
 const defineLdfpModel = require("../models/societe/ldfp");
-const { getDatabaseConnection } = require("../common/commonMethods");
-
+const {
+  getDatabaseConnection,
+  verifyTokenValidity,
+} = require("../common/commonMethods");
+const { getConnexionBd } = require("../db/config");
 
 // * récuperer la liste des dévis d'une societé donnée (dbName)
 // * example:
@@ -19,10 +22,14 @@ const getTousDevis = async (req, res) => {
   }
 
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
 
     const result = await dbConnection.query(
-      `SELECT NUMBL, DATEBL,libpv, datt,CODECLI,ADRCLI,RSCLI,MTTC,CODEFACTURE,usera,RSREP,codesecteur FROM dfp `,
+      `SELECT NUMBL, DATEBL,libpv, datt,CODECLI,ADRCLI,RSCLI,MTTC,CODEFACTURE,usera,RSREP,codesecteur ,delailivr  , transport FROM dfp `,
       { type: QueryTypes.SELECT }
     );
 
@@ -58,7 +65,11 @@ const getTotalChiffres = async (req, res) => {
     });
   }
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     const totalchifre = await Devis.sum("MTTC");
 
@@ -93,7 +104,13 @@ const getNombreDevis = async (req, res) => {
   }
 
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    // const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd();
+
     const Devis = defineDfpModel(dbConnection);
     const devisCount = await Devis.count({
       distinct: true,
@@ -131,23 +148,27 @@ const ajouterDevis = async (req, res) => {
     cp,
     DATEBL,
     MREMISE,
+    delailivr,
     MTTC,
     comm,
     RSREP,
     CODEREP,
+    REFCOMM,
     usera,
     RSCLI,
+    transport,
     codesecteur,
     MHT,
+    TIMBRE,
     articles,
   } = req.body.devisInfo;
 
-  articles.map((article) => {
-    article.NumBL = NUMBL;
-  });
-
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
 
     const Dfp = defineDfpModel(dbConnection);
     const ldfp = defineLdfpModel(dbConnection);
@@ -178,19 +199,28 @@ const ajouterDevis = async (req, res) => {
       MHT,
       codesecteur,
       cp,
+      delailivr,
+      REFCOMM,
+      usera,
+      transport,
       comm,
       RSCLI,
-      MLETTRE: mlettre,
+      mlettre,
+      TIMBRE,
     };
 
     const devis = await Dfp.create(dfpData);
-    articles.map(async (article) => {
-      article.NLigne = articles.length;
-      article.CodeART = article.code;
-      const ligneDevis = await ldfp.create(article);
-      console.log(ligneDevis);
-    });
 
+    if (articles && articles.length > 0) {
+      // * map tout seul n'attend pas que les promis sont resolus
+      await Promise.all(
+        articles.map(async (article) => {
+          article.NumBL = NUMBL;
+          article.NLigne = articles.length;
+          await ldfp.create(article);
+        })
+      );
+    }
     return res.status(201).json({
       message: "Devis créé avec succès.",
       devis,
@@ -212,10 +242,13 @@ const ajouterDevis = async (req, res) => {
 // * http://localhost:5000/api/devis/SOLEVO/getLignesDevis/DV2300002
 const getLignesDevis = async (req, res) => {
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const { dbName } = req.params;
     const { NumBL } = req.params;
-    console.log(NumBL);
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const listeArticle = await dbConnection.query(
       `Select CodeART,Remise,Unite,QteART,DesART,TauxTVA,famille,PUART from ldfp where NumBL = :NumBL`,
       {
@@ -229,7 +262,6 @@ const getLignesDevis = async (req, res) => {
       listeArticle: listeArticle,
     });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ message: error.message });
   }
 };
@@ -238,10 +270,14 @@ const getLignesDevis = async (req, res) => {
 // * pour une societé donnée (dbName)
 const GetDevisParPeriode = async (req, res) => {
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const { dbName } = req.params;
     const { DATEBL, codeuser } = req.query;
 
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
 
     if (!DATEBL || !codeuser) {
       return res
@@ -250,7 +286,9 @@ const GetDevisParPeriode = async (req, res) => {
     }
 
     const devis = await dbConnection.query(
-      `SELECT NUMBL, libpv, ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT 
+      `SELECT 
+          NUMBL, libpv, ADRCLI, CODECLI,  DATEBL, MREMISE, MTTC, mlettre,
+          comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT ,transport,REFCOMM,delailivr
        FROM dfp 
        WHERE DATEBL LIKE :DATEBL AND usera = :codeuser`,
       {
@@ -276,17 +314,19 @@ const GetDevisParPeriode = async (req, res) => {
 //* url http://localhost:5000/api/devis/SOLEVO/getDevisParClient?CODECLI=41102630&codeuser=4
 const GetDevisListParClient = async (req, res) => {
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const { dbName } = req.params;
     const { CODECLI, codeuser } = req.query;
 
-    console.log(dbName, " ", CODECLI, " ", codeuser);
-
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
 
     const devis = await dbConnection.query(
       `SELECT 
-         NUMBL, libpv, ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, 
-         comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT 
+          NUMBL, libpv, ADRCLI, CODECLI,  DATEBL, MREMISE, MTTC, mlettre,
+          comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT ,transport,REFCOMM,delailivr
        FROM dfp 
        WHERE CODECLI LIKE :codecli AND usera = :codeuser`,
       {
@@ -312,21 +352,31 @@ const GetDevisListParClient = async (req, res) => {
 // * example:
 // * input : 4
 // * output : la liste de codes devis généré par l'utilisateur 4
-// * http://localhost:5000/api/devis/SOLEVO/getCodesDevis/4
+// * http://localhost:5000/api/devis/SOLEVO/getCodesDevis/05
 const getCodesDevis = async (req, res) => {
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const { dbName } = req.params;
     const { usera } = req.params;
-    const dbConnection = await getDatabaseConnection(dbName);
-    const listeNUMBL = await dbConnection.query(
-      `SELECT NUMBL from dfp where usera = :usera order by CAST(NUMBL AS UNSIGNED) ASC`,
-      {
-        type: dbConnection.QueryTypes.SELECT,
-        replacements: {
-          usera: usera,
-        },
-      }
-    );
+    const query = `
+      SELECT NUMBL 
+      FROM dfp 
+      WHERE usera = :usera 
+      ORDER BY 
+        REGEXP_REPLACE(NUMBL, '^[A-Za-z]+', ''),  -- Remove alphabetic prefixes
+        LENGTH(NUMBL),                            -- Sort by length
+        NUMBL                                     -- Final sort
+    `;
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
+    const listeNUMBL = await dbConnection.query(query, {
+      type: dbConnection.QueryTypes.SELECT,
+      replacements: {
+        usera: usera,
+      },
+    });
 
     return res.status(200).json({
       message: "tout le code devis recupere avec succes",
@@ -345,19 +395,22 @@ const getCodesDevis = async (req, res) => {
 // * http://localhost:5000/api/devis/SOLEVO/getDevisParNUMBL/DV2300002?codeuser=4
 const getDevisParNUMBL = async (req, res) => {
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const { dbName, NUMBL } = req.params;
     const { codeuser } = req.query;
 
-    const dbConnection = await getDatabaseConnection(dbName);
-    console.log(NUMBL, " ", codeuser);
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
 
     if (NUMBL && codeuser) {
       const devis = await dbConnection.query(
         `SELECT 
-          NUMBL, libpv, ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, 
-          comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT 
+          NUMBL, libpv, ADRCLI, CODECLI,  DATEBL, MREMISE, MTTC, mlettre,
+          comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT ,transport,REFCOMM,delailivr
          FROM dfp 
-         WHERE NUMBL = :numbl 
+         WHERE NUMBL LIKE :numbl 
            AND usera = :codeuser`,
         {
           replacements: {
@@ -389,8 +442,12 @@ const getDevisParNUMBL = async (req, res) => {
 // ! still haven't tested this
 const getDevisCreator = async (req, res) => {
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const { codea } = req.params;
-    const dbConnection = getDatabaseConnection("UserErpSole");
+    const dbConnection = getConnexionBd(); //getDatabaseConnection(process.env.DB_USERS_NAME);
     const resultat = await dbConnection.query(
       `SELECT * FROM utlisateur u, dfp d where d.codea = u.codeuser`,
       {
@@ -399,7 +456,6 @@ const getDevisCreator = async (req, res) => {
     );
 
     if (resultat) {
-      console.log(resultat);
       return res.status(200).json({ resultat: resultat });
     }
   } catch (error) {
@@ -409,10 +465,13 @@ const getDevisCreator = async (req, res) => {
 
 const getInfoUtilisateur = async (req, res) => {
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const { dbName } = req.params;
     const { usera } = req.query;
-    console.log(usera);
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     if (usera) {
       const utilisateur = await dbConnection.query(
         `SELECT NUMBL,libpv,ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT from dfp where usera = :usera`,
@@ -437,18 +496,22 @@ const getInfoUtilisateur = async (req, res) => {
 // * output : le(s) devis ayant(ent) le montant 5664.511 et créé par l'utilisateur 4
 // * http://localhost:5000/api/devis/SOLEVO/getDevisParMontant/5664.511
 const getDevisParMontant = async (req, res) => {
+  const { dbName, montant } = req.params;
+  const { codeuser } = req.query;
   try {
-    const { dbName, montant } = req.params;
-    const { codeuser } = req.query;
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
 
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
 
     if (montant && codeuser) {
       // Ici on convertit le montant en nombre pour s'assurer que la comparaison fonctionne
       const devis = await dbConnection.query(
         `SELECT 
-          NUMBL, libpv, ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, 
-          comm, RSREP, CODEREP, usera, RSCLI, codesecteur, MHT 
+          NUMBL, libpv, ADRCLI, CODECLI,  DATEBL, MREMISE, MTTC, mlettre,
+          comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT ,transport,REFCOMM,delailivr
         FROM dfp 
         WHERE MTTC  LIKE :montant AND usera = :codeuser`,
         {
@@ -479,8 +542,12 @@ const getDevisParMontant = async (req, res) => {
 // * http://localhost:5000/api/devis/SOLEVO/getListePointVente
 const getListePointVente = async (req, res) => {
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const { dbName } = req.params;
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const pointsVenteDistincts = await dbConnection.query(
       `SELECT DISTINCT(Libelle) from pointvente`,
       {
@@ -503,25 +570,53 @@ const getListePointVente = async (req, res) => {
 // * example:
 // * input
 // * output : NUMBL du dernier devis généré
-// * http://localhost:5000/api/devis/SOLEVO/getDerniereNumbl
+// * http://localhost:5000/api/devis/SOLEVO/getDerniereNumbl?codeuser=04
 const getDerniereNumbl = async (req, res) => {
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const { dbName } = req.params;
-    const dbConnection = await getDatabaseConnection(dbName);
-    const derniereNumbl = await dbConnection.query(
-      `SELECT NUMBL from dfp where DateBl = (SELECT MAX(DATEBL) from dfp) ORDER BY (NUMBL) DESC LIMIT 1`,
-      {
-        type: dbConnection.QueryTypes.SELECT,
-      }
-    );
-    console.log(derniereNumbl[0]);
+    const { codeuser } = req.query;
+    let derniereNumbl;
+
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
+    if (codeuser) {
+      derniereNumbl = await dbConnection.query(
+        `SELECT MAX(NUMBL) as derniereNumbl from dfp where usera = :codeuser`,
+        {
+          type: dbConnection.QueryTypes.SELECT,
+          replacements: {
+            codeuser,
+          },
+        }
+      );
+    }
+    if (!codeuser) {
+      derniereNumbl = await dbConnection.query(
+        `SELECT MAX(NUMBL) as derniereNumbl from dfp`,
+        {
+          type: dbConnection.QueryTypes.SELECT,
+        }
+      );
+    }
+
     // ? derniereNumbl: derniereNumbl[0] || {}
     // ? pour que le backend ne plantera pas si derniereNumbl retourne aucune résultat
     // ? c'est à dire un tableau vide: []
-    return res.status(200).json({
-      message: "dernièr numbl récuperé avec succès",
-      derniereNumbl: derniereNumbl[0] || {},
-    });
+    if (derniereNumbl.length != 0) {
+      return res.status(200).json({
+        message: "dernièr numbl récuperé avec succès",
+        derniereNumbl: derniereNumbl[0].derniereNumbl,
+      });
+    }
+
+    if (derniereNumbl.length == 0) {
+      return res.status(400).json({
+        message: "aucun numbl trouvé pour cet utilisateur",
+      });
+    }
   } catch (error) {
     return res.status(500).json({ messasge: error.message });
   }
@@ -531,19 +626,23 @@ const getDerniereNumbl = async (req, res) => {
 // * example:
 // * input : NUMBL = DV2500155
 // * output : Devis ayant NUMBL = DV2500155 est supprimé
-// * http://localhost:5000/api/devis/SOLEVO/deleteDevis/DV2500155
-const deleteDevis = async (req, res) => {
-  const { dbName, NUMBL } = req.params;
+// * http://localhost:5000/api/devis/SOLEVO/annulerDevis/DV2500155
+const annulerDevis = async (req, res) => {
+  const { dbName } = req.params;
+  const { codeuser, NUMBL } = req.query;
   if (!NUMBL || NUMBL.trim() === "") {
     return res
       .status(400)
       .json({ message: "Le numéro du devis (NUMBL) est requis." });
   }
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
 
     const Dfp = defineDfpModel(dbConnection);
-    const Ldfp = defineLdfpModel(dbConnection);
 
     const existingDevis = await Dfp.findOne({ where: { NUMBL } });
     if (!existingDevis) {
@@ -552,21 +651,23 @@ const deleteDevis = async (req, res) => {
         .json({ message: `Aucun devis trouvé avec le numéro ${NUMBL}.` });
     }
 
-    const transaction = await dbConnection.transaction();
-
-    try {
-      await Ldfp.destroy({ where: { NUMBL }, transaction });
-
-      await Dfp.destroy({ where: { NUMBL }, transaction });
-
-      await transaction.commit();
-
-      return res
-        .status(200)
-        .json({ message: `Le devis ${NUMBL} a été supprimé avec succès.` });
-    } catch (error) {
-      await transaction.rollback();
-      throw error;
+    const dateCreation = new Date();
+    const dateFormatte = dateCreation.toISOString().split("T")[0];
+    const donneesMaj = {
+      executer: "A",
+      mlettre: "Annulé le : " + dateFormatte + "  / par  : " + codeuser,
+    };
+    const majEffectue = await Dfp.update(donneesMaj, {
+      where: {
+        NUMBL: NUMBL,
+      },
+    });
+    if (majEffectue) {
+      return res.status(200).json({ message: "devis annulé avec succès" });
+    } else {
+      return res.status(500).json({
+        message: "un erreur est survenu lors de la mise à jour de devis",
+      });
     }
   } catch (error) {
     console.error("Erreur lors de la suppression du devis :", error);
@@ -579,6 +680,7 @@ const deleteDevis = async (req, res) => {
 
 // * méthode pour récuperer la liste de devis par code client
 // * url : http://localhost:5000/api/devis/SOLEVO/getListeDevisParCodeClient?codeClient=2
+// ! à supprimer
 const getListeDevisParCodeClient = async (req, res) => {
   const { dbName } = req.params;
   const { codeClient } = req.query;
@@ -589,7 +691,11 @@ const getListeDevisParCodeClient = async (req, res) => {
   }
 
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
     const listeDevis = await Devis.findAll({
       where: {
@@ -597,8 +703,6 @@ const getListeDevisParCodeClient = async (req, res) => {
       },
       order: [["NUMBL", "ASC"]],
     });
-
-    console.log(listeDevis);
     if (!listeDevis || listeDevis.length == 0) {
       return res
         .status(404)
@@ -622,16 +726,20 @@ const getListeDevisParCodeClient = async (req, res) => {
 // * http://localhost:5000/api/devis/SOLEVO/getListeDevisParNUMBL/?NUMBL=DV2300&codeuser=4
 const getListeDevisParNUMBL = async (req, res) => {
   try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
     const { dbName } = req.params;
-    const { codeuser,NUMBL } = req.query;
+    const { codeuser, NUMBL } = req.query;
 
-    const dbConnection = await getDatabaseConnection(dbName);
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
 
     if (NUMBL && codeuser) {
       const listeDevis = await dbConnection.query(
         `SELECT 
           NUMBL, libpv, ADRCLI, CODECLI, cp, DATEBL, MREMISE, MTTC, 
-          comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT 
+          comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT , transport,delailivr,modepaie
          FROM dfp 
          WHERE NUMBL LIKE :numbl 
            AND usera = :codeuser`,
@@ -644,14 +752,13 @@ const getListeDevisParNUMBL = async (req, res) => {
         }
       );
 
-      if (listeDevis && listeDevis.length>0) {
-        return res
-          .status(200)
-          .json({ message: "Liste de devis récuperé avec succes", listeDevis: listeDevis });
+      if (listeDevis && listeDevis.length > 0) {
+        return res.status(200).json({
+          message: "Liste de devis récuperé avec succes",
+          listeDevis: listeDevis,
+        });
       } else {
-        return res
-          .status(404)
-          .json({ message: "aucun devis n'est trouvé" });
+        return res.status(404).json({ message: "aucun devis n'est trouvé" });
       }
     } else {
       return res.status(500).json({ message: "récupération de devis échoué" });
@@ -660,11 +767,749 @@ const getListeDevisParNUMBL = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+const majDevis = async (req, res) => {
+  const { dbName } = req.params;
+  const { NUMBL } = req.query;
+  const { DevisMaj } = req.body;
 
+  try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    const modelLigneDevis = defineLdfpModel(dbConnection);
+
+    const devis = await Devis.findOne({ where: { NUMBL } });
+    const lignedevisModifie = DevisMaj.articles;
+
+    if (devis) {
+      await Devis.update(
+        {
+          libpv: DevisMaj.libpv,
+          ADRCLI: DevisMaj.ADRCLI,
+          CODECLI: DevisMaj.CODECLI,
+          DATEBL: DevisMaj.DATEBL,
+          MREMISE: DevisMaj.MREMISE,
+          MTTC: DevisMaj.MTTC,
+          RSREP: DevisMaj.RSREP,
+          CODEREP: DevisMaj.CODEREP,
+          MHT: DevisMaj.MHT,
+          codesecteur: DevisMaj.codesecteur,
+          delailivr: DevisMaj.delailivr,
+          REFCOMM: DevisMaj.REFCOMM,
+          userm: DevisMaj.userm,
+          transport: DevisMaj.transport,
+          comm: DevisMaj.comm,
+          RSCLI: DevisMaj.RSCLI,
+          mlettre: DevisMaj.mlettre,
+        },
+        { where: { NUMBL } }
+      );
+      await modelLigneDevis.destroy({ where: { NumBL: NUMBL } });
+      if (Array.isArray(lignedevisModifie) && lignedevisModifie.length > 0) {
+        const lignesAvecNumBL = lignedevisModifie.map((article) => ({
+          ...article,
+          NLigne: DevisMaj.articles.length,
+          NumBL: NUMBL,
+        }));
+        await modelLigneDevis.bulkCreate(lignesAvecNumBL);
+      }
+
+      return res.status(200).json({ message: "Devis mise à jour avec succès" });
+    } else {
+      return res.status(404).json({ message: "Le devis n'existe pas" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Une erreur est survenue lors de la mise à jour du devis",
+      error: error.message,
+    });
+  }
+};
+
+// const modifierDevis = async (req, res) => {
+//   const { dbName } = req.params;
+//   const { }
+//   try {
+
+//   }catch(error) {
+//     return res.status(500).json({message: "erreur lors de la modification de devis: "+error.message})
+//   }
+// }
+// ! à supprimer?
+const getDevisCountByMonthAndYear = async (req, res) => {
+  const { dbName } = req.params;
+
+  if (!dbName) {
+    return res.status(400).json({
+      message: "Le nom de la base de données est requis.",
+    });
+  }
+
+  try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
+
+    const sqlQuery = `
+      SELECT 
+        YEAR(DATEBL) AS year,
+        MONTH(DATEBL) AS month,
+        COUNT(DISTINCT NUMBL) AS totalDevis
+      FROM dfp
+      GROUP BY YEAR(DATEBL), MONTH(DATEBL)
+      ORDER BY year DESC, month DESC;
+    `;
+
+    const result = await dbConnection.query(sqlQuery, {
+      type: dbConnection.QueryTypes.SELECT,
+    });
+
+    if (result.length === 0) {
+      return res.status(404).json({
+        message: "Aucun devis trouvé.",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Nombre de devis par mois et année récupéré avec succès.",
+      devisCountByMonthAndYear: result,
+    });
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération du nombre de devis par mois et année :",
+      error.message
+    );
+    return res.status(500).json({
+      message:
+        "Erreur lors de la récupération du nombre de devis par mois et année.",
+      error: error.message,
+    });
+  }
+};
+
+// * récuperer le nombre total de devis générés
+// * pour une societé donnée (dbName)
+// * example:
+// * input : dbName = SOLEVO
+// * output : 972 devis générés
+// * http://localhost:5000/api/devis/SOLEVO/getNbTotalDevisGeneres
+const getNbTotalDevisGeneres = async (req, res) => {
+  const { dbName } = req.params;
+  let dbConnection;
+  try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    const nbDevisGeneresTotal = await Devis.count({
+      where: {
+        [Op.and]: [
+          {
+            [Op.not]: {
+              executer: "N",
+            },
+          },
+          {
+            [Op.not]: {
+              executer: "",
+            },
+          },
+          {
+            [Op.not]: {
+              executer: "A",
+            },
+          },
+          {
+            [Op.not]: {
+              executer: null,
+            },
+          },
+        ],
+      },
+    });
+    return res.status(200).json({
+      message: "Nombre total de devis générés récupéré",
+      nbDevisGeneresTotal: nbDevisGeneresTotal,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+// * récuperer le nombre de devis générés pour un utilisateur données
+// * pour une societé donnée (dbName)
+// * example:
+// * input : dbName = SOLEVO, codeuser = 02
+// * output : 472 devis générés
+// * http://localhost:5000/api/devis/SOLEVO/getNbTotalDevisGeneresParUtilisateur
+const getNbTotalDevisGeneresParUtilisateur = async (req, res) => {
+  const { dbName } = req.params;
+  const { codeuser } = req.query;
+  let dbConnection;
+  try {
+    if (!codeuser) {
+      return res
+        .status(400)
+        .json({ message: "le code utilisateur est requis" });
+    }
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+
+    const nbDevisGeneresTotal = await Devis.count({
+      where: {
+        [Op.and]: [
+          {
+            [Op.not]: {
+              executer: "N",
+            },
+          },
+          {
+            [Op.not]: {
+              executer: "",
+            },
+          },
+          {
+            [Op.not]: {
+              executer: "A",
+            },
+          },
+          {
+            [Op.not]: {
+              executer: "C",
+            },
+          },
+          {
+            [Op.not]: {
+              executer: null,
+            },
+          },
+          {
+            usera: codeuser,
+          },
+        ],
+      },
+    });
+    return res.status(200).json({
+      message: `Nombre total de devis générés par l'utilisateur ${codeuser} récupéré`,
+      nbDevisGeneresTotal: nbDevisGeneresTotal,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// * récuperer le nombre de devis non générés pour un utilisateur données
+// * pour une societé donnée (dbName)
+// * example:
+// * input : dbName = SOLEVO, codeuser = 02
+// * output : 472 devis non générés
+// * http://localhost:5000/api/devis/SOLEVO/getNbDevisNonGeneresParUtilisateur?codeuser=02
+const getNbDevisNonGeneresParUtilisateur = async (req, res) => {
+  const { dbName } = req.params;
+  const { codeuser } = req.query;
+  let dbConnection;
+  try {
+    if (!codeuser) {
+      return res
+        .status(400)
+        .json({ message: "le code utilisateur est requis" });
+    }
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    const nbDevisNonGeneresParUtilisateur = await Devis.count({
+      where: {
+        [Op.and]: [
+          {
+            [Op.not]: {
+              executer: "G",
+            },
+          },
+          {
+            usera: codeuser,
+          },
+        ],
+      },
+    });
+    return res.status(200).json({
+      message: `nombre de devis non générés par l'utilisateur ${codeuser} récupérés`,
+      nbDevisNonGeneresParUtilisateur,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// * récuperer le nombre de devis annulées
+// * pour une societé donnée (dbName)
+// * example:
+// * input : dbName = SOLEVO
+// * output : 472 devis non générés
+// * http://localhost:5000/api/devis/SOLEVO/getNbTotalDevisAnnulees
+const getNbTotalDevisAnnulees = async (req, res) => {
+  const { dbName } = req.params;
+  let dbConnection;
+  try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    const nbDevisANnulees = await Devis.count({
+      where: {
+        executer: "A",
+      },
+    });
+
+    if (nbDevisANnulees) {
+      return res.status(200).json({
+        message: "nombre de devis annulées récupérés avec succès",
+        nbDevisANnulees,
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// * récuperer le nombre de devis en cours
+// * pour une societé donnée (dbName)
+// * example:
+// * input : dbName = SOLEVO
+// * output : 472 devis non générés
+// * http://localhost:5000/api/devis/SOLEVO/getNbTotalDevisEnCours
+const getNbTotalDevisEnCours = async (req, res) => {
+  const { dbName } = req.params;
+  let dbConnection;
+  try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    const nbDevisEncours = await Devis.count({
+      where: {
+        executer: "N",
+      },
+    });
+
+    if (nbDevisEncours) {
+      return res.status(200).json({
+        message: "nombre de devis en cours récupérés avec succès",
+        nbDevisEncours,
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+// * récuperer le nombre de devis sans status
+// * pour une societé donnée (dbName)
+// * example:
+// * input : dbName = SOLEVO
+// * output : 472 devis non générés
+// * http://localhost:5000/api/devis/SOLEVO/getNbTotalDevisSansStatus
+// ! méthode non utile, à supprimer.
+const getNbTotalDevisSansStatus = async (req, res) => {
+  const { dbName } = req.params;
+  let dbConnection;
+  try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    const nbDevisSansStatus = await Devis.count({
+      where: {
+        executer: {
+          [Op.and]: {
+            [Op.notLike]: "G",
+            [Op.notLike]: "A",
+            [Op.notLike]: "C",
+            [Op.notLike]: "N",
+          },
+        },
+      },
+    });
+
+    if (nbDevisSansStatus) {
+      return res.status(200).json({
+        message: "nombre de devis sans status récupérés avec succès",
+        nbDevisSansStatus,
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+// * url : http://localhost:5000/api/devis/SOLEVO/getListeDevisAvecPagination?page=1&limit=10
+// ? méthode de test, n'a pas implementé jwt ici
+const getListeDevisAvecPagination = async (req, res) => {
+  const { dbName } = req.params;
+  const { page, limit } = req.query;
+  if (!dbName) {
+    return res
+      .status(400)
+      .json({ message: "le nom de la base de données est requis" });
+  }
+
+  try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    const devis = await Devis.findAll({
+      attributes: ["numbl"],
+      limit: parseInt(limit),
+      offset: (parseInt(page) - 1) * parseInt(limit),
+    });
+
+    return res.status(200).json({
+      message: "Liste de devis récupérée avec succès",
+      devis: devis,
+      totalDevis: devis.count,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+// * récupere les années distinctes de devis générés
+// * pour une societé donnée (dbName)
+// * url : http://localhost:5000/api/devis/SOLEVO/getAnneesDistinctGenerationDevis
+const getAnneesDistinctGenerationDevis = async (req, res) => {
+  const { dbName } = req.params;
+  let dbConnection;
+  try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    // ? ?????????????
+    const annees = await Devis.findAll({
+      attributes: [
+        [dbConnection.fn("YEAR", dbConnection.col("DateBL")), "year"],
+      ],
+      group: ["year"],
+      raw: true,
+    });
+
+    return res.status(200).json({
+      message:
+        "annees distinctes de generation de devis recuperées avec succès",
+      annees,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// !! ????
+const getDirecteursDevis = async (req, res) => {
+  const { dbName } = req.params;
+  let dbConnection;
+  try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
+  } catch (error) {
+    return res.statuss(500).json({ message: error.message });
+  }
+};
+//* url : http://localhost:5000/api/devis/SOLEVO/getDevisparRepresentant
+//* {"message": "Nombre de devis générés par représentant récupéré avec succès",
+// *"data": [  {    "rep": "01",    "nombreTotalDevis": 62  }, {   "rep": "MANAI KAOUTHER"    "nombreTotalDevis": 0 },
+
+const getDevisparRepresentant = async (req, res) => {
+  const { dbName } = req.params;
+
+  let dbConnection;
+  try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    const Rep = await dbConnection.query(
+      `select distinct(rsoc) from representant`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    );
+    const RPDevis = [];
+    //* parcourir la liste de representant
+    for (let annee = 0; annee < Rep.length; annee++) {
+      const Rep = await dbConnection.query(
+        `select distinct(rsoc) from representant`,
+        {
+          type: dbConnection.QueryTypes.SELECT,
+        }
+      );
+
+      // SELECT COUNT(*) FROM dfp WHERE RSREP="01"
+      const nbDevis = await Devis.count({
+        where: {
+          RSREP: Rep[annee].rsoc,
+        },
+      });
+      RPDevis.push({
+        rep: Rep[annee].rsoc,
+        nombreTotalDevis: nbDevis,
+      });
+    }
+
+    return res.status(200).json({
+      message: `Nombre de devis total par représentant récupéré avec succès`,
+      nombredevisparrepresentant: RPDevis,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// * récupere le nombre de devis générés par mois selon l'année
+// * pour une societé donnée (dbName)
+// * url : http://localhost:5000/api/devis/SOLEVO/getNbDevisGeneresParAnnee?annee=2023
+const getNbDevisGeneresParAnnee = async (req, res) => {
+  const { dbName } = req.params;
+  const { annee } = req.query;
+  let dbConnection;
+  try {
+    if (!annee) {
+      return res
+        .status(400)
+        .json({ message: "l'annee de filtrage est manquante" });
+    }
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+
+    dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
+    const Devis = defineDfpModel(dbConnection);
+    let nbDevisParAnne = [];
+    for (let i = 1; i <= 12; i++) {
+      const nbDevis = await Devis.count({
+        where: {
+          [Op.and]: [
+            dbConnection.where(
+              dbConnection.fn("YEAR", dbConnection.col("DATEBL")),
+              annee
+            ),
+            dbConnection.where(
+              dbConnection.fn("MONTH", dbConnection.col("DATEBL")),
+              i
+            ),
+            { executer: "G" },
+          ],
+        },
+      });
+      nbDevisParAnne.push({ mois: i, nombreDevis: nbDevis });
+    }
+    return res.status(200).json({
+      message: `nombre de devis générés en ${annee} récupéré avec succès`,
+      nbDevisParAnne: nbDevisParAnne,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+//* url :http://localhost:5000/api/devis/SOLEVO/getListeSecteur
+//*message": "Secteur recupérés avec succès", "pointssecteurDistincts": [ { "desisec": "SOLEVO" },
+
+const getListeSecteur = async (req, res) => {
+  const { dbName } = req.params;
+  try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
+    const secteurDistincts = await dbConnection.query(
+      `SELECT DISTINCT(desisec),codesec from secteur`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+      }
+    );
+
+    return res.status(200).json({
+      message: "Secteur recupérés avec succès",
+      secteurDistincts: secteurDistincts,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+//* url : http://localhost:5000/api/devis/SOLEVO/getListeCodeVendeur
+//* "message": "listede vendeur recuperes",
+//* "VendeurDistincts": [ {   "CODEREP": "01",  "RSREP": "01"  },
+//* {
+//*    "CODEREP": "E45",
+//*    "RSREP": "RIM BEN ALI "
+//*    },
+const getListeCodeVendeur = async (req, res) => {
+  const { dbName } = req.params;
+  try {
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    const dbConnection = getConnexionBd();
+    const VendeurDistincts = await dbConnection.query(
+      `select DISTINCT(CODEREP) from dfp`,
+      { type: dbConnection.QueryTypes.SELECT }
+    );
+    return res
+      .status(200)
+      .json({ message: "listede vendeur recuperes", VendeurDistincts });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+// {
+//   "message": "Liste de désignation vendeur récupérée avec succès",
+//   "data": [
+//     {
+//       "RSREP": "22",
+//       "CODEREP": "12"
+//     }
+//   ]
+// }
+//*http://localhost:5000/api/devis/SOLEVO/getrepresentantparcodevendeur?CODEREP=12
+const getrepresentantparcodevendeur = async (req, res) => {
+  const { CODEREP } = req.query;
+  try {
+    if (!CODEREP) {
+      return res.status(400).json({ message: "le code vendeur est manquant" });
+    }
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    const dbConnection = getConnexionBd();
+
+    // Utilisation correcte de query avec replacements
+    const vendeurs = await dbConnection.query(
+      `SELECT RSREP FROM dfp where CODEREP =:CODEREP`,
+      {
+        type: dbConnection.QueryTypes.SELECT,
+        replacements: {
+          CODEREP: CODEREP,
+        },
+      }
+    );
+
+    return res.status(200).json({
+      message: "Liste de désignation vendeur récupérée avec succès",
+      data: vendeurs, // retourne vraiment la liste des vendeurs !
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+// * url : http://localhost:5000/api/devis/SOLEVO/filtrerListeDevis?filters={"NUMBL":"DV2401","libpv":"kasserine"}
+// * verb : get
+const filtrerListeDevis = async (req, res) => {
+  const { dbName } = req.params;
+  const filters = req.query.filters;
+  try {
+    if (!filters) {
+      return res.status(400).json({ message: "aucun filtre trouvé" });
+    }
+
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+
+    const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
+    // ? liste des conditions
+    // ? exemple : ["NUML like :numbl, "libpv like :libpv"...]
+    let whereClauses = [];
+    // ? object contenant les noms des paramètres de requete sql avec leurs remplacements
+    // ? exemple : {{numbl: %dv2401%}, {libpv: %kasserine% }}
+    let replacements = {};
+
+    // ? ajout de chaque condition quand la valeur n'est pas vide
+    if (filters.NUMBL) {
+      whereClauses.push("NUMBL like :NUMBL");
+      replacements.NUMBL = `%${filters.NUMBL}%`;
+    }
+
+    if (filters.DATEBL) {
+      whereClauses.push("DATEBL like :DATEBL");
+      replacements.DATEBL = `%${filters.DATEBL}%`;
+    }
+    if (filters.CODEFACTURE) {
+      whereClauses.push("CODEFACTURE like :CODEFACTURE");
+      replacements.CODEFACTURE = `%${filters.CODEFACTURE}%`;
+    }
+    if (filters.CODECLI) {
+      whereClauses.push("CODECLI like :CODECLI");
+      replacements.CODECLI = `%${filters.CODECLI}%`;
+    }
+    if (filters.ADRCLI) {
+      whereClauses.push("ADRCLI like :ADRCLI");
+      replacements.ADRCLI = `%${filters.ADRCLI}%`;
+    }
+    if (filters.RSCLI) {
+      whereClauses.push("RSCLI like :RSCLI");
+      replacements.RSCLI = `%${filters.RSCLI}%`;
+    }
+    if (filters.MTTC) {
+      whereClauses.push("MTTC like :MTTC");
+      replacements.MTTC = `%${filters.MTTC}%`;
+    }
+
+    // ? concatenation de l'opérateur logique après chaque ajout d'un nouvelle condition
+    let whereCondition = whereClauses.join(" AND ");
+
+    // ? Si on on a aucune condition on effectue une requete de select * from dfp
+    let query = `SELECT NUMBL, DATEBL, CODEFACTURE, CODECLI, ADRCLI, RSCLI,MTTC
+     FROM dfp 
+      ${whereCondition ? "WHERE " + whereCondition : ""}`;
+
+    const result = await dbConnection.query(query, {
+      replacements: replacements,
+      type: dbConnection.QueryTypes.SELECT,
+    });
+
+    return res.status(200).json({
+      message: "Filtrage réussi",
+      data: result,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 module.exports = {
   getTousDevis,
-  getNombreDevis,
   getTotalChiffres,
+  getNombreDevis,
   ajouterDevis,
   getDevisParNUMBL,
   getCodesDevis,
@@ -673,11 +1518,26 @@ module.exports = {
   GetDevisParPeriode,
   getListePointVente,
   getInfoUtilisateur,
-  getListePointVente,
+  getListeSecteur,
   getLignesDevis,
   getDevisCreator,
   getDerniereNumbl,
-  deleteDevis,
+  annulerDevis,
+  getDevisparRepresentant,
   getListeDevisParCodeClient,
-  getListeDevisParNUMBL
+  getListeDevisParNUMBL,
+  getNbTotalDevisGeneres,
+  getNbTotalDevisGeneresParUtilisateur,
+  getDevisCountByMonthAndYear,
+  getNbDevisNonGeneresParUtilisateur,
+  getNbTotalDevisAnnulees,
+  getNbTotalDevisEnCours,
+  getNbTotalDevisSansStatus,
+  getListeDevisAvecPagination,
+  getAnneesDistinctGenerationDevis,
+  getNbDevisGeneresParAnnee,
+  getListeCodeVendeur,
+  majDevis,
+  getrepresentantparcodevendeur,
+  filtrerListeDevis,
 };

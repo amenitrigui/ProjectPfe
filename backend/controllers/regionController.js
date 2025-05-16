@@ -1,4 +1,6 @@
-const { getDatabaseConnection } = require("../common/commonMethods");
+const { getDatabaseConnection, verifyTokenValidity } = require("../common/commonMethods");
+const defineregionmodels = require("../models/societe/region");
+const { getConnexionBd } = require("../db/config")
 
 //* récuperer la liste de régions
 // * example:
@@ -8,7 +10,11 @@ const { getDatabaseConnection } = require("../common/commonMethods");
 const getListeCodeRegions = async (req, res) => {
   const { dbName } = req.params;
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+      const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
     const listeCodesRegion = await dbConnection.query(
       `SELECT codergg from region`,
       {
@@ -31,13 +37,16 @@ const getListeCodeRegions = async (req, res) => {
 // * http://localhost:5000/api/region/SOLEVO/getVilleParRegion/Ariana
 const getVilleParRegion = async (req, res) => {
   const { dbName, codeRegion } = req.params;
-  console.log(dbName, " ", codeRegion);
   try {
-    const dbConnexion = await getDatabaseConnection(dbName);
-    const ListRegion = await dbConnexion.query(
+      const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const ListRegion = await dbConnection.query(
       `Select desirgg from region where codergg = :codeRegion`,
       {
-        type: dbConnexion.QueryTypes.SELECT,
+        type: dbConnection.QueryTypes.SELECT,
         replacements: {
           codeRegion,
         },
@@ -51,7 +60,32 @@ const getVilleParRegion = async (req, res) => {
   }
 };
 
+const ajouterRegion = async (req, res) => {
+  const { dbName } = req.params;
+  const { RegionInfo } = req.body;
+
+  try {
+      const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const Region = defineregionmodels(dbConnection);
+    const newRegion = await Region.create({
+      //add + save min base 3ibrt 3ml insert into mn base de donnes
+      codergg: RegionInfo.codergg,
+      desirgg: RegionInfo.desirgg,
+    });
+
+    return res
+      .status(200)
+      .json({ message: "insertion avec succès", newRegion });
+  } catch (error) {
+    return res.status(500).json({ message: error });
+  }
+};
 module.exports = {
   getListeCodeRegions,
   getVilleParRegion,
+  ajouterRegion,
 };

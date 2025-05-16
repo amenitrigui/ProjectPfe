@@ -23,7 +23,6 @@ function RegisterPage() {
       !trimmedPassword ||
       !trimmedConfirmPassword
     ) {
-      console.log("d");
       setError("Tg");
       return;
     }

@@ -1,0 +1,4 @@
+const familleInfoInitiales = {
+  code: "",
+  libelle: "",
+};

@@ -1,18 +1,11 @@
 import React from "react";
 import { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import {
-  FaUser,
-  FaCog,
-  FaCreditCard,
-  FaSignOutAlt,
-  FaRegUserCircle,
-} from "react-icons/fa";
 import ToolBar from "../Common/ToolBar";
-import ValorisationTab from "./ValorisationTab";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  getArticleParCode,
+  getDerniereCodeArticle,
   getDesignationFamilleParCodeFamille,
   getdesignationSousFamillebycodeSousFamille,
   getListeCodesArticles,
@@ -22,38 +15,41 @@ import {
   viderChampsArticleInfo,
 } from "../../app/article_slices/articleSlice";
 import {
+  isAlphabetique,
+  isAlphaNumerique,
+  isNumerique,
+} from "../../utils/validations";
+import {
   setAfficherFamillePopub,
   setAfficherRecherchePopup,
-  setOuvrireDrawerMenu,
   setToolbarTable,
-} from "../../app/interface_slices/uiSlice";
+} from "../../app/interface_slices/interfaceSlice";
 import SideBar from "../Common/SideBar";
 import { getPrixVente } from "../../app/Stock_valorisation_utilitaires/valorisation_Slice";
-import StockTab from "./StockTab";
-import UtilitaireTab from "./UtilitaireTab";
 import {
   getListedepotdeStockparpcodepointvente,
   getlistepointvente,
   getQteTotalArticle,
 } from "../../app/Stock_valorisation_utilitaires/Stock_Slice";
+import Tab from "./Tab";
+import OptionsArticle from "./OptionsArticle";
+import { ResponsiveContainer } from "recharts";
+import DateCreateMAJ from "../Common/DateCreateMAJ";
+import { setToken } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 function ArticleForm() {
   //?==================================================================================================================
   //?=====================================================variables====================================================
   //?==================================================================================================================
+  const dispatch = useDispatch();
   // * pour afficher le sidebar
   const ouvrireMenuDrawer = useSelector(
-    (state) => state.uiStates.ouvrireMenuDrawer
+    (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
-  const [isOpen, setIsOpen] = useState(false);
-  const articleInfos = useSelector((state) => state.ArticlesDevis.articleInfos);
-  const ListeFamille = useSelector((state) => state.ArticlesDevis.ListeFamille);
-  const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
-  const ListeSousFamille = useSelector(
-    (state) => state.ArticlesDevis.ListeSousFamille
-  );
-  const dispatch = useDispatch();
-  const infosUtilisateur = useSelector(
-    (state) => state.UtilisateurInfo.infosUtilisateur
+  const toolbarTable = useSelector((state) => state.interfaceSlice.toolbarTable);
+  const articleInfos = useSelector((state) => state.articleSlice.articleInfos);
+  const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
+  const ListeCodeArticles = useSelector(
+    (state) => state.articleSlice.ListeCodeArticles
   );
   //?==================================================================================================================
   //?==============================================appels UseEffect====================================================
@@ -64,12 +60,26 @@ function ArticleForm() {
     dispatch(getListeCodesArticles()); // * la colonne de code article
   }, []);
   useEffect(() => {
-    if (articleInfos.code && articleInfos.code != "")
+    if (
+      !articleInfos.code &&
+      ListeCodeArticles.length > 0 &&
+      toolbarMode != "ajout"
+    ) {
+      dispatch(
+        setArticleInfos({
+          colonne: "code",
+          valeur: ListeCodeArticles[ListeCodeArticles.length - 1].code,
+        })
+      );
+    }
+    if (articleInfos.code && articleInfos.code != "") {
+      if (toolbarMode != "ajout") {
+        dispatch(getArticleParCode(articleInfos.code));
+      }
       dispatch(getPrixVente(articleInfos.code));
-  }, [articleInfos.code]);
-  useEffect(() => {
-    if (articleInfos.code) dispatch(getPrixVente(articleInfos.code));
-  }, [articleInfos.code]);
+    }
+  }, [articleInfos.code, ListeCodeArticles, toolbarMode]);
+
   useEffect(() => {
     if (articleInfos.codesousfam && articleInfos.codesousfam != "") {
       dispatch(
@@ -77,18 +87,9 @@ function ArticleForm() {
       );
     }
   }, [articleInfos.codesousfam]);
-  
-  useEffect(() => {
-    if (articleInfos.famille && articleInfos.famille != "") {
-      dispatch(getDesignationFamilleParCodeFamille(articleInfos.famille));
-    }
-  }, [articleInfos.famille]);
-  
-  const activerChampsForm = useSelector(
-    (state) => state.uiStates.activerChampsForm
-  );
   useEffect(() => {
     if (articleInfos.code && articleInfos.code != "") {
+      // ? récuperer initialement les informations de premier depot 
       dispatch(
         getListedepotdeStockparpcodepointvente({
           codepv: "01",
@@ -98,23 +99,47 @@ function ArticleForm() {
       dispatch(getQteTotalArticle(articleInfos.code));
       dispatch(getlistepointvente());
     }
-  }, [articleInfos.code]);
+  }, [articleInfos.code,articleInfos.codepv]);
+  useEffect(() => {
+    if(!articleInfos.famille) {
+      dispatch(setArticleInfos({colonne: "libelleFamille", valeur: ""}))
+    }
+    if(!articleInfos.codesousfam) {
+      dispatch(setArticleInfos({colonne: "Libellesousfamille", valeur: ""}))
+    }
+  },[articleInfos.famille, articleInfos.codesousfam])
+  useEffect(() => {
+    if (articleInfos.famille && articleInfos.famille != "") {
+      dispatch(getDesignationFamilleParCodeFamille(articleInfos.famille));
+    }
+  }, [articleInfos.famille]);
 
+  const activerChampsForm = useSelector(
+    (state) => state.interfaceSlice.activerChampsForm
+  );
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
   const hundlesubmitTousLesChamp = (valeur, colonne) => {
-    // console.log(colonne, " ", valeur);
-    dispatch(setArticleInfos({ valeur, colonne }));
-    
+    const colNum = ["tauxtva", "fodec", "code", "libelle"];
+    const Alphapheti = ["libelle"];
+    if (colNum.includes(colonne) && isNumerique(valeur)) {
+      dispatch(setArticleInfos({ valeur, colonne }));
+    }
+    if (Alphapheti.includes(colonne) && isAlphaNumerique(valeur)) {
+      dispatch(setArticleInfos({ valeur, colonne }));
+    }
+
     if (colonne == "code") {
       if (valeur == "") {
         {
           dispatch(viderChampsArticleInfo());
         }
+      } else {
+        dispatch(setArticleInfos({ colonne, valeur }));
       }
     }
-    
+
     if (colonne == "famille") {
       if (valeur != "") {
         dispatch(getDesignationFamilleParCodeFamille(valeur));
@@ -122,7 +147,7 @@ function ArticleForm() {
         dispatch(setArticleInfos({ colonne: "libelleFamille", valeur: "" }));
       }
     }
-    
+
     if (colonne == "codesousfam") {
       if (valeur != "") {
         dispatch(getdesignationSousFamillebycodeSousFamille(valeur));
@@ -133,7 +158,7 @@ function ArticleForm() {
       }
     }
   };
-  
+
   const handleChangeCheckbox = (checked, colonne) => {
     if (toolbarMode == "ajout" || toolbarMode == "modification") {
       dispatch(
@@ -145,17 +170,8 @@ function ArticleForm() {
     }
   };
 
-  const handleChangeRadio = (valeur, colonne) => {
-    if (toolbarMode == "ajout" || toolbarMode == "modification") {
-      dispatch(setArticleInfos({ colonne: colonne, valeur: valeur }));
-    }
-  };
   const afficherRecherchePopup = () => {
     dispatch(setAfficherRecherchePopup(true));
-  };
-  // Fonction pour basculer la visibilité de la sidebar
-  const toggleSidebar = () => {
-    dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
   };
 
   const togglePopup = (NomTable) => {
@@ -163,79 +179,27 @@ function ArticleForm() {
 
     dispatch(setAfficherFamillePopub(true));
   };
-
   return (
     <div className="container">
       <SideBar />
-      <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
-        <div className="topbar">
-          <div className="toggle" onClick={toggleSidebar}>
-            <ion-icon name="menu-outline"></ion-icon>
-          </div>
-
-          <ToolBar></ToolBar>
-
-          <div className="relative inline-block text-left">
-            {/* Avatar avec événement de clic */}
-            <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
-              <FaRegUserCircle className="mr-3 text-3xl" />
-              {/* Indicateur de statut en ligne */}
-              <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
-            </div>
-
-            {/* Menu déroulant */}
-            {isOpen && (
-              <div className="absolute right-0 mt-3 w-56 bg-white border rounded-lg shadow-lg z-50">
-                <div className="p-4 flex items-center border-b">
-                  <FaRegUserCircle className="mr-3 text-3xl" />
-                  <div>
-                    <p className="font-semibold">{infosUtilisateur.nom}</p>
-                    <p className="text-sm text-gray-500">
-                      {infosUtilisateur.type}
-                    </p>
-                  </div>
-                </div>
-                <ul className="py-2">
-                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
-                    <Link
-                      to="/UtilisateurFormTout"
-                      className="flex items-center w-full"
-                    >
-                      <FaUser className="mr-3" /> My Profile
-                    </Link>
-                  </li>
-                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
-                    <Link to="/Settings" className="flex items-center w-full">
-                      <FaCog className="mr-3" /> Settings
-                    </Link>
-                  </li>
-
-                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer border-t">
-                    <Link to="/" className="flex items-center w-full">
-                      <FaSignOutAlt className="mr-3" /> Log Out
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            )}
-          </div>
-        </div>
+      <div className={`main ${ouvrireMenuDrawer ? "active" : ""} bg-base-100`}>
+        <ToolBar />
         <div className="details p-6">
-          <div className="ameni">
+          <div className="ameni bg-base-100">
             {/* Titre */}
-            <div className="cardHeader mb-6">
+            <div className="cardHeader ">
               <h2 className="text-3xl font-bold text-blue-900 italic">
                 Fiche Article
               </h2>
             </div>
-
             {/* Conteneur principal avec disposition horizontale */}
-            <div className="flex flex-col lg:flex-row gap-6">
+            <div className="flex flex-col-2 gap-2">
               {/* Section Article (gauche) */}
               <div className="flex-1 space-y-4">
                 {/* Famille/Sous-Famille */}
 
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                  {/* Code Sous-Famille */}
                   <div className="col-span-12 md:col-span-3 space-y-1">
                     <label className="block font-semibold text-blue-900">
                       Code Famille
@@ -247,22 +211,18 @@ function ArticleForm() {
                       onChange={(e) =>
                         hundlesubmitTousLesChamp(e.target.value, "famille")
                       }
-                      disabled={!activerChampsForm}
-                      list="listeCodesFamilles"
+                      readOnly={toolbarMode === "ajout" || toolbarMode === "modification"}
+                      disabled={toolbarMode === "consultation" || toolbarMode === "suppression"}
                       onClick={() => {
-                        dispatch(setToolbarTable("famille"));
-                        afficherRecherchePopup();
+                        if(toolbarMode === "ajout" || toolbarMode === "modification"){
+                          dispatch(setToolbarTable("famille"));
+                          afficherRecherchePopup();
+                        }
                       }}
                     />
-                    <datalist id="listeCodesFamilles">
-                      {ListeFamille.map((famille, indice) => (
-                        <option key={indice} value={famille.code}>
-                          {famille.code}
-                        </option>
-                      ))}
-                    </datalist>
                   </div>
 
+                  {/* Désignation Famille */}
                   <div className="col-span-12 md:col-span-7 space-y-1">
                     <label className="block font-semibold text-blue-900">
                       Désignation Famille
@@ -280,15 +240,18 @@ function ArticleForm() {
                       disabled={!activerChampsForm}
                     />
                   </div>
-
-                  <div className="col-span-12 md:col-span-2 flex items-end">
-                    <button
-                      className="btn btn-outline btn-accent w-full"
-                      onClick={() => togglePopup("famille")}
-                    >
-                      <i className="fas fa-plus-circle"></i>
-                    </button>
-                  </div>
+                  {/* Bouton Ajout d'une famille */}
+                  {(toolbarMode == "ajout" ||
+                    toolbarMode == "modification") && (
+                    <div className="col-span-12 md:col-span-2 flex items-end">
+                      <button
+                        className="btn btn-outline btn-accent w-full"
+                        onClick={() => togglePopup("famille")}
+                      >
+                        <i className="fas fa-plus-circle"></i>
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
@@ -301,23 +264,18 @@ function ArticleForm() {
                       type="text"
                       className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
                       value={articleInfos.codesousfam}
-                      list="listeCodesSousFamille"
                       onChange={(e) =>
                         hundlesubmitTousLesChamp(e.target.value, "codesousfam")
                       }
-                      disabled={!activerChampsForm}
+                      readOnly={toolbarMode === "ajout" || toolbarMode === "modification"}
+                      disabled={toolbarMode === "consultation" || toolbarMode === "suppression"}
                       onClick={() => {
-                        dispatch(setToolbarTable("sousfamille"));
-                        afficherRecherchePopup();
+                        if(toolbarMode === "ajout" || toolbarMode === "modification"){
+                          dispatch(setToolbarTable("sousfamille"));
+                          afficherRecherchePopup();
+                        }
                       }}
                     />
-                    <datalist id="listeCodesSousFamille">
-                      {ListeSousFamille.map((Sousfamille, indice) => (
-                        <option key={indice} value={Sousfamille.code}>
-                          {Sousfamille.code}
-                        </option>
-                      ))}
-                    </datalist>
                   </div>
 
                   {/* Désignation Sous-Famille */}
@@ -340,14 +298,17 @@ function ArticleForm() {
                   </div>
 
                   {/* Bouton */}
-                  <div className="col-span-12 md:col-span-2 flex items-end">
-                    <button
-                      className="btn btn-outline btn-accent w-full"
-                      onClick={() => togglePopup("sousfamille")}
-                    >
-                      <i className="fas fa-plus-circle"></i>
-                    </button>
-                  </div>
+                  {(toolbarMode == "ajout" ||
+                    toolbarMode == "modification") && (
+                    <div className="col-span-12 md:col-span-2 flex items-end">
+                      <button
+                        className="btn btn-outline btn-accent w-full"
+                        onClick={() => togglePopup("sousfamille")}
+                      >
+                        <i className="fas fa-plus-circle"></i>
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 {/* Code Article et Désignation */}
@@ -360,7 +321,7 @@ function ArticleForm() {
                     <input
                       type="text"
                       className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                      disabled={toolbarMode == "modification"}
+                      readOnly={toolbarMode != "ajout"}
                       value={articleInfos.code}
                       list={toolbarMode == "ajout" ? "listeCodesArticle" : ""}
                       onChange={(e) =>
@@ -391,248 +352,90 @@ function ArticleForm() {
                     />
                   </div>
                 </div>
-
-                {/* Checkbox DC */}
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    className="h-5 w-5 text-blue-600 rounded focus:ring-blue-500"
-                    checked={articleInfos.dtcons == 1}
-                    disabled={!activerChampsForm}
-                    onChange={(e) =>
-                      handleChangeCheckbox(e.target.checked, "dtcons")
-                    }
-                  />
-                  <label className="font-semibold text-blue-900">DC</label>
-                </div>
-
-                {/* Taxe */}
-                <fieldset className="border border-gray-300 p-4 rounded-lg mt-4">
-                  <legend className="px-2 text-lg font-semibold text-blue-900">
-                    Taxe
-                  </legend>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <label className="block font-semibold text-blue-900">
-                        %TVA
-                      </label>
-                      <input
-                        type="text"
-                        className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                        value={articleInfos.tauxtva}
-                        onChange={(e) =>
-                          hundlesubmitTousLesChamp(e.target.value, "tauxtva")
-                        }
-                        disabled={!activerChampsForm}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="block font-semibold text-blue-900">
-                        Fodec
-                      </label>
-                      <input
-                        type="text"
-                        className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                        value={articleInfos.fodec}
-                        onChange={(e) =>
-                          hundlesubmitTousLesChamp(e.target.value, "fodec")
-                        }
-                        disabled={!activerChampsForm}
-                      />
-                    </div>
-                  </div>
-                </fieldset>
               </div>
 
               {/* Section Options (droite) */}
               <div className="flex-1 space-y-4">
-                <fieldset className="border border-gray-300 p-4 rounded-lg h-full">
-                  <legend className="px-2 text-lg font-semibold text-blue-900">
-                    Options
-                  </legend>
-
-                  {/* Unité, Brut, Net */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div className="space-y-1">
-                      <label className="block font-semibold text-blue-900">
-                        Unité
-                      </label>
-                      <input
-                        type="text"
-                        className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                        value={articleInfos.unite}
-                        onChange={(e) =>
-                          hundlesubmitTousLesChamp(e.target.value, "unite")
-                        }
-                        disabled={!activerChampsForm}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="block font-semibold text-blue-900">
-                        Brut
-                      </label>
-                      <input
-                        type="text"
-                        className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                        value={articleInfos.prixbrut}
-                        onChange={(e) =>
-                          hundlesubmitTousLesChamp(e.target.value, "prixbrut")
-                        }
-                        disabled={!activerChampsForm}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="block font-semibold text-blue-900">
-                        Net
-                      </label>
-                      <input
-                        type="text"
-                        className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                        value={articleInfos.prixnet}
-                        onChange={(e) =>
-                          hundlesubmitTousLesChamp(e.target.value, "prixnet")
-                        }
-                        disabled={!activerChampsForm}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Nb/Unité et Compte Comptable */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div className="space-y-1">
-                      <label className="block font-semibold text-blue-900">
-                        Nb/Unité
-                      </label>
-                      <input
-                        type="text"
-                        className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                        value={articleInfos.nbrunite}
-                        onChange={(e) =>
-                          hundlesubmitTousLesChamp(e.target.value, "nbrunite")
-                        }
-                        disabled={!activerChampsForm}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="block font-semibold text-blue-900">
-                        Compte Comptable
-                      </label>
-                      <input
-                        type="text"
-                        className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                        value={articleInfos.comptec}
-                        onChange={(e) =>
-                          hundlesubmitTousLesChamp(e.target.value, "comptec")
-                        }
-                        disabled={!activerChampsForm}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Type Article */}
-                  <div className="space-y-1 mb-4">
-                    <label className="block font-semibold text-blue-900">
-                      Type
-                    </label>
-                    <select
-                      className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
-                      value={articleInfos.type}
-                      onChange={(e) =>
-                        hundlesubmitTousLesChamp(e.target.value, "type")
-                      }
+                <div className="collapse bg-base-100 border-base-300 border">
+                  {/* Checkbox DC */}
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      className="h-5 w-5 text-blue-600 rounded focus:ring-blue-500"
+                      checked={articleInfos.Dtcons == 1}
                       disabled={!activerChampsForm}
-                    >
-                      <option value="">-- Sélectionner --</option>
-                      <option value="stock">sur Stock</option>
-                      <option value="service">de service</option>
-                    </select>
+                      onChange={(e) =>
+                        handleChangeCheckbox(e.target.checked, "Dtcons")
+                      }
+                    />
+                    <label className="font-semibold text-blue-900">DC</label>
                   </div>
 
-                  {/* Radio Buttons */}
-                  <div className="flex flex-wrap items-center gap-4">
-                    <div className="flex items-center">
-                      <input
-                        type="radio"
-                        className="h-5 w-5 text-blue-600 focus:ring-blue-500"
-                        checked={articleInfos.typeart == "PF"}
-                        name="typeart"
-                        onChange={() => handleChangeRadio("PF", "typeart")}
-                        disabled={!activerChampsForm}
-                      />
-                      <label className="ml-2 text-blue-900">PF</label>
+                  {/* Taxe */}
+                  <fieldset className="border border-gray-300 p-4 rounded-lg mt-4">
+                    <legend className="px-2 text-lg font-semibold text-blue-900">
+                      Taxe
+                    </legend>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="block font-semibold text-blue-900">
+                          %TVA
+                        </label>
+                        <input
+                          type="text"
+                          className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
+                          value={articleInfos.tauxtva}
+                          onChange={(e) =>
+                            hundlesubmitTousLesChamp(e.target.value, "tauxtva")
+                          }
+                          disabled={!activerChampsForm}
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block font-semibold text-blue-900">
+                          Fodec
+                        </label>
+                        <input
+                          type="text"
+                          className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
+                          value={articleInfos.fodec}
+                          onChange={(e) =>
+                            hundlesubmitTousLesChamp(e.target.value, "fodec")
+                          }
+                          disabled={!activerChampsForm}
+                        />
+                      </div>
                     </div>
-                    <div className="flex items-center">
-                      <input
-                        type="radio"
-                        className="h-5 w-5 text-blue-600 focus:ring-blue-500"
-                        checked={articleInfos.typeart == "X"}
-                        name="typeart"
-                        onChange={() => handleChangeRadio("X", "typeart")}
-                        disabled={!activerChampsForm}
-                      />
-                      <label className="ml-2 text-blue-900">X</label>
-                    </div>
-                    <div className="flex items-center">
-                      <input
-                        type="radio"
-                        className="h-5 w-5 text-blue-600 focus:ring-blue-500"
-                        checked={articleInfos.typeart == "MP"}
-                        name="typeart"
-                        onChange={() => handleChangeRadio("MP", "typeart")}
-                        disabled={!activerChampsForm}
-                      />
-                      <label className="ml-2 text-blue-900">MP</label>
-                    </div>
+                  </fieldset>
+                  <input type="checkbox" />
+                  <div
+                    className="collapse-title font-semibold mb-1"
+                    style={{ color: "rgb(48, 60, 123)" }}
+                  >
+                    Options supplementaires d'article
                   </div>
-                </fieldset>
+                  <div className="collapse-content text-sm">
+                    <ResponsiveContainer>
+                      <OptionsArticle />
+                    </ResponsiveContainer>
+                  </div>
+                  <DateCreateMAJ objet={articleInfos}></DateCreateMAJ>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="details ">
-          <div className="mahdi">
-            <div className="w-full min-h-screen p-4">
-              {/* Conteneur principal des onglets - Taille augmentée */}
-              <div
-                role="tablist"
-                className="tabs tabs-lifted tabs-lg w-full [&>.tab]:flex-1 [&>.tab]:px-6 [&>.tab]:py-4 [&>.tab]:text-lg"
-              >
-                {/* Onglet Stock */}
-                <input
-                  type="radio"
-                  name="my_tabs_6"
-                  className="tab"
-                  aria-label="Stock"
-                />
-                <StockTab />
-
-                {/* Onglet Valorisation (par défaut) */}
-                <input
-                  type="radio"
-                  name="my_tabs_6"
-                  className="tab"
-                  aria-label="Valorisation"
-                  defaultChecked
-                />
-                <div className="tab-content bg-base-100 border-base-300 rounded-lg p-8 w-full min-h-[400px] space-y-6">
-                  <div className="w-full h-full">
-                    {/* Contenu Valorisation */}
-                    <ValorisationTab />
-                  </div>
-                </div>
-
-                {/* Onglet Utilitaire - Version améliorée */}
-                {/* Onglet Utilitaire - Version alignée sur une ligne */}
-                <input
-                  type="radio"
-                  name="my_tabs_6"
-                  className="tab"
-                  aria-label="Utilitaire"
-                />
-                <div className="tab-content bg-base-100 border border-gray-200 rounded-lg p-6 w-full min-h-[400px]">
-                  <UtilitaireTab />
-                </div>
-              </div>
+        <div className="details p-6">
+          <div className="collapse bg-base-100 border-base-300 border h-120 w-[90vw]">
+            <input type="checkbox" />
+            <div
+              className="collapse-title font-semibold mb-1"
+              style={{ color: "rgb(48, 60, 123)" }}
+            >
+              Informations supplementaires d'article
+            </div>
+            <div className="collapse-content  text-sm w-[45vw]">
+              <Tab />
             </div>
           </div>
         </div>

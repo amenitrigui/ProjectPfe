@@ -1,61 +1,57 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setDbName } from "../../app/utilisateur_slices/utilisateurSlice";
+import { setDbName, setDroitAcceeTableArticle, setDroitAcceTableClient } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
+import { viderResponseLogin } from "../../app/utilisateur_slices/utilisateurSlice";
+import axios, { Axios } from "axios";
 
 const SocietiesList = () => {
   const [societies, setSocieties] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.UtilisateurInfo.token);
-
+  const token = useSelector((state) => state.utilisateurSystemSlice.token);
+  const utilisateurConnecte = useSelector((state) => state.utilisateurSystemSlice.utilisateurConnecte);
   if (token == "") {
     navigate("/");
   }
 
   useEffect(() => {
+    // * pour éviter la rédirection vers /SocietiesList
+    dispatch(viderResponseLogin());
+  },[])
 
+  useEffect(() => {
     const societiesFromStorage = JSON.parse(localStorage.getItem("societies"));
     if (societiesFromStorage) {
       setSocieties(societiesFromStorage);
-    } else {
-      console.log("Aucune société trouvée dans le localStorage.");
     }
   }, [navigate]);
 
   const handleSelect = async (society) => {
     try {
-
       if (!token) {
         navigate("/");
       }
 
-      const response = await fetch(
+      const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/utilisateurs/select-database`,
         {
-          method: "POST",
+          databaseName: society,
+        },
+        {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({
-            databaseName: society,
-          }),
         }
       );
-
       if (response.status === 200) {
-        console.log(response.data);
-        // ! devisList
-        // const devisList = response.data.devis;
-        // console.log("Liste des devis récupérés :", devisList);
-
-        // const selectedNumbl = devisList.map((devis) => devis.numbl);
-        // console.log("Tous les numbl récupérés :", selectedNumbl);
+        console.log(response)
+        dispatch(setDroitAcceTableClient(response.data.droitAcceTableClient[0]));
+        dispatch(setDroitAcceeTableArticle(response.data.droitAcceeTableArticle[0]));
         dispatch(setDbName(society));
         localStorage.setItem("selectedDatabase", society);
         localStorage.setItem("selectedRsoc", society.rsoc);
-        dispatch(setDbName(society));
         navigate("/Dashboard");
       }
     } catch (error) {

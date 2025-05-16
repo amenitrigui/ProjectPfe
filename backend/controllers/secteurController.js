@@ -1,5 +1,6 @@
-const { getDatabaseConnection } = require("../common/commonMethods");
-
+const { getDatabaseConnection, verifyTokenValidity } = require("../common/commonMethods");
+const { getConnexionBd } = require("../db/config")
+const defineSecteurModel = require("../models/societe/secteur")
 //* récuperer la liste de codes secteurs
 // * example:
 // * input :
@@ -9,7 +10,11 @@ const { getDatabaseConnection } = require("../common/commonMethods");
 const getListeCodesSecteur = async (req, res) => {
     const { dbName } = req.params;
     try {
-      const dbConnection = await getDatabaseConnection(dbName);
+        const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+      const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
       const listeCodesSecteurs = await dbConnection.query(
         `SELECT codesec from secteur`,
         {
@@ -36,9 +41,12 @@ const getListeCodesSecteur = async (req, res) => {
   // * http://localhost:5000/api/secteur/SOLEVO/getDesignationSecteurparCodeSecteur/002
   const getDesignationSecteurparCodeSecteur = async (req, res) => {
     const { dbName, codesecteur } = req.params;
-    console.log(dbName, " ", codesecteur);
     try {
-      const dbConnection = await getDatabaseConnection(dbName);
+        const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+      const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
       const secteurInfo = await dbConnection.query(
         `Select codesec, desisec from secteur where codesec = :codesecteur `,
         {
@@ -49,8 +57,6 @@ const getListeCodesSecteur = async (req, res) => {
         }
       );
   
-      console.log(secteurInfo);
-  
       return res
         .status(200)
         .json({ message: "secteur récupéré avec succès", secteurInfo });
@@ -58,8 +64,36 @@ const getListeCodesSecteur = async (req, res) => {
       return res.status(500).json({ message: error.message });
     }
   };
+//* http://localhost:5000/api/secteur/SOLEVO/ajouterSecteur
+//* {"secteurInfo": { "codesec": "323",   "desisec": "ddd" }}
 
+const ajouterSecteur=async (req,res)=>{
+const { dbName } = req.params;
+  const { secteurInfo } = req.body;
+  
+  try {
+      const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
+    const Secteur = defineSecteurModel(dbConnection);
+    const newSecteur = await Secteur.create({
+      //add + save min base 3ibrt 3ml insert into mn base de donnes
+      codesec: secteurInfo.codesec,
+      desisec: secteurInfo.desisec, 
+      
+      
+    });
+    
+
+    return res.status(200).json({ message: "insertion avec succès" ,newSecteur});
+  } catch (error) {
+    return res.status(500).json({ message: error });
+  }
+};
 module.exports = {
   getDesignationSecteurparCodeSecteur,
   getListeCodesSecteur,
+  ajouterSecteur,
 };

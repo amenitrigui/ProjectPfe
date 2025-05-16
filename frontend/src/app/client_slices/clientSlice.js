@@ -7,26 +7,29 @@ export const getListeClient = createAsyncThunk(
   async (_, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getListeClients`
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getListeClients`, {
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        }
+      }
     );
     return response.data.result;
   }
 );
 
-// * recupere client la liste des client par typecli
-export const getClientParTypecli = createAsyncThunk(
-  "Slice/getClientParTypecli",
-  async (typecli, thunkAPI) => {
-    console.log(
-      `${process.env.REACT_APP_API_URL}/api/client/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getClientParTypecli`
-    );
+// * recupere client la liste des client par raison sociale
+export const getClientParRaisonSociale = createAsyncThunk(
+  "Slice/getClientParRaisonSociale",
+  async (rsoc, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getClientParTypecli/${typecli}`
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getClientParRaisonSociale/${rsoc}`,{
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        },
+      }
     );
     return response.data.clients;
   }
@@ -38,20 +41,28 @@ export const getClientParCin = createAsyncThunk(
   async (cin, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getClientParCin/${cin}`
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getClientParCin/${cin}`,{
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        },
+      }
     );
     return response.data.client;
   }
 );
 // * récupere un client par son code
 export const getClientParCode = createAsyncThunk(
-  "Slice/getListeClient",
+  "Slice/getClientParCode",
   async (code, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getClientParCode/${code}`
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getClientParCode/${code}`,{
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        },
+      }
     );
     return response.data.client;
   }
@@ -60,19 +71,20 @@ export const getClientParCode = createAsyncThunk(
 export const ajouterClient = createAsyncThunk(
   "slice/ajouterClient",
   async (_, thunkAPI) => {
-    const clientInfos = thunkAPI.getState().ClientCrud.clientInfos;
-    console.log(clientInfos);
+    const clientInfos = thunkAPI.getState().clientSlice.clientInfos;
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/client/${
-        thunkAPI.getState().UtilisateurInfo.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/AjouterClient`,
+      {clientInfos},
       {
-        clientInfos,
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        },
       }
     );
-    console.log(response);
-    thunkAPI.getState().uiStates.setAlertMessage(response.data.message);
-    return response.data;
+    thunkAPI.getState().interfaceSlice.setAlertMessage(response.data.message);
+    return response.data.clientInfos;
   }
 );
 
@@ -80,13 +92,18 @@ export const ajouterClient = createAsyncThunk(
 export const majClient = createAsyncThunk(
   "slice/majClient",
   async (_, thunkAPI) => {
-    const clientMaj = thunkAPI.getState().ClientCrud.clientInfos;
+    const clientMaj = thunkAPI.getState().clientSlice.clientInfos;
 
     const response = await axios.put(
       `${process.env.REACT_APP_API_URL}/api/client/${
-        thunkAPI.getState().UtilisateurInfo.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/majClient`,
-      { clientMaj } // htha y3niii bch tjib les donds il kol htha body, ya3ni objet kamel mesh bel champ bel champ
+      {clientMaj}, // htha y3niii bch tjib les donds il kol htha body, ya3ni objet kamel mesh bel champ bel champ
+      {
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        },
+      }
     );
     return response.message;
   }
@@ -99,12 +116,15 @@ export const filtrerClients = createAsyncThunk(
     // Passer `filters` en paramètre
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/${
-        thunkAPI.getState().UtilisateurInfo.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/filtrerListeClients`,
       {
         params: {
-          filters: thunkAPI.getState().ClientCrud.filters, // Utiliser filters ici
+          filters: thunkAPI.getState().clientSlice.filters, // Utiliser filters ici
         },
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        }
       }
     );
     return response.data.data; // Retourner la réponse
@@ -118,8 +138,12 @@ export const getToutCodesClient = createAsyncThunk(
   async (_, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getToutCodesClient`
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getToutCodesClient`,{
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        },
+      }
     );
     return response.data.listeCodesClients;
   }
@@ -130,11 +154,14 @@ export const getToutCodesClient = createAsyncThunk(
 export const supprimerClient = createAsyncThunk(
   "slice/supprimerClient",
   async (code, thunkAPI) => {
-    console.log("code= ", code);
     const response = await axios.delete(
       `${process.env.REACT_APP_API_URL}/api/client/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/Delete/${code}`
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/Delete/${code}`,{
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        },
+      }
     );
     return response.data.message;
   }
@@ -146,8 +173,12 @@ export const getDerniereCodeClient = createAsyncThunk(
   async (_, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/client/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getDerniereCodeClient`
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getDerniereCodeClient`,{
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        },
+      }
     );
     return response.data.derniereCodeClient.code;
   }
@@ -162,8 +193,12 @@ export const getDesignationSecteurparCodeSecteur = createAsyncThunk(
   async (codesecteur, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/secteur/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getDesignationSecteurparCodeSecteur/${codesecteur}`
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getDesignationSecteurparCodeSecteur/${codesecteur}`,{
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        },
+      }
     );
     return response.data.secteurInfo[0];
   }
@@ -178,8 +213,12 @@ export const getListeCodesSecteur = createAsyncThunk(
   async (_, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/secteur/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getListeCodesSecteur`
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getListeCodesSecteur`,{
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        }
+      }
     );
     return response.data.listeCodesSecteurs;
   }
@@ -194,8 +233,12 @@ export const getVilleParCodePostal = createAsyncThunk(
   async (cp, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/codePostal/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getVilleParCodePostale/${cp}`
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getVilleParCodePostale/${cp}`,{
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        },
+      }
     );
     return response.data.ville[0];
   }
@@ -210,8 +253,12 @@ export const getListeCodesPosteaux = createAsyncThunk(
   async (_, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/codePostal/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getListeCodesPosteaux`
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getListeCodesPosteaux`, {
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        }
+      }
     );
     return response.data.listeCodesPosteaux;
   }
@@ -226,8 +273,12 @@ export const getListeCodeRegions = createAsyncThunk(
   async (_, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/region/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getListeCodeRegions`
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getListeCodeRegions`,{
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        }
+      }
     );
     return response.data.listeCodesRegion;
   }
@@ -239,74 +290,93 @@ export const getListeCodeRegions = createAsyncThunk(
 export const getVilleParRegion = createAsyncThunk(
   "clientSlice/getVilleParRegion",
   async (codeRegion, thunkAPI) => {
-    console.log("ok");
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/region/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getVilleParRegion/${codeRegion}`
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getVilleParRegion/${codeRegion}`,{
+        headers: {
+          Authorization: `Bearer ${thunkAPI.getState().utilisateurSystemSlice.token}`
+        },
+      }
     );
-    console.log("response");
 
     return response.data.ListRegion[0];
   }
 );
-
-// export const getRIBParBanque = createAsyncThunk(
-//   "clientSlice/getRIBParBanque",
-//   async(banque,thunkAPI)
-// )
+const clientInfoInitiales = {
+  code: "",
+  rsoc: "",
+  cp: "",
+  matemaj: "",
+  adresse: "",
+  email: "",
+  telephone: "",
+  tel1: "",
+  tel2: "",
+  codepv: "",
+  datcreat: new Date().toISOString().split("T")[0],
+  telex: "",
+  desrep: "",
+  aval2: "",
+  aval1: "",
+  Commentaire: "",
+  datemaj: "",
+  userm: "",
+  usera: "",
+  // ? les champs suivantes sont des checkboxes
+  // ? on initialise leurs valeurs à 0 pour dire
+  // ? que initialement ils sont décochés
+  offretick: "0",
+  timbref: "0",
+  cltexport: "0",
+  suspfodec: "0",
+  regime: "0",
+  exon: "0",
+  majotva: "0",
+  fidel: "0",
+  ptva: "0",
+  // ? =========================================
+  // ? les champs suivantes sont des selects
+  // ? on initialise leurs valeurs à 0 pour dire
+  // ? Non (N)
+  blockage: "0",
+  contrat: "0",
+  // ? ==========================================
+  datefinaut: "",
+  datedebaut: "",
+  decision: "",
+  matriculef: "",
+  reference: "",
+  srisque: "",
+  scredit: "",
+  delregBL: "",
+  delregFT: "",
+  delregFC: "",
+  remise: "",
+  activite: "",
+  codes: "",
+  coder: "",
+  typecli: "L",
+  cin: "",
+  fax: "",
+  codesec: "",
+  desisec: "",
+  codergg: "",
+  desirgg: "",
+  desicp: "",
+  nom1: "",
+  nom2: "",
+  nom3: "",
+};
 export const clientSlice = createSlice({
   name: "slice",
   initialState: {
+    clientInfoInitiales,
     // * les champs doivenent etres initialisées à vide
     // * pour éviter des problème quand on
     // * les utilisent tant que valeurs par defaut
     clientInfos: {
-      code: "",
-      rsoc: "",
-      cp: "",
-      adresse: "",
-      email: "",
-      telephone: "",
-      tel1: "",
-      tel2: "",
-      telex: "",
-      desrep: "",
-      Commentaire: "",
-      datemaj: "",
-      userm: "",
-      usera: "",
-      offretick: "",
-      timbref: "",
-      cltexport: "",
-      suspfodec: "",
-      regime: "",
-      susptva: "",
-      exon: "",
-      majotva: "",
-      fidel: "",
-      datefinaut: "",
-      datedebaut: "",
-      decision: "",
-      matriculef: "",
-      reference: "",
-      srisque: "",
-      scredit: "",
-      delregBL: "",
-      delregFT: "",
-      delregFC: "",
-      remise: "",
-      activite: "",
-      typecli: "L",
-      cin: "",
-      fax: "",
-      ptva: "",
-      codesec: "",
-      desisec: "",
-
-      codergg: "",
-      desirgg: "",
-      desicp: "",
+      ...clientInfoInitiales,
     }, // * informations de formulaire de client
     listeToutCodesClients: [],
 
@@ -317,10 +387,6 @@ export const clientSlice = createSlice({
     listeToutCodesPosteaux: [],
     status: "inactive",
     erreur: null,
-    // todo: change this to french
-    // todo: this is for later tho
-    // todo: hence the "todo"
-    // todo: todo
     filters: {
       code: "",
       rsoc: "",
@@ -353,55 +419,12 @@ export const clientSlice = createSlice({
     },
     viderChampsClientInfo: (state) => {
       state.clientInfos = {
-        code: "",
-        rsoc: "",
-        cp: "",
-        adresse: "",
-        email: "",
-        telephone: "",
-        tel1: "",
-        tel2: "",
-        telex: "",
-        desrep: "",
-        aval2: "",
-        aval1: "",
-        Commentaire: "",
-        datemaj: "",
-        userm: "",
-        usera: "",
-        offretick: "",
-        timbref: "",
-        cltexport: "",
-        suspfodec: "",
-        regime: "",
-        exon: "",
-        majotva: "",
-        fidel: "",
-        datefinaut: "",
-        datedebaut: "",
-        decision: "",
-        matriculef: "",
-        reference: "",
-        srisque: "",
-        scredit: "",
-        delregBL: "",
-        delregFT: "",
-        delregFC: "",
-        remise: "",
-        activite: "",
-        typecli: "L",
-        cin: "",
-        fax: "",
-
-        codesec: "",
-        desisec: "",
-
-        codergg: "",
-        desirgg: "",
-        desicp: "",
+        ...clientInfoInitiales,
       };
     },
-
+    setDerniereCodeClient: (state, action) => {
+      state.dernierCodeClient = action.payload;
+    },
     setClientsASupprimer: (state, action) => {
       state.clientsASupprimer.push(action.payload);
     },
@@ -470,7 +493,6 @@ export const clientSlice = createSlice({
       })
       .addCase(majClient.rejected, (state, action) => {
         state.status = "échoué";
-        console.log(action.payload);
         state.erreur = action.payload;
       })
 
@@ -483,10 +505,6 @@ export const clientSlice = createSlice({
         if (action.payload[0] && action.payload[0] != {}) {
           //objet client bch tit3aba il formulaire
           state.clientInfos = action.payload[0];
-          // state.clientInfos.CODEp = action.payload[0].cp
-          //   ? action.payload[0].cp
-          //   : "";
-          // state.clientInfos.codergg = action.payload.desireg;
         }
 
         state.status = "réussi";
@@ -512,7 +530,8 @@ export const clientSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getDerniereCodeClient.fulfilled, (state, action) => {
-        state.dernierCodeClient = (parseInt(action.payload) + 1).toString();
+        // state.dernierCodeClient = (parseInt(action.payload) + 1).toString();
+        state.dernierCodeClient = action.payload;
         state.status = "réussi";
       })
       .addCase(getDerniereCodeClient.rejected, (state, action) => {
@@ -520,14 +539,15 @@ export const clientSlice = createSlice({
         state.erreur = action.payload;
       })
 
-      .addCase(getClientParTypecli.pending, (state) => {
+      .addCase(getClientParRaisonSociale.pending, (state) => {
         state.status = "chargement";
       })
-      .addCase(getClientParTypecli.fulfilled, (state, action) => {
+      .addCase(getClientParRaisonSociale.fulfilled, (state, action) => {
         state.listeClients = action.payload;
+
         state.status = "réussi";
       })
-      .addCase(getClientParTypecli.rejected, (state, action) => {
+      .addCase(getClientParRaisonSociale.rejected, (state, action) => {
         state.status = "échoué";
         state.erreur = action.payload;
       })
@@ -616,7 +636,6 @@ export const clientSlice = createSlice({
         state.status = "chargement";
       })
       .addCase(getVilleParRegion.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.clientInfos.desirgg = action.payload.desirgg;
         state.status = "réussi";
       })
@@ -635,5 +654,6 @@ export const {
   viderChampsClientInfo,
   setInsertionDepuisDevisForm,
   setListeClients,
+  setDerniereCodeClient,
 } = clientSlice.actions;
 export default clientSlice.reducer;

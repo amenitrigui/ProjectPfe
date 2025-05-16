@@ -1,141 +1,269 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setArticleInfos } from "../../app/article_slices/articleSlice";
+import { isNumerique } from "../../utils/validations";
 
 function ValorisationTab() {
   const listePrixVente = useSelector(
     (state) => state.valorisation_Slice.listePrixVente
   );
+  const articleInfos = useSelector((state) => state.articleSlice.articleInfos);
+  const dispatch = useDispatch();
+  const colNum = [
+    "prix1",
+    "prix2",
+    "prix3",
+    "prix4",
+    "prix1TTC",
+    "prix2TTC",
+    "prix3TTC",
+    "prix4TTC",
+    "PrixPub",
+    "remmax",
+  ];
+  const handleChange = (colonne, valeur) => {
+    if (colNum.includes(colonne) && isNumerique(valeur)) {
+      dispatch(setArticleInfos({ colonne, valeur }));
+    }
+  };
+
+  const handleChangePrixUnitaireArticle = (colonne, valeur) => {
+    if (
+      colonne === "prix1" &&
+      colNum.includes(colonne) &&
+      isNumerique(valeur)
+    ) {
+      dispatch(setArticleInfos({ colonne: "prix1", valeur }));
+      dispatch(setArticleInfos({ colonne: "prix2", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix3", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix4", valeur: 0 }));
+    }
+
+    if (
+      colonne === "prix2" &&
+      colNum.includes(colonne) &&
+      isNumerique(valeur)
+    ) {
+      dispatch(setArticleInfos({ colonne: "prix2", valeur }));
+      dispatch(setArticleInfos({ colonne: "prix1", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix3", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix4", valeur: 0 }));
+    }
+
+    if (
+      colonne === "prix3" &&
+      colNum.includes(colonne) &&
+      isNumerique(valeur)
+    ) {
+      dispatch(setArticleInfos({ colonne: "prix3", valeur }));
+      dispatch(setArticleInfos({ colonne: "prix1", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix2", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix4", valeur: 0 }));
+    }
+
+    if (
+      colonne === "prix4" &&
+      colNum.includes(colonne) &&
+      isNumerique(valeur)
+    ) {
+      dispatch(setArticleInfos({ colonne: "prix4", valeur }));
+      dispatch(setArticleInfos({ colonne: "prix1", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix2", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix3", valeur: 0 }));
+    }
+  };
+
+  const handleChangePrixUnitaireTTCArticle = (colonne, valeur) => {
+    if (
+      colonne === "prix1TTC" &&
+      colNum.includes(colonne) &&
+      isNumerique(valeur)
+    ) {
+      dispatch(setArticleInfos({ colonne: "prix1TTC", valeur }));
+      dispatch(setArticleInfos({ colonne: "prix2TTC", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix3TTC", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix4TTC", valeur: 0 }));
+    }
+
+    if (
+      colonne === "prix2TTC" &&
+      colNum.includes(colonne) &&
+      isNumerique(valeur)
+    ) {
+      dispatch(setArticleInfos({ colonne: "prix2TTC", valeur }));
+      dispatch(setArticleInfos({ colonne: "prix1TTC", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix3TTC", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix4TTC", valeur: 0 }));
+    }
+
+    if (
+      colonne === "prix3TTC" &&
+      colNum.includes(colonne) &&
+      isNumerique(valeur)
+    ) {
+      dispatch(setArticleInfos({ colonne: "prix3TTC", valeur }));
+      dispatch(setArticleInfos({ colonne: "prix1TTC", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix2TTC", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix4TTC", valeur: 0 }));
+    }
+
+    if (
+      colonne === "prix4TTC" &&
+      colNum.includes(colonne) &&
+      isNumerique(valeur)
+    ) {
+      dispatch(setArticleInfos({ colonne: "prix4TTC", valeur }));
+      dispatch(setArticleInfos({ colonne: "prix1TTC", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix2TTC", valeur: 0 }));
+      dispatch(setArticleInfos({ colonne: "prix3TTC", valeur: 0 }));
+    }
+  };
   return (
     <>
-      <div className="overflow-x-auto">
-        <table className="table">
+      <div className="overflow-x-auto w-full">
+        <table className="table w-full min-w-[600px]">
           {/* head */}
-          <thead>
+          <thead className="bg-base-200 text-xs sm:text-sm">
             <tr>
               <th></th>
-              <th>Prix Ht</th>
+              <th>Prix HT</th>
               <th>Prix TTC</th>
               <th>Rem.Max</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="text-xs sm:text-sm">
             {/* row 1 */}
             <tr>
               <th>Prix 1</th>
               <td>
                 <input
                   type="text"
-                  placeholder="Extra Small"
-                  className="input input-xs"
-                  value={
-                    listePrixVente.length > 0 ? listePrixVente[0].prix1 : ""
+                  placeholder="HT"
+                  className="input input-xs w-full"
+                  value={articleInfos.prix1 || "0"}
+                  onChange={(e) =>
+                    handleChangePrixUnitaireArticle("prix1", e.target.value)
                   }
                 />
               </td>
               <td>
                 <input
                   type="text"
-                  placeholder="Extra Small"
-                  className="input input-xs"
-                  value={
-                    listePrixVente.length > 0 ? listePrixVente[0].prix1ttc : ""
+                  placeholder="TTC"
+                  className="input input-xs w-full"
+                  value={articleInfos.prix1TTC || "0"}
+                  onChange={(e) =>
+                    handleChangePrixUnitaireTTCArticle(
+                      "prix1TTC",
+                      e.target.value
+                    )
                   }
                 />
               </td>
               <td>
                 <input
                   type="text"
-                  placeholder="Extra Small"
-                  className="input input-xs"
-                  value={
-                    listePrixVente.length > 0 ? listePrixVente[0].remmax : ""
-                  }
+                  placeholder="Remise"
+                  className="input input-xs w-full"
+                  value={articleInfos.remmax || "0"}
+                  onChange={(e) => handleChange("remmax", e.target.value)}
                 />
               </td>
             </tr>
+
             {/* row 2 */}
             <tr>
-              <th>prix2</th>
+              <th>Prix 2</th>
               <td>
                 <input
                   type="text"
-                  placeholder="Extra Small"
-                  className="input input-xs"
-                  value={
-                    listePrixVente.length > 0 ? listePrixVente[0].prix2 : ""
+                  className="input input-xs w-full"
+                  value={articleInfos.prix2 || "0"}
+                  onChange={(e) =>
+                    handleChangePrixUnitaireArticle("prix2", e.target.value)
                   }
                 />
               </td>
               <td>
                 <input
                   type="text"
-                  placeholder="Extra Small"
-                  className="input input-xs"
-                  value={
-                    listePrixVente.length > 0 ? listePrixVente[0].prix2ttc : ""
+                  className="input input-xs w-full"
+                  value={articleInfos.prix2TTC || "0"}
+                  onChange={(e) =>
+                    handleChangePrixUnitaireTTCArticle(
+                      "prix2TTC",
+                      e.target.value
+                    )
                   }
                 />
               </td>
             </tr>
+
             {/* row 3 */}
             <tr>
-              <th>prix 3</th>
+              <th>Prix 3</th>
               <td>
                 <input
                   type="text"
-                  placeholder="Extra Small"
-                  className="input input-xs"
-                  value={
-                    listePrixVente.length > 0 ? listePrixVente[0].prix3 : ""
+                  className="input input-xs w-full"
+                  value={articleInfos.prix3 || "0"}
+                  onChange={(e) =>
+                    handleChangePrixUnitaireArticle("prix3", e.target.value)
                   }
                 />
               </td>
               <td>
                 <input
                   type="text"
-                  placeholder="Extra Small"
-                  className="input input-xs"
-                  value={
-                    listePrixVente.length > 0 ? listePrixVente[0].prix3ttc : ""
+                  className="input input-xs w-full"
+                  value={articleInfos.prix3TTC || "0"}
+                  onChange={(e) =>
+                    handleChangePrixUnitaireTTCArticle(
+                      "prix3TTC",
+                      e.target.value
+                    )
                   }
                 />
               </td>
             </tr>
+
             {/* row 4 */}
             <tr>
-              <th>prix 4</th>
+              <th>Prix 4</th>
               <td>
                 <input
                   type="text"
-                  placeholder="Extra Small"
-                  className="input input-xs"
-                  value={
-                    listePrixVente.length > 0 ? listePrixVente[0].prix4 : ""
+                  className="input input-xs w-full"
+                  value={articleInfos.prix4 || "0"}
+                  onChange={(e) =>
+                    handleChangePrixUnitaireArticle("prix4", e.target.value)
                   }
                 />
               </td>
               <td>
                 <input
                   type="text"
-                  placeholder="Extra Small"
-                  className="input input-xs"
-                  value={
-                    listePrixVente.length > 0 ? listePrixVente[0].prix4ttc : ""
+                  className="input input-xs w-full"
+                  value={articleInfos.prix4TTC || "0"}
+                  onChange={(e) =>
+                    handleChangePrixUnitaireTTCArticle(
+                      "prix4TTC",
+                      e.target.value
+                    )
                   }
                 />
               </td>
             </tr>
+
             {/* row 5 */}
             <tr>
-              <th>prix 1 publique</th>
+              <th>Prix 1 publique</th>
               <td>
                 <input
                   type="text"
-                  placeholder="Extra Small"
-                  className="input input-xs"
-                  value={
-                    listePrixVente.length > 0 ? listePrixVente[0].prixpub : ""
-                  }
+                  className="input input-xs w-full"
+                  value={articleInfos.PrixPub || "0"}
+                  onChange={(e) => handleChange("PrixPub", e.target.value)}
                 />
               </td>
             </tr>

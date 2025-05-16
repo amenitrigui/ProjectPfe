@@ -1,5 +1,6 @@
 const defineFamilleModel = require("../models/societe/famille");
-const { getDatabaseConnection } = require("../common/commonMethods");
+const { getDatabaseConnection, verifyTokenValidity } = require("../common/commonMethods");
+const { getConnexionBd } = require("../db/config");
 const { getUtilisateurDbConnexion } = require("../common/commonMethods");
 const { Sequelize } = require("sequelize");
 const defineSousFamille = require("../models/societe/sousfamille")
@@ -9,7 +10,11 @@ const defineSousFamille = require("../models/societe/sousfamille")
 const getListeSousFamillesParCodeSousFamille = async (req, res) => {
   const { dbName, codeSousFamille } = req.params;
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+      const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
 
     const result = await dbConnection.query(
       `SELECT code, libelle FROM sousfamille WHERE code LIKE :code`,
@@ -35,7 +40,11 @@ const getListeSousFamillesParCodeSousFamille = async (req, res) => {
 const getListeSousFamillesParLibelleSousFamille = async (req, res) => {
   const { dbName, LibelleSousFamille } = req.params;
   try {
-    const dbConnection = await getDatabaseConnection(dbName);
+      const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+    const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
 
     const result = await dbConnection.query(
       `SELECT code, libelle FROM sousfamille WHERE libelle LIKE :libelle`,
@@ -60,7 +69,11 @@ const ajouterSousFamille=async(req,res)=>{
   const { dbName } = req.params;
     const { SousFamilleAjoute } = req.body;
     try {
-      const dbConnection = await getDatabaseConnection(dbName);
+        const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifié" });
+    }
+      const dbConnection = getConnexionBd()//await getDatabaseConnection(dbName);
       const SousFamille = defineSousFamille(dbConnection);
       const sousfamille = await SousFamille.findOne({
         where: {

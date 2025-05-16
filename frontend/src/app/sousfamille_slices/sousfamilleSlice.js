@@ -6,10 +6,16 @@ export const getListeSousFamillesParCodeSousFamille = createAsyncThunk(
   async (codeSousFamille, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/sousfamille/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getListeSousFamillesParCodeSousFamille/${codeSousFamille}`
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getListeSousFamillesParCodeSousFamille/${codeSousFamille}`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
-    console.log(response);
     return response.data.sousFamilles;
   }
 );
@@ -19,10 +25,16 @@ export const getListeSousFamillesParLibelleSousFamille = createAsyncThunk(
   async (LibelleSousFamille, thunkAPI) => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/sousfamille/${
-        thunkAPI.getState().UtilisateurInfo.dbName
-      }/getListeSousFamillesParLibelleSousFamille/${LibelleSousFamille}`
+        thunkAPI.getState().utilisateurSystemSlice.dbName
+      }/getListeSousFamillesParLibelleSousFamille/${LibelleSousFamille}`,
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
     );
-    console.log(response);
     return response.data.LibellesousFamilles;
   }
 );
@@ -30,28 +42,37 @@ export const getListeSousFamillesParLibelleSousFamille = createAsyncThunk(
 export const ajouterSousFamille = createAsyncThunk(
   "sousfamilleSlice/ajouterSousFamille",
   async (_, thunkAPI) => {
-    console.log(thunkAPI.getState().sousfamilleSlice.SousFamilleInfos);
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/sousfamille/${
-        thunkAPI.getState().UtilisateurInfo.dbName
+        thunkAPI.getState().utilisateurSystemSlice.dbName
       }/ajouterSousFamille`,
       {
         SousFamilleAjoute:
           thunkAPI.getState().sousfamilleSlice.SousFamilleInfos,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
       }
     );
-    console.log(response);
     return response.data.SousFamilleCree;
   }
 );
 
+const sousfamilleInfoInitiales = {
+  code: "",
+  libelle: "",
+};
 export const sousfamilleSlice = createSlice({
   name: "sousfamilleSlice",
   initialState: {
     listeSousfamille: [],
+    sousfamilleInfoInitiales,
     SousFamilleInfos: {
-      code: "",
-      libelle: "",
+      ...sousfamilleInfoInitiales,
     },
   },
   reducers: {
@@ -62,6 +83,11 @@ export const sousfamilleSlice = createSlice({
       const { colonne, valeur } = action.payload;
       state.SousFamilleInfos[colonne] = valeur;
     },
+    viderSousFamilleInfos: (state) => {
+      state.SousFamilleInfos = {
+        ...sousfamilleInfoInitiales
+      }
+    }
   },
 
   extraReducers: (builder) => {
@@ -106,7 +132,7 @@ export const sousfamilleSlice = createSlice({
       );
   },
 });
-export const { setListeSousfamille, setSousFamilleInfos } =
+export const { setListeSousfamille, setSousFamilleInfos, viderSousFamilleInfos } =
   sousfamilleSlice.actions;
 
 export default sousfamilleSlice.reducer;

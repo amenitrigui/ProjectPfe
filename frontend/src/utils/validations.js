@@ -1,11 +1,10 @@
 export const isNumerique = (valeur) => {
-  console.log(valeur);
   return (!isNaN(valeur))
 }
 
 export const isAlphaNumerique = (valeur) => {
-
-}
+  return /^[A-Za-z0-9\s]*$/.test(valeur);
+};
 
 export const isAlphabetique = (valeur) => {
     return /^[A-Za-z\s]*$/.test(valeur)
@@ -19,7 +18,6 @@ export const validerChampsForm = (table, formInfos) => {
     case "client":
       break;
     case "devis" :
-      
       break;
     case "famille":
       break;
@@ -30,4 +28,4 @@ export const validerChampsForm = (table, formInfos) => {
   return estValide;
 }
 
-export const listeTables = ["utilisateur", "devis", ""] 
+export const listeTables = ["utilisateur", "devis", "article", "famille", "sousfamille", "region", "cpostal", "pointvente"] 

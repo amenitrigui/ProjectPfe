@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getDevisParNUMBL,
   getDevisParCodeClient,
   getDevisParMontant,
   getDevisParPeriode,
@@ -9,20 +8,24 @@ import {
   setDevisList,
   getListeNumbl,
   getListeDevisParNUMBL,
+  viderChampsDevisInfo,
+  setDevisInfo,
+  setDevisClientInfos,
 } from "../../app/devis_slices/devisSlice";
 import DataTable from "react-data-table-component";
 import {
   getClientParCin,
   getClientParCode,
-  getClientParTypecli,
+  getClientParRaisonSociale,
   getToutCodesClient,
   setClientInfosEntiere,
   setListeClients,
+  viderChampsClientInfo,
 } from "../../app/client_slices/clientSlice";
 import {
   setAfficherRecherchePopup,
   setToolbarTable,
-} from "../../app/interface_slices/uiSlice";
+} from "../../app/interface_slices/interfaceSlice";
 import {
   getListeArticleParCodeArticle,
   getListeArticleparFamille,
@@ -31,7 +34,10 @@ import {
   getListeCodesArticles,
   setArticleInfos,
   setArticleInfosEntiere,
+  setLigneDevisInfos,
+  setLigneDevisInfosEntiere,
   setListeArticle,
+  viderChampsArticleInfo,
 } from "../../app/article_slices/articleSlice";
 import {
   getListeFamillesParCodeFamille,
@@ -45,27 +51,30 @@ import {
   setListeSousfamille,
 } from "../../app/sousfamille_slices/sousfamilleSlice";
 import { useLocation } from "react-router-dom";
+import { setUtilisateurSupInfo } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 import {
-  getCodeUtilisateurParCode,
-  getListeCodeUtilisateurParCode,
   getListeUtilisateurParCode,
   getListeUtilisateurParDirecteur,
   getListeUtilisateurParNom,
   getListeUtilisateurParType,
-  setUtilisateurSupInfo,
-} from "../../app/Utilisateur_SuperviseurSlices/Utilisateur_SuperviseurSlices";
-import { setUtilisateurInfoEntire } from "../../app/utilisateur_slices/utilisateurSlice";
+  setInfosUtilisateurEntiere,
+  setListeUtilisateur_Superviseur,
+  viderChampsInfosUtilisateur,
+} from "../../app/utilisateur_slices/utilisateurSlice";
 
 const Recherche = () => {
   //?==================================================================================================================
   //?=====================================================variables====================================================
   //?==================================================================================================================
-  const toolbarTable = useSelector((state) => state.uiStates.toolbarTable);
-  const listeToutCodesClients = useSelector(
-    (state) => state.ClientCrud.listeToutCodesClients
+  const toolbarTable = useSelector(
+    (state) => state.interfaceSlice.toolbarTable
   );
+  const listeToutCodesClients = useSelector(
+    (state) => state.clientSlice.listeToutCodesClients
+  );
+  const [estFiltreChoisit, setEstFiltreChoisit] = useState(false);
   // * tableau contenant la liste des codes des devis
-  const listeNUMBL = useSelector((state) => state.DevisCrud.listeNUMBL);
+  const listeNUMBL = useSelector((state) => state.devisSlice.listeNUMBL);
   // * récuperer la liste de codes sélon table choisit
   const dispatch = useDispatch();
   // * valeur de champs de recherche
@@ -73,20 +82,25 @@ const Recherche = () => {
   // * critère de filtre (par client, par montant ...)
   const [filtrerPar, setFiltrerPar] = useState("");
   // * liste de devis récuperer de store
-  const devisList = useSelector((state) => state.DevisCrud.devisList);
-  const listeClients = useSelector((state) => state.ClientCrud.listeClients);
-  const ListeArticle = useSelector((state) => state.ArticlesDevis.ListeArticle);
+  const devisList = useSelector((state) => state.devisSlice.devisList);
+  const listeClients = useSelector((state) => state.clientSlice.listeClients);
+  const ListeArticle = useSelector((state) => state.articleSlice.ListeArticle);
+  const FamilleInfos = useSelector((state) => state.familleSlice.FamilleInfos);
   const listeFamilles = useSelector(
     (state) => state.familleSlice.listeFamilles
   );
+  const ListeSousFamille = useSelector(
+    (state) => state.articleSlice.ListeSousFamille
+  );
+  const listeCodesFamille = useSelector((state) => state.articleSlice.ListeFamille)
   const ListeCodeArticles = useSelector(
-    (state) => state.ArticlesDevis.ListeCodeArticles
+    (state) => state.articleSlice.ListeCodeArticles
   );
   const listeSousfamille = useSelector(
     (state) => state.sousfamilleSlice.listeSousfamille
   );
   const listeUtilisateur_Superviseur = useSelector(
-    (state) => state.Utilisateur_SuperviseurSlices.listeUtilisateur_Superviseur
+    (state) => state.utilisateurSlice.listeUtilisateur_Superviseur
   );
   // * state qui contient l'information d'élèment selectionné
   const [datatableElementSelection, setDatatableElementSelection] = useState(
@@ -138,7 +152,7 @@ const Recherche = () => {
     { name: "Code", selector: (row) => row.code, sortable: true },
     { name: "Raison Sociale", selector: (row) => row.rsoc, sortable: true },
     { name: "cin", selector: (row) => row.cin, sortable: true },
-    { name: "typecli", selector: (row) => row.typecli, sortable: true },
+    { name: "raison sociale", selector: (row) => row.rsoc, sortable: true },
   ];
   // * article
   const colonnesArticle = [
@@ -165,6 +179,8 @@ const Recherche = () => {
   const colonnesUtilisateur = [
     { name: "code", selector: (row) => row.codeuser, sortable: true },
     { name: "nom", selector: (row) => row.nom, sortable: true },
+    { name: "directeur", selector: (row) => row.directeur, sortable: true },
+    { name: "type", selector: (row) => row.type, sortable: true },
   ];
 
   const location = useLocation();
@@ -176,15 +192,17 @@ const Recherche = () => {
     if (toolbarTable == "client") {
       dispatch(getToutCodesClient());
     }
-
-    if (toolbarTable == "article") {
-      dispatch(getListeCodesArticles());
-    }
-
+    dispatch(getListeCodesArticles());
     if (toolbarTable == "devis") {
       dispatch(getListeNumbl());
     }
   }, [toolbarTable]);
+
+  useEffect(() => {
+    if (FamilleInfos.code) {
+      dispatch(getListeCodesArticles(FamilleInfos.code));
+    }
+  }, [FamilleInfos.code]);
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
@@ -198,11 +216,7 @@ const Recherche = () => {
     }
   };
   // * pour filtrer la liste des devis
-  const handleBtnRechercheClick = () => {
-    if (!valeurRecherche) {
-      alert("Veuillez entrer une valeur pour la recherche.");
-      return;
-    }
+  const handleChampRechercheChange = (valeur) => {
     if (!filtrerPar) {
       alert("Veuillez sélectionner un filtre de recherche.");
       return;
@@ -210,122 +224,223 @@ const Recherche = () => {
 
     if (toolbarTable == "devis") {
       switch (filtrerPar) {
-        case "client":
-          dispatch(getDevisParCodeClient(valeurRecherche));
-          break;
         case "numbl":
-          dispatch(getListeDevisParNUMBL(valeurRecherche));
+          dispatch(getListeDevisParNUMBL(valeur));
+          break;
+        case "client":
+          dispatch(getDevisParCodeClient(valeur));
           break;
         case "montant":
-          dispatch(getDevisParMontant(valeurRecherche));
+          dispatch(getDevisParMontant(valeur));
           break;
         case "periode":
-          dispatch(getDevisParPeriode(valeurRecherche));
+          dispatch(getDevisParPeriode(valeur));
           break;
 
         default:
-          console.log("Valeur de filtre non définie");
+          alert("Valeur de filtre non définie");
       }
     }
     if (toolbarTable == "utilisateur") {
       switch (filtrerPar) {
         case "code":
-          dispatch(getListeUtilisateurParCode(valeurRecherche));
+          dispatch(getListeUtilisateurParCode(valeur));
+
           break;
         case "nom":
-          dispatch(getListeUtilisateurParNom(valeurRecherche));
+          dispatch(getListeUtilisateurParNom(valeur));
           break;
         case "directeur":
-          dispatch(getListeUtilisateurParDirecteur(valeurRecherche));
-          case "type":
-            dispatch(getListeUtilisateurParType(valeurRecherche))
-
+          dispatch(getListeUtilisateurParDirecteur(valeur));
+          break;
+        case "type":
+          dispatch(getListeUtilisateurParType(valeur));
+          break;
         default:
-          console.log("Valeur de filtre non définie");
+          alert("Valeur de filtre non définie");
       }
     }
     if (toolbarTable == "client") {
       switch (filtrerPar) {
         case "code":
-          dispatch(getClientParCode(valeurRecherche));
+          dispatch(getClientParCode(valeur));
           break;
-        case "typecli":
-          dispatch(getClientParTypecli(valeurRecherche));
+        case "raison sociale":
+          dispatch(getClientParRaisonSociale(valeur));
           break;
         case "cin":
-          dispatch(getClientParCin(valeurRecherche));
+          dispatch(getClientParCin(valeur));
           break;
         default:
-          console.log("Valeur de filtre non définie");
+          alert("Valeur de filtre non définie");
       }
     }
 
     if (toolbarTable == "article") {
       switch (filtrerPar) {
         case "code":
-          dispatch(getListeArticleParCodeArticle(valeurRecherche));
+          if (FamilleInfos.code) {
+            console.log("ok");
+            dispatch(
+              getListeArticleParCodeArticle({
+                codeArticle: valeur,
+                codeFamille: FamilleInfos.code,
+              })
+            );
+          }
+          if (!FamilleInfos.code) {
+            dispatch(getListeArticleParCodeArticle({ codeArticle: valeur }));
+          }
           break;
         case "libelle":
-          dispatch(getListeArticleparLibelle(valeurRecherche));
+          dispatch(getListeArticleparLibelle(valeur));
           break;
         case "famille":
-          dispatch(getListeArticleparFamille(valeurRecherche));
+          dispatch(getListeArticleparFamille(valeur));
           break;
         case "SousFamille":
-          dispatch(getListeArticleParSousFamille(valeurRecherche));
+          dispatch(getListeArticleParSousFamille(valeur));
           break;
         default:
-          console.log("Valeur de filtre non définie");
+          alert("Valeur de filtre non définie");
       }
     }
 
     if (toolbarTable == "famille") {
       switch (filtrerPar) {
         case "code":
-          dispatch(getListeFamillesParCodeFamille(valeurRecherche));
+          dispatch(getListeFamillesParCodeFamille(valeur));
           break;
         case "libelle":
-          dispatch(getListeFamillesParLibelleFamille(valeurRecherche));
-          console.log("filtere table famille par libelle");
+          dispatch(getListeFamillesParLibelleFamille(valeur));
           break;
         default:
-          console.log("Valeur de filtre non définie");
+          alert("Valeur de filtre non définie");
       }
     }
 
     if (toolbarTable == "sousfamille") {
       switch (filtrerPar) {
         case "code":
-          dispatch(getListeSousFamillesParCodeSousFamille(valeurRecherche));
-          console.log("filtere table sous famille par code");
+          dispatch(getListeSousFamillesParCodeSousFamille(valeur));
           break;
         case "libelle":
-          dispatch(getListeSousFamillesParLibelleSousFamille(valeurRecherche));
-          console.log("filtere table sous famille par libelle");
+          dispatch(getListeSousFamillesParLibelleSousFamille(valeur));
           break;
         default:
-          console.log("Valeur de filtre non définie");
+          alert("Valeur de filtre non définie");
       }
+    }
+  };
+
+  // ??????????????
+  const viderListes = () => {
+    dispatch(setListeUtilisateur_Superviseur([]));
+    dispatch(setDevisList([]));
+    dispatch(setListeArticle([]));
+    dispatch(setListeClients([]));
+    dispatch(setListeFamilles([]));
+    dispatch(setListeSousfamille([]));
+  };
+  // * ceci est utilisé pour remplir les informations d'un ligne de devis par la
+  // * résultat d'un recherche d'article dans l'interface de gestion de devis
+  const remplirChampsLigneDevis = () => {
+    if (datatableElementSelection) {
+      dispatch(
+        setLigneDevisInfos({
+          colonne: "CodeART",
+          valeur: datatableElementSelection.code,
+        })
+      );
+      dispatch(
+        setLigneDevisInfos({
+          colonne: "DesART",
+          valeur: datatableElementSelection.libelle,
+        })
+      );
+      dispatch(
+        setLigneDevisInfos({
+          colonne: "PUART",
+          valeur: datatableElementSelection.prixnet,
+        })
+      );
+      dispatch(
+        setLigneDevisInfos({
+          colonne: "Remise",
+          valeur: datatableElementSelection.DREMISE,
+        })
+      );
+      dispatch(
+        setLigneDevisInfos({
+          colonne: "TypeART",
+          valeur: datatableElementSelection.type,
+        })
+      );
+      dispatch(
+        setLigneDevisInfos({
+          colonne: "TauxTVA",
+          valeur: datatableElementSelection.tauxtva,
+        })
+      );
+      dispatch(
+        setLigneDevisInfos({
+          colonne: "famille",
+          valeur: datatableElementSelection.famille,
+        })
+      );
+      dispatch(
+        setLigneDevisInfos({
+          colonne: "nbun",
+          valeur: datatableElementSelection.nbrunite,
+        })
+      );
+      dispatch(
+        setLigneDevisInfos({
+          colonne: "Unite",
+          valeur: datatableElementSelection.unite,
+        })
+      );
+      dispatch(
+        setLigneDevisInfos({
+          colonne: "Conf",
+          valeur: datatableElementSelection.CONFIG,
+        })
+      );
     }
   };
 
   const handleBtnValiderClick = () => {
     if (toolbarTable == "devis") {
       dispatch(setDevisInfoEntiere(datatableElementSelection));
-      dispatch(setDevisList([]));
       dispatch(setAfficherRecherchePopup(false));
     }
     if (toolbarTable == "client") {
       dispatch(setClientInfosEntiere(datatableElementSelection));
-      dispatch(setListeClients([]));
+      dispatch(
+        setDevisClientInfos({
+          CODECLI: datatableElementSelection.code,
+          RSCLI: datatableElementSelection.rsoc,
+          ADRCLI: datatableElementSelection.adresse,
+        })
+      );
       dispatch(setAfficherRecherchePopup(false));
     }
     if (toolbarTable == "article") {
       dispatch(setArticleInfosEntiere(datatableElementSelection));
-      dispatch(setListeArticle([]));
+      remplirChampsLigneDevis();
       dispatch(setAfficherRecherchePopup(false));
     }
     if (toolbarTable == "famille") {
+      // * ceci est pour l'interface d'ajout d'une ligne devis
+      dispatch(
+        setLigneDevisInfos({
+          colonne: "famille",
+          valeur: datatableElementSelection.code,
+        })
+      );
+      dispatch(setFamilleInfosEntiere(datatableElementSelection));
+      // * ============================================================
+      // * ceci est pour l'interface d'articles
       dispatch(
         setArticleInfos({
           colonne: "famille",
@@ -338,11 +453,11 @@ const Recherche = () => {
           valeur: datatableElementSelection.libelle,
         })
       );
-      dispatch(setListeFamilles([]));
+      // * ============================================================
       dispatch(setAfficherRecherchePopup(false));
     }
     if (toolbarTable == "utilisateur") {
-      dispatch(setUtilisateurSupInfo(datatableElementSelection));
+      dispatch(setInfosUtilisateurEntiere(datatableElementSelection));
       dispatch(setAfficherRecherchePopup(false));
     }
     if (toolbarTable == "sousfamille") {
@@ -359,11 +474,29 @@ const Recherche = () => {
         })
       );
 
-      dispatch(setListeSousfamille([]));
       dispatch(setAfficherRecherchePopup(false));
     }
-
+    viderListes();
+    // ! ??????
+    // viderChamps();
     revenirToolbarTablePrecedent();
+  };
+
+  const viderChamps = () => {
+    switch (toolbarTable) {
+      case "article":
+        dispatch(viderChampsArticleInfo());
+        break;
+      case "client":
+        dispatch(viderChampsClientInfo());
+        break;
+      case "devis":
+        dispatch(viderChampsDevisInfo());
+        break;
+      case "utilisateur":
+        dispatch(viderChampsInfosUtilisateur());
+        break;
+    }
   };
 
   const fermerPopupRecherche = () => {
@@ -379,7 +512,7 @@ const Recherche = () => {
       case "/UtilisateurFormTout":
         dispatch(setToolbarTable("utilisateur"));
         break;
-      case "/articleFormTout":
+      case "/ArticleFormTout":
         dispatch(setToolbarTable("article"));
         break;
       case "/clientFormTout":
@@ -387,10 +520,34 @@ const Recherche = () => {
         break;
     }
   };
+  const changerFiltre = (filtre) => {
+    viderListes();
+    document.getElementById("searchInput").value = "";
+    setEstFiltreChoisit(true);
+    setFiltrerPar(filtre);
+  };
 
+  const getListeCodesDataList = () => {
+    if(toolbarTable === "client" && filtrerPar === "code"){
+      return "listeCodesClients";
+    }
+    if(toolbarTable === "article" && filtrerPar === "code"){
+      return "listeCodesArticle"
+    }
+    if(toolbarTable === "devis" && filtrerPar === "numbl"){
+      return "listeCodesNumbl"
+    }
+    if(toolbarTable === "famille" && filtrerPar === "code"){
+      return "listeCodesFamilles"
+    }
+    if(toolbarTable === "sousfamille" && filtrerPar === "code"){
+      return "listeCodesSousFamille"
+    }
+    return ""
+  }
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl p-6 relative">
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-6xl p-6 relative max-h-screen overflow-y-auto">
         {/* Bouton fermer (X) */}
         <button
           onClick={() => fermerPopupRecherche()}
@@ -404,51 +561,53 @@ const Recherche = () => {
           style={{ color: "#2a2185" }}
         >
           Rechercher
-          {toolbarTable === "devis" && "  par devis"}{" "}
-          {toolbarTable === "client" && "  par client"}{" "}
-          {toolbarTable === "article" && "  par article"}{" "}
-          {toolbarTable === "sousfamille" && "  par sous famille"}{" "}
-          {toolbarTable === "famille" && "  par famille"}{" "}
-          {toolbarTable === "utilisateur" && "  par utilisateur"}{" "}
+          {toolbarTable === "devis" && " par devis"}
+          {toolbarTable === "client" && " par client"}
+          {toolbarTable === "article" && " par article"}
+          {toolbarTable === "sousfamille" && " par sous famille"}
+          {toolbarTable === "famille" && " par famille"}
+          {toolbarTable === "utilisateur" && " par utilisateur"}
         </h2>
 
-        <div className="flex space-x-6">
+        <div className="flex flex-col md:flex-row md:space-x-6 space-y-4 md:space-y-0">
           {/* Filtres */}
-          <div className="w-1/3 bg-gray-50 p-4 rounded-xl shadow">
+          <div className="md:w-1/3 w-full bg-gray-50 p-4 rounded-xl shadow">
             <h3 className="text-lg font-medium text-gray-700 mb-4">
-              Rechercher {toolbarTable === "devis" && "Devis"}{" "}
-              {toolbarTable === "client" && "Client"}{" "}
-              {toolbarTable === "article" && "article"}{" "}
-              {toolbarTable === "sousfamille" && "sousfamille"}{" "}
-              {toolbarTable === "famille" && "famille"} par :
+              Rechercher {toolbarTable === "devis" && "Devis"}
+              {toolbarTable === "client" && "Client"}
+              {toolbarTable === "article" && "Article"}
+              {toolbarTable === "sousfamille" && "Sousfamille"}
+              {toolbarTable === "famille" && "Famille"} par :
             </h3>
 
             <div className="space-y-2">
               {toolbarTable === "devis" &&
-                ["numbl", "client", "montant", "periode", "article"].map(
-                  (filtre) => (
-                    <label key={filtre} className="flex items-center">
-                      <input
-                        type="radio"
-                        name="filtres"
-                        value={filtre}
-                        className="mr-2"
-                        onChange={() => setFiltrerPar(filtre)}
-                      />
-                      {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
-                    </label>
-                  )
-                )}
-
-              {toolbarTable === "client" &&
-                ["code", "typecli", "cin"].map((filtre) => (
+                ["numbl", "client", "montant", "periode"].map((filtre) => (
                   <label key={filtre} className="flex items-center">
                     <input
                       type="radio"
                       name="filtres"
                       value={filtre}
                       className="mr-2"
-                      onChange={() => setFiltrerPar(filtre)}
+                      onChange={() => {
+                        changerFiltre(filtre);
+                      }}
+                    />
+                    {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
+                  </label>
+                ))}
+
+              {toolbarTable === "client" &&
+                ["code", "raison sociale", "cin"].map((filtre) => (
+                  <label key={filtre} className="flex items-center">
+                    <input
+                      type="radio"
+                      name="filtres"
+                      value={filtre}
+                      className="mr-2"
+                      onChange={() => {
+                        changerFiltre(filtre);
+                      }}
                     />
                     {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                   </label>
@@ -462,7 +621,9 @@ const Recherche = () => {
                       name="filtres"
                       value={filtre}
                       className="mr-2"
-                      onChange={() => setFiltrerPar(filtre)}
+                      onChange={() => {
+                        changerFiltre(filtre);
+                      }}
                     />
                     {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                   </label>
@@ -476,7 +637,9 @@ const Recherche = () => {
                       name="filtres"
                       value={filtre}
                       className="mr-2"
-                      onChange={() => setFiltrerPar(filtre)}
+                      onChange={() => {
+                        changerFiltre(filtre);
+                      }}
                     />
                     {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                   </label>
@@ -490,7 +653,9 @@ const Recherche = () => {
                       name="filtres"
                       value={filtre}
                       className="mr-2"
-                      onChange={() => setFiltrerPar(filtre)}
+                      onChange={() => {
+                        changerFiltre(filtre);
+                      }}
                     />
                     {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                   </label>
@@ -504,7 +669,9 @@ const Recherche = () => {
                       name="filtres"
                       value={filtre}
                       className="mr-2"
-                      onChange={() => setFiltrerPar(filtre)}
+                      onChange={() => {
+                        changerFiltre(filtre);
+                      }}
                     />
                     {filtre.charAt(0).toUpperCase() + filtre.slice(1)}
                   </label>
@@ -512,26 +679,17 @@ const Recherche = () => {
             </div>
           </div>
 
-          {/* Champ de recherche */}
-          <div className="w-2/3 bg-gray-50 p-4 rounded-xl shadow">
-            <div className="flex items-center space-x-2 mb-4">
+          {/* Champ de recherche + résultat */}
+          <div className="md:w-2/3 w-full bg-gray-50 p-4 rounded-xl shadow">
+            <div className="flex flex-col space-y-2 mb-4">
               <input
                 id="searchInput"
                 type="text"
-                onChange={(e) => setValeurRecherche(e.target.value)}
+                onChange={(e) => handleChampRechercheChange(e.target.value)}
                 className="p-2 border border-gray-300 rounded-lg w-full"
                 placeholder="Entrez votre recherche..."
-                list={
-                  toolbarTable === "client" && filtrerPar === "code"
-                    ? "listeCodesClients"
-                    : toolbarTable === "article" && filtrerPar === "code"
-                    ? "listeCodesArticle"
-                    : toolbarTable === "devis" && filtrerPar === "numbl"
-                    ? "listeCodesNumbl"
-                    : toolbarTable === "famille" && filtrerPar === "code"
-                    ? "listeCodesFamilles"
-                    : ""
-                }
+                disabled={!estFiltreChoisit}
+                list={getListeCodesDataList()}
               />
               <datalist id="listeCodesClients">
                 {listeToutCodesClients.length > 0 ? (
@@ -560,10 +718,9 @@ const Recherche = () => {
                   </option>
                 ))}
               </datalist>
-
               <datalist id="listeCodesFamilles">
-                {ListeArticle.length > 0 ? (
-                  ListeArticle.map((famille, indice) => (
+                {listeCodesFamille.length > 0 ? (
+                  listeCodesFamille.map((famille, indice) => (
                     <option key={indice} value={famille.code}>
                       {famille.code}
                     </option>
@@ -572,18 +729,19 @@ const Recherche = () => {
                   <option disabled>Aucun article trouvé</option>
                 )}
               </datalist>
-              <button
-                onClick={handleBtnRechercheClick}
-                style={{ backgroundColor: "#2a2185" }}
-                className="text-white px-4 py-2 rounded-lg hover:opacity-90 transition"
-              >
-                Rechercher
-              </button>
+
+              <datalist id="listeCodesSousFamille">
+                {ListeSousFamille.map((Sousfamille, indice) => (
+                  <option key={indice} value={Sousfamille.code}>
+                    {Sousfamille.code}
+                  </option>
+                ))}
+              </datalist>
             </div>
 
             {/* Table des résultats */}
-            {toolbarTable === "client" && (
-              <div className="max-h-[400px] overflow-y-auto">
+            <div className="h-[200px] overflow-y-auto">
+              {toolbarTable === "client" && (
                 <DataTable
                   data={listeClients}
                   columns={collonesClient}
@@ -594,10 +752,8 @@ const Recherche = () => {
                   selectableRows
                   onSelectedRowsChange={handleDatatableSelection}
                 />
-              </div>
-            )}
-            {toolbarTable === "devis" && (
-              <div className="max-h-[400px] overflow-y-auto">
+              )}
+              {toolbarTable === "devis" && (
                 <DataTable
                   data={devisList}
                   columns={collonesDevis}
@@ -608,11 +764,8 @@ const Recherche = () => {
                   selectableRows
                   onSelectedRowsChange={handleDatatableSelection}
                 />
-              </div>
-            )}
-
-            {toolbarTable === "article" && (
-              <div className="max-h-[400px] overflow-y-auto">
+              )}
+              {toolbarTable === "article" && (
                 <DataTable
                   data={ListeArticle}
                   columns={colonnesArticle}
@@ -623,11 +776,8 @@ const Recherche = () => {
                   selectableRows
                   onSelectedRowsChange={handleDatatableSelection}
                 />
-              </div>
-            )}
-
-            {toolbarTable === "famille" && (
-              <div className="max-h-[400px] overflow-y-auto">
+              )}
+              {toolbarTable === "famille" && (
                 <DataTable
                   data={listeFamilles}
                   columns={colonnesFamille}
@@ -638,11 +788,8 @@ const Recherche = () => {
                   selectableRows
                   onSelectedRowsChange={handleDatatableSelection}
                 />
-              </div>
-            )}
-
-            {toolbarTable === "sousfamille" && (
-              <div className="max-h-[400px] overflow-y-auto">
+              )}
+              {toolbarTable === "sousfamille" && (
                 <DataTable
                   data={listeSousfamille}
                   columns={colonnesSousFamille}
@@ -653,10 +800,8 @@ const Recherche = () => {
                   selectableRows
                   onSelectedRowsChange={handleDatatableSelection}
                 />
-              </div>
-            )}
-            {toolbarTable === "utilisateur" && (
-              <div className="max-h-[400px] overflow-y-auto">
+              )}
+              {toolbarTable === "utilisateur" && (
                 <DataTable
                   data={listeUtilisateur_Superviseur}
                   columns={colonnesUtilisateur}
@@ -667,8 +812,8 @@ const Recherche = () => {
                   selectableRows
                   onSelectedRowsChange={handleDatatableSelection}
                 />
-              </div>
-            )}
+              )}
+            </div>
 
             <button
               onClick={handleBtnValiderClick}

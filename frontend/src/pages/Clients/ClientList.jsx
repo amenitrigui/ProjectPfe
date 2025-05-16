@@ -11,18 +11,20 @@ import {
 } from "../../app/client_slices/clientSlice";
 import {
   setToolbarTable,
-} from "../../app/interface_slices/uiSlice";
+} from "../../app/interface_slices/interfaceSlice";
+import SideBar from "../../components/Common/SideBar";
+import ToolBar from "../../components/Common/ToolBar";
 
 function ClientList() {
   const dispatch = useDispatch();
-  const listeClients = useSelector((store) => store.ClientCrud.listeClients);
+  const listeClients = useSelector((store) => store.clientSlice.listeClients);
 
   useEffect(() => {
     dispatch(getListeClient());
     dispatch(setToolbarTable("client"));
   }, []);
 
-  const filters = useSelector((store) => store.ClientCrud.filters);
+  const filters = useSelector((store) => store.clientSlice.filters);
 
   const handleFilterChange = (e, column) => {
     dispatch(setFiltresSaisient({ valeur: e.target.value, collonne: column }));
@@ -77,26 +79,17 @@ function ClientList() {
       dispatch(setClientsASupprimer([]));
     }
   };
+  const ouvrireMenuDrawer = useSelector(
+    (state) => state.interfaceSlice.ouvrireMenuDrawer
+  );
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      <div className="flex-1 p-6">
-        <div className="mt-2 flex items-center relative">
-          <Link
-            to="/ClientFormTout"
-            className="text-lg font-semibold text-[primaryColor] underline hover:text-blue-500 absolute left-0"
-          >
-            ← Retour
-          </Link>
+    <div className="container">
+    <SideBar></SideBar>
 
-          <h1
-            className="text-2xl font-bold text-center flex-1"
-            style={{ color: primaryColor }}
-          >
-            Liste Client
-          </h1>
-        </div>
-
+    
+    <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
+      <ToolBar></ToolBar>
         {/* Filtres */}
         <div className="grid grid-cols-3 gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
           {Object.keys(filters).map((column, index) => (
@@ -116,7 +109,6 @@ function ClientList() {
             columns={columns}
             data={listeClients}
             customStyles={customStyles}
-            selectableRows
             fixedHeader
             pagination
             highlightOnHover

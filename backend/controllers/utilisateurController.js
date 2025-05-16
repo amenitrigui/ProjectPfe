@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
+const path = require("path");
+
+// const bcrypt = require("bcryptjs");
 
 // const Representant = require("../models/representant");
 const defineUserModel = require("../models/utilisateur/utilisateur");
@@ -7,19 +9,17 @@ const nodeMailer = require("nodemailer");
 const { google } = require("googleapis");
 const handlebars = require("handlebars");
 const fs = require("fs");
-
 const {
-  getDatabaseConnection,
+  getConnexionAuBdUtilisateurs,
+  setConnexionAuBdUtilisateurs,
+  setBdConnexion,
+  getConnexionBd,
+} = require("../db/config");
+const {
   verifyTokenValidity,
+  getDatabaseConnection,
 } = require("../common/commonMethods");
-let connexionDbUserErp;
 
-const getDbConnection = async () => {
-  if (!connexionDbUserErp) {
-    connexionDbUserErp = await getDatabaseConnection("usererpsole");
-  }
-  return connexionDbUserErp;
-};
 
 // * initialisation de client OAuth2 avec
 // * les paramètres: clientId, clientSecret, redirectUrl
@@ -40,7 +40,6 @@ oAuth2Client.setCredentials({
   refresh_token: process.env.NODEMAILER_REFRESH_TOKEN,
 });
 
-
 // * Generer un jwt d'accès pour un utilisateur déjà inscrit
 // * exemple
 // * input : {nom: "test", motpasse: "test"}
@@ -49,10 +48,10 @@ oAuth2Client.setCredentials({
 // * http://localhost:5000/api/utilisateurs/loginUtilisateur
 const loginUtilisateur = async (req, res) => {
   const { nom, motpasse } = req.body;
-
   try {
-    await getDbConnection();
-    const User = defineUserModel(connexionDbUserErp);
+    setConnexionAuBdUtilisateurs(process.env.DB_USERS_NAME);
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
+    const User = defineUserModel(sequelizeConnexionDbUtilisateur);
     // Vérification que tous les champs sont remplis
     if (!nom || !motpasse) {
       return res
@@ -61,30 +60,28 @@ const loginUtilisateur = async (req, res) => {
     }
 
     // Recherche de l'utilisateur
-    const user = await User.findOne({ where: { nom } });
+    const user = await User.findOne({
+      attributes: ["codeuser", "nom", "motpasse", "email", "directeur", "type"],
+      where: { nom },
+    });
     if (!user) {
       return res.status(400).json({ message: "Utilisateur non trouvé." });
     }
 
-    // Vérification du mot de passe
-    // comparaison de mot de passe donnée
-    // avec le hash dans la bd
-    const isPasswordMatched = bcrypt.compareSync(motpasse, user.motpasse);
-
-    if (!isPasswordMatched) {
+    if (motpasse !== user.motpasse) {
       return res.status(401).json({ message: "Mot de passe incorrect." });
     }
 
     // * Requête pour récupérer les sociétés (rsoc) associées avec le nom d'utilisateur
     // * ceci est pour le composant de  liste des sociétés
-    const societies = await connexionDbUserErp.query(
+    const societies = await sequelizeConnexionDbUtilisateur.query(
       `SELECT us.societe, s.rsoc
        FROM usersoc us
        JOIN societe s ON us.societe = s.code
        WHERE us.codeuser = :codeuser`,
       {
         replacements: { codeuser: user.codeuser },
-        type: connexionDbUserErp.QueryTypes.SELECT,
+        type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
       }
     );
     // Création du token JWT
@@ -113,8 +110,7 @@ const loginUtilisateur = async (req, res) => {
   }
 };
 
-// * Recupère la liste de devis pour une sociète donnée
-// ! useless
+// * Etablir une connexion avec la base de données selectionnée
 // * verb : post
 // * http://localhost:5000/api/utilisateurs/select-database
 const selectDatabase = async (req, res) => {
@@ -125,15 +121,49 @@ const selectDatabase = async (req, res) => {
       .status(400)
       .json({ message: "Le nom de la base de données est requis." });
   }
-
   try {
     const decoded = verifyTokenValidity(req);
-    const codeuser = decoded.codeuser;
-    await getDbConnection(databaseName);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
 
+    const codeuser = decoded.codeuser;
+    setBdConnexion(databaseName);
+    const Utilisateur = defineUserModel(sequelizeConnexionDbUtilisateur);
+    const droitAcceTableClient = await sequelizeConnexionDbUtilisateur.query(
+      `SELECT accee, ajouter, modifier, supprimer, ecriture from usermodule where module = 'clients' and modulepr = "Fichier de base" and codeuser = :codeuser and societe = :databaseName`,
+      {
+        type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
+        replacements: {
+          codeuser: codeuser,
+          databaseName: databaseName,
+        },
+      }
+    );
+    const droitAcceeTableArticle = await sequelizeConnexionDbUtilisateur.query(
+      `Select accee , ajouter,modifier,supprimer,ecriture from usermodule where module= 'article'and modulepr='Fichier de base' and codeuser= :codeuser  and societe = :databaseName`,
+      {
+        type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
+        replacements: {
+          codeuser: codeuser,
+          databaseName: databaseName,
+        },
+      }
+    );
+    await Utilisateur.update(
+      { socutil: databaseName },
+      {
+        where: {
+          codeuser: codeuser,
+        },
+      }
+    );
     return res.status(200).json({
       message: `Connecté à la base ${databaseName}`,
       databaseName,
+      droitAcceTableClient,
+      droitAcceeTableArticle
     });
   } catch (error) {
     console.error("Erreur lors de la connexion à la base de données :", error);
@@ -154,7 +184,8 @@ const envoyerDemandeReinitialisationMp = async (req, res) => {
   }
 
   try {
-    const User = defineUserModel(connexionDbUserErp);
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
+    const User = defineUserModel(sequelizeConnexionDbUtilisateur);
     const user = await User.findOne({ where: { email } });
 
     if (!user) {
@@ -172,7 +203,6 @@ const envoyerDemandeReinitialisationMp = async (req, res) => {
     );
 
     const accessToken = await oAuth2Client.getAccessToken();
-    console.log("Access Token:", accessToken);
 
     const transporter = nodeMailer.createTransport({
       service: "gmail",
@@ -224,12 +254,7 @@ const envoyerDemandeReinitialisationMp = async (req, res) => {
 // * verb : put
 // * http://localhost:5000/api/utilisateurs/reinitialiserMotPasse
 const reinitialiserMotPasse = async (req, res) => {
-  const { email, password, token } = req.body;
-  if (!token) {
-    return res
-      .status(401)
-      .json({ message: "L'utilisateur n'est pas authentifié" });
-  }
+  const { email, password } = req.body;
 
   if (!password) {
     return res.status(500).json({
@@ -237,11 +262,12 @@ const reinitialiserMotPasse = async (req, res) => {
         "Le mot de passe à utiliser lors de réinitialisation ne peut pas etre vide",
     });
   }
-  
+
   try {
-    const decodedJWT = verifyTokenValidity(req, res);
-    const User = defineUserModel(connexionDbUserErp)
-    
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
+
+    const User = defineUserModel(sequelizeConnexionDbUtilisateur);
+
     const user = await User.findOne({ where: { email } });
     if (!user) {
       return res.status(404).json({
@@ -249,11 +275,10 @@ const reinitialiserMotPasse = async (req, res) => {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    console.log(hashedPassword);
+    // const hashedPassword = await bcrypt.hash(password, 10);
 
-    user.motpasse = hashedPassword;
-    await user.save();
+    user.motpasse = password;
+    // await user.save();
 
     return res
       .status(200)
@@ -265,32 +290,138 @@ const reinitialiserMotPasse = async (req, res) => {
     });
   }
 };
+const uploadImageUtilisateur = async (req, res) => {
+  const { codeuser } = req.params;
+
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "Aucun fichier uploadé" });
+    }
+
+    const imagePath = req.file.filename; // Le nom du fichier sauvegardé
+
+    // Mise à jour de l'utilisateur dans la base de données
+    await sequelizeConnexionDbUtilisateur.query(
+      "UPDATE utilisateur SET image = :image WHERE codeuser = :codeuser",
+      {
+        replacements: { image: imagePath, codeuser: codeuser },
+        type: sequelizeConnexionDbUtilisateur.QueryTypes.UPDATE,
+      }
+    );
+
+    // Construire l'URL complète de l'image
+    const imageUrl = `${req.protocol}://${req.get(
+      "host"
+    )}/uploads/${imagePath}`;
+
+    return res.status(200).json({
+      message: "Image uploadée avec succès",
+      imageUrl: imageUrl,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 
 // * récuperer les informations d'un utilisateur par son code
 // * verb : get
 // * http://localhost:5000/api/utilisateurs/getUtilisateurParCode/1
+// ! duplicate method
 const getUtilisateurParCode = async (req, res) => {
   const { codeuser } = req.params;
 
   try {
-
-    const utilisateur = await connexionDbUserErp.query(
+    const decoded = verifyTokenValidity(req);
+    if (!decoded) {
+      return res.status(401).json({ message: "utilisateur non authentifie" });
+    }
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
+    const utilisateur = await sequelizeConnexionDbUtilisateur.query(
       "SELECT * FROM utilisateur WHERE codeuser = :codeuser",
       {
-        type: connexionDbUserErp.QueryTypes.SELECT,
+        type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
         replacements: { codeuser: codeuser },
       }
     );
 
     if (utilisateur.length > 0) {
+      // On ajoute le chemin complet de l'image si elle existe
+      const user = utilisateur[0];
+      if (user.image) {
+        user.imageUrl = `${req.protocol}://${req.get("host")}/uploads/${
+          user.image
+        }`;
+      }
+
       return res.status(200).json({
         message: "Utilisateur récupéré avec succès",
-        utilisateur,
+        utilisateur: [user],
       });
     } else {
       return res.status(404).json({ message: "Utilisateur non trouvé" });
     }
   } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// * fermer les connexions récuperés avec la base des données d'utilisateurs (userErpSole)
+// * et avec le base de données sélectionnée de connexion
+// * verb : post
+// * url: http://localhost:5000/api/utilisateurs/deconnecterUtilisateur
+const deconnecterUtilisateur = async (req, res) => {
+  try {
+    const connexionBd = getConnexionBd();
+    const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
+    if (sequelizeConnexionDbUtilisateur) {
+      sequelizeConnexionDbUtilisateur.close();
+    }
+    if (connexionBd) {
+      connexionBd.close();
+    }
+
+    return res
+      .status(200)
+      .json({ message: "déconnexion effectuée avec succès" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+// ! duplicate method
+const AjouterUtilisateur = async (req, res) => {
+  const { utilisateurInfo } = req.body;
+
+  try {
+    // 1. Obtenir la connexion à la base de données AVEC le nom de la base spécifié
+    const dbConnection = await getDatabaseConnection(process.env.DB_USERS_NAME); // Remplacez par votre variable d'environnement
+
+    // 2. Définir le modèle avec la connexion active
+    const Utilisateur = defineUserModel(dbConnection);
+
+    // 3. Créer l'utilisateur avec les valeurs par défaut pour les champs non fournis
+    const newUser = await Utilisateur.create({
+      codeuser: utilisateurInfo.codeuser,
+      type: utilisateurInfo.type,
+      email: utilisateurInfo.email,
+      directeur: utilisateurInfo.directeur,
+      nom: utilisateurInfo.nom,
+      motpasse: utilisateurInfo.motpasse,
+      image: utilisateurInfo.image,
+
+      // Valeurs par défaut pour les autres champs requis
+      etatbcf: 0,
+      etatbcc: 0,
+      etatcl: 0,
+      // ... autres champs avec leurs valeurs par défaut
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "Insertion réussie",
+      data: newUser,
+    });
+  } catch (error) {
+    console.error("Erreur lors de l'ajout d'utilisateur:", error);
     return res.status(500).json({ message: error.message });
   }
 };
@@ -301,4 +432,7 @@ module.exports = {
   envoyerDemandeReinitialisationMp,
   reinitialiserMotPasse,
   getUtilisateurParCode,
+  deconnecterUtilisateur,
+  uploadImageUtilisateur,
+  AjouterUtilisateur,
 };

@@ -22,6 +22,7 @@ backend/.env.*.local
 # Build output
 frontend/dist/
 backend/dist/
+frontend/build/
 
 # Editor directories and files
 .vscode/*
@@ -33,3 +34,6 @@ backend/dist/
 *.njsproj
 *.sln
 *.sw?
+
+#Test files
+frontend/src/test/

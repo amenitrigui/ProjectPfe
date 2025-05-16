@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { FaUser, FaCog, FaCreditCard, FaSignOutAlt,FaRegUserCircle } from "react-icons/fa";
-
+import { useNavigate } from "react-router-dom";
 import {
   getNombreTotalDevis,
   getTotalChiffres,
+  setDevisClientInfos,
 } from "../../app/devis_slices/devisSlice";
 
 import { setDevisInfo } from "../../app/devis_slices/devisSlice";
 import {
   getClientParCode,
   getVilleParCodePostal,
-  getToutCodesClient,
   setClientInfos,
   viderChampsClientInfo,
   getListeCodesPosteaux,
@@ -20,68 +18,162 @@ import {
   getDesignationSecteurparCodeSecteur,
   getListeCodeRegions,
   getVilleParRegion,
+  getDerniereCodeClient,
+  getToutCodesClient,
 } from "../../app/client_slices/clientSlice";
 
 import ToolBar from "../Common/ToolBar";
 import { isAlphabetique, isNumerique } from "../../utils/validations";
-import { setAfficherRecherchePopup, setOuvrireDrawerMenu } from "../../app/interface_slices/uiSlice";
+import {
+  setActiverBoutonsValiderAnnuler,
+  setActiverChampsForm,
+  setAfficherRecherchePopup,
+  setAfficherSecteurPopup,
+  setToolbarMode,
+  setToolbarTable,
+} from "../../app/interface_slices/interfaceSlice";
 import SideBar from "../Common/SideBar";
+import DetailsBanqueClient from "./DetailsBanqueClient";
+import DateCreateMAJ from "../Common/DateCreateMAJ";
+import ParametresFacturationClient from "./ParametresFacturationClient";
+import {
+  getLibellePointVneteparPVente,
+  getListePointVente,
+  viderChampsPointVenteInfo,
+} from "../../app/pointVente_slice/pointVenteSlice";
 
 const ClientForm = () => {
+  const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
+  const utilisateurConnecte = useSelector(
+    (state) => state.utilisateurSystemSlice.utilisateurConnecte
+  );
+
+  const infosUtilisateur = useSelector(
+    (state) => state.utilisateurSlice.infosUtilisateur
+  );
+  const handleChangeTel = (e, colonne) => {
+    if (isNumerique(e.target.value)) {
+      dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
+    }
+  };
+  const handleChangeFax = (e, colonne) => {
+    if (!isNaN(e.target.value)) {
+      dispatch(setClientInfos({ colonne: "fax", valeur: e.target.value }));
+    }
+    if (e.target.value == "") {
+      dispatch(setClientInfos({ colonne: "fax", valeur: "" }));
+    }
+  };
+  const listeCodesRegion = useSelector(
+    (state) => state.clientSlice.listeCodesRegion
+  );
+  const dernierCodeClient = useSelector(
+    (state) => state.clientSlice.dernierCodeClient
+  );
   // * pour afficher le sidebar
-  const ouvrireMenuDrawer = useSelector((state) => state.uiStates.ouvrireMenuDrawer);
+  const ouvrireMenuDrawer = useSelector(
+    (state) => state.interfaceSlice.ouvrireMenuDrawer
+  );
   // * pour afficher le menu déroulante pour l'avatar
-  const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
+  const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
+  const listeToutCodesClients = useSelector(
+    (state) => state.clientSlice.listeToutCodesClients
+  );
   useEffect(() => {
     dispatch(getListeCodesPosteaux());
-    dispatch(getNombreTotalDevis());
     dispatch(getTotalChiffres());
     dispatch(getListeCodesSecteur());
     dispatch(getListeCodeRegions());
+    dispatch(getListePointVente());
+    dispatch(getToutCodesClient());
   }, []);
 
-  // Sélection des informations du client depuis le state Redux
-  const clientInfos = useSelector((state) => state.ClientCrud.clientInfos);
+  useEffect(() => {
+    dispatch(getLibellePointVneteparPVente(clientInfos.codepv));
+    if (clientInfos.codepv == "") {
+      dispatch(viderChampsPointVenteInfo());
+    }
+  }, [clientInfos.codepv]);
 
-  const infosUtilisateur = useSelector(
-    (state) => state.UtilisateurInfo.infosUtilisateur
-  );
-  const listeCodesRegion = useSelector(
-    (state) => state.ClientCrud.listeCodesRegion
-  );
+  // * récupere un client par son code
+  useEffect(() => {
+    if (toolbarMode === "ajout" || !clientInfos.code?.trim()) {
+      return;
+    }
+
+    dispatch(getClientParCode(clientInfos.code));
+  }, [clientInfos.code, toolbarMode, dispatch]);
+
+  useEffect(() => {
+    if (
+      !clientInfos.code &&
+      toolbarMode === "consultation" &&
+      listeToutCodesClients?.length > 0
+    ) {
+      const derniereCodeClient =
+        listeToutCodesClients[listeToutCodesClients.length - 1].code;
+      if (derniereCodeClient !== clientInfos.code) {
+        dispatch(
+          setClientInfos({
+            colonne: "code",
+            valeur: derniereCodeClient,
+          })
+        );
+      }
+    }
+  }, [clientInfos.code, listeToutCodesClients, toolbarMode, dispatch]);
+
+  useEffect(() => {
+    if (
+      toolbarMode === "ajout" &&
+      listeToutCodesClients?.length > 0 &&
+      clientInfos.code !==
+        (
+          parseInt(
+            listeToutCodesClients[listeToutCodesClients.length - 1].code
+          ) + 1
+        ).toString()
+    ) {
+      const derniereCodeClient =
+        listeToutCodesClients[listeToutCodesClients.length - 1].code;
+      const nouvCodeClient = (parseInt(derniereCodeClient) + 1).toString();
+
+      dispatch(
+        setClientInfos({
+          colonne: "code",
+          valeur: nouvCodeClient,
+        })
+      );
+    }
+  }, [toolbarMode, listeToutCodesClients, clientInfos.code, dispatch]);
+
+  // Sélection des informations du client depuis le state Redux
   // state pour désactiver/activer les champs lors de changement de modes editables (ajout/modification)
   // vers le mode de consultation respectivement
   const activerChampsForm = useSelector(
-    (state) => state.uiStates.activerChampsForm
+    (state) => state.interfaceSlice.activerChampsForm
   );
 
   // Sélection du booléen pour détecter si l'insertion est faite depuis le formulaire de devis
   const insertionDepuisDevisForm = useSelector(
-    (state) => state.ClientCrud.insertionDepuisDevisForm
+    (state) => state.clientSlice.insertionDepuisDevisForm
   );
 
   const listeToutCodesPosteaux = useSelector(
-    (state) => state.ClientCrud.listeToutCodesPosteaux
+    (state) => state.clientSlice.listeToutCodesPosteaux
+  );
+  const listeCodespointVente = useSelector(
+    (state) => state.pointVenteSlice.listeCodespointVente
   );
   const listeCodesSecteur = useSelector(
-    (state) => state.ClientCrud.listeCodesSecteur
+    (state) => state.clientSlice.listeCodesSecteur
   );
-  
-  const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
-  
-  const handleChangeCheckbox = (e, colonne) => {
-    console.log(e.target.checked," ", colonne)
-    if(toolbarMode == "ajout" || toolbarMode == "modification") {
-      dispatch(setClientInfos({colonne: colonne, valeur: e.target.checked ? "O" : "N"}))
-    }
-  }
-
   // Fonction pour gérer les changements dans les champs du formulaire
   const handleChange = (e, colonne) => {
     // * si aucun code client est selectionné
     // * vider les champs
-    if (e.target.value == "") {
+    if (colonne == "code" && e.target.value == "") {
       dispatch(viderChampsClientInfo());
     }
     if (e)
@@ -105,6 +197,7 @@ const ClientForm = () => {
   };
 
   const handleSecteurChange = (e) => {
+    dispatch(setClientInfos({ colonne: "codes", valeur: e.target.value }));
     if (e.target.value.length == 3) {
       dispatch(getDesignationSecteurparCodeSecteur(e.target.value));
     }
@@ -113,6 +206,7 @@ const ClientForm = () => {
     }
   };
   const hundleRegionChange = (e) => {
+    dispatch(setClientInfos({ colonne: "coder", valeur: e.target.value }));
     if (e.target.value.length == 3) {
       dispatch(getVilleParRegion(e.target.value));
     }
@@ -138,45 +232,12 @@ const ClientForm = () => {
       dispatch(getClientParCode(e.target.value));
     }
   };
-  const handleChangeRib = (e, colonne) => {
-    if (isNumerique(e.target.value)) {
-      dispatch(setClientInfos({ colonne: "compteb", valeur: e.target.value }));
-    }
-    if (e.target.value == "") {
-      dispatch(setClientInfos({ colonne: "compteb", valeur: "" }));
-    }
-  };
-  const handleChangeNom = (e, colonne) => {
-    dispatch(setClientInfos({ colonne: "banque", valeur: e.target.value }));
-    if (e.target.value == "") {
-      dispatch(setClientInfos({ colonne: "banque", valeur: "" }));
-    }
-  };
-
-  const handleChangeFax = (e, colonne) => {
-    if (!isNaN(e.target.value)) {
-      dispatch(setClientInfos({ colonne: "fax", valeur: e.target.value }));
-    }
-    if (e.target.value == "") {
-      dispatch(setClientInfos({ colonne: "fax", valeur: "" }));
-    }
-  };
 
   const handleCinChange = (e, colonne) => {
     if (isNumerique(e.target.value)) {
       dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
     }
   };
-  
-  const handleChangeTel = (e, colonne) => {
-    if (isNumerique(e.target.value))
-    {
-      dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
-
-    }
-    
-  };
-
   const handleChangeAlphaphetique = (e, colonne) => {
     if (isAlphabetique(e.target.value)) {
       dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
@@ -187,102 +248,62 @@ const ClientForm = () => {
       dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
     }
   };
-  const handleChangeNumeriqueDouble = (e, colonne) => {
-    if (!isNaN(parseFloat(e.target.value))) {
-      dispatch(setClientInfos({ colonne: colonne, valeur: e.target.value }));
-    }
+  const CpostaleInfo = useSelector(
+    (state) => state.codePostaleSlice.CpostaleInfo
+  );
+  const RegionInfo = useSelector((state) => state.regionSlice.RegionInfo);
+  const secteurInfo = useSelector((state) => state.secteurSlice.secteurInfo);
+  const toolbarTable = useSelector(
+    (state) => state.interfaceSlice.toolbarTable
+  );
+
+  const hundleClickButtonSecRegCp = (colonne) => {
+    dispatch(setToolbarTable(colonne));
+
+    dispatch(setAfficherSecteurPopup(true));
   };
 
-  const handleChangeNumDecision = (e, colonne) => {
-    if (isNumerique(e.target.value))
-      dispatch(setClientInfos({ colonne: "decision", valeur: e.target.value }));
+  const nav = useNavigate();
+  const handleAjoutTypeSecteur = () => {
+    nav("/SecteurForm");
   };
-  const hundleSelectTous = (e, champ) => {
-    dispatch(setClientInfos({ colonne: champ, valeur: e.target.value }));
-  };
-
-  const nombredevis = useSelector((state) => state.DevisCrud.nombreDeDevis);
-  const totalchifre = useSelector((state) => state.DevisCrud.totalchifre);
+  const nombredevis = useSelector((state) => state.devisSlice.nombreDeDevis);
+  const totalchifre = useSelector((state) => state.devisSlice.totalchifre);
 
   const afficherRecherchePopup = () => {
-    dispatch(setAfficherRecherchePopup(true))
-  }
-
-  // Fonction pour basculer la visibilité de la sidebar
-  const toggleSidebar = () => {
-    dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
+    dispatch(setAfficherRecherchePopup(true));
   };
+  useEffect(() => {
+    if (insertionDepuisDevisForm === true) {
+      dispatch(setToolbarMode("ajout"));
+      dispatch(setToolbarTable("client"));
+      dispatch(setActiverChampsForm(true));
+      dispatch(setActiverBoutonsValiderAnnuler(true));
+      console.log(insertionDepuisDevisForm,toolbarMode,toolbarTable)
+    }
+  }, [insertionDepuisDevisForm,clientInfos.code]);
   return (
     <div className="container">
       <SideBar />
-      <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
-        <div className="topbar">
-          <div className="toggle" onClick={toggleSidebar}>
-            <ion-icon name="menu-outline"></ion-icon>
-          </div>
-
-          <ToolBar></ToolBar>
-
-          <div className="relative inline-block text-left">
-            {/* Avatar avec événement de clic */}
-            <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
-            <FaRegUserCircle className="mr-3 text-3xl" />
-              {/* Indicateur de statut en ligne */}
-              <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
-            </div>
-
-            {/* Menu déroulant */}
-            {isOpen && (
-              <div className="absolute right-0 mt-3 w-56 bg-white border rounded-lg shadow-lg z-50">
-                <div className="p-4 flex items-center border-b">
-                <FaRegUserCircle className="mr-3 text-3xl" />
-                  <div>
-                    <p className="font-semibold">{infosUtilisateur.nom}</p>
-                    <p className="text-sm text-gray-500">
-                      {infosUtilisateur.type}
-                    </p>
-                  </div>
-                </div>
-                <ul className="py-2">
-                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
-                  <Link to="/UtilisateurFormTout" className="flex items-center w-full">
-
-                    <FaUser className="mr-3" /> My Profile
-                    </Link>
-                  </li>
-                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer">
-                  <Link to="/Settings" className="flex items-center w-full">
-                    <FaCog className="mr-3" /> Settings
-                    </Link>
-                  </li>
-
-                  <li className="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer border-t">
-                    <Link to="/" className="flex items-center w-full">
-                      <FaSignOutAlt className="mr-3" /> Log Out
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            )}
-          </div>
-        </div>
-
+      <div className={`main ${ouvrireMenuDrawer ? "active" : ""} bg-base-100`}>
+        <ToolBar />
         <div className="details">
-          <div className="recentOrders gap-y-0.5">
-            <div className="cardHeader">
+          <div className="recentOrders">
+            {/* <div className="cardHeader">
               <h2
                 style={{
-                  color: "rgb(48, 60, 123)",
+                  color: "rgb(8, 9, 14)",
                   fontWeight: "bold",
-                  fontStyle: "italic",
                 }}
                 className="text-3xl"
               >
-                Client
+                t
+              </h2>Fiche clien
+            </div> */}
+            <div className="cardHeader bg-base-100">
+              <h2 className="text-3xl font-bold text-blue-900 italic">
+                Fiche Client
               </h2>
-              <a href="#" className="btn">
-                View All
-              </a>
             </div>
             <div className="flex flex-wrap">
               <div className="flex flex-col w-1/3">
@@ -296,11 +317,15 @@ const ClientForm = () => {
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
                   list="listeCodesClients"
-                  value={clientInfos.code || ""}
+                  value={clientInfos.code !== "" ? clientInfos.code : ""}
                   onChange={(e) => handleChangeCodeClient(e, "code")}
-                  disabled={activerChampsForm}
+                  readOnly={true}
                   maxLength={8}
-                  onClick = {() => afficherRecherchePopup()}
+                  onClick={() => {
+                    if (toolbarMode != "ajout") {
+                      afficherRecherchePopup();
+                    }
+                  }}
                 />
               </div>
               <div className="flex flex-col w-1/3">
@@ -336,7 +361,7 @@ const ClientForm = () => {
             </div>
             <div className="flex flex-col w-full">
               <label
-                className="font-bold mb-1"
+                className="font-bold  pt-3 pb-3"
                 style={{ color: "rgb(48, 60, 123)" }}
               >
                 Raison Sociale
@@ -349,234 +374,326 @@ const ClientForm = () => {
                 disabled={!activerChampsForm}
               />
             </div>
-            <div className="flex flex-col w-full mb-5">
-              <label
-                className="font-bold mb-1"
+            <div className="collapse bg-base-100 border-base-300 border mt-3">
+              <input type="checkbox" />
+              <div
+                className="collapse-title font-semibold mb-1"
                 style={{ color: "rgb(48, 60, 123)" }}
               >
-                Adresee
-              </label>
-              <input
-                type="text"
-                className="border border-gray-300 rounded-md p-2"
-                value={clientInfos.adresse || ""}
-                onChange={(e) => handleChangeAlphaNumerique(e, "adresse")}
-                disabled={!activerChampsForm}
-              />
-            </div>
-            <div className="flex flex-col w-full gap-0">
-              <label
-                className="font-bold mb-1"
-                style={{ color: "rgb(48, 60, 123)" }}
-              >
-                Activite
-              </label>
-              <input
-                type="text"
-                className="border border-gray-300 rounded-md p-2"
-                value={clientInfos.activite || ""}
-                onChange={(e) => handleChangeAlphaphetique(e, "activite")}
-                disabled={!activerChampsForm}
-              />
-            </div>
-
-            <div className="mt-3 flex flex-col">
-              <div className="flex flex-wrap gap-0">
-                <div className="flex flex-col w-1/2">
-                  <label
-                    className="font-bold mb-1"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    P. Vente
-                  </label>
-                  <input
-                    type="text"
-                    className="border border-gray-300 rounded-md p-2"
-                    disabled={!activerChampsForm}
-                    // value={clientInfos.cltexport || ""}
-                    // onChange={(e) => handleChange(e, "cltexport")} codpv
-                  />
-                </div>
-                <div className="flex flex-col w-1/3">
-                  <label
-                    className="font-bold mb-1"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Type P. Vente
-                  </label>
-                  <input
-                    type="text"
-                    className="border border-gray-300 rounded-md p-2"
-                    disabled={!activerChampsForm}
-                    // code pv
-                  />
-                </div>
-                <div className="flex flex-col w-1/7">
-                  <label className="font-medium mb-5"></label>
-                  <button className="btn" disabled={!activerChampsForm}>
-                    PV
-                  </button>
-                </div>
+                Informations client supplementaires
               </div>
-
-              <div className="flex flex-col w-full">
-                <label
-                  className="font-bold mb-1"
-                  style={{ color: "rgb(48, 60, 123)" }}
-                >
-                  Nature
-                </label>
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2"
-                  value={clientInfos.nature || ""}
-                  onChange={(e) => handleChangeAlphaphetique(e, "nature")}
-                  disabled={!activerChampsForm}
-                />
-              </div>
-
-              <div className="flex flex-wrap gap-0">
-                <div className="flex flex-col w-1/3">
+              <div className="collapse-content text-sm">
+                <div className="flex flex-col w-full mb-5">
                   <label
                     className="font-bold mb-1"
                     style={{ color: "rgb(48, 60, 123)" }}
                   >
-                    C. Postal
+                    Adresee
                   </label>
                   <input
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
-                    value={clientInfos.cp || ""}
-                    list="listeCodesPosteaux"
-                    onChange={(e) => handleChangeCodePostal(e)}
-                    disabled={!activerChampsForm}
-                  />
-
-                  <datalist id="listeCodesPosteaux">
-                    {listeToutCodesPosteaux.length > 0 ? (
-                      listeToutCodesPosteaux.map((cp, indice) => (
-                        <option key={indice} value={cp.CODEp}>
-                          {cp.CODE}
-                        </option>
-                      ))
-                    ) : (
-                      <option disabled>Aucun client trouvé</option>
-                    )}
-                  </datalist>
-                </div>
-                <div className="flex flex-col w-2/3">
-                  <label
-                    className="font-bold mb-1"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Ville
-                  </label>
-                  <input
-                    type="text"
-                    className="border border-gray-300 rounded-md p-2"
-                    value={clientInfos.desicp || ""}
-                    onChange={(e) => handleChange(e, "ville")}
+                    value={clientInfos.adresse || ""}
+                    onChange={(e) => handleChangeAlphaNumerique(e, "adresse")}
                     disabled={!activerChampsForm}
                   />
                 </div>
-              </div>
+                <div className="flex flex-wrap gap-4">
+                  {/* Champ P. Vente */}
+                  <div className="flex flex-col w-full sm:w-1/3">
+                    <label className="font-bold text-sm text-[rgb(48,60,123)] mb-1">
+                      P. Vente
+                    </label>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="text"
+                        className="border border-gray-300 rounded-md p-2 w-full"
+                        value={clientInfos.codepv}
+                        list="listePointVente"
+                        onChange={(e) => handleChange(e, "codepv")}
+                        disabled={!activerChampsForm}
+                      />
+                    </div>
+                    <datalist id="listePointVente">
+                      {listeCodespointVente.length > 0 ? (
+                        listeCodespointVente.map((pointvente, indice) => (
+                          <option key={indice} value={pointvente.Code}>
+                            {pointvente.Code}
+                          </option>
+                        ))
+                      ) : (
+                        <option disabled>Aucun client trouvé</option>
+                      )}
+                    </datalist>
+                  </div>
 
-              <div className="flex flex-wrap gap-0">
-                <div className="flex flex-col w-1/3">
-                  <label
-                    className="font-bold mb-1"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Secteur
-                  </label>
-                  <input
-                    type="text"
-                    className="border border-gray-300 rounded-md p-2"
-                    disabled={!activerChampsForm}
-                    list="listeCodesSecteur"
-                    onChange={(e) => handleSecteurChange(e)}
-                  />
-                  <datalist id="listeCodesSecteur">
-                    {listeCodesSecteur.length > 0 ? (
-                      listeCodesSecteur.map((secteur, indice) => (
-                        <option key={indice} value={secteur.codesec}>
-                          {secteur.codesec}
-                        </option>
-                      ))
-                    ) : (
-                      <option disabled>Aucun secteur trouvé</option>
-                    )}
-                  </datalist>
+                  {/* Champ Libelle P. Vente */}
+                  <div className="flex flex-col w-full sm:w-1/2">
+                    <label className="font-bold text-sm text-[rgb(48,60,123)] mb-1">
+                      Libellé P. Vente
+                    </label>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="text"
+                        className="border border-gray-300 rounded-md p-2 w-full"
+                        disabled={!activerChampsForm}
+                        value={clientInfos.codepv || ""}
+                        onChange={(e) => handleChange(e, "Libelle")}
+                      />
+                      {(toolbarMode === "ajout" ||
+                        toolbarMode === "modification") && (
+                        <button
+                          type="button"
+                          className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition"
+                          onClick={() =>
+                            hundleClickButtonSecRegCp("pointvente")
+                          }
+                        >
+                          +
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <div className="flex flex-col w-2/3">
-                  <label
-                    className="font-bold mb-1"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Type Secteur
-                  </label>
-                  <input
-                    type="text"
-                    className="border border-gray-300 rounded-md p-2"
-                    disabled={!activerChampsForm}
-                    value={clientInfos.desisec}
-                  />
-                </div>
-              </div>
 
-              <div className="flex flex-wrap gap-0">
-                <div className="flex flex-col w-1/3">
+                <div className="flex flex-col w-full gap-0">
                   <label
-                    className="font-bold mb-1"
+                    className="font-bold pt-3 pb-3"
                     style={{ color: "rgb(48, 60, 123)" }}
                   >
-                    Région
+                    Activite
                   </label>
                   <input
                     type="text"
                     className="border border-gray-300 rounded-md p-2"
+                    value={clientInfos.activite || ""}
+                    onChange={(e) => handleChangeAlphaphetique(e, "activite")}
                     disabled={!activerChampsForm}
-                    list="listeCodesRegion"
-                    onChange={(e) => hundleRegionChange(e)}
-                    // table region
                   />
-                  <datalist id="listeCodesRegion">
-                    {listeCodesRegion.length > 0 ? (
-                      listeCodesRegion.map((region, indice) => (
-                        <option key={indice} value={region.codergg}>
-                          {region.codergg}
-                        </option>
-                      ))
-                    ) : (
-                      <option disabled>Aucun region trouvé</option>
-                    )}
-                  </datalist>
                 </div>
-                <div className="flex flex-col w-2/3">
-                  <label
-                    className="font-bold mb-1"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Type Région
-                  </label>
 
-                  <input
-                    type="text"
-                    className="border border-gray-300 rounded-md p-2"
-                    disabled={!activerChampsForm}
-                    value={clientInfos.desirgg}
-                  />
+                <div className="mt-3 flex flex-col">
+                  <div className="flex flex-col w-full">
+                    <label
+                      className="font-bold pt-3 pb-3"
+                      style={{ color: "rgb(48, 60, 123)" }}
+                    >
+                      Nature
+                    </label>
+                    <input
+                      type="text"
+                      className="border border-gray-300 rounded-md p-2"
+                      value={clientInfos.nature || ""}
+                      onChange={(e) => handleChangeAlphaphetique(e, "nature")}
+                      disabled={!activerChampsForm}
+                    />
+                  </div>
+
+                  <div className="flex flex-wrap gap-0">
+                    {/* Champ Code Postal */}
+                    <div className="flex flex-col w-1/3">
+                      <label
+                        className="font-bold  pt-3 pb-3"
+                        style={{ color: "rgb(48, 60, 123)" }}
+                      >
+                        C. Postal
+                      </label>
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="text"
+                          className="border border-gray-300 rounded-md p-2 w-full"
+                          value={clientInfos.cp}
+                          list="listeCodesPosteaux"
+                          onChange={(e) => handleChangeCodePostal(e)}
+                          disabled={!activerChampsForm}
+                        />
+                      </div>
+
+                      <datalist id="listeCodesPosteaux">
+                        {listeToutCodesPosteaux.length > 0 ? (
+                          listeToutCodesPosteaux.map((cp, indice) => (
+                            <option key={indice} value={cp.CODEp}>
+                              {cp.CODE}
+                            </option>
+                          ))
+                        ) : (
+                          <option disabled>Aucun client trouvé</option>
+                        )}
+                      </datalist>
+                    </div>
+
+                    {/* Champ Ville + bouton */}
+                    <div className="flex flex-col w-2/3">
+                      <label
+                        className="font-bold  pt-3 pb-3"
+                        style={{ color: "rgb(48, 60, 123)" }}
+                      >
+                        Désignation code postal
+                      </label>
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="text"
+                          className="border border-gray-300 rounded-md p-2 w-full"
+                          value={clientInfos.desicp}
+                          onChange={(e) => handleChange(e, "desicp")}
+                          disabled={!activerChampsForm}
+                        />
+                        {(toolbarMode == "ajout" ||
+                          toolbarMode == "modification") && (
+                          <button
+                            type="button"
+                            className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition"
+                            // disabled={!activerChampsForm}
+                            onClick={() =>
+                              hundleClickButtonSecRegCp("codepostale")
+                            }
+                          >
+                            +
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-0">
+                    {/* Champ Secteur */}
+                    <div className="flex flex-col w-1/3">
+                      <label
+                        className="font-bold  pt-3 pb-3"
+                        style={{ color: "rgb(48, 60, 123)" }}
+                      >
+                        Secteur
+                      </label>
+                      <input
+                        type="text"
+                        className="border border-gray-300 rounded-md p-2"
+                        value={clientInfos.codes}
+                        disabled={!activerChampsForm}
+                        list="listeCodesSecteur"
+                        onChange={(e) => handleSecteurChange(e)}
+                      />
+                      <datalist id="listeCodesSecteur">
+                        {listeCodesSecteur.length > 0 ? (
+                          listeCodesSecteur.map((secteur, indice) => (
+                            <option key={indice} value={secteur.codesec}>
+                              {secteur.codesec}
+                            </option>
+                          ))
+                        ) : (
+                          <option disabled>Aucun secteur trouvé</option>
+                        )}
+                      </datalist>
+                    </div>
+
+                    {/* Champ Type Secteur + bouton */}
+                    <div className="flex flex-col w-2/3">
+                      <label
+                        className="font-bold  pt-3 pb-3"
+                        style={{ color: "rgb(48, 60, 123)" }}
+                      >
+                        Désignation secteur
+                      </label>
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="text"
+                          className="border border-gray-300 rounded-md p-2 w-full"
+                          value={clientInfos.desisec}
+                          onChange={(e) => handleChange(e, "desisec")}
+                          disabled={!activerChampsForm}
+                        />
+
+                        {(toolbarMode == "ajout" ||
+                          toolbarMode == "modification") && (
+                          <button
+                            type="button"
+                            className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition"
+                            // disabled={!activerChampsForm}
+                            onClick={() => hundleClickButtonSecRegCp("secteur")}
+                          >
+                            +
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-0">
+                    {/* Champ Région */}
+                    <div className="flex flex-col w-1/3">
+                      <label
+                        className="font-bold  pt-3 pb-3"
+                        style={{ color: "rgb(48, 60, 123)" }}
+                      >
+                        Région
+                      </label>
+                      <input
+                        type="text"
+                        className="border border-gray-300 rounded-md p-2"
+                        disabled={!activerChampsForm}
+                        list="listeCodesRegion"
+                        value={clientInfos.coder}
+                        onChange={(e) => hundleRegionChange(e)}
+                      />
+                      <datalist id="listeCodesRegion">
+                        {listeCodesRegion.length > 0 ? (
+                          listeCodesRegion.map((region, indice) => (
+                            <option key={indice} value={region.codergg}>
+                              {region.codergg}
+                            </option>
+                          ))
+                        ) : (
+                          <option disabled>Aucune région trouvée</option>
+                        )}
+                      </datalist>
+                    </div>
+
+                    {/* Champ Type Région + bouton */}
+                    <div className="flex flex-col w-2/3">
+                      <label
+                        className="font-bold  pt-3 pb-3"
+                        style={{ color: "rgb(48, 60, 123)" }}
+                      >
+                        Ville
+                      </label>
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="text"
+                          className="border border-gray-300 rounded-md p-2 w-full"
+                          disabled={!activerChampsForm}
+                          value={clientInfos.desireg || clientInfos.desirgg}
+                          onChange={(e) => handleChange(e, "desirgg")}
+                        />
+                        {(toolbarMode == "ajout" ||
+                          toolbarMode == "modification") && (
+                          <button
+                            type="button"
+                            className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition"
+                            // disabled={!activerChampsForm}
+                            onClick={() => hundleClickButtonSecRegCp("region")}
+                          >
+                            +
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="recentCustomers">
-            <div className="cardHeader">
-              <h2>Paramettre de fACTURATION</h2>
-            </div>
-            <div className="card rounded-box p-6 space-y-2">
-              {/* Conteneur pour Code Client, Type Client et CIN */}
+          <div className="recentCustomers bg-base-100">
+            <div className="card rounded-box  space-y-2">
+              <h2
+                style={{
+                  color: "rgb(8, 9, 14)",
+                  fontWeight: "bold",
+                }}
+                className="text-xxl"
+              >
+                Paramètre de facturation
+              </h2>
+
               <div className="flex flex-wrap">
                 <div className="flex flex-col w-1/3">
                   <label
@@ -615,7 +732,7 @@ const ClientForm = () => {
               <div className="flex flex-wrap">
                 <div className="flex flex-col w-1/3">
                   <label
-                    className="font-bold mb-1"
+                    className="font-bold mt-1"
                     style={{ color: "rgb(48, 60, 123)" }}
                   >
                     Email
@@ -630,7 +747,7 @@ const ClientForm = () => {
                 </div>
                 <div className="flex flex-col w-2/3">
                   <label
-                    className="font-bold mb-1"
+                    className="font-bold  mt-1"
                     style={{ color: "rgb(48, 60, 123)" }}
                   >
                     Fax
@@ -646,631 +763,36 @@ const ClientForm = () => {
                   />
                 </div>
               </div>
-
-              <div className="flex flex-cols">
-                <button className="btn" disabled={activerChampsForm}>
-                  Liste clients bloquer
-                </button>
-              </div>
-
-              <table className="table table-xl w-full">
-                {/* head */}
-                <thead>
-                  <tr>
-                    <th
-                      className="w-1/4 text-lg font-bold mb-1"
-                      style={{ color: "rgb(48, 60, 123)" }}
-                    >
-                      Nom
-                    </th>
-                    <th
-                      className="w-1/4 text-lg font-bold mb-1"
-                      style={{ color: "rgb(48, 60, 123)" }}
-                    >
-                      Titre
-                    </th>
-                    <th
-                      className="w-1/4 text-lg font-bold mb-1"
-                      style={{ color: "rgb(48, 60, 123)" }}
-                    >
-                      GSM
-                    </th>
-                    <th
-                      className="w-1/4 text-lg font-bold mb-1"
-                      style={{ color: "rgb(48, 60, 123)" }}
-                    >
-                      N°Poste
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {/* row 1 */}
-                  <tr>
-                    <td className="w-1/4">
-                      <input
-                        type="text"
-                        className="border border-gray-300 rounded-md p-2 w-full"
-                        value={clientInfos.Nom1 || ""}
-                        onChange={(e) => handleChangeAlphaphetique(e, "Nom1")}
-                        disabled={!activerChampsForm}
-                      />
-                    </td>
-                    <td className="w-1/4">
-                      <input
-                        type="text"
-                        className="border border-gray-300 rounded-md p-2 w-full"
-                        value={clientInfos.titre1 || ""}
-                        onChange={(e) => handleChangeAlphaphetique(e, "titre1")}
-                        disabled={!activerChampsForm}
-                      />
-                    </td>
-                    <td className="w-1/4">
-                      <input
-                        type="text"
-                        className="border border-gray-300 rounded-md p-2 w-full"
-                        value={clientInfos.gsm1 || ""}
-                        onChange={(e) => handleChangeTel(e, "gsm1")}
-                        disabled={!activerChampsForm}
-                        maxLength={8}
-                      />
-                    </td>
-                    <td className="w-1/4">
-                      <input
-                        type="text"
-                        className="border border-gray-300 rounded-md p-2 w-full"
-                        value={clientInfos.nposte1 || ""}
-                        onChange={(e) => handleChange(e, "nposte1")}
-                        disabled={!activerChampsForm}
-                      />
-                    </td>
-                  </tr>
-                  {/* row 2 */}
-                  <tr>
-                    <td className="w-1/4">
-                      <input
-                        type="text"
-                        className="border border-gray-300 rounded-md p-2 w-full"
-                        value={clientInfos.Nom2 || ""}
-                        onChange={(e) => handleChangeAlphaphetique(e, "Nom2")}
-                        disabled={!activerChampsForm}
-                      />
-                    </td>
-                    <td className="w-1/4">
-                      <input
-                        type="text"
-                        className="border border-gray-300 rounded-md p-2 w-full"
-                        value={clientInfos.titre2 || ""}
-                        onChange={(e) => handleChangeAlphaphetique(e, "titre2")}
-                        disabled={!activerChampsForm}
-                      />
-                    </td>
-                    <td className="w-1/4">
-                      <input
-                        type="text"
-                        className="border border-gray-300 rounded-md p-2 w-full"
-                        value={clientInfos.gsm2 || ""}
-                        onChange={(e) => handleChangeTel(e, "gsm2")}
-                        disabled={!activerChampsForm}
-                        maxLength={8}
-                      />
-                    </td>
-                    <td className="w-1/4">
-                      <input
-                        type="text"
-                        className="border border-gray-300 rounded-md p-2 w-full"
-                        value={clientInfos.nposte2 || ""}
-                        onChange={(e) => handleChange(e, "nposte2")}
-                        disabled={!activerChampsForm}
-                      />
-                    </td>
-                  </tr>
-                  {/* row 3 */}
-                  <tr>
-                    <td className="w-1/4">
-                      <input
-                        type="text"
-                        className="border border-gray-300 rounded-md p-2 w-full"
-                        value={clientInfos.Nom3 || ""}
-                        onChange={(e) => handleChangeAlphaphetique(e, "Nom3")}
-                        disabled={!activerChampsForm}
-                      />
-                    </td>
-                    <td className="w-1/4">
-                      <input
-                        type="text"
-                        className="border border-gray-300 rounded-md p-2 w-full"
-                        disabled={!activerChampsForm}
-                        value={clientInfos.titre3 || ""}
-                        onChange={(e) => handleChangeAlphaphetique(e, "titre3")}
-                      />
-                    </td>
-                    <td className="w-1/4">
-                      <input
-                        type="text"
-                        className="border border-gray-300 rounded-md p-2 w-full"
-                        value={clientInfos.gsm3 || ""}
-                        onChange={(e) => handleChangeTel(e, "gsm3")}
-                        disabled={!activerChampsForm}
-                        maxLength={8}
-                      />
-                    </td>
-                    <td className="w-1/4">
-                      <input
-                        type="text"
-                        className="border border-gray-300 rounded-md p-2 w-full"
-                        value={clientInfos.nposte3 || ""}
-                        onChange={(e) => handleChange(e, "nposte3")}
-                        disabled={!activerChampsForm}
-                      />
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
             </div>
-
-            <div className="w-full min-w-md">
-              <div className="flex flex-nowrap">
-                <div className="flex flex-col w-2/3">
-                  <label
-                    className="font-bold"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Tarif
-                  </label>
-
-                  <select
-                    className="border border-gray-300 rounded-md p-2"
-                    disabled={!activerChampsForm}
-                    onChange={(e)=>hundleSelectTous(e,"tarif")}
-                  >
-                    <option value="prix1">prix1</option>
-                    <option value="prix2">prix2</option>
-                    <option value="prix3">prix3</option>
-                    <option value="prix4">prix4</option>
-                  </select>
-                </div>
+            <div className="collapse bg-base-100 border-base-300 border mt-6">
+              <input type="checkbox" />
+              <div
+                className="collapse-title font-semibold "
+                style={{ color: "rgb(48, 60, 123)" }}
+              >
+                Paramètres facturation
               </div>
 
-              <div className="flex flex-col">
-                <label
-                  className="font-bold"
-                  style={{ color: "rgb(48, 60, 123)" }}
-                >
-                  Remise max
-                </label>
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2"
-                  value={clientInfos.remise || ""}
-                  onChange={(e) => handleChangeNumeriqueDouble(e, "remise")}
-                  disabled={!activerChampsForm}
-                  maxLength={3}
-                />
-              </div>
-
-              <div className="flex flex-col">
-                <label
-                  className="font-bold"
-                  style={{ color: "rgb(48, 60, 123)" }}
-                >
-                  Seuil crédit
-                </label>
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2"
-                  value={clientInfos.scredit || ""}
-                  onChange={(e) => handleChangeNumeriqueDouble(e, "scredit")}
-                  disabled={!activerChampsForm}
-                  maxLength={3}
-                />
-              </div>
-
-              <div className="flex flex-col">
-                <label
-                  className="font-bold"
-                  style={{ color: "rgb(48, 60, 123)" }}
-                >
-                  Seuil Risque
-                </label>
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2"
-                  value={clientInfos.srisque || ""}
-                  onChange={(e) => handleChangeNumeriqueDouble(e, "srisque")}
-                  disabled={!activerChampsForm}
-                  maxLength={3}
-                />
-              </div>
-
-              <div className="flex flex-col">
-                <label
-                  className="font-bold"
-                  style={{ color: "rgb(48, 60, 123)" }}
-                >
-                  Référence
-                </label>
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2"
-                  value={clientInfos.reference || ""}
-                  onChange={(e) => handleChangeAlphaNumerique(e, "reference")}
-                  disabled={!activerChampsForm}
-                  maxLength={11}
-                />
-              </div>
-
-              <div className="flex flex-nowrap space-x-20">
-                <div className="flex flex-col">
-                  <label
-                    className="font-bold"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Blockage
-                  </label>
-                  <select
-                    className="border border-gray-300 rounded-md p-2 w-11/12"
-                    disabled={!activerChampsForm}
-                    onChange={(e) => {
-                      hundleSelectTous(e, "blockage");
-                    }}
-                  >
-                    <option value="O">O</option>
-                    <option value="N">N</option>
-                  </select>
-                </div>
-                <div className="flex flex-col">
-                  <label
-                    className="font-bold"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Contrat
-                  </label>
-                  <select
-                    className="border border-gray-300 rounded-md p-2 w-11/12"
-                    disabled={!activerChampsForm}
-                    onChange={(e) => {
-                      hundleSelectTous(e, "Contrat");
-                    }}
-                  >
-                    <option value="O">O</option>
-                    <option value="N">N</option>
-                  </select>
-                </div>
+              <div className="collapse-content text-sm">
+                <ParametresFacturationClient />
+                <DateCreateMAJ objet={clientInfos} />
               </div>
             </div>
           </div>
         </div>
         {/* 2eme whada */}
         <div className="details">
-          <div className="recentOrders">
-            <div className="cardHeader">
-              <h2>Banque</h2>
-            </div>
-            <div className="card rounded-box p-6 space-y-2">
-              <div className="flex flex-nowrap">
-                <div className="flex flex-col w-1/3">
-                  <label
-                    className="block font-bold"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Nom
-                  </label>
-                  <input
-                    type="text"
-                    className="border border-gray-300 rounded-md p-2"
-                    disabled={!activerChampsForm}
-                    value={clientInfos.banque || ""}
-                    onChange={(e) => handleChangeNom(e, "banque")}
-                  />
-                </div>
-                <div className="flex flex-col w-2/3">
-                  <label
-                    className="block font-bold"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Rib
-                  </label>
-
-                  <input
-                    type="text"
-                    className="border border-gray-300 rounded-md p-2"
-                    disabled={!activerChampsForm}
-                    value={clientInfos.compteb || ""}
-                    onChange={(e) => handleChangeRib(e, "compteb")}
-                    maxLength={20}
-                  />
-                </div>
+          <div className="banquedetails bg-base-100">
+            <div className="collapse bg-base-100 border-base-300 border">
+              <input type="checkbox" />
+              <div
+                className="collapse-title font-semibold mb-1"
+                style={{ color: "rgb(48, 60, 123)" }}
+              >
+                Banque
               </div>
-              <div className="flex">
-                <div className="flex flex-col w-1/2">
-                  <label
-                    className="block"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Matricules fiscales
-                  </label>
-
-                  <input
-                    type="text"
-                    className=" border border-gray-300 rounded-md p-2 "
-                    value={clientInfos.matriculef || ""}
-                    onChange={(e) =>
-                      handleChangeAlphaNumerique(e, "matriculef")
-                    }
-                    disabled={!activerChampsForm}
-                    maxLength={17}
-                  />
-
-                  <label
-                    className="block"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Numero de desicion
-                  </label>
-                  <input
-                    type="text"
-                    className="border border-gray-300 rounded-md p-2 "
-                    value={clientInfos.decision || ""}
-                    onChange={(e) => handleChangeNumDecision(e, "decision")}
-                    disabled={!activerChampsForm}
-                    maxLength={12}
-                  />
-                  <label
-                    className="block"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Date deb Autorisation:
-                  </label>
-
-                  <input
-                    type="date"
-                    className="border border-gray-300 rounded-md p-2 "
-                    value={clientInfos.datedebaut || ""}
-                    onChange={(e) => handleChange(e, "datedebaut")}
-                    disabled={!activerChampsForm}
-                  />
-
-                  <label
-                    className="block"
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Date fin Autorisation:
-                  </label>
-
-                  <input
-                    type="date"
-                    className="border border-gray-300 rounded-md p-2 "
-                    value={clientInfos.datefinaut || ""}
-                    onChange={(e) => handleChange(e, "datefinaut")}
-                    disabled={!activerChampsForm}
-                  />
-                  <div className="flex flex-nowrap">
-                    <input
-                      type="checkbox"
-                      className="border border-gray-300 rounded-md p-2"
-                      checked={
-                        (toolbarMode == "consultation" || toolbarMode == "modification")  && (clientInfos.fidel && clientInfos.fidel?.toUpperCase() !== "N")
-                      }
-                      onChange={(e) => handleChangeCheckbox(e, "fidel")}
-                      disabled={!activerChampsForm}
-                    />
-
-                    <label
-                      className="block"
-                      style={{ color: "rgb(48, 60, 123)" }}
-                    >
-                      Fidele
-                    </label>
-
-                    <input
-                      type="checkbox"
-                      className="border border-gray-300 rounded-md p-2 "
-                      disabled={!activerChampsForm}
-                      checked={
-                      (toolbarMode == "consultation" || toolbarMode == "modification")  && (clientInfos.ptva && clientInfos.ptva?.toUpperCase() !== "N") 
-                      }
-                      onChange={(e) => handleChangeCheckbox(e, "ptva")}
-                    />
-                    <label
-                      className="block"
-                      style={{ color: "rgb(48, 60, 123)" }}
-                    >
-                      Autre Tva
-                    </label>
-                  </div>
-                  <div className="flex flex-nowrap">
-                    <select
-                      className="border border-gray-300 rounded-md w-1/3 p-2"
-                      disabled={!activerChampsForm}
-                      onChange={(e) => hundleSelectTous(e, "susptva")}
-                    >
-                      <option>O</option>
-                      <option>N</option>
-                    </select>
-                    <label
-                      className="block mt-2"
-                      style={{ color: "rgb(48, 60, 123)" }}
-                    >
-                      Suspendu du TVA
-                    </label>
-                  </div>
-                </div>
-                <div className="flex flex-col w-1/2 p-8  gap-10 ">
-                  {/* Ligne 1 */}
-                  <div className="flex flex-wrap md:flex-nowrap gap-4">
-                    <div className="flex items-center space-x-2 w-full md:w-1/2">
-                      <input
-                        type="checkbox"
-                        checked={
-                          (toolbarMode === "consultation" || toolbarMode == "modification")  && (clientInfos.majotva && clientInfos.majotva?.toUpperCase() !== "N")
-                        }
-                        className="border border-gray-300 rounded-md"
-                        onChange={(e) => handleChangeCheckbox(e, "majotva")}
-                        disabled={!activerChampsForm}
-                      />
-                      <label className="text-blue-900">Majoration de TVA</label>
-                    </div>
-
-                    <div className="flex items-center space-x-2 w-full md:w-1/2">
-                      <input
-                        checked={
-                          (toolbarMode == "consultation" || toolbarMode == "modification")  && (clientInfos.exon && clientInfos.exon?.toUpperCase() !== "N")
-                        }
-                        type="checkbox"
-                        className="border border-gray-300 rounded-md"
-                        onChange={(e) => handleChangeCheckbox(e, "exon")}
-                        disabled={!activerChampsForm}
-                      />
-                      <label className="text-blue-900">Exonore de TVA</label>
-                    </div>
-                  </div>
-
-                  {/* Ligne 2 */}
-                  <div className="flex flex-wrap md:flex-nowrap gap-4">
-                    <div className="flex items-center space-x-2 w-full md:w-1/2">
-                      <input
-                        disabled={!activerChampsForm}
-                        checked={
-                          (toolbarMode == "consultation" || toolbarMode == "modification")  && (clientInfos.regime && clientInfos.regime?.toUpperCase() !== "N")
-                        }
-                        type="checkbox"
-                        className="border border-gray-300 rounded-md"
-                        onChange={(e) => handleChangeCheckbox(e, "regime")}
-                      />
-                      <label className="text-blue-900">Regime réel</label>
-                    </div>
-
-                    <div className="flex items-center space-x-2 w-full md:w-1/2">
-                      <input
-                        disabled={!activerChampsForm}
-                        type="checkbox"
-                        checked={
-                          (toolbarMode == "consultation" || toolbarMode == "modification")  && (clientInfos.suspfodec && clientInfos.suspfodec?.toUpperCase() !== "N")
-                        }
-                        className="border border-gray-300 rounded-md"
-                        onChange={(e) => handleChangeCheckbox(e, "suspfodec")}
-                      />
-                      <label className="text-blue-900">Suspendu FODEK</label>
-                    </div>
-                  </div>
-
-                  {/* Ligne 3 */}
-                  <div className="flex flex-wrap md:flex-nowrap gap-4">
-                    <div className="flex items-center space-x-2 w-full md:w-1/2">
-                      <input
-                        type="checkbox"
-                        disabled={!activerChampsForm}
-                        checked={(toolbarMode == "consultation" || toolbarMode == "modification") && (clientInfos.cltexport && clientInfos.cltexport.toUpperCase() !== "N")}
-                        className="border border-gray-300 rounded-md"
-                        onChange={(e) => handleChangeCheckbox(e, "cltexport")}
-                      />
-                      <label className="text-blue-900">Client à l'export</label>
-                    </div>
-
-                    <div className="flex items-center space-x-2 w-full md:w-1/2">
-                      <input
-                        type="checkbox"
-                        disabled={!activerChampsForm}
-                        checked={(toolbarMode == "consultation" || toolbarMode == "modification") && (clientInfos.timbref && clientInfos.timbref?.toUpperCase() !== "N")}
-                        className="border border-gray-300 rounded-md"
-                        onChange={(e) => handleChangeCheckbox(e, "timbref")}
-                      />
-                      <label className="text-blue-900">Timbre fiscal</label>
-                    </div>
-                  </div>
-
-                  {/* Ligne 4 - Unique */}
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      disabled={!activerChampsForm}
-                      checked={(toolbarMode == "consultation" || toolbarMode == "modification") && (clientInfos.offretick && clientInfos.offretick?.toUpperCase() !== "N")}
-                      className="border border-gray-300 rounded-md"
-                      onChange={(e) => handleChangeCheckbox(e, "offretick")}
-                    />
-                    <label className="text-blue-900">
-                      Fact ticket de caisse
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="recentCustomers">
-            <div className="card rounded-box p-6 space-y-2">
-              <div className="flex flex-col w-full">
-                {/* Ligne pour "Creation" */}
-                <div className="flex items-center space-x-4">
-                  <label
-                    className="font-medium w-1/3 text-left block "
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Creation
-                  </label>
-
-                  <input
-                    type="text"
-                    className="border border-gray-300 rounded-md p-2 w-2/3"
-                    value={
-                      clientInfos.usera ||
-                      infosUtilisateur.codeuser + " // " + infosUtilisateur.nom
-                    }
-                    onChange={(e) => handleChange(e, "usera")}
-                    disabled
-                  />
-                </div>
-
-                {/* Ligne pour "Modification" */}
-                <div className="flex items-center space-x-4">
-                  <label
-                    className="font-medium w-1/3 text-left block "
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Modification
-                  </label>
-                  <input
-                    type="text"
-                    className="border border-gray-300 rounded-md p-2 w-2/3"
-                    value={clientInfos.userm || ""}
-                    onChange={(e) => handleChange(e, "userm")}
-                    disabled
-                  />
-                </div>
-
-                {/* Ligne pour "Date Maj" */}
-                <div className="flex items-center space-x-4">
-                  <label
-                    className="font-medium w-1/3 text-left block "
-                    style={{ color: "rgb(48, 60, 123)" }}
-                  >
-                    Date Maj
-                  </label>
-                  <input
-                    type="date"
-                    className="border border-gray-300 rounded-md p-2 w-2/3"
-                    value={clientInfos.datemaj || ""}
-                    onChange={(e) => handleChange(e, "datemaj")}
-                    disabled
-                  />
-                </div>
-              </div>
-              <div className="flex flex-col">
-                <label
-                  className="block font-bold text-center"
-                  style={{ color: "rgb(48, 60, 123)" }}
-                >
-                  commentaire
-                </label>
-
-                <textarea
-                  className="w-full border border-gray-300 rounded-md p-2"
-                  cols={33}
-                  rows={7}
-                  value={clientInfos.Commentaire || ""}
-                  onChange={(e) => handleChange(e, "Commentaire")}
-                  disabled={!activerChampsForm}
-                />
+              <div className="collapse-content text-sm">
+                <DetailsBanqueClient />
               </div>
             </div>
           </div>

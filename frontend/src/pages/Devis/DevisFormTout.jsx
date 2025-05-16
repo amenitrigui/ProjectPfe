@@ -1,14 +1,11 @@
-import ToolBar from "../../components/Common/ToolBar";
-import SideBar from "../../components/Common/SideBar";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setActiverChampsForm,
   setToolbarTable,
-} from "../../app/interface_slices/uiSlice";
+} from "../../app/interface_slices/interfaceSlice";
 
 import DevisForm from "../../components/Devis/DevisForm";
-import ArticlesDevis from "../../components/Devis/ArticlesDevis";
 import Recherche from "../../components/Common/recherche";
 import AlertModifier from "../../components/Common/AlertModifier";
 
@@ -16,11 +13,11 @@ function DevisFormTout() {
   //?==================================================================================================================
   //?====================================================Variables=====================================================
   //?==================================================================================================================
-  const devisInfo = useSelector((state) => state.DevisCrud.devisInfo);
-  const toolbarMode = useSelector((state) => state.uiStates.toolbarMode);
-  const toobarTable = useSelector((state) => state.uiStates.toolbarTable);
-  const afficherAlert = useSelector((state) => state.uiStates.afficherAlert);
-  const afficherRecherchePopup = useSelector((state) => state.uiStates.afficherRecherchePopup);
+  const devisInfo = useSelector((state) => state.devisSlice.devisInfo);
+  const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
+  const toobarTable = useSelector((state) => state.interfaceSlice.toolbarTable);
+  const afficherAlert = useSelector((state) => state.interfaceSlice.afficherAlert);
+  const afficherRecherchePopup = useSelector((state) => state.interfaceSlice.afficherRecherchePopup);
   const NETHTGLOBAL = devisInfo.MHT - devisInfo.MREMISE || 0;
   const taxe = devisInfo.MTTC - NETHTGLOBAL || 0;
   const apayer = devisInfo.MTTC + devisInfo.TIMBRE || 0;
