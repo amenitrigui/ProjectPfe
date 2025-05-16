@@ -622,7 +622,6 @@ function ToolBar() {
           }
           break;
       }
-      console.log(droitsAcceTableArticle);
     }
 
     return true;
