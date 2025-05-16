@@ -23,7 +23,6 @@ export const AjouterUtilisateur = createAsyncThunk(
         },
       }
     );
-    console.log(response);
     return response.data.data;
   }
 );
@@ -31,8 +30,7 @@ export const AjouterUtilisateur = createAsyncThunk(
 export const ModifierUtilisateur = createAsyncThunk(
   "utilisateurSystemSlices/ModifierUtilisateur",
   async (codeuser, thunkAPI) => {
-    const utilisateur =
-      thunkAPI.getState().utilisateurSlice.infosUtilisateur;
+    const utilisateur = thunkAPI.getState().utilisateurSlice.infosUtilisateur;
     console.log(utilisateur);
     const response = await axios.put(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/ModifierUtilisateur`,
@@ -56,8 +54,8 @@ export const ModifierUtilisateur = createAsyncThunk(
 );
 export const supprimerUtilisateur = createAsyncThunk(
   "utilisateurSystemSlices/supprimerUtilisateur",
-  async (codeuser,thunkAPI) => {
-    console.log(codeuser)
+  async (codeuser, thunkAPI) => {
+    console.log(codeuser);
     const response = await axios.delete(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/supprimerUtilisateur`,
       {
@@ -83,6 +81,56 @@ export const getCodeUtilisateurSuivant = createAsyncThunk(
     return response;
   }
 );
+export const getModuleParamettreParUtilisateur = createAsyncThunk(
+  "utilisateurSystemSlices/getModuleParamettreParUtilisateur",
+  async (paramettre, thunkApi) => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getModuleParamettreParUtilisateur`,
+      {
+        params: {
+          codeuser: paramettre.codeuser,
+          modulepr: paramettre.modulepr,
+          module: paramettre.module,
+          societe: thunkApi.getState().utilisateurSystemSlice.dbName
+        },
+        headers: {
+          Authorization: `Bearer ${
+            thunkApi.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
+    );
+    return response.data.paramettres[0];
+  }
+);
+
+export const modifierModuleParamettreParUtilisateur = createAsyncThunk(
+  "utilisateurSystemSlices/modifierModuleParamettreParUtilisateur",
+  async(paramettre, thunkAPI) => {
+    console.log(paramettre.codeuser)
+    const response = await axios.put(
+      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/modifierModuleParamettreParUtilisateur`,
+      {
+          paramettreModifier: paramettre.paramettreModifier,
+      },
+      {
+        params: {
+          codeuser: paramettre.codeuser,
+          modulepr: paramettre.modulepr,
+          module: paramettre.module,
+          societe: thunkAPI.getState().utilisateurSystemSlice.dbName
+        },
+        headers: {
+          Authorization: `Bearer ${
+            thunkAPI.getState().utilisateurSystemSlice.token
+          }`,
+        },
+      }
+    );
+console.log(response)
+    return response;
+  }
+)
 
 export const getRepresantantUtilisateur = createAsyncThunk(
   "utilisateurSystemSlice/getRepresantantUtilisateur",
@@ -100,10 +148,19 @@ const utilisateurSystemInfoInitiales = {
   type: "",
   directeur: "",
 };
+
+const paramettresAccesUtilisateurInitiales = {
+  accee: "",
+  ecriture: "",
+  ajouter: "",
+  supprimer: "",
+  modifier: "",
+};
 export const utilisateurSystemSlices = createSlice({
   name: "utilisateurSystemSlices",
   initialState: {
     utilisateurSystemInfoInitiales,
+    paramettresAccesUtilisateurInitiales,
     Utilisateur_SuperviseurInfos: {
       ...utilisateurSystemInfoInitiales,
     },
@@ -122,8 +179,15 @@ export const utilisateurSystemSlices = createSlice({
     },
     dbName: "",
     token: "",
+    paramettresAccesUtilisateur: {
+      ...paramettresAccesUtilisateurInitiales,
+    },
   },
   reducers: {
+    setParametresAcceesUtilisateur : (state, action) => {
+      const { colonne, valeur } = action.payload
+      state.paramettresAccesUtilisateur[colonne] = valeur
+    },
     setUtilisateurSupInfo: (state, action) => {
       state.Utilisateur_SuperviseurInfos = action.payload;
     },
@@ -176,6 +240,17 @@ export const utilisateurSystemSlices = createSlice({
       })
       .addCase(supprimerUtilisateur.rejected, (state, action) => {
         state.status = "échec";
+      })
+
+      .addCase(getModuleParamettreParUtilisateur.pending, (state, action) => {
+        state.status = "chagement";
+      })
+      .addCase(getModuleParamettreParUtilisateur.fulfilled, (state, action) => {
+        state.status = "succès";
+        state.paramettresAccesUtilisateur = action.payload;
+      })
+      .addCase(getModuleParamettreParUtilisateur.rejected, (state, action) => {
+        state.status = "échec";
       });
   },
 });
@@ -188,6 +263,7 @@ export const {
   setDbName,
   SetUtilisateurSystemremplir,
   setToken,
+  setParametresAcceesUtilisateur
 } = utilisateurSystemSlices.actions;
 
 export default utilisateurSystemSlices.reducer;

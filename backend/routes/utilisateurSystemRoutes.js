@@ -12,7 +12,9 @@ const {
   filterListeUtilisateur,
   getCodeUtilisateurSuivant,
   getListeCodesUtilisateur,
-  getUtilisateurParCode
+  getUtilisateurParCode,
+  getModuleParamettreParUtilisateur,
+  modifierModuleParamettreParUtilisateur
 } = require("../controllers/utilisateurSystemController");
 
 const router = express.Router();
@@ -30,4 +32,7 @@ router.get("/filterListeUtilisateur", filterListeUtilisateur);
 router.get("/getCodeUtilisateurSuivant", getCodeUtilisateurSuivant);
 router.get("/getListeCodesUtilisateur", getListeCodesUtilisateur);
 router.get("/getUtilisateurParCode", getUtilisateurParCode);
+router.get("/getModuleParamettreParUtilisateur", getModuleParamettreParUtilisateur);
+router.put("/modifierModuleParamettreParUtilisateur", modifierModuleParamettreParUtilisateur)
+
 module.exports = router;
