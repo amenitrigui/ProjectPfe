@@ -29,6 +29,7 @@ import ArticleList from "./pages/Article/ArticleList";
 import FamilleFormTout from "./pages/Famille/FamilleFormTout";
 import Settings from "./pages/ErpPages/Settings";
 import UtilisateurList from "./pages/Utilisateurs/UtilisateurList";
+
 import {
   setActiverBoutonsValiderAnnuler,
   setAfficherAlert,
@@ -39,7 +40,7 @@ import {
 } from "./app/interface_slices/interfaceSlice";
 import ImprimerDevis from "./pages/Devis/Imprimer";
 import SecteurForm from "./pages/Clients/SecteurForm";
-import Test1 from "./test/Test1";
+import Test2 from "./test/Test2";
 import Secteur_Region_CpostalForm from "./pages/Clients/Secteur_Region_CpostalForm";
 import {
   deconnecterUtilisateur,
@@ -172,7 +173,7 @@ function App() {
         <Route path="/Settings" element={<Settings />}></Route>
         <Route path="/ImprimerDevis" element={<ImprimerDevis />}></Route>
         <Route path="/SecteurForm" element={<SecteurForm />}></Route>
-        <Route path="/test" element={<Test1 />}></Route>
+        <Route path="/test" element={<Test2 />}></Route>
         <Route
           path="/Secteur_Region_CpostalForm"
           element={<Secteur_Region_CpostalForm />}

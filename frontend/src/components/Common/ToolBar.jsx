@@ -622,7 +622,6 @@ function ToolBar() {
           }
           break;
       }
-      console.log(droitsAcceTableArticle);
     }
 
     return true;
@@ -664,23 +663,18 @@ function ToolBar() {
                   )}
 
                   {/* Bouton Modifier */}
-                  {estVisible() &&
-                    !isListeRoute &&
-                    estAccessible("modification") && (
-                      <button
-                        type="button"
-                        onClick={handleModifierBtnClick}
-                        className="flex flex-col items-center w-16 sm:w-20 p-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-lg transition-all duration-200"
-                      >
-                        <FontAwesomeIcon
-                          icon={faEdit}
-                          className="text-xl mb-1"
-                        />
-                        <span className="text-[10px] sm:text-xs font-semibold">
-                          Modifier
-                        </span>
-                      </button>
-                    )}
+                  {!isListeRoute && estAccessible("modification") && (
+                    <button
+                      type="button"
+                      onClick={handleModifierBtnClick}
+                      className="flex flex-col items-center w-16 sm:w-20 p-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-lg transition-all duration-200"
+                    >
+                      <FontAwesomeIcon icon={faEdit} className="text-xl mb-1" />
+                      <span className="text-[10px] sm:text-xs font-semibold">
+                        Modifier
+                      </span>
+                    </button>
+                  )}
 
                   {/* Bouton Supprimer */}
                   {estVisible() &&
