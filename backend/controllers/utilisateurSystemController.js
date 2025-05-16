@@ -615,10 +615,10 @@ const modifierModuleParamettreParUtilisateur = async (req, res) => {
         });
     }
 
-    await sequelizeConnexionDbUtilisateur.query(
+    const resultatModification= await sequelizeConnexionDbUtilisateur.query(
       `UPDATE usermodule set accee = :accee, ecriture = :ecriture, ajouter = :ajouter, modifier = :modifier, supprimer = :supprimer where modulepr = :modulepr and module = :module and codeuser = :codeuser and societe = :societe`,
       {
-        type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
+        type: sequelizeConnexionDbUtilisateur.QueryTypes.UPDATE,
         replacements: {
           codeuser: codeuser,
           modulepr,

@@ -20,6 +20,7 @@ const {
   getDatabaseConnection,
 } = require("../common/commonMethods");
 
+
 // * initialisation de client OAuth2 avec
 // * les paramètres: clientId, clientSecret, redirectUrl
 // * clientId: id de l'application, fourni par google
@@ -130,6 +131,26 @@ const selectDatabase = async (req, res) => {
     const codeuser = decoded.codeuser;
     setBdConnexion(databaseName);
     const Utilisateur = defineUserModel(sequelizeConnexionDbUtilisateur);
+    const droitAcceTableClient = await sequelizeConnexionDbUtilisateur.query(
+      `SELECT accee, ajouter, modifier, supprimer, ecriture from usermodule where module = 'clients' and modulepr = "Fichier de base" and codeuser = :codeuser and societe = :databaseName`,
+      {
+        type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
+        replacements: {
+          codeuser: codeuser,
+          databaseName: databaseName,
+        },
+      }
+    );
+    const droitAcceeTableArticle = await sequelizeConnexionDbUtilisateur.query(
+      `Select accee , ajouter,modifier,supprimer,ecriture from usermodule where module= 'article'and modulepr='Fichier de base' and codeuser= :codeuser  and societe = :databaseName`,
+      {
+        type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
+        replacements: {
+          codeuser: codeuser,
+          databaseName: databaseName,
+        },
+      }
+    );
     await Utilisateur.update(
       { socutil: databaseName },
       {
@@ -141,6 +162,8 @@ const selectDatabase = async (req, res) => {
     return res.status(200).json({
       message: `Connecté à la base ${databaseName}`,
       databaseName,
+      droitAcceTableClient,
+      droitAcceeTableArticle
     });
   } catch (error) {
     console.error("Erreur lors de la connexion à la base de données :", error);

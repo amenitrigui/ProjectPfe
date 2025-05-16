@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setDbName } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
+import { setDbName, setDroitAcceeTableArticle, setDroitAcceTableClient } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 import { viderResponseLogin } from "../../app/utilisateur_slices/utilisateurSlice";
+import axios, { Axios } from "axios";
 
 const SocietiesList = () => {
   const [societies, setSocieties] = useState([]);
@@ -32,21 +33,22 @@ const SocietiesList = () => {
         navigate("/");
       }
 
-      const response = await fetch(
+      const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/utilisateurs/select-database`,
         {
-          method: "POST",
+          databaseName: society,
+        },
+        {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({
-            databaseName: society
-          }),
         }
       );
-
       if (response.status === 200) {
+        console.log(response)
+        dispatch(setDroitAcceTableClient(response.data.droitAcceTableClient[0]));
+        dispatch(setDroitAcceeTableArticle(response.data.droitAcceeTableArticle[0]));
         dispatch(setDbName(society));
         localStorage.setItem("selectedDatabase", society);
         localStorage.setItem("selectedRsoc", society.rsoc);

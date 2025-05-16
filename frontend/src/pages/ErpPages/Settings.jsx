@@ -13,7 +13,7 @@ import { getListeCodesUtilisateur } from "../../app/utilisateur_slices/utilisate
 import {
   getModuleParamettreParUtilisateur,
   setParametresAcceesUtilisateur,
-  modifierModuleParamettreParUtilisateur
+  modifierModuleParamettreParUtilisateur,
 } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
 import { useState } from "react";
 
@@ -85,8 +85,15 @@ function Settings() {
     (state) => state.utilisateurSystemSlice.paramettresAccesUtilisateur
   );
   const modifierParametresAcces = () => {
-    dispatch(modifierModuleParamettreParUtilisateur({codeuser: codeUtilisateur, modulepr: "Fichier de base",module, paramettreModifier: paramettresAccesUtilisateur}))
-  }
+    dispatch(
+      modifierModuleParamettreParUtilisateur({
+        codeuser: codeUtilisateur,
+        modulepr: "Fichier de base",
+        module,
+        paramettreModifier: paramettresAccesUtilisateur,
+      })
+    );
+  };
 
   return (
     <div className="container ">
@@ -95,218 +102,230 @@ function Settings() {
         <ToolBar />
         <div className="details">
           {/* paramètres visibles pour les superviseurs */}
-          <div className="recentOrders flex flex-row flex-nowrap gap-4">
-            <div className="flex-1 bg-base-100">
-              <div className="max-w-4xl mx-auto bg-base-100 shadow-lg rounded-lg p-6">
-                <h2 className="text-2xl font-bold mb-6 text-gray-700">
-                  Paramètres
-                </h2>
+          {utilisateurConnecte.type.toLowerCase() == "superviseur" && (
+            <div className="recentOrders flex flex-row flex-nowrap gap-4">
+              <div className="flex-1 bg-base-100">
+                <div className="max-w-4xl mx-auto bg-base-100 shadow-lg rounded-lg p-6">
+                  <h2 className="text-2xl font-bold mb-6 text-gray-700">
+                    Paramètres
+                  </h2>
 
-                <div className="grid gap-6 md:grid-cols-2">
-                  <label className="select w-full">
-                    <span className="label block mb-2 text-gray-600">User</span>
-                    <select
-                      className="w-full px-4 py-2 border rounded-lg"
-                      onChange={(e) => {
-                        setCodeUtilisateur(e.target.value);
-                      }}
-                      value={codeUtilisateur}
-                    >
-                      {listeCodesUtilisateur && listeCodesUtilisateur.length > 0
-                        ? listeCodesUtilisateur.map(
-                            (codeutilisateur, indice) => {
-                              return (
-                                <option key={indice}>
-                                  {codeutilisateur.codeuser}
-                                </option>
-                              );
-                            }
-                          )
-                        : ""}
-                    </select>
-                  </label>
-
-                  <label className="select w-full">
-                    <span className="label block mb-2 text-gray-600">
-                      Fiche
-                    </span>
-                    <select
-                      className="w-full px-4 py-2 border rounded-lg"
-                      onChange={(e) => {
-                        setModule(e.target.value);
-                      }}
-                      value={module}
-                    >
-                      <option>article</option>
-                      <option>clients</option>
-                      <option>utilisateur</option>
-                    </select>
-                  </label>
-
-                  <div className="overflow-x-auto col-span-2">
-                    <table className="table table-zebra w-full">
-                      <thead>
-                        <tr>
-                          <th>Accès</th>
-                          <th>Ecriture</th>
-                          <th>Ajout</th>
-                          <th>Mise A jour</th>
-                          <th>Suppression</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>
-                            <input
-                              type="text"
-                              className="border border-gray-300 rounded-md p-2 w-1/2"
-                              value={
-                                paramettresAccesUtilisateur.accee
-                                  ? paramettresAccesUtilisateur.accee
-                                  : ""
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <label className="select w-full">
+                      <span className="label block mb-2 text-gray-600">
+                        User
+                      </span>
+                      <select
+                        className="w-full px-4 py-2 border rounded-lg"
+                        onChange={(e) => {
+                          setCodeUtilisateur(e.target.value);
+                        }}
+                        value={codeUtilisateur}
+                      >
+                        {listeCodesUtilisateur &&
+                        listeCodesUtilisateur.length > 0
+                          ? listeCodesUtilisateur.map(
+                              (codeutilisateur, indice) => {
+                                return (
+                                  <option key={indice}>
+                                    {codeutilisateur.codeuser}
+                                  </option>
+                                );
                               }
-                              onChange={(e) => {
-                                dispatch(setParametresAcceesUtilisateur({colonne: "accee", valeur: ""}))
-                                if (
-                                  e.target.value == "1" ||
-                                  e.target.value == "0"
-                                ) {
+                            )
+                          : ""}
+                      </select>
+                    </label>
+
+                    <label className="select w-full">
+                      <span className="label block mb-2 text-gray-600">
+                        Fiche
+                      </span>
+                      <select
+                        className="w-full px-4 py-2 border rounded-lg"
+                        onChange={(e) => {
+                          setModule(e.target.value);
+                        }}
+                        value={module}
+                      >
+                        <option>article</option>
+                        <option>clients</option>
+                        <option>utilisateur</option>
+                      </select>
+                    </label>
+
+                    <div className="overflow-x-auto col-span-2">
+                      <table className="table table-zebra w-full">
+                        <thead>
+                          <tr>
+                            <th>Accès</th>
+                            <th>Ecriture</th>
+                            <th>Ajout</th>
+                            <th>Mise A jour</th>
+                            <th>Suppression</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>
+                              <input
+                                type="text"
+                                className="border border-gray-300 rounded-md p-2 w-1/2"
+                                value={
+                                  paramettresAccesUtilisateur.accee
+                                    ? paramettresAccesUtilisateur.accee
+                                    : ""
+                                }
+                                onChange={(e) => {
                                   dispatch(
                                     setParametresAcceesUtilisateur({
                                       colonne: "accee",
-                                      valeur: e.target.value,
+                                      valeur: "",
                                     })
                                   );
-                                }
-                              }}
-                              minLength={1}
-                              maxLength={1}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              className="border border-gray-300 rounded-md p-2 w-1/2"
-                              value={
-                                paramettresAccesUtilisateur.ecriture
-                                  ? paramettresAccesUtilisateur.ecriture
-                                  : ""
-                              }
-                              onChange={(e) => {
-                                if (
-                                  e.target.value == "1" ||
-                                  e.target.value == "0"
-                                ) {
-                                  dispatch(
-                                    setParametresAcceesUtilisateur({
-                                      colonne: "ecriture",
-                                      valeur: e.target.value,
-                                    })
-                                  );
-                                }
-                              }}
-                              minLength={1}
-                              maxLength={1}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              className="border border-gray-300 rounded-md w-1/2 p-2"
-                              value={
-                                paramettresAccesUtilisateur.ajouter
-                                  ? paramettresAccesUtilisateur.ajouter
-                                  : ""
-                              }
-                              onChange={(e) => {
-                                if (
-                                  e.target.value == "1" ||
-                                  e.target.value == "0"
-                                ) {
-                                  dispatch(
-                                    setParametresAcceesUtilisateur({
-                                      colonne: "ajouter",
-                                      valeur: e.target.value,
-                                    })
-                                  );
-                                }
-                              }}
-                              minLength={1}
-                              maxLength={1}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              className="border border-gray-300 rounded-md w-1/2 p-2"
-                              value={
-                                paramettresAccesUtilisateur.modifier
-                                  ? paramettresAccesUtilisateur.modifier
-                                  : ""
-                              }
-                              onChange={(e) => {
-                                if (
-                                  e.target.value == "1" ||
-                                  e.target.value == "0"
-                                ) {
-                                  {
+                                  if (
+                                    e.target.value == "1" ||
+                                    e.target.value == "0"
+                                  ) {
                                     dispatch(
                                       setParametresAcceesUtilisateur({
-                                        colonne: "modifier",
+                                        colonne: "accee",
                                         valeur: e.target.value,
                                       })
                                     );
                                   }
+                                }}
+                                minLength={1}
+                                maxLength={1}
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                className="border border-gray-300 rounded-md p-2 w-1/2"
+                                value={
+                                  paramettresAccesUtilisateur.ecriture
+                                    ? paramettresAccesUtilisateur.ecriture
+                                    : ""
                                 }
-                              }}
-                              minLength={1}
-                              maxLength={1}
-                            />
-                          </td>
+                                onChange={(e) => {
+                                  if (
+                                    e.target.value == "1" ||
+                                    e.target.value == "0"
+                                  ) {
+                                    dispatch(
+                                      setParametresAcceesUtilisateur({
+                                        colonne: "ecriture",
+                                        valeur: e.target.value,
+                                      })
+                                    );
+                                  }
+                                }}
+                                minLength={1}
+                                maxLength={1}
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                className="border border-gray-300 rounded-md w-1/2 p-2"
+                                value={
+                                  paramettresAccesUtilisateur.ajouter
+                                    ? paramettresAccesUtilisateur.ajouter
+                                    : ""
+                                }
+                                onChange={(e) => {
+                                  if (
+                                    e.target.value == "1" ||
+                                    e.target.value == "0"
+                                  ) {
+                                    dispatch(
+                                      setParametresAcceesUtilisateur({
+                                        colonne: "ajouter",
+                                        valeur: e.target.value,
+                                      })
+                                    );
+                                  }
+                                }}
+                                minLength={1}
+                                maxLength={1}
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                className="border border-gray-300 rounded-md w-1/2 p-2"
+                                value={
+                                  paramettresAccesUtilisateur.modifier
+                                    ? paramettresAccesUtilisateur.modifier
+                                    : ""
+                                }
+                                onChange={(e) => {
+                                  if (
+                                    e.target.value == "1" ||
+                                    e.target.value == "0"
+                                  ) {
+                                    {
+                                      dispatch(
+                                        setParametresAcceesUtilisateur({
+                                          colonne: "modifier",
+                                          valeur: e.target.value,
+                                        })
+                                      );
+                                    }
+                                  }
+                                }}
+                                minLength={1}
+                                maxLength={1}
+                              />
+                            </td>
 
-                          <td>
-                            <input
-                              type="text"
-                              className="border border-gray-300 rounded-md w-1/2 p-2"
-                              value={
-                                paramettresAccesUtilisateur.supprimer
-                                  ? paramettresAccesUtilisateur.supprimer
-                                  : ""
-                              }
-                              onChange={(e) => {
-                                if (
-                                  e.target.value == "1" ||
-                                  e.target.value == "0"
-                                ) {
-                                  dispatch(
-                                    setParametresAcceesUtilisateur({
-                                      colonne: "supprimer",
-                                      valeur: e.target.value,
-                                    })
-                                  );
+                            <td>
+                              <input
+                                type="text"
+                                className="border border-gray-300 rounded-md w-1/2 p-2"
+                                value={
+                                  paramettresAccesUtilisateur.supprimer
+                                    ? paramettresAccesUtilisateur.supprimer
+                                    : ""
                                 }
-                              }}
-                              minLength={1}
-                              maxLength={1}
-                            />
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                                onChange={(e) => {
+                                  if (
+                                    e.target.value == "1" ||
+                                    e.target.value == "0"
+                                  ) {
+                                    dispatch(
+                                      setParametresAcceesUtilisateur({
+                                        colonne: "supprimer",
+                                        valeur: e.target.value,
+                                      })
+                                    );
+                                  }
+                                }}
+                                minLength={1}
+                                maxLength={1}
+                              />
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                </div>
 
-                <div className="mt-8">
-                  <button
-                    className="btn btn-primary w-full"
-                    onClick={() => {modifierParametresAcces()}}
-                  >
-                    Enregistrer
-                  </button>
+                  <div className="mt-8">
+                    <button
+                      className="btn btn-primary w-full"
+                      onClick={() => {
+                        modifierParametresAcces();
+                      }}
+                    >
+                      Enregistrer
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
 
           <div className="recentOrders flex flex-row flex-nowrap gap-4">
             <div className="flex-1 bg-base-100">
