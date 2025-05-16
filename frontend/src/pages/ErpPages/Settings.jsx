@@ -170,7 +170,7 @@ function Settings() {
                                 type="text"
                                 className="border border-gray-300 rounded-md p-2 w-1/2"
                                 value={
-                                  paramettresAccesUtilisateur.accee
+                                  paramettresAccesUtilisateur?.accee
                                     ? paramettresAccesUtilisateur.accee
                                     : ""
                                 }
@@ -202,7 +202,7 @@ function Settings() {
                                 type="text"
                                 className="border border-gray-300 rounded-md p-2 w-1/2"
                                 value={
-                                  paramettresAccesUtilisateur.ecriture
+                                  paramettresAccesUtilisateur?.ecriture
                                     ? paramettresAccesUtilisateur.ecriture
                                     : ""
                                 }
@@ -228,7 +228,7 @@ function Settings() {
                                 type="text"
                                 className="border border-gray-300 rounded-md w-1/2 p-2"
                                 value={
-                                  paramettresAccesUtilisateur.ajouter
+                                  paramettresAccesUtilisateur?.ajouter
                                     ? paramettresAccesUtilisateur.ajouter
                                     : ""
                                 }
@@ -254,7 +254,7 @@ function Settings() {
                                 type="text"
                                 className="border border-gray-300 rounded-md w-1/2 p-2"
                                 value={
-                                  paramettresAccesUtilisateur.modifier
+                                  paramettresAccesUtilisateur?.modifier
                                     ? paramettresAccesUtilisateur.modifier
                                     : ""
                                 }
@@ -283,7 +283,7 @@ function Settings() {
                                 type="text"
                                 className="border border-gray-300 rounded-md w-1/2 p-2"
                                 value={
-                                  paramettresAccesUtilisateur.supprimer
+                                  paramettresAccesUtilisateur?.supprimer
                                     ? paramettresAccesUtilisateur.supprimer
                                     : ""
                                 }
