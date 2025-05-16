@@ -73,7 +73,9 @@ function ToolBar() {
   const activerBoutonsValiderAnnuler = useSelector(
     (state) => state.interfaceSlice.activerBoutonsValiderAnnuler
   );
-  const insertionDepuisDevisForm = useSelector((state) => state.clientSlice.insertionDepuisDevisForm);
+  const insertionDepuisDevisForm = useSelector(
+    (state) => state.clientSlice.insertionDepuisDevisForm
+  );
   const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
   // * state pour controller quelle table on utilise
   // * puisque ce composant est partagé
@@ -103,7 +105,9 @@ function ToolBar() {
   const listeToutCodesClients = useSelector(
     (state) => state.clientSlice.listeToutCodesClients
   );
-  const isParametresRoute = useSelector((state) => state.interfaceSlice.isParametresRoute);
+  const isParametresRoute = useSelector(
+    (state) => state.interfaceSlice.isParametresRoute
+  );
   const listeNUMBL = useSelector((state) => state.devisSlice.listeNUMBL);
   const menuRef = useRef();
   const buttonRef = useRef();
@@ -117,7 +121,7 @@ function ToolBar() {
           callback();
         }
       };
-      
+
       document.addEventListener("mousedown", handleClick);
       return () => document.removeEventListener("mousedown", handleClick);
     }, [refs, callback]);
@@ -128,7 +132,7 @@ function ToolBar() {
   //?==================================================================================================================
   //?==================================================appels UseEffect================================================
   //?==================================================================================================================
-  
+
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
@@ -358,8 +362,8 @@ function ToolBar() {
     }
     if (toolbarTable === "client") {
       dispatch(viderChampsClientInfo());
-      if(insertionDepuisDevisForm){
-        navigate("/DevisFormTout")
+      if (insertionDepuisDevisForm) {
+        navigate("/DevisFormTout");
       }
       // dispatch(getDerniereCodeClient());
     }
@@ -547,7 +551,6 @@ function ToolBar() {
   const estVisible = () => {
     const userType = utilisateurConnecte?.type?.toLowerCase();
     const currentTable = toolbarTable?.toLowerCase();
-
     if (userType === "superviseur") {
       return true;
     }
@@ -557,6 +560,72 @@ function ToolBar() {
     }
 
     return false;
+  };
+
+  // * fonction pour gèrer la visibilité des boutons selon les
+  // * droits d'accès d'utilisateur courant
+  const estAccessible = (operation) => {
+    const droitsAcceTableClient = utilisateurConnecte.droitAcceTableClient;
+    const droitsAcceTableArticle = utilisateurConnecte.droitAcceeTableArticle;
+
+    if (toolbarTable.toLowerCase() === "client") {
+      switch (operation) {
+        case "ajout":
+          if (droitsAcceTableClient && droitsAcceTableClient.ajouter == "0") {
+            return false;
+          }
+          break;
+        case "modification":
+          if (droitsAcceTableClient && droitsAcceTableClient.modifier == "0") {
+            return false;
+          }
+          break;
+        case "consultation":
+          if (droitsAcceTableClient && droitsAcceTableClient.accee == "0") {
+            return false;
+          }
+          break;
+        case "suppression":
+          if (droitsAcceTableClient && droitsAcceTableClient.supprimer == "0") {
+            return false;
+          }
+          break;
+      }
+    }
+    if (toolbarTable.toLowerCase() === "article") {
+      switch (operation) {
+        case "ajout":
+          if (droitsAcceTableArticle && droitsAcceTableArticle.ajouter == "0") {
+            return false;
+          }
+          break;
+        case "modification":
+          if (
+            droitsAcceTableArticle &&
+            droitsAcceTableArticle.modifier == "0"
+          ) {
+            return false;
+          }
+          break;
+        case "consultation":
+          if (droitsAcceTableArticle && droitsAcceTableArticle.accee == "0") {
+            return false;
+          }
+          break;
+
+        case "suppression":
+          if (
+            droitsAcceTableArticle &&
+            droitsAcceTableArticle.supprimer == "0"
+          ) {
+            return false;
+          }
+          break;
+      }
+      console.log(droitsAcceTableArticle);
+    }
+
+    return true;
   };
 
   return (
@@ -578,7 +647,7 @@ function ToolBar() {
               {!activerBoutonsValiderAnnuler && (
                 <>
                   {/* Bouton Nouveau */}
-                  {estVisible() && !isListeRoute && (
+                  {estVisible() && !isListeRoute && estAccessible("ajout") && (
                     <button
                       type="button"
                       onClick={handleAjoutBtnClick}
@@ -595,49 +664,61 @@ function ToolBar() {
                   )}
 
                   {/* Bouton Modifier */}
-                  {!isListeRoute && (
-                    <button
-                      type="button"
-                      onClick={handleModifierBtnClick}
-                      className="flex flex-col items-center w-16 sm:w-20 p-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-lg transition-all duration-200"
-                    >
-                      <FontAwesomeIcon icon={faEdit} className="text-xl mb-1" />
-                      <span className="text-[10px] sm:text-xs font-semibold">
-                        Modifier
-                      </span>
-                    </button>
-                  )}
+                  {estVisible() &&
+                    !isListeRoute &&
+                    estAccessible("modification") && (
+                      <button
+                        type="button"
+                        onClick={handleModifierBtnClick}
+                        className="flex flex-col items-center w-16 sm:w-20 p-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-lg transition-all duration-200"
+                      >
+                        <FontAwesomeIcon
+                          icon={faEdit}
+                          className="text-xl mb-1"
+                        />
+                        <span className="text-[10px] sm:text-xs font-semibold">
+                          Modifier
+                        </span>
+                      </button>
+                    )}
 
                   {/* Bouton Supprimer */}
-                  {estVisible() && !isListeRoute && (
-                    <button
-                      type="button"
-                      onClick={handleSupprimerBtnClick}
-                      className="flex flex-col items-center w-16 sm:w-20 p-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition-all duration-200"
-                    >
-                      <FontAwesomeIcon
-                        icon={faTrashAlt}
-                        className="text-xl mb-1"
-                      />
-                      <span className="text-[10px] sm:text-xs font-semibold">
-                        Supprimer
-                      </span>
-                    </button>
-                  )}
+                  {estVisible() &&
+                    !isListeRoute &&
+                    estAccessible("suppression") && (
+                      <button
+                        type="button"
+                        onClick={handleSupprimerBtnClick}
+                        className="flex flex-col items-center w-16 sm:w-20 p-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition-all duration-200"
+                      >
+                        <FontAwesomeIcon
+                          icon={faTrashAlt}
+                          className="text-xl mb-1"
+                        />
+                        <span className="text-[10px] sm:text-xs font-semibold">
+                          Supprimer
+                        </span>
+                      </button>
+                    )}
 
                   {/* Liste */}
-                  {estVisible() && !isListeRoute && (
-                    <button
-                      type="button"
-                      onClick={handleNaviguerVersListe}
-                      className="flex flex-col items-center w-16 sm:w-20 p-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all duration-200"
-                    >
-                      <FontAwesomeIcon icon={faList} className="text-xl mb-1" />
-                      <span className="text-[10px] sm:text-xs font-semibold">
-                        Liste
-                      </span>
-                    </button>
-                  )}
+                  {estVisible() &&
+                    !isListeRoute &&
+                    estAccessible("consultation") && (
+                      <button
+                        type="button"
+                        onClick={handleNaviguerVersListe}
+                        className="flex flex-col items-center w-16 sm:w-20 p-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-all duration-200"
+                      >
+                        <FontAwesomeIcon
+                          icon={faList}
+                          className="text-xl mb-1"
+                        />
+                        <span className="text-[10px] sm:text-xs font-semibold">
+                          Liste
+                        </span>
+                      </button>
+                    )}
 
                   {/* Précédent */}
                   {estVisible() &&

@@ -91,7 +91,7 @@ export const getModuleParamettreParUtilisateur = createAsyncThunk(
           codeuser: paramettre.codeuser,
           modulepr: paramettre.modulepr,
           module: paramettre.module,
-          societe: thunkApi.getState().utilisateurSystemSlice.dbName
+          societe: thunkApi.getState().utilisateurSystemSlice.dbName,
         },
         headers: {
           Authorization: `Bearer ${
@@ -106,19 +106,19 @@ export const getModuleParamettreParUtilisateur = createAsyncThunk(
 
 export const modifierModuleParamettreParUtilisateur = createAsyncThunk(
   "utilisateurSystemSlices/modifierModuleParamettreParUtilisateur",
-  async(paramettre, thunkAPI) => {
-    console.log(paramettre.codeuser)
+  async (paramettre, thunkAPI) => {
+    console.log(paramettre.codeuser);
     const response = await axios.put(
       `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/modifierModuleParamettreParUtilisateur`,
       {
-          paramettreModifier: paramettre.paramettreModifier,
+        paramettreModifier: paramettre.paramettreModifier,
       },
       {
         params: {
           codeuser: paramettre.codeuser,
           modulepr: paramettre.modulepr,
           module: paramettre.module,
-          societe: thunkAPI.getState().utilisateurSystemSlice.dbName
+          societe: thunkAPI.getState().utilisateurSystemSlice.dbName,
         },
         headers: {
           Authorization: `Bearer ${
@@ -127,10 +127,10 @@ export const modifierModuleParamettreParUtilisateur = createAsyncThunk(
         },
       }
     );
-console.log(response)
+    console.log(response);
     return response;
   }
-)
+);
 
 export const getRepresantantUtilisateur = createAsyncThunk(
   "utilisateurSystemSlice/getRepresantantUtilisateur",
@@ -176,6 +176,22 @@ export const utilisateurSystemSlices = createSlice({
       codeuser: "",
       nom: "",
       type: "",
+
+      droitAcceTableClient: {
+        accee: "",
+        ecriture: "",
+        ajouter: "",
+        modifier: "",
+        supprimer: "",
+      },
+
+      droitAcceeTableArticle: {
+        accee: "",
+        ecriture: "",
+        ajouter: "",
+        modifier: "",
+        supprimer: "",
+      },
     },
     dbName: "",
     token: "",
@@ -184,9 +200,15 @@ export const utilisateurSystemSlices = createSlice({
     },
   },
   reducers: {
-    setParametresAcceesUtilisateur : (state, action) => {
-      const { colonne, valeur } = action.payload
-      state.paramettresAccesUtilisateur[colonne] = valeur
+    setParametresAcceesUtilisateur: (state, action) => {
+      const { colonne, valeur } = action.payload;
+      state.paramettresAccesUtilisateur[colonne] = valeur;
+    },
+    setDroitAcceTableClient: (state, action) => {
+      state.utilisateurConnecte.droitAcceTableClient = action.payload;
+    },
+    setDroitAcceeTableArticle: (state, action) => {
+      state.utilisateurConnecte.droitAcceeTableArticle = action.payload;
     },
     setUtilisateurSupInfo: (state, action) => {
       state.Utilisateur_SuperviseurInfos = action.payload;
@@ -263,7 +285,9 @@ export const {
   setDbName,
   SetUtilisateurSystemremplir,
   setToken,
-  setParametresAcceesUtilisateur
+  setParametresAcceesUtilisateur,
+  setDroitAcceTableClient,
+  setDroitAcceeTableArticle
 } = utilisateurSystemSlices.actions;
 
 export default utilisateurSystemSlices.reducer;

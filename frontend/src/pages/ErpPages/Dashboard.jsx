@@ -114,6 +114,9 @@ const Dashboard = () => {
   const utilisateurConnecte = useSelector(
     (state) => state.utilisateurSystemSlice.utilisateurConnecte
   );
+
+  console.log(utilisateurConnecte)
+
   const nbTotalDevisGeneres = useSelector(
     (state) => state.devisSlice.nbTotalDevisGeneres
   );
