@@ -279,7 +279,7 @@ function ArticlesDevis() {
   };
   return (
     <div className="details">
-      <div className="banquedetails">
+      <div className="banquedetails bg-base-100">
         <div className="collapse bg-base-100 border-base-300 border">
           <input type="checkbox" />
           <div
@@ -416,11 +416,6 @@ function ArticlesDevis() {
                         value={getValeurChampTVA()}
                         onChange={(e) => handleChangementChamp("TauxTVA", e)}
                       >
-                        <option value="0">0</option>
-                        <option value="7">7</option>
-                        <option value="13">13</option>
-                        <option value="19">19</option>
-                        <option value="29">29</option>
                       </select>
                     </div>
 

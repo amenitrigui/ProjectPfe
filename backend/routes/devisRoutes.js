@@ -28,7 +28,7 @@ const {
   getNbTotalDevisSansStatus,
   getListeDevisAvecPagination,
   getAnneesDistinctGenerationDevis,
-  getNbDevisGeneresParAnnee,getListeSecteur,
+  getNbDevisGeneresChaqueMoisParAnnee,getListeSecteur,
   getDevisparRepresentant,getListeCodeVendeur,getrepresentantparcodevendeur,majDevis,filtrerListeDevis
 } = require("../controllers/devisController");
 //devis controller mt3na
@@ -64,7 +64,7 @@ router.get("/:dbName/getNbTotalDevisEnCours", getNbTotalDevisEnCours)
 router.get("/:dbName/getNbTotalDevisSansStatus", getNbTotalDevisSansStatus);
 router.get("/:dbName/getListeDevisAvecPagination", getListeDevisAvecPagination);
 router.get("/:dbName/getAnneesDistinctGenerationDevis", getAnneesDistinctGenerationDevis);
-router.get("/:dbName/getNbDevisGeneresParAnnee", getNbDevisGeneresParAnnee);
+router.get("/:dbName/getNbDevisGeneresChaqueMoisParAnnee", getNbDevisGeneresChaqueMoisParAnnee);
 router.get("/:dbName/getDevisparRepresentant", getDevisparRepresentant);
 router.get("/:dbName/getListeCodeVendeur", getListeCodeVendeur);
 router.get("/:dbName/getrepresentantparcodevendeur", getrepresentantparcodevendeur);

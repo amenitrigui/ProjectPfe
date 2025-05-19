@@ -844,7 +844,7 @@ function ToolBar() {
 
             {ouvrireAvatarMenu && (
               <div
-                className="absolute right-0 mt-3 w-56 bg-white border rounded-lg shadow-lg z-50"
+                className="absolute right-0 mt-3 w-56 bg-base-100 border rounded-lg shadow-lg z-50"
                 ref={menuRef}
               >
                 <div className="p-4 flex items-center border-b">

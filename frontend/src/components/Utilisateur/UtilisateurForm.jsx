@@ -137,7 +137,7 @@ const UtilisateurForm = () => {
               <div className="flex gap-4">
                 {/* Colonne gauche - Champs existants */}
                 <div className="flex-1">
-                  <div className="flex flex-wrap gap-4">
+                  <div className="flex flex-nowrap gap-4">
                     <div className="flex flex-col w-1/3">
                       <label className="font-bold mb-1 text-[rgb(48,60,123)]">
                         Code Utilisateur
@@ -163,7 +163,7 @@ const UtilisateurForm = () => {
                       />
                     </div>
 
-                    <div className="flex flex-col w-1/2 ">
+                    <div className="flex flex-col w-2/3 ">
                       <label className="font-bold mb-1 text-[rgb(48,60,123)]">
                         Nom Utilisateur
                       </label>
@@ -246,7 +246,7 @@ const UtilisateurForm = () => {
                       disabled={!activerChampsForm}
                     />
                   </div>
-                  <div className="flex flex-col">
+                  {/* <div className="flex flex-col">
                     <label className="font-bold mb-1 text-[rgb(48,60,123)]">
                       Image
                     </label>
@@ -268,7 +268,7 @@ const UtilisateurForm = () => {
                       onChange={handleImageUpload}
                       accept="image/*" // Pour n'accepter que les images
                     />
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </fieldset>

@@ -22,7 +22,6 @@ function Settings() {
   const ouvrireMenuDrawer = useSelector(
     (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
-  const theme = useSelector((state) => state.interfaceSlice.theme);
 
   // * spécifier qu'on est dans le route de paramètres
   // * lors de la démontage de ce composant, l'etat est mise à false
@@ -34,9 +33,7 @@ function Settings() {
     };
   }, [dispatch]);
 
-  useEffect(() => {
-    document.querySelector("html").setAttribute("data-theme", theme);
-  }, [theme]);
+  const theme = useSelector((state) => state.interfaceSlice.theme);
 
   // Sauvegarder les paramètres
   const handleSave = () => {
@@ -105,7 +102,7 @@ function Settings() {
               <div className="flex-1 bg-base-100">
                 <div className="max-w-4xl mx-auto bg-base-100 shadow-lg rounded-lg p-6">
                   <h2 className="text-2xl font-bold mb-6 text-gray-700">
-                    Paramètres
+                    Paramètres Accès Fiches
                   </h2>
 
                   <div className="grid gap-6 md:grid-cols-2">
@@ -156,11 +153,31 @@ function Settings() {
                       <table className="table table-zebra w-full">
                         <thead>
                           <tr>
-                            <th>Accès</th>
-                            <th>Ecriture</th>
-                            <th>Ajout</th>
-                            <th>Mise A jour</th>
-                            <th>Suppression</th>
+                            <th>
+                              <span className="dark:text-white light:text-black">
+                                Accès
+                              </span>
+                            </th>
+                            <th>
+                              <span className="dark:text-white light:text-black">
+                                Ecriture
+                              </span>
+                            </th>
+                            <th>
+                              <span className="dark:text-white light:text-black">
+                                Ajout
+                              </span>
+                            </th>
+                            <th>
+                              <span className="dark:text-white light:text-black">
+                                Mise A jour
+                              </span>
+                            </th>
+                            <th>
+                              <span className="dark:text-white light:text-black">
+                                Suppression
+                              </span>
+                            </th>
                           </tr>
                         </thead>
                         <tbody>
@@ -363,24 +380,26 @@ function Settings() {
                     </label>
                     <input type="checkbox" className="toggle toggle-accent" />
                   </div>
-                </div>
-
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Thème sombre</span>
-                  </label>
-                  <input
-                    type="checkbox"
-                    className="toggle toggle-grey"
-                    checked={theme === "dark"}
-                    onChange={(e) => {
-                      dispatch(setTheme(e.target.checked ? "dark" : "light"));
-                    }}
-                  />
+                  <div className="form-control">
+                    <label className="label">
+                      <span className="label-text">Thème sombre</span>
+                    </label>
+                    <input
+                      type="checkbox"
+                      className="toggle toggle-grey"
+                      checked={theme === "dark"}
+                      onChange={(e) => {
+                        dispatch(setTheme(e.target.checked ? "dark" : "light"));
+                      }}
+                    />
+                  </div>
                 </div>
 
                 <div className="mt-8">
-                  <button className="btn btn-primary" onClick={handleSave}>
+                  <button
+                    className="btn btn-primary w-full"
+                    onClick={handleSave}
+                  >
                     Enregistrer
                   </button>
                 </div>

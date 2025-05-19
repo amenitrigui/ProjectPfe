@@ -11,10 +11,6 @@ function SideBar() {
   );
   const handleLinkClick = (e, path) => {
     e.preventDefault();
-    if (window.innerWidth <= 400) {
-      // Minimise the sidebar for small screens
-      dispatch(setOuvrireDrawerMenu(true)); // true = CLOSED in your logic
-    }
     dispatch(setOuvrireDrawerMenu(false))
     navigate(path);
   };
@@ -28,9 +24,6 @@ function SideBar() {
     { name: "Liste de société", icon: "business-outline", path: "/SocietiesList" },
     { name: "Settings", icon: "settings-outline", path: "/Settings" },
   ];
-
-  console.log(ouvrireMenuDrawer);
-
   return (
     <div className={`navigation ${ouvrireMenuDrawer ? "active" : ""}`}>
       <ul>

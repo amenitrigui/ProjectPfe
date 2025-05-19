@@ -260,7 +260,7 @@ function DevisForm() {
     <>
       <div className="container">
         <SideBar />
-        <div className={`main ${ouvrireMenuDrawer ? "active" : ""}`}>
+        <div className={`main ${ouvrireMenuDrawer ? "active" : ""} bg-base-100`}>
           <ToolBar />
           <div className="details bg-base-100">
             <div className="recentOrders flex flex-row flex-nowrap gap-4">

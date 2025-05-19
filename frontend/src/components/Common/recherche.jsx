@@ -122,7 +122,7 @@ const Recherche = () => {
         backgroundColor: "#f8fafc",
         "&:hover": {
           backgroundColor: "#dbeafe",
-        },
+        }
       },
     },
     pagination: {
@@ -547,7 +547,7 @@ const Recherche = () => {
   }
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-6xl p-6 relative max-h-screen overflow-y-auto">
+      <div className="bg-base-100 rounded-2xl shadow-xl w-full max-w-6xl p-6 relative max-h-screen overflow-y-auto">
         {/* Bouton fermer (X) */}
         <button
           onClick={() => fermerPopupRecherche()}
@@ -571,7 +571,7 @@ const Recherche = () => {
 
         <div className="flex flex-col md:flex-row md:space-x-6 space-y-4 md:space-y-0">
           {/* Filtres */}
-          <div className="md:w-1/3 w-full bg-gray-50 p-4 rounded-xl shadow">
+          <div className="md:w-1/3 w-full bg-base-50 p-4 rounded-xl shadow">
             <h3 className="text-lg font-medium text-gray-700 mb-4">
               Rechercher {toolbarTable === "devis" && "Devis"}
               {toolbarTable === "client" && "Client"}
@@ -680,7 +680,7 @@ const Recherche = () => {
           </div>
 
           {/* Champ de recherche + résultat */}
-          <div className="md:w-2/3 w-full bg-gray-50 p-4 rounded-xl shadow">
+          <div className="md:w-2/3 w-full bg-base-50 p-4 rounded-xl shadow">
             <div className="flex flex-col space-y-2 mb-4">
               <input
                 id="searchInput"

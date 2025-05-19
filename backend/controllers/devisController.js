@@ -1206,7 +1206,6 @@ const getAnneesDistinctGenerationDevis = async (req, res) => {
     }
     dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
-    // ? ?????????????
     const annees = await Devis.findAll({
       attributes: [
         [dbConnection.fn("YEAR", dbConnection.col("DateBL")), "year"],
@@ -1293,8 +1292,8 @@ const getDevisparRepresentant = async (req, res) => {
 
 // * récupere le nombre de devis générés par mois selon l'année
 // * pour une societé donnée (dbName)
-// * url : http://localhost:5000/api/devis/SOLEVO/getNbDevisGeneresParAnnee?annee=2023
-const getNbDevisGeneresParAnnee = async (req, res) => {
+// * url : http://localhost:5000/api/devis/SOLEVO/getNbDevisGeneresChaqueMoisParAnnee?annee=2023
+const getNbDevisGeneresChaqueMoisParAnnee = async (req, res) => {
   const { dbName } = req.params;
   const { annee } = req.query;
   let dbConnection;
@@ -1535,7 +1534,7 @@ module.exports = {
   getNbTotalDevisSansStatus,
   getListeDevisAvecPagination,
   getAnneesDistinctGenerationDevis,
-  getNbDevisGeneresParAnnee,
+  getNbDevisGeneresChaqueMoisParAnnee,
   getListeCodeVendeur,
   majDevis,
   getrepresentantparcodevendeur,

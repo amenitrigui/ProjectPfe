@@ -612,14 +612,14 @@ export const getDevisparRepresentant = createAsyncThunk(
     return response.data.nombredevisparrepresentant;
   }
 );
-export const getNbDevisGeneresParAnnee = createAsyncThunk(
-  `devisSlice/getNbDevisGeneresParAnnee`,
+export const getNbDevisGeneresChaqueMoisParAnnee = createAsyncThunk(
+  `devisSlice/getNbDevisGeneresChaqueMoisParAnnee`,
   async (annee, thunkAPI) => {
     const response = await axios.get(
       `
       ${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getNbDevisGeneresParAnnee`,
+      }/getNbDevisGeneresChaqueMoisParAnnee`,
       {
         params: {
           annee: annee,
@@ -1102,14 +1102,14 @@ export const devisSlice = createSlice({
         state.status = "echoue";
       })
 
-      .addCase(getNbDevisGeneresParAnnee.pending, (state) => {
+      .addCase(getNbDevisGeneresChaqueMoisParAnnee.pending, (state) => {
         state.status = "chargement";
       })
-      .addCase(getNbDevisGeneresParAnnee.fulfilled, (state, action) => {
+      .addCase(getNbDevisGeneresChaqueMoisParAnnee.fulfilled, (state, action) => {
         state.nbDevisGeneresParAnnee = action.payload;
         state.status = "reussi";
       })
-      .addCase(getNbDevisGeneresParAnnee.rejected, (state, action) => {
+      .addCase(getNbDevisGeneresChaqueMoisParAnnee.rejected, (state, action) => {
         state.status = "echoue";
       })
 

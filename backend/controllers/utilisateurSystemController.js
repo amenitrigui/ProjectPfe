@@ -127,7 +127,7 @@ const getDerniereCodeUtilisateur = async (req, res) => {
 
 //*url: http://localhost:5000/api/utilisateurSystem/ModifierUtilisateur
 const ModifierUtilisateur = async (req, res) => {
-  const { MajUtilisateur } = req.body;
+  const {  MajUtilisateur  } = req.body;
   const { codeuser } = req.query;
 
   try {

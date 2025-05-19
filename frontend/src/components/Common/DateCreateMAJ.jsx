@@ -28,7 +28,7 @@ function DateCreateMAJ(props) {
   };
 
   return (
-    <footer className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 shadow-md  z-50">
+    <footer className="fixed bottom-0 left-0 right-0 bg-base-100 border-t border-gray-300 shadow-md  z-50">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 w-full max-w-7xl mx-auto">
         {/* Creation + Date Create */}
         {(toolbarMode === 'ajout' || toolbarMode === 'consultation' ||toolbarMode=="suppression")&& (
