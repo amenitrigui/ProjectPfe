@@ -35,7 +35,7 @@ export const defaultArticleInfos = {
   prix4: "",
   nomenclature: "",
   gestionstock: "",
-  avecconfig: "",
+  avecconfig: "N",
   ventevrac: "",
   usera: "",
   userm: "",

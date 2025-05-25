@@ -415,11 +415,9 @@ function ArticleForm() {
                     Options supplementaires d'article
                   </div>
                   <div className="collapse-content text-sm">
-                    <ResponsiveContainer>
                       <OptionsArticle />
-                    </ResponsiveContainer>
                   </div>
-                  <DateCreateMAJ objet={articleInfos}></DateCreateMAJ>
+                  <DateCreateMAJ objet={articleInfos} />
                 </div>
               </div>
             </div>

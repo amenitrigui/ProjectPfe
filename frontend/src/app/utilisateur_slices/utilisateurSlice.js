@@ -225,6 +225,7 @@ export const AjouterUtilisateur = createAsyncThunk(
 export const getListeCodesUtilisateur = createAsyncThunk(
   "utilisateurSlice/getListeCodesUtilisateur",
   async (_, thunkAPI) => {
+    console.log("getListeCodesUtilisateur est en cours d'éxecution")
     const response = await axios.get(
       `
       ${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeCodesUtilisateur

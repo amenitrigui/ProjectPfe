@@ -639,6 +639,7 @@ export const majDevis = createAsyncThunk(
   "devisSlice/majDevis",
   async (NUMBL, thunkAPI) => {
     const devismaj = thunkAPI.getState().devisSlice.devisInfo;
+    console.log(devismaj)
     const response = await axios.put(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
@@ -718,7 +719,7 @@ const devisInfoInitiales = {
   comm: "",
   CODEREP: "",
   RSREP: "",
-  DATEDMAJ: new Date().toISOString().split("T")[0],
+  DATEDMAJ: "",
   TIMBRE: 0,
   usera: "",
   userm: "",

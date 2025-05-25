@@ -158,7 +158,6 @@ function ToolBar() {
     dispatch(setActiverBoutonsValiderAnnuler(true));
     dispatch(setActiverChampsForm(true));
     dispatch(setToolbarMode("ajout"));
-
     // * vider les champs du formulaires
     if (toolbarTable == "devis") {
       dispatch(viderChampsDevisInfo());
@@ -166,9 +165,10 @@ function ToolBar() {
       dispatch(
         setDevisInfo({ collone: "usera", valeur: utilisateurConnecte.codeuser })
       );
+      dispatch(setDevisInfo({collone: "TIMBRE",valeur: localStorage.getItem("timbref")}))
       dispatch(getDerniereNumbl());
     }
-
+    
     if (toolbarTable == "client") {
       dispatch(viderChampsClientInfo());
       dispatch(
@@ -180,7 +180,7 @@ function ToolBar() {
       // * dispatch une action pour récuperer le code + nom d'utilisateur courant
       // dispatch(getUtilisateurParCode());
     }
-
+    
     if (toolbarTable == "article") {
       dispatch(viderChampsArticleInfo());
     }
@@ -191,20 +191,20 @@ function ToolBar() {
         parseInt(
           listeCodesUtilisateur[listeCodesUtilisateur.length - 1].codeuser
         ) + 1;
-      dispatch(
-        setInfosUtilisateur({
-          colonne: "codeuser",
-          valeur: codeDerniereUtilisateur,
-        })
-      );
-    }
-  };
-  // * méthode pour mettre à jour un client/devis
-  const handleModifierBtnClick = async () => {
-    if (toolbarTable == "devis") {
-      if (!devisInfo.NUMBL) {
-        // ! a remplacer par toast
-        alert("aucune devis est selectionné pour la modification");
+        dispatch(
+          setInfosUtilisateur({
+            colonne: "codeuser",
+            valeur: codeDerniereUtilisateur,
+          })
+        );
+      }
+    };
+    // * méthode pour mettre à jour un client/devis
+    const handleModifierBtnClick = async () => {
+      if (toolbarTable == "devis") {
+        if (!devisInfo.NUMBL) {
+          // ! a remplacer par toast
+          alert("aucune devis est selectionné pour la modification");
         return;
       }
     }

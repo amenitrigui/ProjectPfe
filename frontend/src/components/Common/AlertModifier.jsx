@@ -22,7 +22,9 @@ import {
 
 import {
   ajouterArticle,
+  getListeCodesArticles,
   modifierarticle,
+  setArticleInfos,
   setDerniereCodeArticle,
   suprimerArticle,
   viderChampsArticleInfo,
@@ -45,7 +47,10 @@ import {
   setViderChampsUtilisateur,
   supprimerUtilisateur,
 } from "../../app/utilisateurSystemSlices/utilisateurSystemSlice";
-import { viderChampsInfosUtilisateur } from "../../app/utilisateur_slices/utilisateurSlice";
+import {
+  getListeCodesUtilisateur,
+  viderChampsInfosUtilisateur,
+} from "../../app/utilisateur_slices/utilisateurSlice";
 import { useNavigate } from "react-router-dom";
 function AlertModifier() {
   //?==================================================================================================================
@@ -77,8 +82,10 @@ function AlertModifier() {
   const infosUtilisateur = useSelector(
     (state) => state.utilisateurSlice.infosUtilisateur
   );
-  const clientInfos = useSelector((state) => state.clientSlice.clientInfos)
-  const insertionDepuisDevisForm = useSelector((state) => state.clientSlice.insertionDepuisDevisForm);
+  const clientInfos = useSelector((state) => state.clientSlice.clientInfos);
+  const insertionDepuisDevisForm = useSelector(
+    (state) => state.clientSlice.insertionDepuisDevisForm
+  );
   //?==================================================================================================================
   //?=================================================appels UseEffect=================================================
   //?==================================================================================================================
@@ -91,14 +98,20 @@ function AlertModifier() {
     //*pour le client
     if (toolbarTable == "client") {
       if (toolbarMode == "ajout") {
-        if(insertionDepuisDevisForm){
+        if (insertionDepuisDevisForm) {
           dispatch(ajouterClient());
-          dispatch(setDevisInfo({collone: "CODECLI", valeur: clientInfos.code}))
-          dispatch(setDevisInfo({collone: "RSCLI", valeur: clientInfos.rsoc}))
-          dispatch(setDevisInfo({collone: "ADRCLI", valeur: clientInfos.adresse}));
+          dispatch(
+            setDevisInfo({ collone: "CODECLI", valeur: clientInfos.code })
+          );
+          dispatch(
+            setDevisInfo({ collone: "RSCLI", valeur: clientInfos.rsoc })
+          );
+          dispatch(
+            setDevisInfo({ collone: "ADRCLI", valeur: clientInfos.adresse })
+          );
           navigate("/DevisFormTout");
         }
-        if(!insertionDepuisDevisForm) {
+        if (!insertionDepuisDevisForm) {
           dispatch(ajouterClient()).then(() => {
             dispatch(getToutCodesClient());
           });
@@ -124,39 +137,60 @@ function AlertModifier() {
     if (toolbarTable == "devis") {
       if (toolbarMode == "ajout") {
         if (validerChampsForm("devis", devisInfo)) {
-          dispatch(setInsertionDepuisDevisForm(false))
+          dispatch(setInsertionDepuisDevisForm(false));
           dispatch(AjouterDevis());
           dispatch(viderChampsDevisInfo());
           // dispatch(setDerniereNumbl(""));
           // * pour obtenir la nouvelle liste de codes contenant le devis inseré
-          dispatch(getListeNumbl());
         } else {
           alert("veuillez vérifier les données de formulaire");
         }
       }
       if (toolbarMode == "modification") {
-        dispatch(majDevis(devisInfo.NUMBL));
+        // * maj de champ userm pour qu'il soit ajouté à la base des données
+        dispatch(
+          setDevisInfo({
+            collone: "userm",
+            valeur: utilisateurConnecte.codeuser,
+          })
+        );
+        // * maj de champ DATEDMAJ pour qu'il soit ajouté à la base des données
+        dispatch(
+          setDevisInfo({
+            collone: "DATEDMAJ",
+            valeur: new Date().toISOString().split("T")[0],
+          })
+        );
+        await dispatch(majDevis(devisInfo.NUMBL)).unwrap();
         dispatch(viderChampsDevisInfo());
       }
       if (toolbarMode == "suppression") {
         dispatch(annulerDevis(devisInfo.NUMBL));
       }
+      await dispatch(getListeNumbl()).unwrap();
     }
     // * pour l'article
     if (toolbarTable == "article") {
       if (toolbarMode == "ajout") {
-        dispatch(ajouterArticle());
+        await dispatch(ajouterArticle()).unwrap();
         dispatch(viderChampsArticleInfo());
         dispatch(setDerniereCodeArticle(""));
       }
       if (toolbarMode == "modification") {
-        dispatch(modifierarticle(articleCode));
+        dispatch(
+          setArticleInfos({
+            colonne: "userm",
+            valeur: utilisateurConnecte.codeuser,
+          })
+        );
+        await dispatch(modifierarticle(articleCode)).unwrap();
         dispatch(viderChampsArticleInfo());
       }
       if (toolbarMode == "suppression") {
-        dispatch(suprimerArticle(articleCode));
+        await dispatch(suprimerArticle(articleCode)).unwrap();
         dispatch(viderChampsArticleInfo());
       }
+      await dispatch(getListeCodesArticles()).unwrap();
     }
     //* pour l'utilisateur
     if (toolbarTable == "utilisateur") {
@@ -171,6 +205,8 @@ function AlertModifier() {
         dispatch(setViderChampsUtilisateur());
         dispatch(viderChampsInfosUtilisateur());
       }
+
+      await dispatch(getListeCodesUtilisateur()).unwrap();
     }
     // * pour la famille
     if (toolbarTable == "famille") {

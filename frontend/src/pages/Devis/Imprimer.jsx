@@ -1,9 +1,14 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 
 function Imprimer() {
+  const [entetesDevis, setEntetesDevis] = useState({});
+  useEffect(() => {
+    setEntetesDevis(JSON.parse(localStorage.getItem("entetesDevis")));
+  }, []);
+  console.log(entetesDevis);
   const devisInfo = useSelector((state) => state.devisSlice.devisInfo);
   const derniereNumbl = useSelector((state) => state.devisSlice.derniereNumbl);
   const totalPages = Math.ceil(devisInfo.articles.length / 10);

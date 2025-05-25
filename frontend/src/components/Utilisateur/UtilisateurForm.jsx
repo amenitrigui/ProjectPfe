@@ -61,6 +61,8 @@ const UtilisateurForm = () => {
   useEffect(() => {
     dispatch(getListeCodesUtilisateur());
   }, []);
+  // * effet pour remplir le champs de codeuser par le derniere code
+  // * dans la liste de codes utilisateur
   useEffect(() => {
     if (utilisateurConnecte.type.toLowerCase() === "utilisateur") {
       dispatch(setInfosUtilisateurEntiere(utilisateurConnecte));

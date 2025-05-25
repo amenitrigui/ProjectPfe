@@ -151,6 +151,24 @@ const selectDatabase = async (req, res) => {
         },
       }
     );
+    const timbref = await sequelizeConnexionDbUtilisateur.query(
+      `SELECT TIMBREF from societe where code = :nomDb`,
+      {
+        type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
+        replacements: {
+          nomDb: databaseName 
+        }
+      }
+    )
+    const entetesDevis = await sequelizeConnexionDbUtilisateur.query(
+      `SELECT e1,e2,e3,e4,e5,e6,e7,e8 from societe where code = :nomDb`,
+      {
+        type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
+        replacements: {
+          nomDb: databaseName
+        }
+      }
+    )
     await Utilisateur.update(
       { socutil: databaseName },
       {
@@ -163,7 +181,9 @@ const selectDatabase = async (req, res) => {
       message: `Connecté à la base ${databaseName}`,
       databaseName,
       droitAcceTableClient,
-      droitAcceeTableArticle
+      droitAcceeTableArticle,
+      entetesDevis,
+      timbref
     });
   } catch (error) {
     console.error("Erreur lors de la connexion à la base de données :", error);

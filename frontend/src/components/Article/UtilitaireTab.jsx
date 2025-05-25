@@ -20,11 +20,14 @@ function UtilitaireTab() {
     (state) => state.utilisateurSlice.infosUtilisateur
   );
   const handleChangeCheckbox = (checked, colonne) => {
+    if(colonne == "avecconfig" && !checked){
+      dispatch(setArticleInfos({colonne: "CONFIG", valeur: ""}))
+    }
     if (toolbarMode == "ajout" || toolbarMode == "modification") {
       dispatch(
         setArticleInfos({
           colonne: colonne,
-          valeur: checked == true ? "1" : "0",
+          valeur: checked == true ? "O" : "N",
         })
       );
     }
@@ -112,7 +115,7 @@ function UtilitaireTab() {
           <textarea
             className="w-full h-48 border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             value={articleInfos.CONFIG}
-            disabled={!activerChampsForm}
+            disabled={!activerChampsForm || articleInfos.avecconfig == "N"}
             onChange={(e) => hundlesubmitTousLesChamp(e.target.value, "CONFIG")}
           />
         </div>

@@ -205,7 +205,8 @@ const Dashboard = () => {
             },
             {
               number: nbTotalDevisNonGeneresParUtilisateur,
-              name: "Nombre devis non générés par Utilisateur",
+              name: "Nombre devis non générés par l'utilisateur",
+              user: `${utilisateurConnecte.codeuser}//${utilisateurConnecte.nom}`,
             },
           ].map((card, index) => {
             const getIcon = (text) => {
