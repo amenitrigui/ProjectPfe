@@ -179,6 +179,8 @@ function ArticleForm() {
 
     dispatch(setAfficherFamillePopub(true));
   };
+
+  console.log(articleInfos)
   return (
     <div className="container">
       <SideBar />

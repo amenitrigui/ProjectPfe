@@ -47,6 +47,7 @@ import {
   deconnexionUtilisateur,
 } from "./app/utilisateur_slices/utilisateurSlice";
 import { setToken } from "./app/utilisateurSystemSlices/utilisateurSystemSlice";
+import { statusChargementGlobale } from "./utils/statusChargementGlobale";
 
 function App() {
   //?==================================================================================================================
@@ -70,6 +71,7 @@ function App() {
     (state) => state.interfaceSlice.afficherRecherchePopup
   );
   const theme = useSelector((state) => state.interfaceSlice.theme);
+  const statusChargement = useSelector(statusChargementGlobale)
   //?==================================================================================================================
   //?==================================================appels UseEffect================================================
   //?==================================================================================================================
@@ -131,6 +133,9 @@ function App() {
   // dispatch(setDevisInfo("usera", usera));
   return (
     <div className={theme === "dark" ? "dark" : ""}>
+      {statusChargement && (<div className="flex items-center justify-center h-screen">
+        <span className="loading loading-bars loading-xl"></span>
+      </div>)}
       {/* <button
         className="btn btn-primary"
         onClick={() => {

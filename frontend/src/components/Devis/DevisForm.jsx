@@ -256,6 +256,7 @@ function DevisForm() {
   const afficherRecherchePopup = () => {
     dispatch(setAfficherRecherchePopup(true));
   };
+  console.log(devisInfo)
   return (
     <>
       <div className="container">

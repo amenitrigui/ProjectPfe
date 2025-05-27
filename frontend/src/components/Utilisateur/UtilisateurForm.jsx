@@ -124,6 +124,7 @@ const UtilisateurForm = () => {
     );
     dispatch(setInfosUtilisateur({ colonne, valeur }));
   };
+  console.log(infosUtilisateur)
   return (
     <div className="container">
       <SideBar />

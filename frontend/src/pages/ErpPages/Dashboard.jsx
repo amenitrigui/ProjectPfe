@@ -181,6 +181,7 @@ const Dashboard = () => {
   const toggleSidebar = () => {
     dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
   };
+  console.log(nbDevisGeneresParAnnee)
   return (
     <div className="container">
       <SideBar />

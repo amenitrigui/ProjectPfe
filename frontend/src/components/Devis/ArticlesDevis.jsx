@@ -399,7 +399,7 @@ function ArticlesDevis() {
                         className="w-full input input-bordered input-sm"
                         placeholder="TVA"
                         readOnly
-                        value={getValeurChampTVA()}
+                        value={getValeurChampTVA()+"%"}
                         onChange={(e) => handleChangementChamp("TauxTVA", e)}
                       />
                     </div>
