@@ -156,8 +156,9 @@ function App() {
       >
         restore token
       </button> */}
+      {!statusChargement && (
+
       <Routes>
-        
         <Route path="/" element={<SignInPage />} />
         <Route path="/deconnexion" element={<Deconnexion />} />
         <Route path="/Devis-Form" element={<DevisForm />} />
@@ -193,6 +194,8 @@ function App() {
         <Route path="/UtilisateurFormTout" element={<UtilisateurFormTout />} />
         <Route path="/UtilisateurList" element={<UtilisateurList />}></Route>
       </Routes>
+      
+      )}
     </div>
   );
 }
