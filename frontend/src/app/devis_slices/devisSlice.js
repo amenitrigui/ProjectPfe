@@ -840,7 +840,7 @@ export const devisSlice = createSlice({
         state.status = "echoue";
       })
       .addCase(getNombreTotalDevis.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(getNombreTotalDevis.fulfilled, (state, action) => {
         state.nombreDeDevis = action.payload;
@@ -852,7 +852,7 @@ export const devisSlice = createSlice({
       })
 
       .addCase(getTotalChiffres.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(getTotalChiffres.fulfilled, (state, action) => {
         state.totalchifre = action.payload;
@@ -864,7 +864,7 @@ export const devisSlice = createSlice({
       })
 
       .addCase(getDevisParNUMBL.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(getDevisParNUMBL.fulfilled, (state, action) => {
         // state.devisList = action.payload;
@@ -877,7 +877,7 @@ export const devisSlice = createSlice({
       })
 
       .addCase(getDevisParCodeClient.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(getDevisParCodeClient.fulfilled, (state, action) => {
         state.devisList = action.payload;
@@ -889,7 +889,7 @@ export const devisSlice = createSlice({
       })
 
       .addCase(getDevisParMontant.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(getDevisParMontant.fulfilled, (state, action) => {
         state.devisList = action.payload;
@@ -901,7 +901,7 @@ export const devisSlice = createSlice({
       })
 
       .addCase(getDevisParPeriode.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(getDevisParPeriode.fulfilled, (state, action) => {
         state.devisList = action.payload;
@@ -988,7 +988,7 @@ export const devisSlice = createSlice({
       })
 
       .addCase(getListeDevisParNUMBL.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(getListeDevisParNUMBL.fulfilled, (state, action) => {
         state.devisList = action.payload;
@@ -1000,7 +1000,7 @@ export const devisSlice = createSlice({
       })
 
       .addCase(getDevisCountByMonthAndYear.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(getDevisCountByMonthAndYear.fulfilled, (state, action) => {
         state.devisMonthYear = action.payload;
@@ -1012,7 +1012,7 @@ export const devisSlice = createSlice({
       })
 
       .addCase(getNbTotalDevisGeneres.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(getNbTotalDevisGeneres.fulfilled, (state, action) => {
         state.nbTotalDevisGeneres = action.payload;
@@ -1024,7 +1024,7 @@ export const devisSlice = createSlice({
       })
 
       .addCase(getNbTotalDevisGeneresParUtilisateur.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(
         getNbTotalDevisGeneresParUtilisateur.fulfilled,
@@ -1042,7 +1042,7 @@ export const devisSlice = createSlice({
       )
 
       .addCase(getNbDevisNonGeneresParUtilisateur.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(
         getNbDevisNonGeneresParUtilisateur.fulfilled,
@@ -1057,7 +1057,7 @@ export const devisSlice = createSlice({
       })
 
       .addCase(getNbTotalDevisAnnulees.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(getNbTotalDevisAnnulees.fulfilled, (state, action) => {
         state.nbTotalDevisAnnulees = action.payload;
@@ -1069,7 +1069,7 @@ export const devisSlice = createSlice({
       })
 
       .addCase(getNbTotalDevisEnCours.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(getNbTotalDevisEnCours.fulfilled, (state, action) => {
         state.nbDevisEncours = action.payload;
@@ -1081,7 +1081,7 @@ export const devisSlice = createSlice({
       })
 
       .addCase(getNbTotalDevisSansStatus.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(getNbTotalDevisSansStatus.fulfilled, (state, action) => {
         state.nbTotDevisSansStatus = action.payload;

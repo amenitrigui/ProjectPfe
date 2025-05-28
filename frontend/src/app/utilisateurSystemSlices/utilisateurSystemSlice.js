@@ -243,7 +243,7 @@ export const utilisateurSystemSlices = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(AjouterUtilisateur.pending, (state, action) => {
-        state.status = "chagement";
+        state.status = "chargement";
       })
       .addCase(AjouterUtilisateur.fulfilled, (state, action) => {
         state.status = "succès";
@@ -254,7 +254,7 @@ export const utilisateurSystemSlices = createSlice({
       })
 
       .addCase(supprimerUtilisateur.pending, (state, action) => {
-        state.status = "chagement";
+        state.status = "chargement";
       })
       .addCase(supprimerUtilisateur.fulfilled, (state, action) => {
         state.status = "succès";
@@ -265,7 +265,7 @@ export const utilisateurSystemSlices = createSlice({
       })
 
       .addCase(getModuleParamettreParUtilisateur.pending, (state, action) => {
-        state.status = "chagement";
+        state.status = "chargement";
       })
       .addCase(getModuleParamettreParUtilisateur.fulfilled, (state, action) => {
         state.status = "succès";

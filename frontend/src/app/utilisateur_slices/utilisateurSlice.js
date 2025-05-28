@@ -362,7 +362,7 @@ export const utilisateurSlice = createSlice({
       })
 
       .addCase(filterListeUtilisateur.pending, (state, action) => {
-        state.status = "chagement";
+        state.status = "chargement";
       })
       .addCase(filterListeUtilisateur.fulfilled, (state, action) => {
         state.status = "succès";
@@ -373,7 +373,7 @@ export const utilisateurSlice = createSlice({
       })
 
       .addCase(getDerniereCodeUtilisateur.pending, (state, action) => {
-        state.status = "chagement";
+        state.status = "chargement";
       })
       .addCase(getDerniereCodeUtilisateur.fulfilled, (state, action) => {
         state.status = "succès";
@@ -384,7 +384,7 @@ export const utilisateurSlice = createSlice({
       })
 
       .addCase(getListeUtilisateurParCode.pending, (state, action) => {
-        state.status = "chagement";
+        state.status = "chargement";
       })
       .addCase(getListeUtilisateurParCode.fulfilled, (state, action) => {
         state.status = "succès";
@@ -398,7 +398,7 @@ export const utilisateurSlice = createSlice({
       })
 
       .addCase(getListeUtilisateurParNom.pending, (state, action) => {
-        state.status = "chagement";
+        state.status = "chargement";
       })
       .addCase(getListeUtilisateurParNom.fulfilled, (state, action) => {
         state.status = "succès";
@@ -409,7 +409,7 @@ export const utilisateurSlice = createSlice({
       })
 
       .addCase(getListeUtilisateurParDirecteur.pending, (state, action) => {
-        state.status = "chagement";
+        state.status = "chargement";
       })
       .addCase(getListeUtilisateurParDirecteur.fulfilled, (state, action) => {
         state.status = "succès";
@@ -420,7 +420,7 @@ export const utilisateurSlice = createSlice({
       })
 
       .addCase(getListeUtilisateurParType.pending, (state, action) => {
-        state.status = "chagement";
+        state.status = "chargement";
       })
       .addCase(getListeUtilisateurParType.fulfilled, (state, action) => {
         state.status = "succès";
@@ -431,7 +431,7 @@ export const utilisateurSlice = createSlice({
       })
 
       .addCase(getListeUtilisateur.pending, (state, action) => {
-        state.status = "chagement";
+        state.status = "chargement";
       })
       .addCase(getListeUtilisateur.fulfilled, (state, action) => {
         state.listeUtilisateur_Superviseur = action.payload;
@@ -442,7 +442,7 @@ export const utilisateurSlice = createSlice({
       })
 
       .addCase(getListeCodesUtilisateur.pending, (state, action) => {
-        state.status = "chagement";
+        state.status = "chargement";
       })
       .addCase(getListeCodesUtilisateur.fulfilled, (state, action) => {
         state.listeCodesUtilisateur = action.payload;
