@@ -50,6 +50,7 @@ const loginUtilisateur = async (req, res) => {
   const { nom, motpasse } = req.body;
   try {
     setConnexionAuBdUtilisateurs(process.env.DB_USERS_NAME);
+    console.log("test======================================================")
     const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     const User = defineUserModel(sequelizeConnexionDbUtilisateur);
     // Vérification que tous les champs sont remplis
@@ -127,7 +128,7 @@ const selectDatabase = async (req, res) => {
       return res.status(401).json({ message: "utilisateur non authentifie" });
     }
     const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
-
+    
     const codeuser = decoded.codeuser;
     setBdConnexion(databaseName);
     const Utilisateur = defineUserModel(sequelizeConnexionDbUtilisateur);

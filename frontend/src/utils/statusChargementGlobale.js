@@ -1,5 +1,5 @@
 export const statusChargementGlobale = (state) => {
-  let chargementEnCours = true;
+  let chargementEnCours = false;
   const slicesAVerifier = [
     "Stock_Slice",
     "valorisation_Slice",
@@ -17,7 +17,9 @@ export const statusChargementGlobale = (state) => {
     "articleSlice",
   ];
 
-  return slicesAVerifier.some(
+  if (slicesAVerifier.some(
     (nomSlice) => state[nomSlice]?.status === "chargement"
-  );
+  )) {
+    chargementEnCours = true;
+  };
 };

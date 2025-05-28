@@ -161,12 +161,10 @@ const Dashboard = () => {
     dispatch(getNombreTotalDevis());
     dispatch(getTotalChiffres());
     dispatch(getNbTotalDevisGeneres());
-    dispatch(getDevisCountByMonthAndYear());
     dispatch(getNbTotalDevisAnnulees());
     dispatch(getNbTotalDevisEnCours());
     dispatch(getNbTotalDevisGeneresParUtilisateur());
     dispatch(getNbDevisNonGeneresParUtilisateur());
-    dispatch(getNbTotalDevisSansStatus());
     dispatch(getAnneesDistinctGenerationDevis());
     dispatch(getNbDevisGeneresChaqueMoisParAnnee(new Date().getFullYear()));
     dispatch(getDevisparRepresentant());
