@@ -45,7 +45,9 @@ function ArticleForm() {
   const ouvrireMenuDrawer = useSelector(
     (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
-  const toolbarTable = useSelector((state) => state.interfaceSlice.toolbarTable);
+  const toolbarTable = useSelector(
+    (state) => state.interfaceSlice.toolbarTable
+  );
   const articleInfos = useSelector((state) => state.articleSlice.articleInfos);
   const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
   const ListeCodeArticles = useSelector(
@@ -89,7 +91,7 @@ function ArticleForm() {
   }, [articleInfos.codesousfam]);
   useEffect(() => {
     if (articleInfos.code && articleInfos.code != "") {
-      // ? récuperer initialement les informations de premier depot 
+      // ? récuperer initialement les informations de premier depot
       dispatch(
         getListedepotdeStockparpcodepointvente({
           codepv: "01",
@@ -99,15 +101,15 @@ function ArticleForm() {
       dispatch(getQteTotalArticle(articleInfos.code));
       dispatch(getlistepointvente());
     }
-  }, [articleInfos.code,articleInfos.codepv]);
+  }, [articleInfos.code, articleInfos.codepv]);
   useEffect(() => {
-    if(!articleInfos.famille) {
-      dispatch(setArticleInfos({colonne: "libelleFamille", valeur: ""}))
+    if (!articleInfos.famille) {
+      dispatch(setArticleInfos({ colonne: "libelleFamille", valeur: "" }));
     }
-    if(!articleInfos.codesousfam) {
-      dispatch(setArticleInfos({colonne: "Libellesousfamille", valeur: ""}))
+    if (!articleInfos.codesousfam) {
+      dispatch(setArticleInfos({ colonne: "Libellesousfamille", valeur: "" }));
     }
-  },[articleInfos.famille, articleInfos.codesousfam])
+  }, [articleInfos.famille, articleInfos.codesousfam]);
   useEffect(() => {
     if (articleInfos.famille && articleInfos.famille != "") {
       dispatch(getDesignationFamilleParCodeFamille(articleInfos.famille));
@@ -199,8 +201,8 @@ function ArticleForm() {
                 {/* Famille/Sous-Famille */}
 
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-                  {/* Code Sous-Famille */}
-                  <div className="col-span-12 md:col-span-3 space-y-1">
+                  {/* Code famille */}
+                  <div className="col-span-12 md:col-span-4 space-y-1">
                     <label className="block font-semibold text-blue-900">
                       Code Famille
                     </label>
@@ -211,10 +213,19 @@ function ArticleForm() {
                       onChange={(e) =>
                         hundlesubmitTousLesChamp(e.target.value, "famille")
                       }
-                      readOnly={toolbarMode === "ajout" || toolbarMode === "modification"}
-                      disabled={toolbarMode === "consultation" || toolbarMode === "suppression"}
+                      readOnly={
+                        toolbarMode === "ajout" ||
+                        toolbarMode === "modification"
+                      }
+                      disabled={
+                        toolbarMode === "consultation" ||
+                        toolbarMode === "suppression"
+                      }
                       onClick={() => {
-                        if(toolbarMode === "ajout" || toolbarMode === "modification"){
+                        if (
+                          toolbarMode === "ajout" ||
+                          toolbarMode === "modification"
+                        ) {
                           dispatch(setToolbarTable("famille"));
                           afficherRecherchePopup();
                         }
@@ -223,7 +234,7 @@ function ArticleForm() {
                   </div>
 
                   {/* Désignation Famille */}
-                  <div className="col-span-12 md:col-span-7 space-y-1">
+                  <div className="col-span-12 md:col-span-8 space-y-1">
                     <label className="block font-semibold text-blue-900">
                       Désignation Famille
                     </label>
@@ -255,8 +266,8 @@ function ArticleForm() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-                  {/* Code Sous-Famille */}
-                  <div className="col-span-12 md:col-span-3 space-y-1">
+                  {/* Code sous famille */}
+                  <div className="col-span-12 md:col-span-4 space-y-1">
                     <label className="block font-semibold text-blue-900">
                       Code Sous-Fam
                     </label>
@@ -267,10 +278,19 @@ function ArticleForm() {
                       onChange={(e) =>
                         hundlesubmitTousLesChamp(e.target.value, "codesousfam")
                       }
-                      readOnly={toolbarMode === "ajout" || toolbarMode === "modification"}
-                      disabled={toolbarMode === "consultation" || toolbarMode === "suppression"}
+                      readOnly={
+                        toolbarMode === "ajout" ||
+                        toolbarMode === "modification"
+                      }
+                      disabled={
+                        toolbarMode === "consultation" ||
+                        toolbarMode === "suppression"
+                      }
                       onClick={() => {
-                        if(toolbarMode === "ajout" || toolbarMode === "modification"){
+                        if (
+                          toolbarMode === "ajout" ||
+                          toolbarMode === "modification"
+                        ) {
                           dispatch(setToolbarTable("sousfamille"));
                           afficherRecherchePopup();
                         }
@@ -279,7 +299,7 @@ function ArticleForm() {
                   </div>
 
                   {/* Désignation Sous-Famille */}
-                  <div className="col-span-12 md:col-span-7 space-y-1">
+                  <div className="col-span-12 md:col-span-8 space-y-1">
                     <label className="block font-semibold text-blue-900">
                       Désignation Sous-Famille
                     </label>

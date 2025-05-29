@@ -305,60 +305,54 @@ const ClientForm = () => {
                 Fiche Client
               </h2>
             </div>
-            <div className="flex flex-wrap">
-              <div className="flex flex-col w-1/3">
-                <label
-                  className="font-bold mb-1"
-                  style={{ color: "rgb(48, 60, 123)" }}
-                >
-                  Code Client
-                </label>
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2"
-                  list="listeCodesClients"
-                  value={clientInfos.code !== "" ? clientInfos.code : ""}
-                  onChange={(e) => handleChangeCodeClient(e, "code")}
-                  readOnly={true}
-                  maxLength={8}
-                  onClick={() => {
-                    if (toolbarMode != "ajout") {
-                      afficherRecherchePopup();
-                    }
-                  }}
-                />
-              </div>
-              <div className="flex flex-col w-1/3">
-                <label
-                  className="font-bold mb-1"
-                  style={{ color: "rgb(48, 60, 123)" }}
-                >
-                  Type Client
-                </label>
-                <select
-                  className="border border-gray-300 rounded-md p-2"
-                  disabled={!activerChampsForm}
-                >
-                  <option value={clientInfos.typecli || ""}>LOCAL</option>
-                </select>
-              </div>
-              <div className="flex flex-col w-1/3">
-                <label
-                  className="font-bold mb-1"
-                  style={{ color: "rgb(48, 60, 123)" }}
-                >
-                  CIN
-                </label>
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2"
-                  value={clientInfos.cin || ""}
-                  onChange={(e) => handleCinChange(e, "cin")}
-                  disabled={!activerChampsForm}
-                  maxLength={8}
-                />
-              </div>
-            </div>
+           <div className="flex flex-wrap gap-4">
+  <div className="flex flex-col flex-1 min-w-[200px]">
+    <label className="font-bold mb-1" style={{ color: "rgb(48, 60, 123)" }}>
+      Code Client
+    </label>
+    <input
+      type="text"
+      className="border border-gray-300 rounded-md p-2"
+      list="listeCodesClients"
+      value={clientInfos.code !== "" ? clientInfos.code : ""}
+      onChange={(e) => handleChangeCodeClient(e, "code")}
+      readOnly={true}
+      maxLength={8}
+      onClick={() => {
+        if (toolbarMode !== "ajout") {
+          afficherRecherchePopup();
+        }
+      }}
+    />
+  </div>
+
+  <div className="flex flex-col flex-1 min-w-[200px]">
+    <label className="font-bold mb-1" style={{ color: "rgb(48, 60, 123)" }}>
+      Type Client
+    </label>
+    <select
+      className="border border-gray-300 rounded-md p-2"
+      disabled={!activerChampsForm}
+    >
+      <option value={clientInfos.typecli || ""}>LOCAL</option>
+    </select>
+  </div>
+
+  <div className="flex flex-col flex-1 min-w-[200px]">
+    <label className="font-bold mb-1" style={{ color: "rgb(48, 60, 123)" }}>
+      CIN
+    </label>
+    <input
+      type="text"
+      className="border border-gray-300 rounded-md p-2"
+      value={clientInfos.cin || ""}
+      onChange={(e) => handleCinChange(e, "cin")}
+      disabled={!activerChampsForm}
+      maxLength={8}
+    />
+  </div>
+</div>
+
             <div className="flex flex-col w-full">
               <label
                 className="font-bold  pt-3 pb-3"
@@ -398,9 +392,9 @@ const ClientForm = () => {
                     disabled={!activerChampsForm}
                   />
                 </div>
-                <div className="flex flex-wrap gap-4">
+                <div className="flex flex-wrap gap-0">
                   {/* Champ P. Vente */}
-                  <div className="flex flex-col w-full sm:w-1/3">
+                  <div className="flex flex-col w-1/3">
                     <label className="font-bold text-sm text-[rgb(48,60,123)] mb-1">
                       P. Vente
                     </label>
@@ -428,7 +422,7 @@ const ClientForm = () => {
                   </div>
 
                   {/* Champ Libelle P. Vente */}
-                  <div className="flex flex-col w-full sm:w-1/2">
+                    <div className="flex flex-col w-2/3">
                     <label className="font-bold text-sm text-[rgb(48,60,123)] mb-1">
                       Libellé P. Vente
                     </label>

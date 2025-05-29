@@ -6,7 +6,7 @@ function Tab() {
     
   return (
     <>
-      <div className="test min-w-[200px]">
+      <div className="test ]">
         <div className="w-50 min-h-screen p-1">
           {/* Conteneur principal des onglets - Taille augmentée */}
           <div
