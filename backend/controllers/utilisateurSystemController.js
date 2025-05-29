@@ -73,6 +73,11 @@ const AjouterUtilisateur = async (req, res) => {
     // 2. Définir le modèle avec la connexion active
     const Utilisateur = defineUserModel(dbConnection);
 
+    const utilisateurExiste = await Utilisateur.findOne({where: {codeuser: utilisateurInfo.codeuser}})
+    console.log("utilisateurExiste: ",utilisateurExiste)
+    if(utilisateurExiste) {
+      return res.status(400).json({message: "l'utilisateur existe déjà dans la base des données"})
+    }
     // 3. Créer l'utilisateur avec les valeurs par défaut pour les champs non fournis
     const newUser = await Utilisateur.create({
       codeuser: utilisateurInfo.codeuser,
@@ -127,7 +132,7 @@ const getDerniereCodeUtilisateur = async (req, res) => {
 
 //*url: http://localhost:5000/api/utilisateurSystem/ModifierUtilisateur
 const ModifierUtilisateur = async (req, res) => {
-  const { MajUtilisateur } = req.body;
+  const {  MajUtilisateur  } = req.body;
   const { codeuser } = req.query;
 
   try {
@@ -442,7 +447,7 @@ const getListeCodesUtilisateur = async (req, res) => {
     const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     const Utilisateur = defineUserModel(sequelizeConnexionDbUtilisateur);
     const listeCodesUtilisateur = await Utilisateur.findAll({
-      order: [["codeuser", "ASC"]],
+      order: [[sequelizeConnexionDbUtilisateur.literal("CAST (codeuser as UNSIGNED)"), "ASC"]],
       attributes: ["codeuser"],
     });
     if (listeCodesUtilisateur.length == 0) {

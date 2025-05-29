@@ -282,6 +282,7 @@ const ClientForm = () => {
       console.log(insertionDepuisDevisForm,toolbarMode,toolbarTable)
     }
   }, [insertionDepuisDevisForm,clientInfos.code]);
+  console.log(clientInfos)
   return (
     <div className="container">
       <SideBar />

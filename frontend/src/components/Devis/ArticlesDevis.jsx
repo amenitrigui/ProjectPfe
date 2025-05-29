@@ -25,10 +25,12 @@ import {
   setDevisInfoEntiere,
 } from "../../app/devis_slices/devisSlice";
 import {
+  setAfficherConfigPopup,
   setAfficherRecherchePopup,
   setLignedevisSelectionne,
   setToolbarTable,
 } from "../../app/interface_slices/interfaceSlice";
+import ConfigPopUp from "./ConfigPopUp";
 
 function ArticlesDevis() {
   //?==================================================================================================================
@@ -37,7 +39,7 @@ function ArticlesDevis() {
   const dispatch = useDispatch();
   const [netHt, setNetHt] = useState(0);
   const [puttc, setPuttc] = useState(0);
-  const [ligneDevisExiste, setLigneDevisExiste] = useState(false)
+  const [ligneDevisExiste, setLigneDevisExiste] = useState(false);
   const articleInfos = useSelector((state) => state.articleSlice.articleInfos);
   const ligneDevisInfos = useSelector(
     (state) => state.articleSlice.ligneDevisInfos
@@ -93,18 +95,18 @@ function ArticlesDevis() {
   // * pour les lignes de devis
   useEffect(() => {
     let existe = false;
-    if(devisInfo.articles && devisInfo.articles.length > 0) {
-      if(ligneDevisInfos && Object.values(ligneDevisInfos).length > 0) {
+    if (devisInfo.articles && devisInfo.articles.length > 0) {
+      if (ligneDevisInfos && Object.values(ligneDevisInfos).length > 0) {
         devisInfo.articles.map((article, indice) => {
-          if(article.CodeART === ligneDevisInfos.CodeART) {
-            existe = true
+          if (article.CodeART === ligneDevisInfos.CodeART) {
+            existe = true;
           }
-        })
+        });
       }
 
       setLigneDevisExiste(existe);
     }
-  },[devisInfo.articles, ligneDevisInfos.CodeART])
+  }, [devisInfo.articles, ligneDevisInfos.CodeART]);
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
@@ -120,38 +122,15 @@ function ArticlesDevis() {
     dispatch(setLigneDevisInfos({ colonne: colonne, valeur: e.target.value }));
   };
   const handleValiderLDFPBtnClick = () => {
+    if(ligneDevisInfos.CodeART == "") {
+      alert("un article doit etre selectionné");
+      return false;
+    }
     if (!ligneDevisInfos.QteART) {
       alert("la quantité est necessaire");
       return false;
     }
-
-    dispatch(setDevisArticles(ligneDevisInfos));
-    dispatch(
-      setDevisInfo({
-        collone: "MHT",
-        valeur: parseInt(devisInfo.MHT) + parseInt(netHt),
-      })
-    );
-    dispatch(
-      setDevisInfo({
-        collone: "MREMISE",
-        valeur: (
-          parseInt(devisInfo.MREMISE) +
-          parseFloat(ligneDevisInfos.PUART) *
-            parseFloat(ligneDevisInfos.Remise / 100)
-        ).toFixed(3),
-      })
-    );
-    dispatch(
-      setDevisInfo({
-        collone: "MTTC",
-        valeur: parseInt(devisInfo.MTTC) + parseInt(puttc),
-      })
-    );
-
-    dispatch(viderChampsArticleInfo());
-    dispatch(setLigneDevisInfosEntiere({}));
-    dispatch(setLignedevisSelectionne([]));
+    dispatch(setAfficherConfigPopup(true));
   };
 
   const afficherRecherchePopup = (nomTable) => {
@@ -265,6 +244,7 @@ function ArticlesDevis() {
   };
 
   const handleModifierLDFPBtnClick = () => {
+    // * pour modifier l'article à l'indice correcte
     devisInfo.articles.map((article, indice) => {
       if (article.CodeART == ligneDevisInfos.CodeART) {
         dispatch(
@@ -277,9 +257,13 @@ function ArticlesDevis() {
     });
     dispatch(viderChampsLigneDevisInfos());
   };
+  const afficherConfigPopup = useSelector(
+    (state) => state.interfaceSlice.afficherConfigPopup
+  );
   return (
     <div className="details">
-      <div className="banquedetails">
+      {afficherConfigPopup && <ConfigPopUp netHt={netHt} puttc={puttc} />}
+      <div className="banquedetails bg-base-100">
         <div className="collapse bg-base-100 border-base-300 border">
           <input type="checkbox" />
           <div
@@ -374,7 +358,7 @@ function ArticlesDevis() {
                     </div>
 
                     {/* CONFIG */}
-                    <div className="min-w-[150px] xs:col-span-2 md:col-span-1">
+                    {/* <div className="min-w-[150px] xs:col-span-2 md:col-span-1">
                       <label className="block font-medium text-sm mb-1">
                         CONFIG
                       </label>
@@ -384,7 +368,7 @@ function ArticlesDevis() {
                         value={getValeurChampConfig()}
                         onChange={(e) => handleChangementChamp("Conf", e)}
                       />
-                    </div>
+                    </div> */}
                   </div>
                 </div>
 
@@ -411,17 +395,13 @@ function ArticlesDevis() {
                       <label className="block font-medium text-sm mb-1">
                         T.V.A
                       </label>
-                      <select
-                        className="select select-bordered select-sm w-full max-w-xs"
-                        value={getValeurChampTVA()}
+                      <input
+                        className="w-full input input-bordered input-sm"
+                        placeholder="TVA"
+                        readOnly
+                        value={getValeurChampTVA()+"%"}
                         onChange={(e) => handleChangementChamp("TauxTVA", e)}
-                      >
-                        <option value="0">0</option>
-                        <option value="7">7</option>
-                        <option value="13">13</option>
-                        <option value="19">19</option>
-                        <option value="29">29</option>
-                      </select>
+                      />
                     </div>
 
                     {/* P.U.T.T.C */}
@@ -488,14 +468,16 @@ function ArticlesDevis() {
 
                 {/* Boutons d'action */}
                 <div className="flex flex-wrap gap-2 justify-end mt-4">
-                  <button
-                    className="btn btn-sm btn-ghost text-green-500"
-                    title="Valider"
-                    onClick={handleValiderLDFPBtnClick}
-                  >
-                    <CheckIcon className="h-5 w-5" />
-                    <span className="sr-only">Valider</span>
-                  </button>
+                  {!ligneDevisExiste && (
+                    <button
+                      className="btn btn-sm btn-ghost text-green-500"
+                      title="Valider"
+                      onClick={handleValiderLDFPBtnClick}
+                    >
+                      <CheckIcon className="h-5 w-5" />
+                      <span className="sr-only">Valider</span>
+                    </button>
+                  )}
                   {devisInfo.articles && devisInfo.articles.length > 0 && (
                     <>
                       <button

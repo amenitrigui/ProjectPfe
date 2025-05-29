@@ -268,7 +268,10 @@ const ajouterArticle = async (req, res) => {
 const modifierArticle = async (req, res) => {
   const { dbName } = req.params;
   const { article } = req.body;
+  // * code article
   const { code } = req.query;
+  console.log("code: ", code)
+  console.log("------------------------",article)
   try {
     const decoded = verifyTokenValidity(req);
     console.log("dd", decoded);

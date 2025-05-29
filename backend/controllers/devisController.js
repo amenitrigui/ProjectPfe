@@ -250,7 +250,7 @@ const getLignesDevis = async (req, res) => {
     const { NumBL } = req.params;
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const listeArticle = await dbConnection.query(
-      `Select CodeART,Remise,Unite,QteART,DesART,TauxTVA,famille,PUART from ldfp where NumBL = :NumBL`,
+      `Select CodeART,Remise,Unite,QteART,DesART,TauxTVA,famille,PUART,Conf from ldfp where NumBL = :NumBL`,
       {
         replacements: { NumBL },
         type: dbConnection.QueryTypes.SELECT,
@@ -366,9 +366,9 @@ const getCodesDevis = async (req, res) => {
       FROM dfp 
       WHERE usera = :usera 
       ORDER BY 
-        REGEXP_REPLACE(NUMBL, '^[A-Za-z]+', ''),  -- Remove alphabetic prefixes
-        LENGTH(NUMBL),                            -- Sort by length
-        NUMBL                                     -- Final sort
+        REGEXP_REPLACE(NUMBL, '^[A-Za-z]+', ''),  -- supprimer la partie alphabetique
+        LENGTH(NUMBL),
+        NUMBL
     `;
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const listeNUMBL = await dbConnection.query(query, {
@@ -408,7 +408,7 @@ const getDevisParNUMBL = async (req, res) => {
       const devis = await dbConnection.query(
         `SELECT 
           NUMBL, libpv, ADRCLI, CODECLI,  DATEBL, MREMISE, MTTC, mlettre,
-          comm, RSREP, CODEREP, TIMBRE, usera, RSCLI, codesecteur, MHT ,transport,REFCOMM,delailivr
+          comm, RSREP, CODEREP, TIMBRE, usera, userm, RSCLI, codesecteur, MHT, transport, REFCOMM, delailivr, DATEDMAJ
          FROM dfp 
          WHERE NUMBL LIKE :numbl 
            AND usera = :codeuser`,
@@ -783,7 +783,7 @@ const majDevis = async (req, res) => {
 
     const devis = await Devis.findOne({ where: { NUMBL } });
     const lignedevisModifie = DevisMaj.articles;
-
+    console.log(DevisMaj)
     if (devis) {
       await Devis.update(
         {
@@ -804,6 +804,7 @@ const majDevis = async (req, res) => {
           comm: DevisMaj.comm,
           RSCLI: DevisMaj.RSCLI,
           mlettre: DevisMaj.mlettre,
+          DATEDMAJ: DevisMaj.DATEDMAJ
         },
         { where: { NUMBL } }
       );
@@ -1206,7 +1207,6 @@ const getAnneesDistinctGenerationDevis = async (req, res) => {
     }
     dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const Devis = defineDfpModel(dbConnection);
-    // ? ?????????????
     const annees = await Devis.findAll({
       attributes: [
         [dbConnection.fn("YEAR", dbConnection.col("DateBL")), "year"],
@@ -1293,8 +1293,8 @@ const getDevisparRepresentant = async (req, res) => {
 
 // * récupere le nombre de devis générés par mois selon l'année
 // * pour une societé donnée (dbName)
-// * url : http://localhost:5000/api/devis/SOLEVO/getNbDevisGeneresParAnnee?annee=2023
-const getNbDevisGeneresParAnnee = async (req, res) => {
+// * url : http://localhost:5000/api/devis/SOLEVO/getNbDevisGeneresChaqueMoisParAnnee?annee=2023
+const getNbDevisGeneresChaqueMoisParAnnee = async (req, res) => {
   const { dbName } = req.params;
   const { annee } = req.query;
   let dbConnection;
@@ -1535,7 +1535,7 @@ module.exports = {
   getNbTotalDevisSansStatus,
   getListeDevisAvecPagination,
   getAnneesDistinctGenerationDevis,
-  getNbDevisGeneresParAnnee,
+  getNbDevisGeneresChaqueMoisParAnnee,
   getListeCodeVendeur,
   majDevis,
   getrepresentantparcodevendeur,

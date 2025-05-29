@@ -29,6 +29,7 @@ import ArticleList from "./pages/Article/ArticleList";
 import FamilleFormTout from "./pages/Famille/FamilleFormTout";
 import Settings from "./pages/ErpPages/Settings";
 import UtilisateurList from "./pages/Utilisateurs/UtilisateurList";
+
 import {
   setActiverBoutonsValiderAnnuler,
   setAfficherAlert,
@@ -46,6 +47,7 @@ import {
   deconnexionUtilisateur,
 } from "./app/utilisateur_slices/utilisateurSlice";
 import { setToken } from "./app/utilisateurSystemSlices/utilisateurSystemSlice";
+import { statusChargementGlobale } from "./utils/statusChargementGlobale";
 
 function App() {
   //?==================================================================================================================
@@ -69,6 +71,7 @@ function App() {
     (state) => state.interfaceSlice.afficherRecherchePopup
   );
   const theme = useSelector((state) => state.interfaceSlice.theme);
+  const statusChargement = useSelector(statusChargementGlobale);
   //?==================================================================================================================
   //?==================================================appels UseEffect================================================
   //?==================================================================================================================
@@ -110,23 +113,28 @@ function App() {
         const dateExpiration = JSON.parse(atob(jetton.split(".")[1])).exp;
         if (Date.now() >= dateExpiration * 1000) {
           // dispatch(deconnexionUtilisateur(navigate));
- 
         }
       } else {
         // dispatch(deconnexionUtilisateur(navigate));
-
       }
-
     }
     // * =====================================================
   }, [location.pathname]);
 
+  useEffect(() => {
+    document.querySelector("html").setAttribute("data-theme", theme);
+  }, [theme]);
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
   // dispatch(setDevisInfo("usera", usera));
   return (
     <div className={theme === "dark" ? "dark" : ""}>
+      {/* {statusChargement && (
+        <div className="flex items-center justify-center h-screen">
+          <span className="loading loading-bars loading-xl"></span>
+        </div>
+      )} */}
       {/* <button
         className="btn btn-primary"
         onClick={() => {
@@ -147,43 +155,47 @@ function App() {
       >
         restore token
       </button> */}
-      <Routes>
-        
-        <Route path="/" element={<SignInPage />} />
-        <Route path="/deconnexion" element={<Deconnexion />} />
-        <Route path="/Devis-Form" element={<DevisForm />} />
-        <Route path="/Home-Page" element={<HomePage />} />
-        <Route path="/DevisList" element={<DevisList />} />
-        <Route path="/dvis-details/e:numbl" element={<DevisDetails />} />
-        <Route path="/Dashboard" element={<Dashboard />} />
-        <Route path="/SocietiesList" element={<SocietiesList />} />
-        <Route path="/recherche" element={<Recherche />} />
-        <Route path="/GestionCommerciale" element={<GestionCommerciale />} />
-        <Route path="/GestionDesVentes" element={<GestionDesVentes />} />
-        <Route path="/RegisterPage" element={<RegisterPage />} />
-        <Route path="/ResetPassword" element={<ResetPassword />}></Route>
-        <Route path="/EmailEnvoye" element={<EmailEnvoye />}></Route>
-        <Route path="/ClientList" element={<ClientList />}></Route>
-        <Route path="/ClientFormTout" element={<ClientFormTout />} />
-        <Route path="/DevisFormTout" element={<DevisFormTout />}></Route>
-        <Route path="/ArticleFormTout" element={<ArticleFormTout />}></Route>
-        <Route path="/ArticleList" element={<ArticleList />}></Route>
-        <Route path="/FamilleFormTout" element={<FamilleFormTout />}></Route>
-        <Route path="/Settings" element={<Settings />}></Route>
-        <Route path="/ImprimerDevis" element={<ImprimerDevis />}></Route>
-        <Route path="/SecteurForm" element={<SecteurForm />}></Route>
-        <Route path="/test" element={<Test1 />}></Route>
-        <Route
-          path="/Secteur_Region_CpostalForm"
-          element={<Secteur_Region_CpostalForm />}
-        ></Route>
-        <Route
-          path="/DevisFormPlaceholder"
-          element={<DevisFormPlaceholder></DevisFormPlaceholder>}
-        ></Route>
-        <Route path="/UtilisateurFormTout" element={<UtilisateurFormTout />} />
-        <Route path="/UtilisateurList" element={<UtilisateurList />}></Route>
-      </Routes>
+      {/* {!statusChargement && ( */}
+        <Routes>
+          <Route path="/" element={<SignInPage />} />
+          <Route path="/deconnexion" element={<Deconnexion />} />
+          <Route path="/Devis-Form" element={<DevisForm />} />
+          <Route path="/Home-Page" element={<HomePage />} />
+          <Route path="/DevisList" element={<DevisList />} />
+          <Route path="/dvis-details/e:numbl" element={<DevisDetails />} />
+          <Route path="/Dashboard" element={<Dashboard />} />
+          <Route path="/SocietiesList" element={<SocietiesList />} />
+          <Route path="/recherche" element={<Recherche />} />
+          <Route path="/GestionCommerciale" element={<GestionCommerciale />} />
+          <Route path="/GestionDesVentes" element={<GestionDesVentes />} />
+          <Route path="/RegisterPage" element={<RegisterPage />} />
+          <Route path="/ResetPassword" element={<ResetPassword />}></Route>
+          <Route path="/EmailEnvoye" element={<EmailEnvoye />}></Route>
+          <Route path="/ClientList" element={<ClientList />}></Route>
+          <Route path="/ClientFormTout" element={<ClientFormTout />} />
+          <Route path="/DevisFormTout" element={<DevisFormTout />}></Route>
+          <Route path="/ArticleFormTout" element={<ArticleFormTout />}></Route>
+          <Route path="/ArticleList" element={<ArticleList />}></Route>
+          <Route path="/FamilleFormTout" element={<FamilleFormTout />}></Route>
+          <Route path="/Settings" element={<Settings />}></Route>
+          <Route path="/ImprimerDevis" element={<ImprimerDevis />}></Route>
+          <Route path="/SecteurForm" element={<SecteurForm />}></Route>
+          <Route path="/test" element={<Test1 />}></Route>
+          <Route
+            path="/Secteur_Region_CpostalForm"
+            element={<Secteur_Region_CpostalForm />}
+          ></Route>
+          <Route
+            path="/DevisFormPlaceholder"
+            element={<DevisFormPlaceholder></DevisFormPlaceholder>}
+          ></Route>
+          <Route
+            path="/UtilisateurFormTout"
+            element={<UtilisateurFormTout />}
+          />
+          <Route path="/UtilisateurList" element={<UtilisateurList />}></Route>
+        </Routes>
+      {/* )} */}
     </div>
   );
 }

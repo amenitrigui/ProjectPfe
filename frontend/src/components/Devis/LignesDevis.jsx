@@ -3,13 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLignedevisSelectionne } from "../../app/interface_slices/interfaceSlice";
 import { setLigneDevisInfos } from "../../app/article_slices/articleSlice";
 import { setDevisInfo } from "../../app/devis_slices/devisSlice";
+import { Bounce, toast, ToastContainer } from "react-toastify";
 
 function LignesDevis() {
   //?==================================================================================================================
   //?=====================================================Variables====================================================
   //?==================================================================================================================
   const devisInfo = useSelector((state) => state.devisSlice.devisInfo);
-  const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);// 
+  const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode); //
   const dispatch = useDispatch();
   //?==================================================================================================================
   //?===================================================appels UseEffect===============================================
@@ -18,14 +19,30 @@ function LignesDevis() {
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
   //?==================================================================================================================
-  const handleClick = (e) => {
+  const handleDoubleClick = (e) => {
+    const tr = e.currentTarget;
+    const tds = tr.querySelectorAll("td");
+    const values = [];
+    tds.forEach((td) => {
+      values.push(td.textContent.trim());
+    });
+    if (toolbarMode === "consultation") {
+      if(values[10]){
+        toast.info(values[10], {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+      }
+    }
     if (toolbarMode === "ajout" || toolbarMode === "modification") {
-      const tr = e.currentTarget;
-      const tds = tr.querySelectorAll("td");
-      const values = [];
-      tds.forEach((td) => {
-        values.push(td.textContent.trim());
-      });
+      console.log("values: ", values);
       dispatch(setLignedevisSelectionne(values));
       dispatch(setLigneDevisInfos({ colonne: "famille", valeur: values[0] }));
       dispatch(setLigneDevisInfos({ colonne: "CodeART", valeur: values[1] }));
@@ -49,12 +66,30 @@ function LignesDevis() {
       dispatch(setLigneDevisInfos({ colonne: "PUART", valeur: values[7] }));
       dispatch(setLigneDevisInfos({ colonne: "PUTTC", valeur: values[8] }));
       dispatch(setLigneDevisInfos({ colonne: "PUHT", valeur: values[9] }));
+      dispatch(setLigneDevisInfos({ colonne: "Conf", valeur: values[10] }));
     }
   };
 
   return (
     <>
-      <table className="min-w-[600px] sm:min-w-full table-auto border-collapse border bg-base-100 p-3">
+      {/* style={{userSelect: 'none'}} => pour désactiver la sélection du texte lors d'un double clic */}
+      <table
+        className="min-w-[600px] sm:min-w-full table-auto border-collapse border bg-base-100 p-3"
+        style={{ userSelect: "none" }}
+      >
+        <ToastContainer
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar
+          newestOnTop
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          transition={Bounce}
+        />
         <thead className="bg-base-100 p-3">
           {/* Ajout du fond gris pour l'en-tête */}
           <tr>
@@ -94,9 +129,9 @@ function LignesDevis() {
           {(devisInfo.articles && devisInfo.articles.length) > 0 ? (
             devisInfo.articles.map((article) => (
               <tr
-              key={`${article.famille}-${article.CodeART}`}
-              className="transition-all duration-150 ease-in-out hover:bg-[#2A2185] "
-              onDoubleClick={(e) => handleClick(e)}
+                key={`${article.famille}-${article.CodeART}`}
+                className="transition-all duration-150 ease-in-out hover:bg-[#2A2185] "
+                onDoubleClick={(e) => handleDoubleClick(e)}
               >
                 <td className="p-3 border border-gray-300" id="codefamille">
                   {article.famille}
@@ -131,17 +166,21 @@ function LignesDevis() {
                 </td>
                 <td className="p-3 border border-gray-300">
                   {/* {toolbarMode === "consultation" ? (article.PUART * (1 + article.TauxTVA / 100)).toFixed(3) : article.prixbrut} */}
-                  {(article.PUART && article.TauxTVA) ? (article.PUART * (1 + article.TauxTVA / 100)).toFixed(3) : "0"}
+                  {article.PUART && article.TauxTVA
+                    ? (article.PUART * (1 + article.TauxTVA / 100)).toFixed(3)
+                    : "0"}
                 </td>
                 <td className="p-3 border border-gray-300">
                   {/* {toolbarMode === "consultation" ? (article.QteART * article.PUART * (1 - article.Remise / 100)).toFixed(3) : article.prixnet} */}
-                  {(article.QteART && article.QteART && article.PUART)? (
-                    article.QteART *
-                    article.PUART *
-                    (1 - article.Remise / 100)
-                  ).toFixed(3)
-                 : "0"}
+                  {article.QteART && article.QteART && article.PUART
+                    ? (
+                        article.QteART *
+                        article.PUART *
+                        (1 - article.Remise / 100)
+                      ).toFixed(3)
+                    : "0"}
                 </td>
+                <td className="hidden">{article.Conf ? article.Conf : ""}</td>
               </tr>
             ))
           ) : (

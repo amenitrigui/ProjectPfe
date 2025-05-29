@@ -27,7 +27,7 @@ import {
   getNbTotalDevisEnCours,
   getNbTotalDevisSansStatus,
   getAnneesDistinctGenerationDevis,
-  getNbDevisGeneresParAnnee,
+  getNbDevisGeneresChaqueMoisParAnnee,
   getDevisparRepresentant,
 } from "../../app/devis_slices/devisSlice";
 
@@ -115,8 +115,6 @@ const Dashboard = () => {
     (state) => state.utilisateurSystemSlice.utilisateurConnecte
   );
 
-  console.log(utilisateurConnecte)
-
   const nbTotalDevisGeneres = useSelector(
     (state) => state.devisSlice.nbTotalDevisGeneres
   );
@@ -132,6 +130,7 @@ const Dashboard = () => {
   const nbDevisGeneresParAnnee = useSelector(
     (state) => state.devisSlice.nbDevisGeneresParAnnee
   );
+
   // Transformer les données pour le BarChart
   const chartData = nbDevisGeneresParAnnee.map((item) => {
     return {
@@ -162,19 +161,17 @@ const Dashboard = () => {
     dispatch(getNombreTotalDevis());
     dispatch(getTotalChiffres());
     dispatch(getNbTotalDevisGeneres());
-    dispatch(getDevisCountByMonthAndYear());
     dispatch(getNbTotalDevisAnnulees());
     dispatch(getNbTotalDevisEnCours());
     dispatch(getNbTotalDevisGeneresParUtilisateur());
     dispatch(getNbDevisNonGeneresParUtilisateur());
-    dispatch(getNbTotalDevisSansStatus());
     dispatch(getAnneesDistinctGenerationDevis());
-    dispatch(getNbDevisGeneresParAnnee(new Date().getFullYear()));
+    dispatch(getNbDevisGeneresChaqueMoisParAnnee(new Date().getFullYear()));
     dispatch(getDevisparRepresentant());
   }, []);
 
   useEffect(() => {
-    dispatch(getNbDevisGeneresParAnnee(anneeSelectionne));
+    dispatch(getNbDevisGeneresChaqueMoisParAnnee(anneeSelectionne));
   }, [anneeSelectionne]);
   //?==================================================================================================================
   //?=====================================================fonctions====================================================
@@ -182,6 +179,7 @@ const Dashboard = () => {
   const toggleSidebar = () => {
     dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
   };
+  console.log(nbDevisGeneresParAnnee)
   return (
     <div className="container">
       <SideBar />
@@ -206,7 +204,8 @@ const Dashboard = () => {
             },
             {
               number: nbTotalDevisNonGeneresParUtilisateur,
-              name: "Nombre devis non générés par Utilisateur",
+              name: "Nombre devis non générés par l'utilisateur",
+              user: `${utilisateurConnecte.codeuser}//${utilisateurConnecte.nom}`,
             },
           ].map((card, index) => {
             const getIcon = (text) => {
@@ -245,7 +244,7 @@ const Dashboard = () => {
           {utilisateurConnecte.type.toLowerCase() === "superviseur" && (
             <div className="p-4 bg-base-100 shadow rounded">
               <div className="cardHeader mb-4">
-                <h2>Nombre de devis par représentant</h2>
+                <h2>Devis par représentant</h2>
               </div>
 
               <hr className="mb-4" />
@@ -300,7 +299,7 @@ const Dashboard = () => {
           {/* Bar Chart */}
           <div className="p-4 bg-base-100 shadow rounded">
             <div className="cardHeader mb-4">
-              <h2>Nombre de devis générés par mois et année</h2>
+              <h2>Devis générés par mois et année</h2>
             </div>
             <select
               className="w-full select border-none focus:outline-none focus:ring-0 appearance-none"

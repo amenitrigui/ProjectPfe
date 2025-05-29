@@ -16,11 +16,16 @@ function DevisFormTout() {
   const devisInfo = useSelector((state) => state.devisSlice.devisInfo);
   const toolbarMode = useSelector((state) => state.interfaceSlice.toolbarMode);
   const toobarTable = useSelector((state) => state.interfaceSlice.toolbarTable);
-  const afficherAlert = useSelector((state) => state.interfaceSlice.afficherAlert);
-  const afficherRecherchePopup = useSelector((state) => state.interfaceSlice.afficherRecherchePopup);
+  const afficherAlert = useSelector(
+    (state) => state.interfaceSlice.afficherAlert
+  );
+  const afficherRecherchePopup = useSelector(
+    (state) => state.interfaceSlice.afficherRecherchePopup
+  );
   const NETHTGLOBAL = devisInfo.MHT - devisInfo.MREMISE || 0;
   const taxe = devisInfo.MTTC - NETHTGLOBAL || 0;
   const apayer = devisInfo.MTTC + devisInfo.TIMBRE || 0;
+  
   //?==================================================================================================================
   //?=================================================appels useEffect=================================================
   //?==================================================================================================================
@@ -37,8 +42,8 @@ function DevisFormTout() {
 
   return (
     <div className="bg-gray-100 min-h-screen">
-      { afficherRecherchePopup == true && <Recherche/> }
-      { afficherAlert && <AlertModifier /> }
+      {afficherRecherchePopup == true && <Recherche />}
+      {afficherAlert && <AlertModifier />}
       <DevisForm />
     </div>
   );

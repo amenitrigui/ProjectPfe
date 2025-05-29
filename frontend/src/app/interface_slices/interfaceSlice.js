@@ -34,11 +34,15 @@ export const interfaceSlice = createSlice({
     lignedevisSelectionne: [],
     isListeRoute: false,
     isParametresRoute: false,
+    afficherConfigPopup: false,
   },
 
   reducers: {
     setIsDashBoardRoute: (state, action) => {
       state.isDashBoardRoute = action.payload;
+    },
+    setAfficherConfigPopup: (state, action) => {
+      state.afficherConfigPopup = action.payload;
     },
     setIsParametresRoute: (state, action) => {
       state.isParametresRoute = action.payload;
@@ -123,6 +127,7 @@ export const {
   setOuvrireAvatarMenu,
   setIsDashBoardRoute,
   setIsListeRoute,
-  setIsParametresRoute
+  setIsParametresRoute,
+  setAfficherConfigPopup
 } = interfaceSlice.actions;
 export default interfaceSlice.reducer;

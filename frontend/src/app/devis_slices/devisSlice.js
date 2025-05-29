@@ -612,14 +612,14 @@ export const getDevisparRepresentant = createAsyncThunk(
     return response.data.nombredevisparrepresentant;
   }
 );
-export const getNbDevisGeneresParAnnee = createAsyncThunk(
-  `devisSlice/getNbDevisGeneresParAnnee`,
+export const getNbDevisGeneresChaqueMoisParAnnee = createAsyncThunk(
+  `devisSlice/getNbDevisGeneresChaqueMoisParAnnee`,
   async (annee, thunkAPI) => {
     const response = await axios.get(
       `
       ${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
-      }/getNbDevisGeneresParAnnee`,
+      }/getNbDevisGeneresChaqueMoisParAnnee`,
       {
         params: {
           annee: annee,
@@ -639,6 +639,7 @@ export const majDevis = createAsyncThunk(
   "devisSlice/majDevis",
   async (NUMBL, thunkAPI) => {
     const devismaj = thunkAPI.getState().devisSlice.devisInfo;
+    console.log(devismaj)
     const response = await axios.put(
       `${process.env.REACT_APP_API_URL}/api/devis/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
@@ -718,7 +719,7 @@ const devisInfoInitiales = {
   comm: "",
   CODEREP: "",
   RSREP: "",
-  DATEDMAJ: new Date().toISOString().split("T")[0],
+  DATEDMAJ: "",
   TIMBRE: 0,
   usera: "",
   userm: "",
@@ -839,7 +840,7 @@ export const devisSlice = createSlice({
         state.status = "echoue";
       })
       .addCase(getNombreTotalDevis.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(getNombreTotalDevis.fulfilled, (state, action) => {
         state.nombreDeDevis = action.payload;
@@ -851,7 +852,7 @@ export const devisSlice = createSlice({
       })
 
       .addCase(getTotalChiffres.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(getTotalChiffres.fulfilled, (state, action) => {
         state.totalchifre = action.payload;
@@ -863,7 +864,7 @@ export const devisSlice = createSlice({
       })
 
       .addCase(getDevisParNUMBL.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(getDevisParNUMBL.fulfilled, (state, action) => {
         // state.devisList = action.payload;
@@ -876,7 +877,7 @@ export const devisSlice = createSlice({
       })
 
       .addCase(getDevisParCodeClient.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(getDevisParCodeClient.fulfilled, (state, action) => {
         state.devisList = action.payload;
@@ -888,7 +889,7 @@ export const devisSlice = createSlice({
       })
 
       .addCase(getDevisParMontant.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(getDevisParMontant.fulfilled, (state, action) => {
         state.devisList = action.payload;
@@ -900,7 +901,7 @@ export const devisSlice = createSlice({
       })
 
       .addCase(getDevisParPeriode.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(getDevisParPeriode.fulfilled, (state, action) => {
         state.devisList = action.payload;
@@ -987,7 +988,7 @@ export const devisSlice = createSlice({
       })
 
       .addCase(getListeDevisParNUMBL.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(getListeDevisParNUMBL.fulfilled, (state, action) => {
         state.devisList = action.payload;
@@ -999,7 +1000,7 @@ export const devisSlice = createSlice({
       })
 
       .addCase(getDevisCountByMonthAndYear.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(getDevisCountByMonthAndYear.fulfilled, (state, action) => {
         state.devisMonthYear = action.payload;
@@ -1011,7 +1012,7 @@ export const devisSlice = createSlice({
       })
 
       .addCase(getNbTotalDevisGeneres.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(getNbTotalDevisGeneres.fulfilled, (state, action) => {
         state.nbTotalDevisGeneres = action.payload;
@@ -1023,7 +1024,7 @@ export const devisSlice = createSlice({
       })
 
       .addCase(getNbTotalDevisGeneresParUtilisateur.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(
         getNbTotalDevisGeneresParUtilisateur.fulfilled,
@@ -1041,7 +1042,7 @@ export const devisSlice = createSlice({
       )
 
       .addCase(getNbDevisNonGeneresParUtilisateur.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(
         getNbDevisNonGeneresParUtilisateur.fulfilled,
@@ -1056,7 +1057,7 @@ export const devisSlice = createSlice({
       })
 
       .addCase(getNbTotalDevisAnnulees.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(getNbTotalDevisAnnulees.fulfilled, (state, action) => {
         state.nbTotalDevisAnnulees = action.payload;
@@ -1068,7 +1069,7 @@ export const devisSlice = createSlice({
       })
 
       .addCase(getNbTotalDevisEnCours.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(getNbTotalDevisEnCours.fulfilled, (state, action) => {
         state.nbDevisEncours = action.payload;
@@ -1080,7 +1081,7 @@ export const devisSlice = createSlice({
       })
 
       .addCase(getNbTotalDevisSansStatus.pending, (state) => {
-        state.status = "chargeement";
+        state.status = "chargement";
       })
       .addCase(getNbTotalDevisSansStatus.fulfilled, (state, action) => {
         state.nbTotDevisSansStatus = action.payload;
@@ -1102,14 +1103,14 @@ export const devisSlice = createSlice({
         state.status = "echoue";
       })
 
-      .addCase(getNbDevisGeneresParAnnee.pending, (state) => {
+      .addCase(getNbDevisGeneresChaqueMoisParAnnee.pending, (state) => {
         state.status = "chargement";
       })
-      .addCase(getNbDevisGeneresParAnnee.fulfilled, (state, action) => {
+      .addCase(getNbDevisGeneresChaqueMoisParAnnee.fulfilled, (state, action) => {
         state.nbDevisGeneresParAnnee = action.payload;
         state.status = "reussi";
       })
-      .addCase(getNbDevisGeneresParAnnee.rejected, (state, action) => {
+      .addCase(getNbDevisGeneresChaqueMoisParAnnee.rejected, (state, action) => {
         state.status = "echoue";
       })
 

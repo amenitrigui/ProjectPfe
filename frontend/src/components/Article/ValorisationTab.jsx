@@ -151,6 +151,7 @@ function ValorisationTab() {
                   type="text"
                   placeholder="TTC"
                   className="input input-xs w-full"
+                  readOnly
                   value={articleInfos.prix1TTC || "0"}
                   onChange={(e) =>
                     handleChangePrixUnitaireTTCArticle(
@@ -189,6 +190,7 @@ function ValorisationTab() {
                   type="text"
                   className="input input-xs w-full"
                   value={articleInfos.prix2TTC || "0"}
+                  readOnly
                   onChange={(e) =>
                     handleChangePrixUnitaireTTCArticle(
                       "prix2TTC",
@@ -216,6 +218,7 @@ function ValorisationTab() {
                 <input
                   type="text"
                   className="input input-xs w-full"
+                  readOnly
                   value={articleInfos.prix3TTC || "0"}
                   onChange={(e) =>
                     handleChangePrixUnitaireTTCArticle(
@@ -245,6 +248,7 @@ function ValorisationTab() {
                   type="text"
                   className="input input-xs w-full"
                   value={articleInfos.prix4TTC || "0"}
+                  readOnly
                   onChange={(e) =>
                     handleChangePrixUnitaireTTCArticle(
                       "prix4TTC",

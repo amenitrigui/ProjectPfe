@@ -256,6 +256,7 @@ function DevisForm() {
   const afficherRecherchePopup = () => {
     dispatch(setAfficherRecherchePopup(true));
   };
+  console.log(devisInfo)
   return (
     <>
       <div className="container">
@@ -285,8 +286,10 @@ function DevisForm() {
                         }
                         readOnly={true}
                         onClick={() => {
-                          dispatch(setToolbarTable("devis"));
-                          afficherRecherchePopup();
+                          if(toolbarMode != "ajout") {
+                            dispatch(setToolbarTable("devis"));
+                            afficherRecherchePopup();
+                          }
                         }}
                       />
 
@@ -387,6 +390,7 @@ function DevisForm() {
                         type="text"
                         className="w-full border border-gray-300 rounded-md p-2"
                         value={devisInfo.delailivr}
+                        disabled={!activerChampsForm}
                         onChange={(e) =>
                           handleChangeAlphanumerique(
                             "delailivr",
@@ -610,7 +614,8 @@ function DevisForm() {
                   name="timbre"
                   value={devisInfo.TIMBRE}
                   onChange={(e) => handleChange(e, "TIMBRE")}
-                  readOnly={!(toolbarMode == "ajout" && toobarTable == "devis")}
+                  readOnly
+                  // readOnly={!(toolbarMode == "ajout" && toobarTable == "devis")}
                   className="w-full input input-bordered input-sm"
                 />
               </div>

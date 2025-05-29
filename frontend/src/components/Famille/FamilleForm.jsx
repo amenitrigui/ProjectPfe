@@ -225,13 +225,13 @@ const FamilleForm = () => {
         >
           <div
             style={{
-              backgroundColor: "#fff",
               width: "100%",
               maxWidth: "500px",
               borderRadius: "10px",
               padding: "2rem",
               boxShadow: "0 0 10px rgba(0,0,0,0.3)",
             }}
+            className="bg-base-100"
           >
             <h2 style={{ marginBottom: "1rem", fontSize: "1.25rem" }}>
               Formulaire Popup

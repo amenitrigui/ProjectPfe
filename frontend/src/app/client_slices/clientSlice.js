@@ -385,7 +385,7 @@ export const clientSlice = createSlice({
     listeClients: [],
     listeCodesRegion: [],
     listeToutCodesPosteaux: [],
-    status: "inactive",
+    status: null,
     erreur: null,
     filters: {
       code: "",

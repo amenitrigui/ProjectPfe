@@ -50,6 +50,7 @@ const loginUtilisateur = async (req, res) => {
   const { nom, motpasse } = req.body;
   try {
     setConnexionAuBdUtilisateurs(process.env.DB_USERS_NAME);
+    console.log("test======================================================")
     const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
     const User = defineUserModel(sequelizeConnexionDbUtilisateur);
     // Vérification que tous les champs sont remplis
@@ -127,7 +128,7 @@ const selectDatabase = async (req, res) => {
       return res.status(401).json({ message: "utilisateur non authentifie" });
     }
     const sequelizeConnexionDbUtilisateur = getConnexionAuBdUtilisateurs();
-
+    
     const codeuser = decoded.codeuser;
     setBdConnexion(databaseName);
     const Utilisateur = defineUserModel(sequelizeConnexionDbUtilisateur);
@@ -151,6 +152,24 @@ const selectDatabase = async (req, res) => {
         },
       }
     );
+    const timbref = await sequelizeConnexionDbUtilisateur.query(
+      `SELECT TIMBREF from societe where code = :nomDb`,
+      {
+        type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
+        replacements: {
+          nomDb: databaseName 
+        }
+      }
+    )
+    const entetesDevis = await sequelizeConnexionDbUtilisateur.query(
+      `SELECT e1,e2,e3,e4,e5,e6,e7,e8 from societe where code = :nomDb`,
+      {
+        type: sequelizeConnexionDbUtilisateur.QueryTypes.SELECT,
+        replacements: {
+          nomDb: databaseName
+        }
+      }
+    )
     await Utilisateur.update(
       { socutil: databaseName },
       {
@@ -163,7 +182,9 @@ const selectDatabase = async (req, res) => {
       message: `Connecté à la base ${databaseName}`,
       databaseName,
       droitAcceTableClient,
-      droitAcceeTableArticle
+      droitAcceeTableArticle,
+      entetesDevis,
+      timbref
     });
   } catch (error) {
     console.error("Erreur lors de la connexion à la base de données :", error);

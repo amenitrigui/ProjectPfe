@@ -158,7 +158,6 @@ function ToolBar() {
     dispatch(setActiverBoutonsValiderAnnuler(true));
     dispatch(setActiverChampsForm(true));
     dispatch(setToolbarMode("ajout"));
-
     // * vider les champs du formulaires
     if (toolbarTable == "devis") {
       dispatch(viderChampsDevisInfo());
@@ -166,9 +165,10 @@ function ToolBar() {
       dispatch(
         setDevisInfo({ collone: "usera", valeur: utilisateurConnecte.codeuser })
       );
+      dispatch(setDevisInfo({collone: "TIMBRE",valeur: localStorage.getItem("timbref")}))
       dispatch(getDerniereNumbl());
     }
-
+    
     if (toolbarTable == "client") {
       dispatch(viderChampsClientInfo());
       dispatch(
@@ -180,7 +180,7 @@ function ToolBar() {
       // * dispatch une action pour récuperer le code + nom d'utilisateur courant
       // dispatch(getUtilisateurParCode());
     }
-
+    
     if (toolbarTable == "article") {
       dispatch(viderChampsArticleInfo());
     }
@@ -191,20 +191,20 @@ function ToolBar() {
         parseInt(
           listeCodesUtilisateur[listeCodesUtilisateur.length - 1].codeuser
         ) + 1;
-      dispatch(
-        setInfosUtilisateur({
-          colonne: "codeuser",
-          valeur: codeDerniereUtilisateur,
-        })
-      );
-    }
-  };
-  // * méthode pour mettre à jour un client/devis
-  const handleModifierBtnClick = async () => {
-    if (toolbarTable == "devis") {
-      if (!devisInfo.NUMBL) {
-        // ! a remplacer par toast
-        alert("aucune devis est selectionné pour la modification");
+        dispatch(
+          setInfosUtilisateur({
+            colonne: "codeuser",
+            valeur: codeDerniereUtilisateur,
+          })
+        );
+      }
+    };
+    // * méthode pour mettre à jour un client/devis
+    const handleModifierBtnClick = async () => {
+      if (toolbarTable == "devis") {
+        if (!devisInfo.NUMBL) {
+          // ! a remplacer par toast
+          alert("aucune devis est selectionné pour la modification");
         return;
       }
     }
@@ -622,7 +622,6 @@ function ToolBar() {
           }
           break;
       }
-      console.log(droitsAcceTableArticle);
     }
 
     return true;
@@ -664,23 +663,18 @@ function ToolBar() {
                   )}
 
                   {/* Bouton Modifier */}
-                  {estVisible() &&
-                    !isListeRoute &&
-                    estAccessible("modification") && (
-                      <button
-                        type="button"
-                        onClick={handleModifierBtnClick}
-                        className="flex flex-col items-center w-16 sm:w-20 p-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-lg transition-all duration-200"
-                      >
-                        <FontAwesomeIcon
-                          icon={faEdit}
-                          className="text-xl mb-1"
-                        />
-                        <span className="text-[10px] sm:text-xs font-semibold">
-                          Modifier
-                        </span>
-                      </button>
-                    )}
+                  {!isListeRoute && estAccessible("modification") && (
+                    <button
+                      type="button"
+                      onClick={handleModifierBtnClick}
+                      className="flex flex-col items-center w-16 sm:w-20 p-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-lg transition-all duration-200"
+                    >
+                      <FontAwesomeIcon icon={faEdit} className="text-xl mb-1" />
+                      <span className="text-[10px] sm:text-xs font-semibold">
+                        Modifier
+                      </span>
+                    </button>
+                  )}
 
                   {/* Bouton Supprimer */}
                   {estVisible() &&
@@ -850,7 +844,7 @@ function ToolBar() {
 
             {ouvrireAvatarMenu && (
               <div
-                className="absolute right-0 mt-3 w-56 bg-white border rounded-lg shadow-lg z-50"
+                className="absolute right-0 mt-3 w-56 bg-base-100 border rounded-lg shadow-lg z-50"
                 ref={menuRef}
               >
                 <div className="p-4 flex items-center border-b">

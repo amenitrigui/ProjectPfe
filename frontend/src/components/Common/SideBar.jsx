@@ -9,12 +9,10 @@ function SideBar() {
   const ouvrireMenuDrawer = useSelector(
     (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
-  const handleLinkClick = () => {
-    dispatch(setOuvrireDrawerMenu(true));
-    if (window.innerWidth <= 400) {
-      // Minimise the sidebar for small screens
-      dispatch(setOuvrireDrawerMenu(true)); // true = CLOSED in your logic
-    }
+  const handleLinkClick = (e, path) => {
+    e.preventDefault();
+    dispatch(setOuvrireDrawerMenu(false))
+    navigate(path);
   };
 
   const elementsDrawer = [
@@ -26,12 +24,11 @@ function SideBar() {
     { name: "Liste de société", icon: "business-outline", path: "/SocietiesList" },
     { name: "Settings", icon: "settings-outline", path: "/Settings" },
   ];
-
   return (
     <div className={`navigation ${ouvrireMenuDrawer ? "active" : ""}`}>
       <ul>
         <li>
-          <a href="#">
+          <a href="/Dashbord">
             <span className="icon">
               <img src="/logo.png" />
             </span>
@@ -41,7 +38,7 @@ function SideBar() {
 
         {elementsDrawer.map((item, index) => (
           <li key={index} className="hover:bg-base-100">
-            <Link to={item.path} onClick={handleLinkClick}>
+            <Link to={item.path} onClick={(e) => {handleLinkClick(e, item.path)}}>
               <span className="icon">
                 <ion-icon name={item.icon}></ion-icon>
               </span>

@@ -33,7 +33,7 @@ body {
   width: 300px;
   height: 100%;
   transition: 0.5s;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 [data-theme="light"] .navigation {
   background: var(--blue);
@@ -437,7 +437,7 @@ body {
   min-height: 100px;
   padding: 20px;
   background:var(--white);
-  box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
+  /* box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08); */
   border-radius: 20px;
 }
 .recentCustomers .imgBx {
@@ -519,12 +519,12 @@ body {
     min-width: 40px;
   }
   .navigation {
-    width: 100%;
+    width: 50%;
     left: -100%;
     z-index: 1000;
   }
   .navigation.active {
-    width: 100%;
+    width: 50%;
     left: 0;
   }
   .toggle {

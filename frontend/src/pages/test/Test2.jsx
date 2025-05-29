@@ -28,68 +28,21 @@ function Test2() {
 
   return (
     <div>
-      <Link to="/DevisFormTout">← Retour</Link>
-      <div id="devis" ref={contentRef} className="p-6 bg-white max-w-6xl mx-auto">
-
-        {/* ... Header, client infos ... */}
-
-        {/* Tableau des articles */}
-        <table className="table-auto w-full border mt-4">
-          <thead className="bg-gray-200">
-            <tr>
-              <th>Référence</th>
-              <th>Code Article</th>
-              <th>Libellé</th>
-              <th>Unité</th>
-              <th>Quantité</th>
-              <th>PU HT</th>
-              <th>Remise %</th>
-              <th>TVA %</th>
-              <th>Net HT</th>
-            </tr>
-          </thead>
-          <tbody>
-            {lignesAvecNetHT.map((ligne, i) => (
-              <tr key={i} className="border">
-                <td>{ligne.famille}</td>
-                <td>{ligne.CodeART}</td>
-                <td>{ligne.DesART}</td>
-                <td>{ligne.Unite}</td>
-                <td>{ligne.QteART}</td>
-                <td>{ligne.PUART}</td>
-                <td>{ligne.Remise}</td>
-                <td>{ligne.TauxTVA}</td>
-                <td>{ligne.netHt.toFixed(3)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {/* Totaux */}
-        <div className="mt-6">
-          <table className="w-full max-w-md border border-black">
-            <tbody>
-              <tr>
-                <td className="border p-2">Total HT</td>
-                <td className="border p-2">{totalHT} DT</td>
-              </tr>
-              <tr>
-                <td className="border p-2">Montant TVA</td>
-                <td className="border p-2">{totalTVA} DT</td>
-              </tr>
-              <tr>
-                <td className="border p-2 font-bold">Total TTC</td>
-                <td className="border p-2 font-bold">{totalTTC} DT</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        {/* Arrêté en lettres */}
-        <div className="mt-4 border p-2 font-semibold">
-          Arrêté la présente offre à la somme de : <i>{totalTTC} Dinars</i>
-        </div>
-      </div>
+      <div className="drawer">
+  <input id="my-drawer" type="checkbox" className="drawer-toggle" />
+  <div className="drawer-content">
+    {/* Page content here */}
+    <label htmlFor="my-drawer" className="btn btn-primary drawer-button">Open drawer</label>
+  </div>
+  <div className="drawer-side">
+    <label htmlFor="my-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
+    <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+      {/* Sidebar content here */}
+      <li><a>Sidebar Item 1</a></li>
+      <li><a>Sidebar Item 2</a></li>
+    </ul>
+  </div>
+</div>
     </div>
   );
 }

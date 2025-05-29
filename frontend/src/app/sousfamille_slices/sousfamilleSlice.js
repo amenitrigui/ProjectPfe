@@ -95,7 +95,7 @@ export const sousfamilleSlice = createSlice({
       .addCase(
         getListeSousFamillesParCodeSousFamille.pending,
         (state, action) => {
-          state.status = "chagement";
+          state.status = "chargement";
         }
       )
       .addCase(
@@ -114,7 +114,7 @@ export const sousfamilleSlice = createSlice({
       .addCase(
         getListeSousFamillesParLibelleSousFamille.pending,
         (state, action) => {
-          state.status = "chagement";
+          state.status = "chargement";
         }
       )
       .addCase(

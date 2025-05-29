@@ -1,9 +1,14 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 
 function Imprimer() {
+  const [entetesDevis, setEntetesDevis] = useState({});
+  useEffect(() => {
+    setEntetesDevis(JSON.parse(localStorage.getItem("entetesDevis")));
+  }, []);
+  console.log(entetesDevis);
   const devisInfo = useSelector((state) => state.devisSlice.devisInfo);
   const derniereNumbl = useSelector((state) => state.devisSlice.derniereNumbl);
   const totalPages = Math.ceil(devisInfo.articles.length / 10);
@@ -262,19 +267,19 @@ function Imprimer() {
                 alt="Logo"
               />
               <div className="text-xs text-gray-600 space-y-0">
-                <div>S.A.R.L 11.000 DT</div>
+                <div>{entetesDevis.e1}</div>
                 <div>
-                  <strong>Site:</strong> www.logicom-dev.com.tn
+                  {entetesDevis.e2}
                 </div>
                 <div>
-                  <strong>BIAT:</strong> 08 700 00040 10 52971444
+                  {entetesDevis.e3}
                 </div>
-                <div>R.Teniour Av .H.Ayadi</div>
+                <div>{entetesDevis.e4}</div>
                 <div>
-                  <strong>Tél:</strong> 74 400110
+                  {entetesDevis.e5}
                 </div>
                 <div>
-                  <strong>TVA:</strong> 620495N/A/M/000
+                  {entetesDevis.e6}
                 </div>
               </div>
             </div>
@@ -326,13 +331,13 @@ function Imprimer() {
           {/* Tableau des articles */}
           {/* Tableau des articles */}
           <div className="overflow-x-auto mb-2">
-            <table className="table-auto w-full border border-gray-300 text-xs">
+            <table className="table-auto w-full border border-gray-300 text-xs" style={{userSelect: "none"}}>
               <thead className="bg-gray-200">
                 <tr>
                   {[
                     "Ref",
                     "Code",
-                    "Libellé",
+                    "Désignation",
                     "Un",
                     "Qte",
                     "PU HT",
@@ -350,6 +355,7 @@ function Imprimer() {
                 </tr>
               </thead>
               <tbody>
+                {console.log(devisInfo.articles)}
                 {devisInfo.articles.map((ligne, index) => (
                   <tr key={index} className="border-b hover:bg-gray-50">
                     <td className="border border-gray-300 px-1 py-0 truncate max-w-[40px]">
@@ -358,8 +364,8 @@ function Imprimer() {
                     <td className="border border-gray-300 px-1 py-0 truncate max-w-[40px]">
                       {ligne.CodeART}
                     </td>
-                    <td className="border border-gray-300 px-1 py-0 truncate max-w-[60px]">
-                      {ligne.DesART}
+                    <td className="border border-gray-300 px-1 py-0 truncate max-w-[150px]">
+                      {ligne.DesART} <br /> {ligne.Conf}
                     </td>
                     <td className="border border-gray-300 px-1 py-0 text-center">
                       {ligne.Unite}

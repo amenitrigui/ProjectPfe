@@ -11,6 +11,7 @@ const SocietiesList = () => {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.utilisateurSystemSlice.token);
   const utilisateurConnecte = useSelector((state) => state.utilisateurSystemSlice.utilisateurConnecte);
+  console.log(utilisateurConnecte)
   if (token == "") {
     navigate("/");
   }
@@ -50,8 +51,11 @@ const SocietiesList = () => {
         dispatch(setDroitAcceTableClient(response.data.droitAcceTableClient[0]));
         dispatch(setDroitAcceeTableArticle(response.data.droitAcceeTableArticle[0]));
         dispatch(setDbName(society));
+        console.log(response);
         localStorage.setItem("selectedDatabase", society);
         localStorage.setItem("selectedRsoc", society.rsoc);
+        localStorage.setItem("timbref", response.data.timbref[0].TIMBREF)
+        localStorage.setItem("entetesDevis", JSON.stringify(response.data.entetesDevis[0]))
         navigate("/Dashboard");
       }
     } catch (error) {

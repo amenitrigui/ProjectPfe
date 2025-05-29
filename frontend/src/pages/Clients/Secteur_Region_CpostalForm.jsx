@@ -67,7 +67,6 @@ const PopupContainer = styled.div`
 `;
 
 const PopupContent = styled.div`
-  background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   width: 90%;
@@ -251,7 +250,7 @@ const Secteur_Region_CpostalForm = () => {
     <AppContainer>
       {afficherSecteurPopup && (
         <PopupContainer>
-          <PopupContent>
+          <PopupContent className="bg-base-100">
             <h2>
               Formulaire{" "}
               {toolbartable === "secteur"
