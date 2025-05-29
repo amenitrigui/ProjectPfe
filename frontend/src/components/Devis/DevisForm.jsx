@@ -614,7 +614,8 @@ function DevisForm() {
                   name="timbre"
                   value={devisInfo.TIMBRE}
                   onChange={(e) => handleChange(e, "TIMBRE")}
-                  readOnly={!(toolbarMode == "ajout" && toobarTable == "devis")}
+                  readOnly
+                  // readOnly={!(toolbarMode == "ajout" && toobarTable == "devis")}
                   className="w-full input input-bordered input-sm"
                 />
               </div>

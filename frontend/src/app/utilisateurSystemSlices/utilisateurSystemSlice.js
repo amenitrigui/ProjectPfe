@@ -195,6 +195,7 @@ export const utilisateurSystemSlices = createSlice({
     },
     dbName: "",
     token: "",
+    status: null,
     paramettresAccesUtilisateur: {
       ...paramettresAccesUtilisateurInitiales,
     },

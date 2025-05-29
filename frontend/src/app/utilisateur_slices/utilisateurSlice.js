@@ -278,7 +278,7 @@ export const utilisateurSlice = createSlice({
   name: "utilisateurSlice",
   initialState: {
     codeuser: "",
-    status: "",
+    status: null,
     infoUtilisateurInitiales,
     erreur: "",
     listeUtilisateur: [],

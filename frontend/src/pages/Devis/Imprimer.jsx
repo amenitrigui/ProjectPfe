@@ -364,7 +364,7 @@ function Imprimer() {
                     <td className="border border-gray-300 px-1 py-0 truncate max-w-[40px]">
                       {ligne.CodeART}
                     </td>
-                    <td className="border border-gray-300 px-1 py-0 truncate max-w-[120px]">
+                    <td className="border border-gray-300 px-1 py-0 truncate max-w-[150px]">
                       {ligne.DesART} <br /> {ligne.Conf}
                     </td>
                     <td className="border border-gray-300 px-1 py-0 text-center">
