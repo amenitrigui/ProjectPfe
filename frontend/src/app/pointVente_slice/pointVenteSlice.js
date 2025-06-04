@@ -8,7 +8,7 @@ export const ajouterpointVente = createAsyncThunk(
   async (_, thunkAPI) => {
     const pointVenteInfo = thunkAPI.getState().pointVenteSlice.pointVenteInfo;
     const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/pointvente/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/pointvente/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/ajouterpointVente`,
       {
@@ -29,7 +29,7 @@ export const getListePointVente = createAsyncThunk(
   "PointVenteSlice/getListePointVente",
   async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/pointvente/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/pointvente/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListePointVente`,
 
@@ -48,7 +48,7 @@ export const getLibellePointVneteparPVente = createAsyncThunk(
   "PointVenteSlice/getLibellePointVneteparPVente",
   async (codepv, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/pointvente/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/pointvente/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getLibellePointVneteparPVente`,
       {

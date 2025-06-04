@@ -230,7 +230,7 @@ const DevisFormPlaceholder = () => {
 
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/devis/${selectedDatabase}/clients`
+          `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/devis/${selectedDatabase}/clients`
         );
 
         if (response.data.clients && response.data.clients.length > 0) {
@@ -254,7 +254,7 @@ const DevisFormPlaceholder = () => {
 
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/devis/${selectedDatabase}/familles`
+          `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/devis/${selectedDatabase}/familles`
         );
 
 
@@ -288,7 +288,7 @@ const DevisFormPlaceholder = () => {
 
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/devis/${selectedDatabase}/codes/famille/${famille}`
+        `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/devis/${selectedDatabase}/codes/famille/${famille}`
       );
 
       if (response.data.articles && response.data.articles.length > 0) {
@@ -326,7 +326,7 @@ const DevisFormPlaceholder = () => {
 
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/devis/${selectedDatabase}/articles/details/${code}`
+        `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/devis/${selectedDatabase}/articles/details/${code}`
       );
 
       if (response.data.article) {
@@ -366,7 +366,7 @@ const DevisFormPlaceholder = () => {
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/devis/${selectedDatabase}/articles/${code}/updateConfig`,
+        `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/devis/${selectedDatabase}/articles/${code}/updateConfig`,
         { codeart: code, newConfigValue }
       );
 
@@ -439,7 +439,7 @@ const DevisFormPlaceholder = () => {
           }
 
           const response = await axios.get(
-            `${process.env.REACT_APP_API_URL}/api/devis/${dbName}/clients/code/${selectedCode}`
+            `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/devis/${dbName}/clients/code/${selectedCode}`
           );
 
           const client = response.data.client;
@@ -479,7 +479,7 @@ const DevisFormPlaceholder = () => {
           }
 
           const response = await axios.get(
-            `${process.env.REACT_APP_API_URL}/api/devis/${dbName}/clients/rsoc/${selectedRsoc}`
+            `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/devis/${dbName}/clients/rsoc/${selectedRsoc}`
           );
 
           const client = response.data.client;
@@ -516,7 +516,7 @@ const DevisFormPlaceholder = () => {
         }
 
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/devis/${dbName}/devis/libpv/${selectedDevis}`
+          `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/devis/${dbName}/devis/libpv/${selectedDevis}`
         );
 
         if (response.data && response.data.libpv) {
@@ -581,7 +581,7 @@ const DevisFormPlaceholder = () => {
       console.log("Date formatée envoyée à l'API:", formattedDate);
 
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/devis/${selectedDatabase}/last-numbl?datebl=${formattedDate}`
+        `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/devis/${selectedDatabase}/last-numbl?datebl=${formattedDate}`
       );
 
       const data = await response.json();
@@ -631,7 +631,7 @@ const DevisFormPlaceholder = () => {
       }
 
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/utilisateurs/get-devis-details/${database}`,
+        `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurs/get-devis-details/${database}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -670,7 +670,7 @@ const DevisFormPlaceholder = () => {
       });
 
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/utilisateurs/get-devis-details/${database}/${NUMBL}`,
+        `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurs/get-devis-details/${database}/${NUMBL}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -813,7 +813,7 @@ const DevisFormPlaceholder = () => {
         }
 
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/devis/get-representant-details/${dbName}/${formData}`
+          `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/devis/get-representant-details/${dbName}/${formData}`
         );
 
         console.log("Réponse complète de l'API:", response);
@@ -1061,7 +1061,7 @@ const DevisFormPlaceholder = () => {
     try {
       setMessage(null);
       const response = await axios.delete(
-        `${process.env.REACT_APP_API_URL}/api/devis/${selectedDatabase}/devis/${numbl}`
+        `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/devis/${selectedDatabase}/devis/${numbl}`
       );
 
       if (
@@ -1434,7 +1434,7 @@ const DevisFormPlaceholder = () => {
       }
 
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/devis/${dbName}/create`,
+        `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/devis/${dbName}/create`,
         dataToSend
       );
 
@@ -1536,7 +1536,7 @@ const DevisFormPlaceholder = () => {
       console.log("Données envoyées :", JSON.stringify(requestBody, null, 2));
 
       const response = await axios.put(
-        `${process.env.REACT_APP_API_URL}/api/devis/${database}/${formData.NUMBL}`,
+        `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/devis/${database}/${formData.NUMBL}`,
         requestBody,
         {
           headers: {
@@ -1595,7 +1595,7 @@ const DevisFormPlaceholder = () => {
   const fetchSecteurs = async () => {
     try { 
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/utilisateurs/secteurs/ERP13`
+        `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurs/secteurs/ERP13`
       );
       const data = await response.json();
       if (data && Array.isArray(data.sectors)) {

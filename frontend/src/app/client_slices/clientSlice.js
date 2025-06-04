@@ -6,7 +6,7 @@ export const getListeClient = createAsyncThunk(
   "slice/getListeClient",
   async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/client/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeClients`, {
         headers: {
@@ -23,7 +23,7 @@ export const getClientParRaisonSociale = createAsyncThunk(
   "Slice/getClientParRaisonSociale",
   async (rsoc, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/client/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getClientParRaisonSociale/${rsoc}`,{
         headers: {
@@ -40,7 +40,7 @@ export const getClientParCin = createAsyncThunk(
   "Slice/getClientParCin",
   async (cin, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/client/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getClientParCin/${cin}`,{
         headers: {
@@ -56,7 +56,7 @@ export const getClientParCode = createAsyncThunk(
   "Slice/getClientParCode",
   async (code, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/client/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getClientParCode/${code}`,{
         headers: {
@@ -73,7 +73,7 @@ export const ajouterClient = createAsyncThunk(
   async (_, thunkAPI) => {
     const clientInfos = thunkAPI.getState().clientSlice.clientInfos;
     const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/client/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/AjouterClient`,
       {clientInfos},
@@ -95,7 +95,7 @@ export const majClient = createAsyncThunk(
     const clientMaj = thunkAPI.getState().clientSlice.clientInfos;
 
     const response = await axios.put(
-      `${process.env.REACT_APP_API_URL}/api/client/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/majClient`,
       {clientMaj}, // htha y3niii bch tjib les donds il kol htha body, ya3ni objet kamel mesh bel champ bel champ
@@ -115,7 +115,7 @@ export const filtrerClients = createAsyncThunk(
   async (_, thunkAPI) => {
     // Passer `filters` en paramètre
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/client/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/filtrerListeClients`,
       {
@@ -137,7 +137,7 @@ export const getToutCodesClient = createAsyncThunk(
   "devisSlice/getToutCodesClient",
   async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/client/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getToutCodesClient`,{
         headers: {
@@ -155,7 +155,7 @@ export const supprimerClient = createAsyncThunk(
   "slice/supprimerClient",
   async (code, thunkAPI) => {
     const response = await axios.delete(
-      `${process.env.REACT_APP_API_URL}/api/client/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/Delete/${code}`,{
         headers: {
@@ -172,7 +172,7 @@ export const getDerniereCodeClient = createAsyncThunk(
   "clientSlice/getDerniereCodeClient",
   async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/client/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/client/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getDerniereCodeClient`,{
         headers: {
@@ -192,7 +192,7 @@ export const getDesignationSecteurparCodeSecteur = createAsyncThunk(
   "clientSlice/getDesignationSecteurparCodeSecteur",
   async (codesecteur, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/secteur/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/secteur/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getDesignationSecteurparCodeSecteur/${codesecteur}`,{
         headers: {
@@ -212,7 +212,7 @@ export const getListeCodesSecteur = createAsyncThunk(
   "clientSlice/getListeCodeSecteur",
   async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/secteur/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/secteur/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeCodesSecteur`,{
         headers: {
@@ -232,7 +232,7 @@ export const getVilleParCodePostal = createAsyncThunk(
   "clientSlice/getVilleParCodePostal",
   async (cp, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/codePostal/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/codePostal/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getVilleParCodePostale/${cp}`,{
         headers: {
@@ -252,7 +252,7 @@ export const getListeCodesPosteaux = createAsyncThunk(
   "clientSlice/getListeCodesPosteaux",
   async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/codePostal/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/codePostal/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeCodesPosteaux`, {
         headers: {
@@ -272,7 +272,7 @@ export const getListeCodeRegions = createAsyncThunk(
   "clientSlice/getListeCodeRegions",
   async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/region/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/region/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeCodeRegions`,{
         headers: {
@@ -291,7 +291,7 @@ export const getVilleParRegion = createAsyncThunk(
   "clientSlice/getVilleParRegion",
   async (codeRegion, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/region/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/region/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getVilleParRegion/${codeRegion}`,{
         headers: {

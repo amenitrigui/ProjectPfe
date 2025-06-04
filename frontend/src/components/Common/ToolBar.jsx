@@ -289,7 +289,7 @@ function ToolBar() {
     }
     if (toolbarTable === "utilisateur") {
       dispatch(
-        setAlertMessage("Êtes-vous sûr de vouloir supprimer ce utilisateur ?")
+        setAlertMessage("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")
       );
     }
     dispatch(setAfficherAlert(true));
@@ -299,18 +299,18 @@ function ToolBar() {
   const handleValiderBtnClick = () => {
     if (toolbarTable == "client") {
       if (toolbarMode == "ajout") {
-        dispatch(setAlertMessage("Confirmez-vous ajouter de ce client ?"));
+        dispatch(setAlertMessage("Êtes-vous sûr de vouloir ajouter ce client ?"));
       }
 
       if (toolbarMode == "modification") {
-        dispatch(setAlertMessage("Confirmez-vous modifier de ce client ?"));
+        dispatch(setAlertMessage("Êtes-vous sûr de vouloir modifier ce client ?"));
       }
     }
 
     //* pour devis
     if (toolbarTable == "devis") {
       if (toolbarMode == "ajout") {
-        dispatch(setAlertMessage("Confirmez-vous l'ajout de ce devis ?"));
+        dispatch(setAlertMessage("Êtes-vous sûr de vouloir ajouter ce devis ?"));
       }
 
       if (toolbarMode == "modification") {
@@ -322,21 +322,21 @@ function ToolBar() {
     //* pour l'article
     if (toolbarTable == "article") {
       if (toolbarMode == "ajout") {
-        dispatch(setAlertMessage("Confirmez-vous ajouter de ce article ?"));
+        dispatch(setAlertMessage("Êtes-vous sûr de vouloir ajouter cet article ?"));
       }
       if (toolbarMode == "modification") {
-        dispatch(setAlertMessage("confirmer vous de modifier de article?"));
+        dispatch(setAlertMessage("Êtes-vous sûr de vouloir modifier cet article?"));
       }
     }
     //*pour utilisateur
     if (toolbarTable == "utilisateur") {
       if (toolbarMode == "ajout") {
-        dispatch(setAlertMessage("Confirmez-vous ajouter de ce utilisateur ?"));
+        dispatch(setAlertMessage("Êtes-vous sûr de vouloir ajouter cet utilisateur ?"));
 
         dispatch(SetUtilisateurSystemremplir(infosUtilisateur));
       }
       if (toolbarMode == "modification") {
-        dispatch(setAlertMessage("confirmer vous de modifier de utilisateur?"));
+        dispatch(setAlertMessage("Êtes-vous sûr de vouloir modifier cet utilisateur?"));
       }
     }
 

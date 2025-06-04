@@ -5,7 +5,7 @@ export const getPrixVente = createAsyncThunk(
   "ValorisationSlice/getPrixVente",
   async (code, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/Valorisation_Article/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/Valorisation_Article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getPrixVente`,
       {

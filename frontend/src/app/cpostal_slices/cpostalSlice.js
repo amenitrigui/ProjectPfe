@@ -5,7 +5,7 @@ export const ajouterCodePostal = createAsyncThunk(
   "CodePostaleSlice/ajouterCodePostal",
   async (_, thunkAPI) => {
     const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/codePostal/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/codePostal/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/ajouterCodePostal`,
       {

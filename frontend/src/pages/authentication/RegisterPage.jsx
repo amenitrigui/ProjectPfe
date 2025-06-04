@@ -34,7 +34,7 @@ function RegisterPage() {
 
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/utilisateurs/register`,
+        `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurs/register`,
         {
           method: "POST",
           headers: {

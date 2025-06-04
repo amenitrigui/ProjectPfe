@@ -179,7 +179,7 @@ const Dashboard = () => {
   const toggleSidebar = () => {
     dispatch(setOuvrireDrawerMenu(!ouvrireMenuDrawer));
   };
-  console.log(nbDevisGeneresParAnnee)
+  console.log(nbDevisGeneresParAnnee);
   return (
     <div className="container">
       <SideBar />
@@ -222,7 +222,7 @@ const Dashboard = () => {
               <div className="bg-base-100 card" key={index}>
                 <div>
                   <div className="numbers dark:bg-base-100">{card.number}</div>
-                  <div className="cardName dark:bg-base-100">
+                  <div className="cardName dark:bg-base-100 light:text-black">
                     {card.name}
                     {card.user && (
                       <span className="text-blue-600 font-semibold ml-1 ">
@@ -239,12 +239,12 @@ const Dashboard = () => {
           })}
         </div>
 
-        <div className="details grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+        <div className="details grid grid-cols-3 lg:grid-cols-3 gap-6 mt-6">
           {/* Bar Chart */}
           {utilisateurConnecte.type.toLowerCase() === "superviseur" && (
             <div className="p-4 bg-base-100 shadow rounded">
               <div className="cardHeader mb-4">
-                <h2>Devis par représentant</h2>
+                <h2>Nombre de devis générés par représentant</h2>
               </div>
 
               <hr className="mb-4" />
@@ -254,7 +254,10 @@ const Dashboard = () => {
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={nbDevisparrepresentant}>
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="rep" />
+                      <XAxis
+                        dataKey="rep"
+                        hide={true}
+                      />
                       <YAxis />
                       <Tooltip />
                       <Legend />
@@ -299,7 +302,7 @@ const Dashboard = () => {
           {/* Bar Chart */}
           <div className="p-4 bg-base-100 shadow rounded">
             <div className="cardHeader mb-4">
-              <h2>Devis générés par mois et année</h2>
+              <h2>Nombre de devis généré pendant l'année {anneeSelectionne}</h2>
             </div>
             <select
               className="w-full select border-none focus:outline-none focus:ring-0 appearance-none"

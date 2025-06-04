@@ -8,7 +8,7 @@ export const deconnexionUtilisateur = createAsyncThunk(
     // * try catch my beloved
     try {
       await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/utilisateurs/deconnecterUtilisateur`
+        `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurs/deconnecterUtilisateur`
       );
       window.sessionStorage.clear();
       window.localStorage.clear();
@@ -24,7 +24,7 @@ export const loginUtilisateur = createAsyncThunk(
   async (infosConnexion, thunkAPI) => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/utilisateurs/loginUtilisateur`,
+        `${process.env.REACT_APP_API_URL.replace(/\/$/, '').replace(/\/$/, '')}/api/utilisateurs/loginUtilisateur`,
         {
           nom: infosConnexion.nom,
           motpasse: infosConnexion.motpasse,
@@ -43,7 +43,7 @@ export const deconnecterUtilisateur = createAsyncThunk(
   "utilisateurSlice/deconnecterUtilisateur",
   async (_, thunkAPI) => {
     const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/utilisateurs/deconnecterUtilisateur`
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurs/deconnecterUtilisateur`
     );
   }
 );
@@ -53,7 +53,7 @@ export const getUtilisateurParCode = createAsyncThunk(
   async (codeuser, thunkAPI) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getUtilisateurParCode`,
+        `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurSystem/getUtilisateurParCode`,
         {
           params: {
             codeuser: codeuser,
@@ -81,7 +81,7 @@ export const filterListeUtilisateur = createAsyncThunk(
     const filterutilisateur =
       thunkAPI.getState().utilisateurSlice.filtersUtilisateur;
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/filterListeUtilisateur`,
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurSystem/filterListeUtilisateur`,
       {
         params: {
           filters: filterutilisateur, // Utiliser filters ici
@@ -102,7 +102,7 @@ export const getDerniereCodeUtilisateur = createAsyncThunk(
   "utilisateurSlice/getDerniereCodeUtilisateur",
   async () => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getDerniereCodeUtilisateur`
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurSystem/getDerniereCodeUtilisateur`
     );
     return response.data.derniereCodeUtilisateur;
   }
@@ -113,7 +113,7 @@ export const getListeUtilisateurParCode = createAsyncThunk(
   async (codeuser, thunkAPI) => {
     console.log(codeuser);
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeUtilisateurParCode`,
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurSystem/getListeUtilisateurParCode`,
       {
         params: {
           codeuser: codeuser,
@@ -133,7 +133,7 @@ export const getListeUtilisateurParNom = createAsyncThunk(
   "utilisateurSlice/getListeUtilisateurParNom",
   async (nom, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeUtilisateurParNom`,
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurSystem/getListeUtilisateurParNom`,
       {
         params: {
           nom: nom,
@@ -152,7 +152,7 @@ export const getListeUtilisateurParDirecteur = createAsyncThunk(
   "utilisateurSlice/getListeUtilisateurParDirecteur",
   async (directeur, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeUtilisateurParDirecteur`,
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurSystem/getListeUtilisateurParDirecteur`,
       {
         params: {
           directeur: directeur,
@@ -171,7 +171,7 @@ export const getListeUtilisateurParType = createAsyncThunk(
   "utilisateurSlice/getListeUtilisateurParType",
   async (type, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeUtilisateurParType`,
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurSystem/getListeUtilisateurParType`,
       {
         params: {
           type: type,
@@ -190,7 +190,7 @@ export const getListeUtilisateur = createAsyncThunk(
   "utilisateurSlice/getListeUtilisateur",
   async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeUtilisateur`,
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurSystem/getListeUtilisateur`,
       {
         headers: {
           Authorization: `Bearer ${
@@ -207,7 +207,7 @@ export const AjouterUtilisateur = createAsyncThunk(
   async (_, thunkAPI) => {
     const UtilisateurInfos = thunkAPI.getState().clientSlice.clientInfos;
     const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/utilisateurs/AjouterUtilisateur`,
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurs/AjouterUtilisateur`,
       {
         UtilisateurInfos,
       },
@@ -228,7 +228,7 @@ export const getListeCodesUtilisateur = createAsyncThunk(
     console.log("getListeCodesUtilisateur est en cours d'éxecution")
     const response = await axios.get(
       `
-      ${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getListeCodesUtilisateur
+      ${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurSystem/getListeCodesUtilisateur
       `,
       {
         headers: {
@@ -250,7 +250,7 @@ export const uploadImageUtilisateur = createAsyncThunk(
       formData.append("image", imageFile);
 
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/utilisateurs/uploadImage/${codeuser}`,
+        `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurs/uploadImage/${codeuser}`,
         formData,
         {
           headers: {

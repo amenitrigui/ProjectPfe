@@ -11,7 +11,6 @@ const SocietiesList = () => {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.utilisateurSystemSlice.token);
   const utilisateurConnecte = useSelector((state) => state.utilisateurSystemSlice.utilisateurConnecte);
-  console.log(utilisateurConnecte)
   if (token == "") {
     navigate("/");
   }
@@ -26,6 +25,7 @@ const SocietiesList = () => {
     if (societiesFromStorage) {
       setSocieties(societiesFromStorage);
     }
+    console.log(societiesFromStorage)
   }, [navigate]);
 
   const handleSelect = async (society) => {
@@ -35,7 +35,7 @@ const SocietiesList = () => {
       }
 
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/utilisateurs/select-database`,
+        `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurs/select-database`,
         {
           databaseName: society,
         },

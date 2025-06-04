@@ -5,7 +5,7 @@ export const getListeSousFamillesParCodeSousFamille = createAsyncThunk(
   "sousfamilleSlice/getListeSousFamillesParCodeSousFamille",
   async (codeSousFamille, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/sousfamille/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/sousfamille/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeSousFamillesParCodeSousFamille/${codeSousFamille}`
     );
@@ -17,7 +17,7 @@ export const getListeSousFamillesParLibelleSousFamille = createAsyncThunk(
   "sousfamilleSlice/getListeSousFamillesParLibelleSousFamille",
   async (LibelleSousFamille, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/sousfamille/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/sousfamille/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeSousFamillesParLibelleSousFamille/${LibelleSousFamille}`
     );
@@ -30,7 +30,7 @@ export const ajouterSecteur = createAsyncThunk(
   "secteurSlice/ajouterSecteur",
   async (_, thunkAPI) => {
     const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/secteur/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/secteur/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/ajouterSecteur`,
       {

@@ -9,6 +9,7 @@ function SideBar() {
   const ouvrireMenuDrawer = useSelector(
     (state) => state.interfaceSlice.ouvrireMenuDrawer
   );
+  const utilisateurConnecte = useSelector((state) => state.utilisateurSystemSlice.utilisateurConnecte)
   const handleLinkClick = (e, path) => {
     e.preventDefault();
     dispatch(setOuvrireDrawerMenu(false))
@@ -37,6 +38,7 @@ function SideBar() {
         </li>
 
         {elementsDrawer.map((item, index) => (
+          // console.log(item.name.toLowerCase() === "gestion utilisateurs" && utilisateurConnecte?.type?.toLowerCase() === "superviseur"),
           <li key={index} className="hover:bg-base-100">
             <Link to={item.path} onClick={(e) => {handleLinkClick(e, item.path)}}>
               <span className="icon">

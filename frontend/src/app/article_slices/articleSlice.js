@@ -13,7 +13,7 @@ export const getArticleFamiles = createAsyncThunk(
   "Slice/getArticleFamiles",
   async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/article/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeFamilles`,
       {
@@ -39,7 +39,7 @@ export const getListeCodesArticles = createAsyncThunk(
     let response;
     if (!codeFamille) {
       response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/article/${
+        `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/article/${
           thunkAPI.getState().utilisateurSystemSlice.dbName
         }/getToutCodesArticle`,
         {
@@ -55,7 +55,7 @@ export const getListeCodesArticles = createAsyncThunk(
 
     if (codeFamille) {
       response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/article/${
+        `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/article/${
           thunkAPI.getState().utilisateurSystemSlice.dbName
         }/getToutCodesArticle`,
         {
@@ -86,7 +86,7 @@ export const suprimerArticle = createAsyncThunk(
   // ! param2 (thunkAPI) : un paramètres supplementaire qui revient de la méthode createAsyncThunk
   async (code, thunkAPI) => {
     const response = await axios.delete(
-      `${process.env.REACT_APP_API_URL}/api/article/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/suprimerArticle`,
 
@@ -114,7 +114,7 @@ export const getListeFamillesArticle = createAsyncThunk(
   "Slice/getListeFamillesArticle",
   async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/article/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeFamilles`,
       {
@@ -137,7 +137,7 @@ export const getListeArticles = createAsyncThunk(
   "Slice/getListeArticles",
   async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/article/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeArticles`,
       {
@@ -160,7 +160,7 @@ export const filtrerListeArticle = createAsyncThunk(
   "Slice/filtrerListeArticle",
   async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/article/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/filtrerListeArticle`,
       {
@@ -186,7 +186,7 @@ export const getDesignationFamilleParCodeFamille = createAsyncThunk(
   "articleSlice/getDesignationFamilleParCodeFamille",
   async (codeFamille, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/article/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getDesignationFamilleParCodeFamille`,
       {
@@ -208,7 +208,7 @@ export const getListecodesousFamille = createAsyncThunk(
   "article/getListecodesousFamille",
   async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/article/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListecodesousFamille`,
       {
@@ -226,7 +226,7 @@ export const getdesignationSousFamillebycodeSousFamille = createAsyncThunk(
   "article/getdesignationSousFamillebycodeSousFamille",
   async (codeSousFamille, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/article/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getdesignationSousFamillebycodeSousFamille/${codeSousFamille}`,
       {
@@ -244,7 +244,7 @@ export const getArticleParCode = createAsyncThunk(
   "article/getArticleParCode",
   async (code, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/article/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getArticleParCode`,
       {
@@ -266,7 +266,7 @@ export const ajouterArticle = createAsyncThunk(
   "articleSlice/ajouterArticle",
   async (_, thunkAPI) => {
     const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/article/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/ajouterArticle`,
       {
@@ -289,7 +289,7 @@ export const modifierarticle = createAsyncThunk(
   "articleSlice/ModifierArticle",
   async (code, thunkAPI) => {
     const response = await axios.put(
-      `${process.env.REACT_APP_API_URL}/api/article/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/modifierArticle`,
       {
@@ -315,7 +315,7 @@ export const getListeArticleparFamille = createAsyncThunk(
   "article/getListeArticleparFamille",
   async (codeFamille, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/article/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeArticleparFamille`,
       {
@@ -337,7 +337,7 @@ export const getListeArticleparLibelle = createAsyncThunk(
   "article/getListeArticleparLibelle",
   async (libelle, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/article/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeArticleparLibelle`,
       {
@@ -359,7 +359,7 @@ export const getListeArticleParSousFamille = createAsyncThunk(
   "article/getListeArticleParSousFamille",
   async (SousFamille, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/article/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeArticleParSousFamille/${SousFamille}`,
       {
@@ -380,7 +380,7 @@ export const getListeArticleParCodeArticle = createAsyncThunk(
     let response;
     if (parametres.codeArticle) {
       response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/article/${
+        `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/article/${
           thunkAPI.getState().utilisateurSystemSlice.dbName
         }/getListeArticleParCodeArticle`,
         {
@@ -397,7 +397,7 @@ export const getListeArticleParCodeArticle = createAsyncThunk(
     }
     if (parametres.codeArticle && parametres.codeFamille) {
       response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/article/${
+        `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/article/${
           thunkAPI.getState().utilisateurSystemSlice.dbName
         }/getListeArticleParCodeArticle`,
         {
@@ -416,7 +416,7 @@ export const getDerniereCodeArticle = createAsyncThunk(
   "articleSlice/getDerniereCodeArticle",
   async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/article/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/article/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getDerniereCodeArticle`,
       {

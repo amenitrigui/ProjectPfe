@@ -18,7 +18,7 @@ function ResetPassword() {
     }
 
     axios
-      .post(`${process.env.REACT_APP_API_URL}/api/utilisateurs/envoyerDemandeReinitialisationMp`, {
+      .post(`${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurs/envoyerDemandeReinitialisationMp`, {
         email: trimmedEmail,
       })
       .then((response) => {

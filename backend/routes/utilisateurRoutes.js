@@ -10,7 +10,7 @@ const {
   reinitialiserMotPasse,
   getUtilisateurParCode,
   deconnecterUtilisateur,
-  uploadImageUtilisateur,
+  // uploadImageUtilisateur,
  
 } = require("../controllers/utilisateurController");
 
@@ -56,11 +56,11 @@ router.post("/select-database", selectDatabase);
 
 
 // Route pour l'upload d'image avec authentification JWT optionnelle
-router.post(
-  "/uploadImage/:codeuser", 
-  authenticateJWT, // Optionnel - à ajouter si nécessaire
-  upload.single('image'), 
-  uploadImageUtilisateur
-);
+// router.post(
+//   "/uploadImage/:codeuser", 
+//   authenticateJWT, // Optionnel - à ajouter si nécessaire
+//   upload.single('image'), 
+//   uploadImageUtilisateur
+// );
 
 module.exports = router;

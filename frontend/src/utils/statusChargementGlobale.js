@@ -8,7 +8,7 @@ export const statusChargementGlobale = createSelector(
   ],
   (authStatus, devisStatus, clientStatus) => {
     // console.log("authStatus: ", authStatus);
-    console.log("devisStatus: ", devisStatus);
+    // console.log("devisStatus: ", devisStatus);
     // console.log("clientStatus: ", clientStatus);
     // if (authStatus && authStatus === "chargement") {
     //   return true;

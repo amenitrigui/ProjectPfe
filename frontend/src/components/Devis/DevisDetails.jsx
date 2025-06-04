@@ -10,7 +10,7 @@ const DevisDetails = () => {
     const fetchDevisDetails = async () => {
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/devis/devis/${numbl}`
+          `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/devis/devis/${numbl}`
         );
 
         if (!response.ok) {

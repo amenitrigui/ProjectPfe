@@ -21,7 +21,7 @@ function EmailEnvoye() {
     if (trimedpassword == trimedNVpassword) {
       axios
         .put(
-          `${process.env.REACT_APP_API_URL}/api/utilisateurs/reinitialiserMotPasse`,
+          `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurs/reinitialiserMotPasse`,
           { email: user.email, password: trimedpassword, token: token },
           {
             headers: {

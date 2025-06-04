@@ -9,7 +9,7 @@ export const getListeCodeRegions = createAsyncThunk(
   "clientSlice/getListeCodeRegions",
   async (_, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/region/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/region/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getListeCodeRegions`,
       {
@@ -31,7 +31,7 @@ export const getVilleParRegion = createAsyncThunk(
   "clientSlice/getVilleParRegion",
   async (codeRegion, thunkAPI) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/region/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/region/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/getVilleParRegion/${codeRegion}`,
       {
@@ -53,7 +53,7 @@ export const ajouterRegion = createAsyncThunk(
   "RegionSlice/ajouterRegion",
   async (_, thunkAPI) => {
     const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/region/${
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/region/${
         thunkAPI.getState().utilisateurSystemSlice.dbName
       }/ajouterRegion`,
       {

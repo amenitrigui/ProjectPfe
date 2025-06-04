@@ -9,7 +9,7 @@ export const AjouterUtilisateur = createAsyncThunk(
       thunkAPI.getState().utilisateurSystemSlice.Utilisateur_SuperviseurInfos
     );
     const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/AjouterUtilisateur`,
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurSystem/AjouterUtilisateur`,
       {
         utilisateurInfo:
           thunkAPI.getState().utilisateurSystemSlice
@@ -33,7 +33,7 @@ export const ModifierUtilisateur = createAsyncThunk(
     const utilisateur = thunkAPI.getState().utilisateurSlice.infosUtilisateur;
     console.log(utilisateur);
     const response = await axios.put(
-      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/ModifierUtilisateur`,
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurSystem/ModifierUtilisateur`,
       {
         MajUtilisateur: utilisateur,
       },
@@ -57,7 +57,7 @@ export const supprimerUtilisateur = createAsyncThunk(
   async (codeuser, thunkAPI) => {
     console.log(codeuser);
     const response = await axios.delete(
-      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/supprimerUtilisateur`,
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurSystem/supprimerUtilisateur`,
       {
         params: { codeuser: codeuser },
         headers: {
@@ -76,7 +76,7 @@ export const getCodeUtilisateurSuivant = createAsyncThunk(
   "utilisateurSystemSlices/getCodeUtilisateurSuivant",
   async () => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getCodeUtilisateurSuivant`
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurSystem/getCodeUtilisateurSuivant`
     );
     return response;
   }
@@ -85,7 +85,7 @@ export const getModuleParamettreParUtilisateur = createAsyncThunk(
   "utilisateurSystemSlices/getModuleParamettreParUtilisateur",
   async (paramettre, thunkApi) => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getModuleParamettreParUtilisateur`,
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurSystem/getModuleParamettreParUtilisateur`,
       {
         params: {
           codeuser: paramettre.codeuser,
@@ -109,7 +109,7 @@ export const modifierModuleParamettreParUtilisateur = createAsyncThunk(
   async (paramettre, thunkAPI) => {
     console.log(paramettre.codeuser);
     const response = await axios.put(
-      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/modifierModuleParamettreParUtilisateur`,
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurSystem/modifierModuleParamettreParUtilisateur`,
       {
         paramettreModifier: paramettre.paramettreModifier,
       },
@@ -136,7 +136,7 @@ export const getRepresantantUtilisateur = createAsyncThunk(
   "utilisateurSystemSlice/getRepresantantUtilisateur",
   async () => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/utilisateurSystem/getCodeUtilisateurSuivant`
+      `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/api/utilisateurSystem/getCodeUtilisateurSuivant`
     );
   }
 );
