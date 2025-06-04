@@ -29,6 +29,7 @@ const corsOptions = {
   origin: [
     process.env.FRONTEND_URL_LOCAL, 
     process.env.FRONTEND_URL_DISTANT,
+    process.env.FRONTEND_URL_DISTANT+'/',
     "http://localhost:3000"
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
