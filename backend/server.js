@@ -26,13 +26,13 @@ const app = express();
 
 // Configuration CORS
 const corsOptions = {
-  origin: ['*'],
+  origin: [process.env.FRONTEND_URL, process.env.FRONTEND_URL_DISTANT],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-  // credentials: true,
+  credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"]
 };
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+// app.options('*', cors(corsOptions));
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -67,6 +67,11 @@ const upload = multer({
     }
     cb(new Error('Seules les images sont autorisées (jpeg, jpg, png, gif)'));
   }
+});
+
+app.use((req, res, next) => {
+  console.log(`[${req.method}] ${req.originalUrl} from ${req.headers.origin}`);
+  next();
 });
 
 // Serve static files
