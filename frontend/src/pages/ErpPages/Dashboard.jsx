@@ -239,7 +239,7 @@ const Dashboard = () => {
           })}
         </div>
 
-        <div className="details grid grid-cols-3 lg:grid-cols-3 gap-6 mt-6">
+        <div className="details grid gap-6 mt-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
           {/* Bar Chart */}
           {utilisateurConnecte.type.toLowerCase() === "superviseur" && (
             <div className="p-4 bg-base-100 shadow rounded">

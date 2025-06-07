@@ -26,7 +26,7 @@ const app = express();
 
 // Configuration CORS
 const corsOptions = {
-  origin: [process.env.FRONTEND_URL, process.env.FRONTEND_URL_DISTANT, process.env.FRONTEND_URL_DISTANT.concat("/")],
+  origin: [process.env.FRONTEND_URL, process.env.FRONTEND_URL_DISTANT, process.env.FRONTEND_URL_DISTANT?.concat("/")],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"]

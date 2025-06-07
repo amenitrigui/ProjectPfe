@@ -355,6 +355,7 @@ const GetDevisListParClient = async (req, res) => {
 // * http://localhost:5000/api/devis/SOLEVO/getCodesDevis/05
 const getCodesDevis = async (req, res) => {
   try {
+    console.log("nice")
     const decoded = verifyTokenValidity(req);
     if (!decoded) {
       return res.status(401).json({ message: "utilisateur non authentifié" });
@@ -371,13 +372,14 @@ const getCodesDevis = async (req, res) => {
         NUMBL
     `;
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
+    console.log("dbConnection: ",dbConnection);
     const listeNUMBL = await dbConnection.query(query, {
       type: dbConnection.QueryTypes.SELECT,
       replacements: {
         usera: usera,
       },
     });
-
+    console.log("liste numbl: ",listeNUMBL);
     return res.status(200).json({
       message: "tout le code devis recupere avec succes",
       listeNUMBL: listeNUMBL,
