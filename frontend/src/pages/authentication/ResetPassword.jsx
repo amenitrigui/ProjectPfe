@@ -51,11 +51,11 @@ function ResetPassword() {
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
             Réinitialiser votre mot de passe
           </h2>
-          {error && (
+          {/* {error && (
             <div className="bg-red-100 text-red-700 p-3 rounded-lg mb-4 text-center">
               {error}
             </div>
-          )}
+          )} */}
           {emailSent && (
             <div className="bg-blue-100 text-black-700 p-3 rounded-lg mb-4 text-center">
               Un Email avec les instructions de réinitialisation de mot de passe
