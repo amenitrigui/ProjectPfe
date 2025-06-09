@@ -355,7 +355,7 @@ const GetDevisListParClient = async (req, res) => {
 // * http://localhost:5000/api/devis/SOLEVO/getCodesDevis/05
 const getCodesDevis = async (req, res) => {
   try {
-    console.log("nice")
+    console.log("nice");
     const decoded = verifyTokenValidity(req);
     if (!decoded) {
       return res.status(401).json({ message: "utilisateur non authentifié" });
@@ -363,23 +363,37 @@ const getCodesDevis = async (req, res) => {
     const { dbName } = req.params;
     const { usera } = req.params;
     const query = `
-      SELECT NUMBL 
-      FROM dfp 
-      WHERE usera = :usera 
-      ORDER BY 
-        REGEXP_REPLACE(NUMBL, '^[A-Za-z]+', ''),  -- supprimer la partie alphabetique
-        LENGTH(NUMBL),
-        NUMBL
-    `;
+  SELECT NUMBL 
+  FROM dfp 
+  WHERE usera = :usera 
+  ORDER BY 
+    SUBSTRING(NUMBL,
+      IF(LOCATE('0', NUMBL) > 0, LOCATE('0', NUMBL),
+      IF(LOCATE('1', NUMBL) > 0, LOCATE('1', NUMBL),
+      IF(LOCATE('2', NUMBL) > 0, LOCATE('2', NUMBL),
+      IF(LOCATE('3', NUMBL) > 0, LOCATE('3', NUMBL),
+      IF(LOCATE('4', NUMBL) > 0, LOCATE('4', NUMBL),
+      IF(LOCATE('5', NUMBL) > 0, LOCATE('5', NUMBL),
+      IF(LOCATE('6', NUMBL) > 0, LOCATE('6', NUMBL),
+      IF(LOCATE('7', NUMBL) > 0, LOCATE('7', NUMBL),
+      IF(LOCATE('8', NUMBL) > 0, LOCATE('8', NUMBL),
+      IF(LOCATE('9', NUMBL) > 0, LOCATE('9', NUMBL),
+      LENGTH(NUMBL) + 1
+    ))))))))))
+    ),
+    LENGTH(NUMBL),
+    NUMBL
+`;
+
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
-    console.log("dbConnection: ",dbConnection);
+    console.log("dbConnection: ", dbConnection);
     const listeNUMBL = await dbConnection.query(query, {
       type: dbConnection.QueryTypes.SELECT,
       replacements: {
         usera: usera,
       },
     });
-    console.log("liste numbl: ",listeNUMBL);
+    console.log("liste numbl: ", listeNUMBL);
     return res.status(200).json({
       message: "tout le code devis recupere avec succes",
       listeNUMBL: listeNUMBL,
@@ -785,7 +799,7 @@ const majDevis = async (req, res) => {
 
     const devis = await Devis.findOne({ where: { NUMBL } });
     const lignedevisModifie = DevisMaj.articles;
-    console.log(DevisMaj)
+    console.log(DevisMaj);
     if (devis) {
       await Devis.update(
         {
@@ -806,7 +820,7 @@ const majDevis = async (req, res) => {
           comm: DevisMaj.comm,
           RSCLI: DevisMaj.RSCLI,
           mlettre: DevisMaj.mlettre,
-          DATEDMAJ: DevisMaj.DATEDMAJ
+          DATEDMAJ: DevisMaj.DATEDMAJ,
         },
         { where: { NUMBL } }
       );

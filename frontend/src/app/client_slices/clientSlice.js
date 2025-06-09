@@ -240,6 +240,7 @@ export const getVilleParCodePostal = createAsyncThunk(
         },
       }
     );
+    console.log("getVilleParCodePostal: ",response)
     return response.data.ville[0];
   }
 );
@@ -280,6 +281,7 @@ export const getListeCodeRegions = createAsyncThunk(
         }
       }
     );
+    console.log(response)
     return response.data.listeCodesRegion;
   }
 );

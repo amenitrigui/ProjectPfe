@@ -145,7 +145,7 @@ function Settings() {
                       >
                         <option>article</option>
                         <option>clients</option>
-                        <option>utilisateur</option>
+                        {/* <option>utilisateur</option> */}
                       </select>
                     </label>
 

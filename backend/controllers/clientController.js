@@ -44,8 +44,8 @@ const filtrerListeClients = async (req, res) => {
   const { dbName } = req.params;
   const { filters } = req.query;
   try {
-    if(!filters) {
-      return res.status(400).json({message: "les filtres sont manquantes"})
+    if (!filters) {
+      return res.status(400).json({ message: "les filtres sont manquantes" });
     }
     const decoded = verifyTokenValidity(req);
     if (!decoded) {
@@ -103,12 +103,9 @@ const filtrerListeClients = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    return res
-      .status(500)
-      .json({
-        message:
-          "un erreur est survenu lors de la filtrage de liste des clients",
-      });
+    return res.status(500).json({
+      message: "un erreur est survenu lors de la filtrage de liste des clients",
+    });
   }
 };
 
@@ -122,8 +119,10 @@ const AjouterClient = async (req, res) => {
   const { dbName } = req.params;
   const { clientInfos } = req.body;
   try {
-    if(!clientInfos) {
-      return res.status(400).json({message:"informations client à ajouter sont manquantes"})
+    if (!clientInfos) {
+      return res
+        .status(400)
+        .json({ message: "informations client à ajouter sont manquantes" });
     }
     const decoded = verifyTokenValidity(req);
     if (!decoded) {
@@ -213,8 +212,8 @@ const supprimerClient = async (req, res) => {
   // ? tableau contenant les codes des clients à supprimer
   const { code } = req.params;
   try {
-    if(!code) {
-      return res.status(400).json({message: "code client est manquante"})
+    if (!code) {
+      return res.status(400).json({ message: "code client est manquante" });
     }
     const decoded = verifyTokenValidity(req);
     if (!decoded) {
@@ -246,8 +245,8 @@ const getClientParCode = async (req, res) => {
   const { dbName } = req.params;
   const { code } = req.params;
   try {
-    if(!code) {
-      return res.status(400).json({message: "code client est manquante"})
+    if (!code) {
+      return res.status(400).json({ message: "code client est manquante" });
     }
     const decoded = verifyTokenValidity(req);
     if (!decoded) {
@@ -283,8 +282,12 @@ const majClient = async (req, res) => {
   const { dbName } = req.params;
   const { clientMaj } = req.body;
   try {
-    if(!clientMaj) {
-      return res.status(400).json({message:"informations clients à mettre à jour sont manquantes"})
+    if (!clientMaj) {
+      return res
+        .status(400)
+        .json({
+          message: "informations clients à mettre à jour sont manquantes",
+        });
     }
     const decoded = verifyTokenValidity(req);
     if (!decoded) {
@@ -382,13 +385,27 @@ const getToutCodesClient = async (req, res) => {
     }
     const dbConnection = getConnexionBd(); //await getDatabaseConnection(dbName);
     const query = `
-      SELECT code 
-      FROM client 
-      ORDER BY 
-      CAST(REGEXP_REPLACE(code, '^[A-Za-z]+', '') AS UNSIGNED),  -- Convert to unsigned integer
-      LENGTH(code),                                            -- Sort by length
-      code 
-    `;
+  SELECT code 
+  FROM client 
+  ORDER BY 
+    CAST(SUBSTRING(code,
+      IF(LOCATE('0', code) > 0, LOCATE('0', code),
+      IF(LOCATE('1', code) > 0, LOCATE('1', code),
+      IF(LOCATE('2', code) > 0, LOCATE('2', code),
+      IF(LOCATE('3', code) > 0, LOCATE('3', code),
+      IF(LOCATE('4', code) > 0, LOCATE('4', code),
+      IF(LOCATE('5', code) > 0, LOCATE('5', code),
+      IF(LOCATE('6', code) > 0, LOCATE('6', code),
+      IF(LOCATE('7', code) > 0, LOCATE('7', code),
+      IF(LOCATE('8', code) > 0, LOCATE('8', code),
+      IF(LOCATE('9', code) > 0, LOCATE('9', code),
+      LENGTH(code) + 1
+    ))))))))))
+    ) AS UNSIGNED),
+    LENGTH(code),
+    code
+`;
+
     const listeCodesClients = await dbConnection.query(query, {
       type: dbConnection.QueryTypes.SELECT,
     });
@@ -411,8 +428,8 @@ const getClientParRaisonSociale = async (req, res) => {
   const { dbName } = req.params;
   const { rsoc } = req.params;
   try {
-    if(!rsoc){
-      return res.status(400).json({message: "Le champs rsoc est manquante"})
+    if (!rsoc) {
+      return res.status(400).json({ message: "Le champs rsoc est manquante" });
     }
     const decoded = verifyTokenValidity(req);
     if (!decoded) {
@@ -446,8 +463,8 @@ const getClientParCin = async (req, res) => {
   const { dbName } = req.params;
   const { cin } = req.params;
   try {
-    if(!cin) {
-      return res.status(400).json({message: "le champ cin est manquante"})
+    if (!cin) {
+      return res.status(400).json({ message: "le champ cin est manquante" });
     }
     const decoded = verifyTokenValidity(req);
     if (!decoded) {

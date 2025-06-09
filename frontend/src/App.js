@@ -112,10 +112,10 @@ function App() {
       if (jetton.length > 10) {
         const dateExpiration = JSON.parse(atob(jetton.split(".")[1])).exp;
         if (Date.now() >= dateExpiration * 1000) {
-          // dispatch(deconnexionUtilisateur(navigate));
+          dispatch(deconnexionUtilisateur(navigate));
         }
       } else {
-        // dispatch(deconnexionUtilisateur(navigate));
+        dispatch(deconnexionUtilisateur(navigate));
       }
     }
     // * =====================================================
